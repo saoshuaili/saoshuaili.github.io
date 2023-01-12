@@ -55,16 +55,20 @@ public class UserClassLoader extends ClassLoader {
         String rootDir = "/Users/heyizhi/Notes/coachhe.github.io/code/编程语言/Java/Java语言/JVM/Chapter7_JVMClassLoadingMechanism/src/main/java";
         try {
             UserClassLoader classLoader1 = new UserClassLoader(rootDir);
-            classLoader1.findClass("com.coachhe.Chapter4_类加载器.命名空间.ClassLoaderTest");
+            Class clazz1 = classLoader1.findClass("com.coachhe.Chapter4_类加载器.命名空间.User");
             UserClassLoader classLoader2 = new UserClassLoader(rootDir);
-            classLoader2.findClass("com.coachhe.Chapter4_类加载器.命名空间.ClassLoaderTest");
+            Class clazz2 = classLoader2.findClass("com.coachhe.Chapter4_类加载器.命名空间.User");
 
-            Class clazz1 = classLoader1.loadClass("ClassLoaderTest");
-            Class clazz2 = classLoader2.loadClass("ClassLoaderTest");
             System.out.println(clazz1 == clazz2);
 
             System.out.println(clazz1.getClassLoader());
             System.out.println(clazz2.getClassLoader());
+
+            //################################################################
+
+            Class clazz3 = ClassLoader.getSystemClassLoader().loadClass("com.coachhe.Chapter4_类加载器.命名空间.User");
+            System.out.println(clazz3.getClassLoader());
+
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
