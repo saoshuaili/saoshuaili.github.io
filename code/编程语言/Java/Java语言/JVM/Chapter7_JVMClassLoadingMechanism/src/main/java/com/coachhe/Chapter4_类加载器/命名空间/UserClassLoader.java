@@ -13,12 +13,15 @@ public class UserClassLoader extends ClassLoader {
         this.rootDir = rootDir;
     }
 
+    // 编写findClass方法的逻辑
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
+        // 获取类的class文件字节数组
         byte[] classData = getClassData(name);
         if (classData == null) {
             throw new ClassNotFoundException();
         } else {
+            // 直接生成class对象
             return defineClass(name, classData, 0, classData.length);
         }
     }
@@ -43,30 +46,13 @@ public class UserClassLoader extends ClassLoader {
         return null;
     }
 
-    @Override
-    public Class<?> loadClass(String name) throws ClassNotFoundException {
-        try {
-//                    String fileName = name.substring(name.lastIndexOf(".") + 1) + ".class";
-            String fileName = classNameToPath(name);
-            InputStream is = getClass().getResourceAsStream(fileName);
-            if (is == null) {
-                return super.loadClass(name);
-            }
-            byte[] b = new byte[is.available()];
-            is.read(b);
-            return defineClass(name, b, 0, b.length);
-        } catch (IOException e) {
-            throw new ClassNotFoundException(name);
-        }
-    }
-
     // 类文件的完全路径
     private String classNameToPath(String className) {
         return rootDir + "/" + className.replace(".", "/") + ".class";
     }
 
     public static void main(String[] args) {
-        String rootDir = "/Users/heyizhi/Notes/coachhe.github.io/code/编程语言/Java/Java语言/JVM/Chapter7_JVMClassLoadingMechanism/src";
+        String rootDir = "/Users/heyizhi/Notes/coachhe.github.io/code/编程语言/Java/Java语言/JVM/Chapter7_JVMClassLoadingMechanism/src/main/java";
         try {
             UserClassLoader classLoader1 = new UserClassLoader(rootDir);
             classLoader1.findClass("com.coachhe.Chapter4_类加载器.命名空间.ClassLoaderTest");
