@@ -3,6 +3,7 @@ package com.coachhe.fruit.dao.base;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import com.mysql.jdbc.Driver;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +11,9 @@ import java.util.List;
 public abstract class BaseDAO<T> {
 
     public final String DRIVER = "com.mysql.jdbc.Driver" ;
-    public final String URL = "jdbc:mysql://localhost:3306/fruitdb?useUnicode=true&characterEncoding=utf-8&useSSL=false";
-    public final String USER = "root";
-    public final String PWD = "123456" ;
+    public final String URL = "jdbc:mysql://9.135.222.245:3306/fruitdb?useUnicode=true&characterEncoding=utf-8&useSSL=false";
+    public final String USER = "tdsql_admin";
+    public final String PWD = "gUFeA*4368ef" ;
 
     protected Connection conn ;
     protected PreparedStatement psmt ;
