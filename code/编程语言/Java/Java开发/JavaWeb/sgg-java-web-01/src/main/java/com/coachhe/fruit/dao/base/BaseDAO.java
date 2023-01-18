@@ -3,7 +3,6 @@ package com.coachhe.fruit.dao.base;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import com.mysql.jdbc.Driver;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
