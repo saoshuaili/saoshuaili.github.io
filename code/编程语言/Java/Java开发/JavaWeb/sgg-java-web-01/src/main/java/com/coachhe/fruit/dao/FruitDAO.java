@@ -1,6 +1,7 @@
 package com.coachhe.fruit.dao;
 
-import com.atguigu.fruit.pojo.Fruit;
+
+import com.coachhe.fruit.pojo.Fruit;
 
 import java.util.List;
 

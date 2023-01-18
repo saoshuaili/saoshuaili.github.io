@@ -1,5 +1,9 @@
 package com.coachhe.fruit.pojo;
 
+/**
+ * @Author: CoachHe
+ * @Date: 2023-01-18 04:00:00
+ */
 public class Fruit {
     private Integer fid ;
     private String fname ;
