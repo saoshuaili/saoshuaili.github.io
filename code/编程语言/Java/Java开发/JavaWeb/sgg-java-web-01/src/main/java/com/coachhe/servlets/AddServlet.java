@@ -14,6 +14,7 @@ import java.io.IOException;
 /**
  * @Author: CoachHe
  * @Date: 2023-01-18 04:00:00
+ * 演示将http://localhost:8080/add.html中填入的元素转换为数据库中具体的内容
  */
 public class AddServlet extends HttpServlet {
     @Override

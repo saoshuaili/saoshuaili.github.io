@@ -12,4 +12,13 @@
         <url-pattern>/add</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>LifeServlet</servlet-name>
+        <servlet-class>com.coachhe.servlets.LifeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LifeServlet</servlet-name>
+        <url-pattern>/life</url-pattern>
+    </servlet-mapping>
+
 </web-app>
