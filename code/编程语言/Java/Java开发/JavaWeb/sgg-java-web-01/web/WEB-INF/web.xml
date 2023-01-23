@@ -15,6 +15,7 @@
     <servlet>
         <servlet-name>LifeServlet</servlet-name>
         <servlet-class>com.coachhe.servlets.LifeServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>LifeServlet</servlet-name>

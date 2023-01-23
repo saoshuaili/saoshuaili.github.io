@@ -12,6 +12,10 @@ import java.io.IOException;
  * 演示 Servlet 的生命周期
  */
 public class LifeServlet extends HttpServlet {
+
+    public LifeServlet() {
+        System.out.println("life servlet 正在实例化");
+    }
     @Override
     public void init() throws ServletException {
         System.out.println("正在初始化");
