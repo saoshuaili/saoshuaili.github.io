@@ -33,7 +33,7 @@
 
     <servlet>
         <servlet-name>SetAttrubuteServlet</servlet-name>
-        <servlet-class>com.coachhe.servlets.SetAttrubuteServlet</servlet-class>
+        <servlet-class>com.coachhe.servlets.Attrubute.SetAttrubuteServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>SetAttrubuteServlet</servlet-name>
@@ -42,7 +42,7 @@
 
     <servlet>
         <servlet-name>GetAttrubuteServlet</servlet-name>
-        <servlet-class>com.coachhe.servlets.GetAttrubuteServlet</servlet-class>
+        <servlet-class>com.coachhe.servlets.Attrubute.GetAttrubuteServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>GetAttrubuteServlet</servlet-name>
