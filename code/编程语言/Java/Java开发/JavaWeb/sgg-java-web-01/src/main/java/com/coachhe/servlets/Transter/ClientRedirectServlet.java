@@ -15,7 +15,6 @@ public class ClientRedirectServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("客户端重定向");
-        // 服务器端内部转发
-        response.sendRedirect("FinalServlet");
+        response.sendRedirect("final");
     }
 }

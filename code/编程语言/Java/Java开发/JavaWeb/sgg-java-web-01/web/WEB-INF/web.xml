@@ -64,7 +64,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ClientRedirectServlet</servlet-name>
-        <url-pattern>/clientRedirectServlet</url-pattern>
+        <url-pattern>/clientRedirectTransfer</url-pattern>
     </servlet-mapping>
 
 

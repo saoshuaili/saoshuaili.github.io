@@ -16,7 +16,7 @@ public class ServerInnerTransfer extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("服务器内部转发");
         // 服务器端内部转发
-        request.getRequestDispatcher("FinalServlet").forward(request, response);
+        request.getRequestDispatcher("final").forward(request, response);
 
     }
 }
