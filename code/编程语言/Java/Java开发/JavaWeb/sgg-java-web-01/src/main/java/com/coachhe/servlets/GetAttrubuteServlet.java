@@ -11,7 +11,7 @@ import java.io.IOException;
  * @Date: 2023/1/25 00:29
  * 演示从 Http Session 中获取数据
  */
-public class AttrubuteServlet2 extends HttpServlet {
+public class GetAttrubuteServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Object unameObj = request.getSession().getAttribute("uname");

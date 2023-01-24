@@ -32,21 +32,21 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>AttrubuteServlet</servlet-name>
-        <servlet-class>com.coachhe.servlets.AttrubuteServlet</servlet-class>
+        <servlet-name>SetAttrubuteServlet</servlet-name>
+        <servlet-class>com.coachhe.servlets.SetAttrubuteServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>AttrubuteServlet</servlet-name>
-        <url-pattern>/attribute</url-pattern>
+        <servlet-name>SetAttrubuteServlet</servlet-name>
+        <url-pattern>/setAttribute</url-pattern>
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>AttrubuteServlet2</servlet-name>
-        <servlet-class>com.coachhe.servlets.AttrubuteServlet2</servlet-class>
+        <servlet-name>GetAttrubuteServlet</servlet-name>
+        <servlet-class>com.coachhe.servlets.GetAttrubuteServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>AttrubuteServlet2</servlet-name>
-        <url-pattern>/attribute2</url-pattern>
+        <servlet-name>GetAttrubuteServlet</servlet-name>
+        <url-pattern>/getAttribute</url-pattern>
     </servlet-mapping>
 
 
