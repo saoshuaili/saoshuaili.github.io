@@ -9,8 +9,9 @@ import java.io.IOException;
 /**
  * @Author: CoachHe
  * @Date: 2023/1/25 01:40
+ * 最终处理的 Servlet，用来观察效果
  */
-public class TransferServlet2 extends HttpServlet {
+public class FinalServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("transger servlet2...");
