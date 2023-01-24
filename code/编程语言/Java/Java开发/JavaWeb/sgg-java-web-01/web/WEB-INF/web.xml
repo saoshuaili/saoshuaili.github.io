@@ -49,6 +49,24 @@
         <url-pattern>/getAttribute</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>TransferServlet1</servlet-name>
+        <servlet-class>com.coachhe.servlets.Transter.TransferServlet1</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TransferServlet1</servlet-name>
+        <url-pattern>/transfer1</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>TransferServlet2</servlet-name>
+        <servlet-class>com.coachhe.servlets.Transter.TransferServlet2</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TransferServlet2</servlet-name>
+        <url-pattern>/transfer2</url-pattern>
+    </servlet-mapping>
+
 
 
 </web-app>
