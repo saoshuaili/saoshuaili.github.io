@@ -26,7 +26,6 @@ public class IndexServlet extends HttpServlet {
         FruitDAO fruitDAO = new FruitDAOImpl();
         List<Fruit> fruitList = fruitDAO.getFruitList();
         // 保存至 session 作用域
-        HttpSession session = request.getSession();
-        session.setAttribute("fruitList", fruitList);
+        HttpSession session = request.getSession();        session.setAttribute("fruitList", fruitList);
     }
 }
