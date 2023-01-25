@@ -27,5 +27,11 @@ public class IndexServlet extends HttpServlet {
         List<Fruit> fruitList = fruitDAO.getFruitList();
         // 保存至 session 作用域
         HttpSession session = request.getSession();        session.setAttribute("fruitList", fruitList);
+        // 此处的视图名称是 index
+        // 那么 thymeleaf 会将这个逻辑视图名称对应到物理视图名称上去
+        // 逻辑视图名称： index
+        // 物理视图名称： view-prefix + 逻辑视图名称 + view-suffix
+        // 所以真实的视图名称是： /index.html
+        
     }
 }
