@@ -17,6 +17,7 @@ import java.util.List;
  * @Author: CoachHe
  * @Date: 2023/1/25 12:32
  * 用来展示 tmymeleaf
+ * Servlet从 3.0 版本开始支持注解方式的注册
  */
 @WebServlet("/index")
 public class IndexServlet extends HttpServlet {
