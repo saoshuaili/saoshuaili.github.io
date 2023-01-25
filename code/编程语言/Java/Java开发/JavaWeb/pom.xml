@@ -9,8 +9,8 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>sgg-java-web-01</module>
-        <module>sgg-java-web-02-servlet</module>
+        <module>sgg-java-web-01-servlet</module>
+        <module>sgg-java-web-02-thymeleaf</module>
     </modules>
 
     <properties>
