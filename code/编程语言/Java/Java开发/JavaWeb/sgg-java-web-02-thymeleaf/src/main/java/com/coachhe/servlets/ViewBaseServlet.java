@@ -1,4 +1,4 @@
-package com.atguigu.myssm.myspringmvc;
+package com.coachhe.servlets;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;

@@ -20,7 +20,7 @@ import java.util.List;
  * Servlet从 3.0 版本开始支持注解方式的注册
  */
 @WebServlet("/index")
-public class IndexServlet extends HttpServlet {
+public class IndexServlet extends ViewBaseServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         FruitDAO fruitDAO = new FruitDAOImpl();
@@ -32,6 +32,6 @@ public class IndexServlet extends HttpServlet {
         // 逻辑视图名称： index
         // 物理视图名称： view-prefix + 逻辑视图名称 + view-suffix
         // 所以真实的视图名称是： /index.html
-        
+        super.processTemplate("index", request, response);
     }
 }
