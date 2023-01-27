@@ -10,8 +10,15 @@ import java.lang.annotation.Target;
  * @Date: 2023/1/27 13:02
  * 定义一个注解
  */
-@Target(ElementType.METHOD)
+@Target(value = {ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DefineAnnotation {
+public @interface MyDefineAnnotation {
+}
 
+//@MyDefineAnnotation
+class TestClass {
+    @MyDefineAnnotation
+    String testField;
+    @MyDefineAnnotation
+    void testMethod(){}
 }
