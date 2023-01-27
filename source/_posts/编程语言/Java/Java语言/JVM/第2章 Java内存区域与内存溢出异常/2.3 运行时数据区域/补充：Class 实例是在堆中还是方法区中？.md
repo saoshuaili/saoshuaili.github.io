@@ -4,7 +4,10 @@ date: 2023-01-28 00:38:40
 tags: []  
 ---
 
-来自 [Class实例在堆中还是方法区中？ - 小菜变大鸟 - 博客园 (cnblogs.com)](https://www.cnblogs.com/xy-nb/p/6773051.html)
+# 参考文献
+
+1. [Class实例在堆中还是方法区中？ - 小菜变大鸟 - 博客园 (cnblogs.com)](https://www.cnblogs.com/xy-nb/p/6773051.html)
+2. [深入理解HotSpotVM中的oop模型(Klass/Class/Oop) - 简书 (jianshu.com)](https://www.jianshu.com/p/a8d1f57799ca)
 
 # 1、JVM 中 OOP-KLASS 模型
 
