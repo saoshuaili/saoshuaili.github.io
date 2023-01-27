@@ -8,6 +8,7 @@ tags: []
 
 1. [Class实例在堆中还是方法区中？ - 小菜变大鸟 - 博客园 (cnblogs.com)](https://www.cnblogs.com/xy-nb/p/6773051.html)
 2. [深入理解HotSpotVM中的oop模型(Klass/Class/Oop) - 简书 (jianshu.com)](https://www.jianshu.com/p/a8d1f57799ca)
+3. [第2.3篇-HotSpot VM类模型之InstanceKlass - 鸠摩（马智） - 博客园 (cnblogs.com)](https://www.cnblogs.com/mazhimazhi/p/14014628.html)
 
 # 1、JVM 中 OOP-KLASS 模型
 
