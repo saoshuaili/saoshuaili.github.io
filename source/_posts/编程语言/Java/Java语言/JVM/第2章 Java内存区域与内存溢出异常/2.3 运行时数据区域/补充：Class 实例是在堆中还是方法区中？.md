@@ -4,6 +4,12 @@ date: 2023-01-28 00:38:40
 tags: []  
 ---
 
+# 理解
+
+jvm 在加载 class 时，创建 instanceKlass，表示其元数据，这个类对 java 程序是屏蔽的，也就是我们无法直接取到这个类，但是我们在调用方法时，==JVM 会自动帮我们找到这个 C++ 类并获取我们所需要的所有信息==（也就是说，虽然我们无法使用这个类，但是 JVM 是可以使用的呀）。
+
+而如果我们需要使用这个类，那么 C++ 提供了一个镜像类，这个镜像类就是在 Java 堆中的 Class 对象（例如 `String.class`），对应的是 instanceKlass 中的 `_java_mirror`，这个类和 instanceKlass 对象互相持有对方的指针。
+
 # 参考文献
 
 1. [Class实例在堆中还是方法区中？ - 小菜变大鸟 - 博客园 (cnblogs.com)](https://www.cnblogs.com/xy-nb/p/6773051.html)
