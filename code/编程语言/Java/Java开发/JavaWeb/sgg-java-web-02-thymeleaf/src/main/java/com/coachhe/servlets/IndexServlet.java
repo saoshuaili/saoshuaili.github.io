@@ -3,11 +3,9 @@ package main.java.com.coachhe.servlets;
 import com.coachhe.fruit.dao.FruitDAO;
 import com.coachhe.fruit.dao.impl.FruitDAOImpl;
 import com.coachhe.fruit.pojo.Fruit;
-import com.coachhe.servlets.ViewBaseServlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
