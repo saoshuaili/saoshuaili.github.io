@@ -1,4 +1,4 @@
-package main.java.com.coachhe.servlets;
+package com.coachhe.servlets;
 
 import com.coachhe.fruit.dao.FruitDAO;
 import com.coachhe.fruit.dao.impl.FruitDAOImpl;
@@ -18,7 +18,7 @@ import java.util.List;
  * 用来展示 thymeleaf
  * Servlet从 3.0 版本开始支持注解方式的注册
  */
-//@WebServlet("/index")
+@WebServlet("/index")
 public class IndexServlet extends ViewBaseServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

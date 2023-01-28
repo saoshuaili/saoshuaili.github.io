@@ -1,4 +1,4 @@
-package main.java.com.coachhe.fruit.dao.impl;
+package com.coachhe.fruit.dao.impl;
 
 import com.coachhe.fruit.dao.FruitDAO;
 import com.coachhe.fruit.dao.base.BaseDAO;

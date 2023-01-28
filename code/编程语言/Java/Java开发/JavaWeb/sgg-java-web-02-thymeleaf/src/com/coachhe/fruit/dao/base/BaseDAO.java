@@ -1,4 +1,4 @@
-package main.java.com.coachhe.fruit.dao.base;
+package com.coachhe.fruit.dao.base;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
