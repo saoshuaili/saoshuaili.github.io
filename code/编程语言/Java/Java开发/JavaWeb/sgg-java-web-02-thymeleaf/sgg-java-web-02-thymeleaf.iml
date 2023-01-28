@@ -13,7 +13,7 @@
     </facet>
   </component>
   <component name="NewModuleRootManager">
-    <output url="file:///production/sgg-java-web-02-thymeleaf" />
+    <output url="file://$MODULE_DIR$/../out/artifacts/sgg_java_web_02_thymeleaf_Web_exploded" />
     <output-test url="file:///test/sgg-java-web-02-thymeleaf" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
