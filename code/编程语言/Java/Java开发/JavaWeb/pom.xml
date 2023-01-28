@@ -4,16 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
-    <artifactId>OnJava8</artifactId>
+    <groupId>com.coachhe</groupId>
+    <artifactId>JavaWeb</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>Chapter18_String</module>
-        <module>Chapter9_Polymorphism</module>
-        <module>Chapter6_ConstructorAndCleaning</module>
-        <module>Chapter19_Reflection</module>
-        <module>Chapter23_Annotations</module>
+        <module>sgg-java-web-01-servlet</module>
+        <module>sgg-java-web-02-thymeleaf</module>
     </modules>
 
     <properties>
