@@ -1,4 +1,4 @@
-package com.coachhe.fruit.dao;
+package main.java.com.coachhe.fruit.dao;
 
 
 import com.coachhe.fruit.pojo.Fruit;

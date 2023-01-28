@@ -1,8 +1,9 @@
-package com.coachhe.servlets;
+package main.java.com.coachhe.servlets;
 
 import com.coachhe.fruit.dao.FruitDAO;
 import com.coachhe.fruit.dao.impl.FruitDAOImpl;
 import com.coachhe.fruit.pojo.Fruit;
+import com.coachhe.servlets.ViewBaseServlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

@@ -1,4 +1,4 @@
-package com.coachhe.servlets;
+package main.java.com.coachhe.servlets;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;

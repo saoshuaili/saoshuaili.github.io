@@ -1,4 +1,4 @@
-package com.coachhe.fruit.pojo;
+package main.java.com.coachhe.fruit.pojo;
 
 /**
  * @Author: CoachHe
