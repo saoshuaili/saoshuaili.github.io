@@ -1,4 +1,4 @@
-package com.coachhe.servlets.作用域.request范围内保存作用域;
+package com.coachhe.servlets.作用域.request范围;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,7 +12,7 @@ import java.io.IOException;
  * @date 2023/1/29 23:13
  * 重定向的Servlet
  **/
-@WebServlet("/redirectServlet")
+@WebServlet("/redirectRequestServlet")
 public class RedirectServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

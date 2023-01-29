@@ -1,4 +1,4 @@
-package com.coachhe.servlets.作用域.session范围内保存作用域;
+package com.coachhe.servlets.作用域.session范围;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
