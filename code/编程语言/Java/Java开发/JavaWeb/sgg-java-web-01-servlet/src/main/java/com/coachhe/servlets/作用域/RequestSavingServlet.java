@@ -1,6 +1,24 @@
-package com.coachhe.servlets.作用域;/**
+package com.coachhe.servlets.作用域;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+/**
  * @author CoachHe
  * @date 2023/1/29 23:10
-**/
-public class RequestSavingServlet {
+ * 一次请求（request）范围内保存数据
+ **/
+@WebServlet("/requestServlet")
+public class RequestSavingServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // 1. 向request保存作用域保存数据
+        request.setAttribute("uname", "coachhe");
+        // 2. 客户端重定向
+        response.sendRedirect("redirectServlet");
+    }
 }
