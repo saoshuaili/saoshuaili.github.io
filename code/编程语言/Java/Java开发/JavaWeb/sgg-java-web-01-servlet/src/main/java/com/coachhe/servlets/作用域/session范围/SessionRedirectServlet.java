@@ -1,4 +1,4 @@
-package com.coachhe.servlets.作用域.request范围;
+package com.coachhe.servlets.作用域.session范围;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,12 +12,12 @@ import java.io.IOException;
  * @date 2023/1/29 23:13
  * 重定向的Servlet
  **/
-@WebServlet("/redirectRequestServlet")
-public class RedirectServlet extends HttpServlet {
+@WebServlet("/redirectSessionServlet")
+public class SessionRedirectServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 1. 获取request保存作用域保存的数据，key为uname
-        Object unameObj = request.getAttribute("uname");
+        // 1. 获取session保存作用域保存的数据，key为uname
+        Object unameObj = request.getSession().getAttribute("uname");
         System.out.println("uname = " + unameObj);
     }
 }

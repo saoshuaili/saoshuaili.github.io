@@ -19,8 +19,8 @@ public class RequestSavingServlet extends HttpServlet {
         // 1. 向request保存作用域保存数据
         request.setAttribute("uname", "coachhe");
         // 2. 客户端重定向,第二次请求无法获取上一次请求信息
-        response.sendRedirect("redirectServlet");
+        response.sendRedirect("redirectRequestServlet");
         // 3. 服务端转发，属于同一次请求，可以感知属性
-//        request.getRequestDispatcher("redirectServlet").forward(request, response);
+//        request.getRequestDispatcher("redirectRequestServlet").forward(request, response);
     }
 }

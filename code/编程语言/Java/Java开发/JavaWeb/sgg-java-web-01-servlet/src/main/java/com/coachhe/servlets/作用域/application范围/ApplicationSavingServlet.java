@@ -22,6 +22,6 @@ public class ApplicationSavingServlet extends HttpServlet {
         ServletContext servletContext = request.getServletContext();
         servletContext.setAttribute("uname", "coachhe");
         // 2. 客户端重定向,第二次请求无法获取上一次请求信息
-        response.sendRedirect("redirectSessionServlet");
+        response.sendRedirect("redirectApplicationServlet");
     }
 }

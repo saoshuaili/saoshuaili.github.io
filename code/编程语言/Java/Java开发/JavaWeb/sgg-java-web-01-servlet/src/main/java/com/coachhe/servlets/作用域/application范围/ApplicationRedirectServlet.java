@@ -13,7 +13,7 @@ import java.io.IOException;
  * 重定向的Servlet
  **/
 @WebServlet("/redirectApplicationServlet")
-public class RedirectServlet extends HttpServlet {
+public class ApplicationRedirectServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 1. 获取session保存作用域保存的数据，key为uname
