@@ -16,7 +16,7 @@ import java.io.IOException;
 public class ApplicationRedirectServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 1. 获取session保存作用域保存的数据，key为uname
+        // 1. 获取application保存作用域保存的数据，key为uname
         Object unameObj = request.getServletContext().getAttribute("uname");
         System.out.println("uname = " + unameObj);
     }

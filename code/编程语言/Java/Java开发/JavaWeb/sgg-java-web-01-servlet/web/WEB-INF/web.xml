@@ -33,7 +33,7 @@
 
     <servlet>
         <servlet-name>SetAttrubuteServlet</servlet-name>
-        <servlet-class>com.coachhe.servlets.Attrubute.SetAttrubuteServlet</servlet-class>
+        <servlet-class>com.coachhe.servlets.属性.SetAttrubuteServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>SetAttrubuteServlet</servlet-name>
@@ -42,7 +42,7 @@
 
     <servlet>
         <servlet-name>GetAttrubuteServlet</servlet-name>
-        <servlet-class>com.coachhe.servlets.Attrubute.GetAttrubuteServlet</servlet-class>
+        <servlet-class>com.coachhe.servlets.属性.GetAttrubuteServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>GetAttrubuteServlet</servlet-name>
@@ -51,7 +51,7 @@
 
     <servlet>
         <servlet-name>ServerInnerTransfer</servlet-name>
-        <servlet-class>com.coachhe.servlets.Transter.ServerInnerTransfer</servlet-class>
+        <servlet-class>com.coachhe.servlets.转发.ServerInnerTransfer</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ServerInnerTransfer</servlet-name>
@@ -60,7 +60,7 @@
 
     <servlet>
         <servlet-name>ClientRedirectServlet</servlet-name>
-        <servlet-class>com.coachhe.servlets.Transter.ClientRedirectServlet</servlet-class>
+        <servlet-class>com.coachhe.servlets.转发.ClientRedirectServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ClientRedirectServlet</servlet-name>
@@ -70,7 +70,7 @@
 
     <servlet>
         <servlet-name>FinalServlet</servlet-name>
-        <servlet-class>com.coachhe.servlets.Transter.FinalServlet</servlet-class>
+        <servlet-class>com.coachhe.servlets.转发.FinalServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>FinalServlet</servlet-name>

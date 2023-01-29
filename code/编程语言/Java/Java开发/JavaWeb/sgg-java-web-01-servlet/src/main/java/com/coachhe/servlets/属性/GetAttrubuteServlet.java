@@ -1,4 +1,4 @@
-package com.coachhe.servlets.Transter;
+package com.coachhe.servlets.属性;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -8,15 +8,13 @@ import java.io.IOException;
 
 /**
  * @Author: CoachHe
- * @Date: 2023/1/25 01:25
- * 演示服务器内部转发
+ * @Date: 2023/1/25 00:29
+ * 演示从 Http Session 中获取数据
  */
-public class ServerInnerTransfer extends HttpServlet {
+public class GetAttrubuteServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("服务器内部转发");
-        // 服务器端内部转发
-        request.getRequestDispatcher("final").forward(request, response);
-
+        Object unameObj = request.getSession().getAttribute("uname");
+        System.out.println(unameObj);
     }
 }
