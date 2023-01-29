@@ -13,6 +13,11 @@ public class FruitDAOImpl extends BaseDAO<Fruit> implements FruitDAO {
     }
 
     @Override
+    public Fruit getFruitByFid(int fid) {
+        return super.load("select * from t_fruit where fid = ?", fid);
+    }
+
+    @Override
     public boolean addFruit(Fruit fruit) {
         String sql = "insert into t_fruit values(0,?,?,?,?)";
         int count = super.executeUpdate(sql,fruit.getFname(),fruit.getPrice(),fruit.getFcount(),fruit.getRemark()) ;
@@ -37,4 +42,6 @@ public class FruitDAOImpl extends BaseDAO<Fruit> implements FruitDAO {
         String sql = "delete from t_fruit where fname like ? " ;
         return super.executeUpdate(sql,fname)>0;
     }
+
+
 }

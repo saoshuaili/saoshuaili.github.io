@@ -9,6 +9,9 @@ public interface FruitDAO {
     //查询库存列表
     List<Fruit> getFruitList();
 
+    //根据fid查询库存
+    Fruit getFruitByFid(int fid);
+
     //新增库存
     boolean addFruit(Fruit fruit);
 
