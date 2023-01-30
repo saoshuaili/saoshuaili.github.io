@@ -26,7 +26,5 @@
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="module" module-name="sgg-java-web-01-servlet" />
     <orderEntry type="library" name="Maven: org.apache.tomcat.embed:tomcat-embed-core:9.0.53" level="project" />
-    <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="library" name="lib_thymeleaf" level="project" />
   </component>
 </module>
