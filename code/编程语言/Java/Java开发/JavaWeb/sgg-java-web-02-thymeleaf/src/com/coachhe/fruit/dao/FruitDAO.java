@@ -23,4 +23,7 @@ public interface FruitDAO {
 
     //删除特定库存记录
     boolean delFruit(String fname);
+
+    //根据fid删除揭露
+    void delFruitByFid(int fid);
 }
