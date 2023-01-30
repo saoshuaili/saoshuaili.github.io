@@ -20,8 +20,11 @@ public class UpdateServlet extends ViewBaseServlet{
     private FruitDAO fruitDAO = new FruitDAOImpl();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 1 获取参数
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // 1.设置编码
+        request.setCharacterEncoding("utf-8");
+
+        // 2.获取参数
         String fidStr = request.getParameter("fid");
         int fid = Integer.parseInt(fidStr);
         String fname = request.getParameter("fname");
@@ -31,9 +34,14 @@ public class UpdateServlet extends ViewBaseServlet{
         int fcount = Integer.parseInt(fcountStr);
         String remark = request.getParameter("remark");
 
+        // 3.执行更新
         fruitDAO.updateFruit(new Fruit(fid, fname, price, fcount, remark));
+        System.out.println("update successfully");
 
-        super.processTemplate("index", request, response);
+        // 4. 资源跳转
+//        super.processTemplate("index", request, response);
+        // 此处需要重定向，目的是重新给IndexServlet发请求，然后覆盖到session中
+        response.sendRedirect("index");
     }
 
 
