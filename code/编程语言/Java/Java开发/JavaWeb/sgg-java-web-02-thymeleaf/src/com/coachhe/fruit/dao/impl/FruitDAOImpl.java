@@ -28,8 +28,10 @@ public class FruitDAOImpl extends BaseDAO<Fruit> implements FruitDAO {
 
     @Override
     public boolean updateFruit(Fruit fruit) {
-        String sql = "update t_fruit set fcount = ? and price = ? and fname = ? where fid = ? " ;
-        return super.executeUpdate(sql,fruit.getFcount(), fruit.getPrice(), fruit.getFname(), fruit.getFid())>0;
+//        String sql = String.format("update t_fruit set fcount = %s and price = %s and fname = '%s' and remark = '%s' where fid = %s",
+//                fruit.getFcount(), fruit.getPrice(), fruit.getFname(), fruit.getRemark(), fruit.getFid());
+        String sql = "update t_fruit set fcount = ? and price = ? and fname = ? and remark = ? where fid = ?";
+        return super.executeUpdate(sql, fruit.getFcount(), fruit.getPrice(), fruit.getFname(), fruit.getRemark(), fruit.getFid()) > 0;
     }
 
     @Override
