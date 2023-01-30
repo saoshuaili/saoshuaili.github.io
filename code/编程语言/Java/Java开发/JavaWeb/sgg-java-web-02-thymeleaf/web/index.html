@@ -27,6 +27,12 @@
 						<td><img src="imgs/del.jpg" class="delImg" th:onclick="|delFruit(${fruit.fid})|"/></td>
 					</tr>
 				</table>
+				<div style="width: 60%; margin-left: 20%" class="center">
+					<input type="button" value="首 页" class="btn" th:onclick="page(1)" th:disabled="${session.pageNo==1}">
+					<input type="button" value="上一页" class="btn" th:onclick="|page(${session.pageNo-1})|"  th:disabled="${session.pageNo==1}">
+					<input type="button" value="下一页" class="btn" th:onclick="|page(${session.pageNo+1})|">
+					<input type="button" value="尾 页" class="btn" >
+				</div>
 			</div>
 		</div>
 	</body>
