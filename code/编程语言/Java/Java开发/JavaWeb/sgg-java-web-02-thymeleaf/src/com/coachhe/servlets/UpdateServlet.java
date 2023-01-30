@@ -20,7 +20,7 @@ public class UpdateServlet extends ViewBaseServlet{
     private FruitDAO fruitDAO = new FruitDAOImpl();
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 1 获取参数
         String fidStr = request.getParameter("fid");
         int fid = Integer.parseInt(fidStr);
