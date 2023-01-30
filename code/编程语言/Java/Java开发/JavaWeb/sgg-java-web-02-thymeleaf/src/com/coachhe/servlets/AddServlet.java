@@ -41,6 +41,6 @@ public class AddServlet extends ViewBaseServlet{
 
         System.out.println("新增成功");
 
-        response.sendRedirect("/index");
+        response.sendRedirect("index");
     }
 }
