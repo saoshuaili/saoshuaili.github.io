@@ -23,11 +23,6 @@ public class FruitController {
 
     private String index(String oper, String keyword, Integer pageNo, HttpServletRequest request) {
 
-        String pageNoStr = request.getParameter("pageNo");
-        if (StringUtil.isNotEmpty(pageNoStr)) {
-            pageNo = Integer.parseInt(pageNoStr);
-        }
-
         // 默认查询第一页的数据
         List<Fruit> fruitList = fruitDAO.getFruitList(pageNo);
 
