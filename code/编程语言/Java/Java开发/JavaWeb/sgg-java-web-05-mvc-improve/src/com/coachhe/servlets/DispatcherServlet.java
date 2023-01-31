@@ -8,7 +8,6 @@ import org.w3c.dom.NodeList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
@@ -16,6 +15,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +29,7 @@ import java.util.Map;
 @WebServlet("*.do") // 拦截所有以.do结尾的请求
 public class DispatcherServlet extends ViewBaseServlet {
 
-    private Map<String, Object> beanClassMap = new HashMap<>();
+    private Map<String, Object> beanMap = new HashMap<>();
 
     public DispatcherServlet() {
     }
@@ -37,13 +37,13 @@ public class DispatcherServlet extends ViewBaseServlet {
     public void init() throws ServletException {
         super.init();
         try {
-            InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("applicationContext.xml");
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("applicationContext.xml");
             // 1. 创建DocumentBuilderFactory
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             // 2. 创建DocumentBuilder对象
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
             // 3. 创建Document对象
-            Document document = documentBuilder.parse(resourceAsStream);
+            Document document = documentBuilder.parse(inputStream);
             // 4. 获取所有的bean节点
             NodeList beanNodeList = document.getElementsByTagName("bean");
 
@@ -54,7 +54,7 @@ public class DispatcherServlet extends ViewBaseServlet {
                     String beanId = beanElement.getAttribute("id");
                     String className = beanElement.getAttribute("class");
                     Object beanObj = Class.forName(className).newInstance();
-                    beanClassMap.put(beanId, beanObj);
+                    beanMap.put(beanId, beanObj);
                 }
             }
         } catch (Exception e) {
@@ -75,29 +75,72 @@ public class DispatcherServlet extends ViewBaseServlet {
         int lastDotIndex = servletPath.lastIndexOf(".do");
         servletPath = servletPath.substring(0, lastDotIndex);
         // 通过hello找到helloController
-        Object controllerBeanObj = beanClassMap.get(servletPath);
+        Object controllerBeanObj = beanMap.get(servletPath);
 
-        String operator = request.getParameter("operate");
+        String operate = request.getParameter("operate");
 
-        if (StringUtil.isEmpty(operator)) {
-            operator = "index";
+        if (StringUtil.isEmpty(operate)) {
+            operate = "index";
         }
 
-        // 获取当前类中的所有方法
-        Method[] methods = controllerBeanObj.getClass().getDeclaredMethods();
-        for (Method m : methods) {
-            // 获取方法名
-            String methodName = m.getName();
-            if (operator.equals(methodName)) {
-                // 找到和operate同名的方法，那么通过反射调用它
-                try {
-                    m.setAccessible(true);
-                    m.invoke(controllerBeanObj, request, response);
+        try {
+            // 获取当前类中的所有方法
+            Method[] methods = controllerBeanObj.getClass().getDeclaredMethods();
+            for (Method method : methods) {
+                // 获取方法名
+                String methodName = method.getName();
+                if (operate.equals(methodName)) {
+                    // 找到和operate同名的方法，那么通过反射调用它
+
+                    //1-1.获取当前方法的参数，返回参数数组
+                    Parameter[] parameters = method.getParameters();
+                    //1-2.parameterValues 用来承载参数的值
+                    Object[] parameterValues = new Object[parameters.length];
+                    for (int i = 0; i < parameters.length; i++) {
+                        Parameter parameter = parameters[i];
+                        String parameterName = parameter.getName() ;
+                        //如果参数名是request,response,session 那么就不是通过请求中获取参数的方式了
+                        if("request".equals(parameterName)){
+                            parameterValues[i] = request ;
+                        }else if("response".equals(parameterName)){
+                            parameterValues[i] = response ;
+                        }else if("session".equals(parameterName)){
+                            parameterValues[i] = request.getSession() ;
+                        }else{
+                            //从请求中获取参数值
+                            String parameterValue = request.getParameter(parameterName);
+                            String typeName = parameter.getType().getName();
+
+                            Object parameterObj = parameterValue ;
+
+                            if(parameterObj!=null) {
+                                if ("java.lang.Integer".equals(typeName)) {
+                                    parameterObj = Integer.parseInt(parameterValue);
+                                }
+                            }
+
+                            parameterValues[i] = parameterObj ;
+                        }
+                    }
+
+                    // Controller组件中的方法调用
+                    method.setAccessible(true);
+                    Object methodReturnValueObj = method.invoke(controllerBeanObj, parameterValues);
+                    String methodReturnValueStr = (String) methodReturnValueObj;
+
+                    // 视图处理
+                    if (methodReturnValueStr.startsWith("redirect:")) { //例如redirect: fruit.do
+                        String redirectStr = methodReturnValueStr.substring("redirect:".length());
+                        response.sendRedirect(redirectStr);
+                    } else { // 比如edit
+                        super.processTemplate(methodReturnValueStr, request, response);
+                    }
+
                     return;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
