@@ -1,6 +1,5 @@
 package com.coachhe.servlets;
 
-import com.coachhe.fruit.controller.ViewBaseServlet;
 import com.coachhe.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -9,13 +8,13 @@ import org.w3c.dom.NodeList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +27,7 @@ import java.util.Map;
  * Description:
  */
 @WebServlet("*.do") // 拦截所有以.do结尾的请求
-public class DispatcherServlet extends ViewBaseServlet {
+public class DispatcherServlet extends HttpServlet {
 
     private Map<String, Object> beanClassMap = new HashMap<>();
 
@@ -41,7 +40,6 @@ public class DispatcherServlet extends ViewBaseServlet {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
             // 3. 创建Document对象
             Document document = documentBuilder.parse(resourceAsStream);
-
             // 4. 获取所有的bean节点
             NodeList beanNodeList = document.getElementsByTagName("bean");
 
@@ -55,7 +53,6 @@ public class DispatcherServlet extends ViewBaseServlet {
                     beanClassMap.put(beanId, beanObj);
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,13 +83,10 @@ public class DispatcherServlet extends ViewBaseServlet {
         try {
             Method method = controllerBeanObj.getClass().getDeclaredMethod(operator, request.getClass(), response.getClass());
             if (method != null) {
+                method.setAccessible(true);
                 method.invoke(this, request, response);
             }
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
@@ -106,9 +100,7 @@ public class DispatcherServlet extends ViewBaseServlet {
                 try {
                     m.invoke(this, request, response);
                     return;
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                } catch (InvocationTargetException e) {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }

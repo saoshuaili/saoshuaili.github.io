@@ -3,10 +3,10 @@ package com.coachhe.fruit.controller;
 import com.coachhe.fruit.dao.FruitDAO;
 import com.coachhe.fruit.dao.impl.FruitDAOImpl;
 import com.coachhe.fruit.pojo.Fruit;
+import com.coachhe.servlets.ViewBaseServlet;
 import com.coachhe.util.StringUtil;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -19,7 +19,7 @@ import java.util.List;
  * @author CoachHe
  * @date 2023/1/31 00:59
  **/
-public class FruitServlet extends ViewBaseServlet {
+public class FruitController extends ViewBaseServlet {
 
     private FruitDAO fruitDAO = new FruitDAOImpl();
 
