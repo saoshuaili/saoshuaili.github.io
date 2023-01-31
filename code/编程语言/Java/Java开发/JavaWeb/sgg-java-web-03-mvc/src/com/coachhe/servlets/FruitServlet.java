@@ -52,7 +52,7 @@ public class FruitServlet extends ViewBaseServlet{
 
     private void index(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        int pageNo = 1;
+        int pageNo = 5;
 
         String pageNoStr = request.getParameter("pageNo");
         if (StringUtil.isNotEmpty(pageNoStr)) {
