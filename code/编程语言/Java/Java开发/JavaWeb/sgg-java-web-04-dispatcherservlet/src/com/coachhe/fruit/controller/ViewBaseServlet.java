@@ -1,4 +1,4 @@
-package com.coachhe.servlets;
+package com.coachhe.fruit.controller;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;

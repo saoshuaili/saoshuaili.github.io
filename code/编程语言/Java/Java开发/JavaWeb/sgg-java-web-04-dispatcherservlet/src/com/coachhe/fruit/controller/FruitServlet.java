@@ -1,4 +1,4 @@
-package com.coachhe.servlets;
+package com.coachhe.fruit.controller;
 
 import com.coachhe.fruit.dao.FruitDAO;
 import com.coachhe.fruit.dao.impl.FruitDAOImpl;
@@ -19,7 +19,6 @@ import java.util.List;
  * @author CoachHe
  * @date 2023/1/31 00:59
  **/
-@WebServlet("/fruit.do")
 public class FruitServlet extends ViewBaseServlet {
 
     private FruitDAO fruitDAO = new FruitDAOImpl();
