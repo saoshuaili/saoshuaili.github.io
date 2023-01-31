@@ -49,6 +49,8 @@ public class FruitServlet extends ViewBaseServlet{
                 default:
                     throw new RuntimeException("operate值为空");
             }
+        } else {
+            index(request, response);
         }
     }
 
