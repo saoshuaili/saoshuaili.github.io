@@ -27,11 +27,15 @@ import java.util.Map;
  * Description:
  */
 @WebServlet("*.do") // 拦截所有以.do结尾的请求
-public class DispatcherServlet extends HttpServlet {
+public class DispatcherServlet extends ViewBaseServlet {
 
     private Map<String, Object> beanClassMap = new HashMap<>();
 
     public DispatcherServlet() {
+    }
+
+    public void init() throws ServletException {
+        super.init();
         try {
             InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("applicationContext.xml");
             // 1. 创建DocumentBuilderFactory
@@ -79,17 +83,6 @@ public class DispatcherServlet extends HttpServlet {
             operator = "index";
         }
 
-        // 获取特定方法
-        try {
-            Method method = controllerBeanObj.getClass().getDeclaredMethod(operator, request.getClass(), response.getClass());
-            if (method != null) {
-                method.setAccessible(true);
-                method.invoke(this, request, response);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
         // 获取当前类中的所有方法
         Method[] methods = controllerBeanObj.getClass().getDeclaredMethods();
         for (Method m : methods) {
@@ -98,7 +91,8 @@ public class DispatcherServlet extends HttpServlet {
             if (operator.equals(methodName)) {
                 // 找到和operate同名的方法，那么通过反射调用它
                 try {
-                    m.invoke(this, request, response);
+                    m.setAccessible(true);
+                    m.invoke(controllerBeanObj, request, response);
                     return;
                 } catch (Exception e) {
                     throw new RuntimeException(e);

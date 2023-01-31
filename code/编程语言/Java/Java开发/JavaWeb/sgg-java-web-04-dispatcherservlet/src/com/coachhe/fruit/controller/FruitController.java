@@ -23,60 +23,6 @@ public class FruitController extends ViewBaseServlet {
 
     private FruitDAO fruitDAO = new FruitDAOImpl();
 
-    @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        // 设置编码
-        request.setCharacterEncoding("utf-8");
-
-        String operator = request.getParameter("operate");
-
-        if (StringUtil.isEmpty(operator)) {
-            operator = "index";
-        }
-
-        // 获取当前类中的所有方法
-        Method[] methods = this.getClass().getDeclaredMethods();
-        for (Method m : methods) {
-            // 获取方法名
-            String methodName = m.getName();
-            if (operator.equals(methodName)) {
-                // 找到和operate同名的方法，那么通过反射调用它
-                try {
-                    m.invoke(this, request, response);
-                    return;
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-
-        throw new RuntimeException("operate值非法");
-
-        // 原始处理方法，但是switch case很可能会很多，因此换为上面所给出的反射方法
-//        switch (operator) {
-//            case "index":
-//                index(request, response);
-//                break;
-//            case "add":
-//                add(request, response);
-//                break;
-//            case "edit":
-//                edit(request, response);
-//                break;
-//            case "del":
-//                del(request, response);
-//                break;
-//            case "update":
-//                update(request, response);
-//                break;
-//            default:
-//                throw new RuntimeException("operate值非法");
-//        }
-    }
-
     private void index(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         int pageNo = 1;

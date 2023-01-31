@@ -15,7 +15,6 @@
   <component name="NewModuleRootManager">
     <output url="file://$MODULE_DIR$/../out/artifacts/sgg-java-web-03-mvc" />
     <output-test url="file:///test/sgg-java-web-03-mvc" />
-    <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
