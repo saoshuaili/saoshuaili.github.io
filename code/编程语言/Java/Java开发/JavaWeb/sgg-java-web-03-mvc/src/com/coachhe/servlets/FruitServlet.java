@@ -46,13 +46,15 @@ public class FruitServlet extends ViewBaseServlet{
                 case "update":
                     update(request, response);
                     break;
+                default:
+                    throw new RuntimeException("operate值为空");
             }
         }
     }
 
     private void index(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        int pageNo = 5;
+        int pageNo = 1;
 
         String pageNoStr = request.getParameter("pageNo");
         if (StringUtil.isNotEmpty(pageNoStr)) {
@@ -73,13 +75,22 @@ public class FruitServlet extends ViewBaseServlet{
     }
 
     private void add(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String fidStr = request.getParameter("fid");
-        if (StringUtil.isNotEmpty(fidStr)) {
-            int fid = Integer.parseInt(fidStr);
-            Fruit fruit = fruitDAO.getFruitByFid(fid);
-            request.setAttribute("fruit", fruit);
-            super.processTemplate("edit", request, response);
-        }
+        // 设置编码
+        request.setCharacterEncoding("utf-8");
+
+        // 获取参数
+        String fname = request.getParameter("fname");
+        String priceStr = request.getParameter("price");
+        String fcountStr = request.getParameter("fcount");
+        int price = Integer.parseInt(priceStr);
+        int fcount = Integer.parseInt(fcountStr);
+        String remark = request.getParameter("remark");
+
+        Fruit fruit = new Fruit(0, fname, price, fcount, remark);
+
+        fruitDAO.addFruit(fruit);
+
+        response.sendRedirect("fruit.do");
     }
 
     private void edit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -100,7 +111,7 @@ public class FruitServlet extends ViewBaseServlet{
             System.out.println("delete successfully");
         }
 
-        response.sendRedirect("index");
+        response.sendRedirect("fruit.do");
     }
 
     private void update(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -124,7 +135,7 @@ public class FruitServlet extends ViewBaseServlet{
         // 4. 资源跳转
 //        super.processTemplate("index", request, response);
         // 此处需要重定向，目的是重新给IndexServlet发请求，然后覆盖到session中
-        response.sendRedirect("index");
+        response.sendRedirect("fruit.do");
     }
 
 
