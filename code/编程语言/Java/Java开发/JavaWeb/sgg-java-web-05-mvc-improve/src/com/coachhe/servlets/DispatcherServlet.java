@@ -89,9 +89,8 @@ public class DispatcherServlet extends ViewBaseServlet {
             for (Method method : methods) {
                 // 获取方法名
                 String methodName = method.getName();
+                // 找到和operate同名的方法，那么通过反射调用它
                 if (operate.equals(methodName)) {
-                    // 找到和operate同名的方法，那么通过反射调用它
-
                     //1-1.获取当前方法的参数，返回参数数组
                     Parameter[] parameters = method.getParameters();
                     //1-2.parameterValues 用来承载参数的值
