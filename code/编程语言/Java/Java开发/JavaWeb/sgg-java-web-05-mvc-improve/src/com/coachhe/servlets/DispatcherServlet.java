@@ -126,9 +126,9 @@ public class DispatcherServlet extends ViewBaseServlet {
                     // Controller组件中的方法调用
                     method.setAccessible(true);
                     Object methodReturnValueObj = method.invoke(controllerBeanObj, parameterValues);
-                    String methodReturnValueStr = (String) methodReturnValueObj;
 
                     // 视图处理
+                    String methodReturnValueStr = (String) methodReturnValueObj;
                     if (methodReturnValueStr.startsWith("redirect:")) { //例如redirect: fruit.do
                         String redirectStr = methodReturnValueStr.substring("redirect:".length());
                         response.sendRedirect(redirectStr);

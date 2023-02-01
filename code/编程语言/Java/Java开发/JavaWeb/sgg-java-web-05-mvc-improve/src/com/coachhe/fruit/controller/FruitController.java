@@ -22,12 +22,9 @@ public class FruitController {
     private FruitDAO fruitDAO = new FruitDAOImpl();
 
     private String index(String oper, String keyword, Integer pageNo, HttpServletRequest request) {
-
         if (pageNo == null) {
             pageNo = 1;
         }
-
-
         // 默认查询第一页的数据
         List<Fruit> fruitList = fruitDAO.getFruitList(pageNo);
         // 保存至 session 作用域
@@ -36,7 +33,7 @@ public class FruitController {
         session.setAttribute("fruitList", fruitList);
         // 保存当前页面
         session.setAttribute("pageNo", pageNo);
-        return "redirect:fruit.do";
+        return "index";
     }
 
     private String add(String fname, Integer price, Integer fcount, String remark) {
@@ -58,15 +55,14 @@ public class FruitController {
         if (fid != null) {
             fruitDAO.delFruitByFid(fid);
             System.out.println("delete successfully");
+            return "redirect:fruit.do";
         }
-        return "redirect:fruit.do";
+        return "error";
     }
 
     private String update(Integer fid, String fname, Integer price, Integer fcount, String remark) {
-
-        // 3.执行更新
+        // 执行更新
         fruitDAO.updateFruit(new Fruit(fid, fname, price, fcount, remark));
-
         return "redirect:fruit.do";
     }
 

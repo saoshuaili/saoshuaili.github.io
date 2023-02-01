@@ -29,13 +29,10 @@ public class FruitServlet extends ViewBaseServlet {
 
         // 设置编码
         request.setCharacterEncoding("utf-8");
-
         String operator = request.getParameter("operate");
-
         if (StringUtil.isEmpty(operator)) {
             operator = "index";
         }
-
         // 获取当前类中的所有方法
         Method[] methods = this.getClass().getDeclaredMethods();
         for (Method m : methods) {
