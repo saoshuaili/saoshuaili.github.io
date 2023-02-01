@@ -113,6 +113,7 @@ public class DispatcherServlet extends ViewBaseServlet {
                             Object parameterObj = parameterValue ;
 
                             if(parameterObj!=null) {
+                                // 因为我们获取的是字符串，但我们需要的是Integer
                                 if ("java.lang.Integer".equals(typeName)) {
                                     parameterObj = Integer.parseInt(parameterValue);
                                 }
@@ -145,3 +146,7 @@ public class DispatcherServlet extends ViewBaseServlet {
 
     }
 }
+
+
+// 常见错误
+// arguement mismatch
