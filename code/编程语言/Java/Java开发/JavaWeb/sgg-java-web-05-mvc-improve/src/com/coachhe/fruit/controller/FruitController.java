@@ -48,25 +48,19 @@ public class FruitController {
     }
 
     private String edit(Integer fid, HttpServletRequest request) {
-        String fidStr = request.getParameter("fid");
-        if (StringUtil.isNotEmpty(fidStr)) {
+        if (fid != null) {
             Fruit fruit = fruitDAO.getFruitByFid(fid);
             request.setAttribute("fruit", fruit);
-//            super.processTemplate("edit", request, response);
             return "edit";
         }
         return "error";
     }
 
-    private String del(HttpServletRequest request) {
-        String fidStr = request.getParameter("fid");
-        if (StringUtil.isNotEmpty(fidStr)) {
-            int fid = Integer.parseInt(fidStr);
+    private String del(Integer fid) {
+        if (fid != null) {
             fruitDAO.delFruitByFid(fid);
             System.out.println("delete successfully");
         }
-
-//        response.sendRedirect("fruit.do");
         return "redirect:fruit.do";
     }
 
