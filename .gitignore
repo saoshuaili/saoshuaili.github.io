@@ -19,8 +19,8 @@ out/
 .DS_Store
 .settings
 .springBeans
-bin
-build.sh
+#bin
+#build.sh
 integration-repo
 ivy-cache
 jxl.log
@@ -29,7 +29,7 @@ derby.log
 spring-test/test-output/
 .gradle
 argfile*
-pom.xml
+#pom.xml
 activemq-data/
 
 classes/
@@ -48,7 +48,7 @@ target/
 spring-*/src/main/java/META-INF/MANIFEST.MF
 
 # IDEA artifacts and output dirs
-*.iml
+#*.iml
 *.ipr
 *.iws
 .idea

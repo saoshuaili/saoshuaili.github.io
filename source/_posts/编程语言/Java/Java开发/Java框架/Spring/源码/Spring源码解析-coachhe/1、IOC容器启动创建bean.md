@@ -12,6 +12,7 @@ categories:
   - Spring源码解析-coachhe
 ---
 # 从一个最简单的实例开始：
+
 这里有两个 POJO：MyTestBean 和 MyTestBean2
 
 <img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/basicSpring" width="100%"/>
