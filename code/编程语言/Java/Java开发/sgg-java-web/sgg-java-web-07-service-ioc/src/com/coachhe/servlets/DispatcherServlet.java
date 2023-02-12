@@ -14,6 +14,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
@@ -53,8 +54,39 @@ public class DispatcherServlet extends ViewBaseServlet {
                     Element beanElement = (Element) beanNode;
                     String beanId = beanElement.getAttribute("id");
                     String className = beanElement.getAttribute("class");
+                    // 创建bean实例
                     Object beanObj = Class.forName(className).newInstance();
+                    // 讲bean实例对象保存到map容器中
                     beanMap.put(beanId, beanObj);
+                    // 到目前为止，此处需要注意的是，bean和bean之间的依赖关系还没有设置
+                }
+            }
+
+            // 5. 组装bean之间的依赖关系
+            for (int i = 0; i < beanNodeList.getLength(); i++) {
+                Node beanNode = beanNodeList.item(i);
+                if (beanNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element beanElement = (Element) beanNode;
+                    NodeList beanChildNodes = beanElement.getChildNodes();
+                    for (int j = 0; j < beanChildNodes.getLength(); j++) {
+                        Node beanChildNode = beanChildNodes.item(j);
+                        if (beanChildNode.getNodeType() == Node.ELEMENT_NODE && beanChildNode.getNodeName().equals("property")) {
+                            Element propertyElement = (Element) beanChildNode;
+                            String propertyName = propertyElement.getAttribute("name");
+                            String propertyRef = propertyElement.getAttribute("ref");
+                            // 1. 找到propertyRef对应的示例
+                            Object refObj = beanMap.get(propertyRef);
+                            // 2. 将refObj设置到当前bean对应的实例的property属性上去
+                            Object beanObj = beanMap.get(propertyRef);
+                            Class beanClazz = beanObj.getClass();
+                            Field propertyField = beanClazz.getDeclaredField(propertyName);
+                            propertyField.setAccessible(true);
+                            propertyField.set(beanObj, refObj);
+                        }
+                    }
+
+                    String beanId = beanElement.getAttribute("id");
+
                 }
             }
         } catch (Exception e) {
@@ -97,29 +129,29 @@ public class DispatcherServlet extends ViewBaseServlet {
                     Object[] parameterValues = new Object[parameters.length];
                     for (int i = 0; i < parameters.length; i++) {
                         Parameter parameter = parameters[i];
-                        String parameterName = parameter.getName() ;
+                        String parameterName = parameter.getName();
                         //如果参数名是request,response,session 那么就不是通过请求中获取参数的方式了
-                        if("request".equals(parameterName)){
-                            parameterValues[i] = request ;
-                        }else if("response".equals(parameterName)){
-                            parameterValues[i] = response ;
-                        }else if("session".equals(parameterName)){
-                            parameterValues[i] = request.getSession() ;
-                        }else{
+                        if ("request".equals(parameterName)) {
+                            parameterValues[i] = request;
+                        } else if ("response".equals(parameterName)) {
+                            parameterValues[i] = response;
+                        } else if ("session".equals(parameterName)) {
+                            parameterValues[i] = request.getSession();
+                        } else {
                             //从请求中获取参数值
                             String parameterValue = request.getParameter(parameterName);
                             String typeName = parameter.getType().getName();
 
-                            Object parameterObj = parameterValue ;
+                            Object parameterObj = parameterValue;
 
-                            if(parameterObj!=null) {
+                            if (parameterObj != null) {
                                 // 因为我们获取的是字符串，但我们需要的是Integer
                                 if ("java.lang.Integer".equals(typeName)) {
                                     parameterObj = Integer.parseInt(parameterValue);
                                 }
                             }
 
-                            parameterValues[i] = parameterObj ;
+                            parameterValues[i] = parameterObj;
                         }
                     }
 

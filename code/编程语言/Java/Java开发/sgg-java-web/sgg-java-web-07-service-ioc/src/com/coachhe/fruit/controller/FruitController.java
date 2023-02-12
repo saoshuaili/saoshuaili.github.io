@@ -1,9 +1,6 @@
 package com.coachhe.fruit.controller;
 
-import com.coachhe.biz.FruitService;
-import com.coachhe.biz.impl.FruitServiceImpl;
-import com.coachhe.fruit.dao.FruitDAO;
-import com.coachhe.fruit.dao.impl.FruitDAOImpl;
+import com.coachhe.fruit.service.FruitService;
 import com.coachhe.fruit.pojo.Fruit;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +13,7 @@ import java.util.List;
  **/
 public class FruitController {
 
-    private FruitService fruitService = new FruitServiceImpl();
+    private FruitService fruitService = null;
 
     private String index(String oper, String keyword, Integer pageNo, HttpServletRequest request) {
         if (pageNo == null) {

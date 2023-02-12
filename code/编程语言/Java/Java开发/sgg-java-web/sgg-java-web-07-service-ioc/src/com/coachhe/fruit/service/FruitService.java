@@ -1,4 +1,4 @@
-package com.coachhe.biz;
+package com.coachhe.fruit.service;
 
 import com.coachhe.fruit.pojo.Fruit;
 

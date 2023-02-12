@@ -1,6 +1,6 @@
-package com.coachhe.biz.impl;
+package com.coachhe.fruit.service.impl;
 
-import com.coachhe.biz.FruitService;
+import com.coachhe.fruit.service.FruitService;
 import com.coachhe.fruit.dao.FruitDAO;
 import com.coachhe.fruit.dao.impl.FruitDAOImpl;
 import com.coachhe.fruit.pojo.Fruit;
@@ -13,7 +13,7 @@ import java.util.List;
  **/
 public class FruitServiceImpl implements FruitService {
 
-    private FruitDAO fruitDAO = new FruitDAOImpl();
+    private FruitDAO fruitDAO = null;
 
     @Override
     public List<Fruit> getFruitList(String keyword, Integer pageNumber) {
