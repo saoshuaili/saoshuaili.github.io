@@ -15,7 +15,12 @@ public interface FruitService {
     // 添加库存记录信息
     void addFruit(Fruit fruit);
 
+
     //......
+    Fruit getFruitByFid(Integer fid);
 
 
+    void delFruitByFid(Integer fid);
+
+    void updateFruit(Fruit fruit);
 }

@@ -17,11 +17,27 @@ public class FruitServiceImpl implements FruitService {
 
     @Override
     public List<Fruit> getFruitList(String keyword, Integer pageNumber) {
-        return fruitDAO.getFruitList();
+        return fruitDAO.getFruitList(pageNumber);
     }
 
     @Override
     public void addFruit(Fruit fruit) {
         fruitDAO.addFruit(fruit);
     }
+
+    @Override
+    public Fruit getFruitByFid(Integer fid) {
+        return fruitDAO.getFruitByFid(fid);
+    }
+
+    @Override
+    public void delFruitByFid(Integer fid) {
+        fruitDAO.delFruitByFid(fid);
+    }
+
+    @Override
+    public void updateFruit(Fruit fruit) {
+        fruitDAO.updateFruit(fruit);
+    }
+
 }
