@@ -2,7 +2,6 @@ package com.coachhe.fruit.service.impl;
 
 import com.coachhe.fruit.service.FruitService;
 import com.coachhe.fruit.dao.FruitDAO;
-import com.coachhe.fruit.dao.impl.FruitDAOImpl;
 import com.coachhe.fruit.pojo.Fruit;
 
 import java.util.List;
@@ -13,31 +12,31 @@ import java.util.List;
  **/
 public class FruitServiceImpl implements FruitService {
 
-    private FruitDAO fruitDAO = null;
+    private FruitDAO fruitDao = null;
 
     @Override
     public List<Fruit> getFruitList(String keyword, Integer pageNumber) {
-        return fruitDAO.getFruitList(pageNumber);
+        return fruitDao.getFruitList(pageNumber);
     }
 
     @Override
     public void addFruit(Fruit fruit) {
-        fruitDAO.addFruit(fruit);
+        fruitDao.addFruit(fruit);
     }
 
     @Override
     public Fruit getFruitByFid(Integer fid) {
-        return fruitDAO.getFruitByFid(fid);
+        return fruitDao.getFruitByFid(fid);
     }
 
     @Override
     public void delFruitByFid(Integer fid) {
-        fruitDAO.delFruitByFid(fid);
+        fruitDao.delFruitByFid(fid);
     }
 
     @Override
     public void updateFruit(Fruit fruit) {
-        fruitDAO.updateFruit(fruit);
+        fruitDao.updateFruit(fruit);
     }
 
 }

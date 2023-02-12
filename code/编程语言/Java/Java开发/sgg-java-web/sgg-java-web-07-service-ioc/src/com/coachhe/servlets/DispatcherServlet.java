@@ -1,24 +1,16 @@
 package com.coachhe.servlets;
 
+import com.coachhe.io.BeanFactory;
+import com.coachhe.io.ClassPathXmlApplicationContext;
 import com.coachhe.util.StringUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,68 +22,14 @@ import java.util.Map;
 @WebServlet("*.do") // 拦截所有以.do结尾的请求
 public class DispatcherServlet extends ViewBaseServlet {
 
-    private Map<String, Object> beanMap = new HashMap<>();
+    private BeanFactory beanFactory;
 
     public DispatcherServlet() {
     }
 
     public void init() throws ServletException {
         super.init();
-        try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("applicationContext.xml");
-            // 1. 创建DocumentBuilderFactory
-            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            // 2. 创建DocumentBuilder对象
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            // 3. 创建Document对象
-            Document document = documentBuilder.parse(inputStream);
-            // 4. 获取所有的bean节点
-            NodeList beanNodeList = document.getElementsByTagName("bean");
-
-            for (int i = 0; i < beanNodeList.getLength(); i++) {
-                Node beanNode = beanNodeList.item(i);
-                if (beanNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element beanElement = (Element) beanNode;
-                    String beanId = beanElement.getAttribute("id");
-                    String className = beanElement.getAttribute("class");
-                    // 创建bean实例
-                    Object beanObj = Class.forName(className).newInstance();
-                    // 讲bean实例对象保存到map容器中
-                    beanMap.put(beanId, beanObj);
-                    // 到目前为止，此处需要注意的是，bean和bean之间的依赖关系还没有设置
-                }
-            }
-
-            // 5. 组装bean之间的依赖关系
-            for (int i = 0; i < beanNodeList.getLength(); i++) {
-                Node beanNode = beanNodeList.item(i);
-                if (beanNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element beanElement = (Element) beanNode;
-                    NodeList beanChildNodes = beanElement.getChildNodes();
-                    for (int j = 0; j < beanChildNodes.getLength(); j++) {
-                        Node beanChildNode = beanChildNodes.item(j);
-                        if (beanChildNode.getNodeType() == Node.ELEMENT_NODE && beanChildNode.getNodeName().equals("property")) {
-                            Element propertyElement = (Element) beanChildNode;
-                            String propertyName = propertyElement.getAttribute("name");
-                            String propertyRef = propertyElement.getAttribute("ref");
-                            // 1. 找到propertyRef对应的示例
-                            Object refObj = beanMap.get(propertyRef);
-                            // 2. 将refObj设置到当前bean对应的实例的property属性上去
-                            Object beanObj = beanMap.get(propertyRef);
-                            Class beanClazz = beanObj.getClass();
-                            Field propertyField = beanClazz.getDeclaredField(propertyName);
-                            propertyField.setAccessible(true);
-                            propertyField.set(beanObj, refObj);
-                        }
-                    }
-
-                    String beanId = beanElement.getAttribute("id");
-
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        beanFactory = new ClassPathXmlApplicationContext();
     }
 
     @Override
@@ -107,7 +45,7 @@ public class DispatcherServlet extends ViewBaseServlet {
         int lastDotIndex = servletPath.lastIndexOf(".do");
         servletPath = servletPath.substring(0, lastDotIndex);
         // 通过hello找到helloController
-        Object controllerBeanObj = beanMap.get(servletPath);
+        Object beanObj = beanFactory.getBean(servletPath);
 
         String operate = request.getParameter("operate");
 
@@ -117,7 +55,7 @@ public class DispatcherServlet extends ViewBaseServlet {
 
         try {
             // 获取当前类中的所有方法
-            Method[] methods = controllerBeanObj.getClass().getDeclaredMethods();
+            Method[] methods = beanObj.getClass().getDeclaredMethods();
             for (Method method : methods) {
                 // 获取方法名
                 String methodName = method.getName();
@@ -157,7 +95,7 @@ public class DispatcherServlet extends ViewBaseServlet {
 
                     // Controller组件中的方法调用
                     method.setAccessible(true);
-                    Object methodReturnValueObj = method.invoke(controllerBeanObj, parameterValues);
+                    Object methodReturnValueObj = method.invoke(beanObj, parameterValues);
 
                     // 视图处理
                     String methodReturnValueStr = (String) methodReturnValueObj;
