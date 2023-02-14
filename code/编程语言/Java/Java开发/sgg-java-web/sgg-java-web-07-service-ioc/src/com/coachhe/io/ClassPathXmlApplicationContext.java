@@ -23,7 +23,8 @@ public class ClassPathXmlApplicationContext implements BeanFactory{
     public ClassPathXmlApplicationContext() {
 
         try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("applicationContext.xml");
+            ClassLoader classLoader = getClass().getClassLoader();
+            InputStream inputStream = classLoader.getResourceAsStream("applicationContext.xml");
             // 1. 创建DocumentBuilderFactory
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             // 2. 创建DocumentBuilder对象
