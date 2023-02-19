@@ -15,5 +15,7 @@
   ],
   "strictLineBreaks": true,
   "showUnsupportedFiles": true,
-  "attachmentFolderPath": "source/_posts/编程语言/Java/Java语言/JVM/第8章 虚拟机字节码执行引擎/1 概述"
+  "attachmentFolderPath": "source/_posts/编程语言/Java/Java语言/JVM/第8章 虚拟机字节码执行引擎/1 概述",
+  "showLineNumber": true,
+  "spellcheck": true
 }
