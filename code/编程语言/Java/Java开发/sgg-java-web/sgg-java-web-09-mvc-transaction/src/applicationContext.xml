@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<beans>
+    <bean id="fruitDao" class="com.coachhe.fruit.dao.impl.FruitDAOImpl"/>
+
+    <bean id="fruitService" class="com.coachhe.fruit.service.impl.FruitServiceImpl">
+        <!-- property标签用来表示属性：name表示属性名，ref表示引用bean的id值-->
+        <property name="fruitDao" ref="fruitDao"/>
+    </bean>
+
+    <bean id="fruit" class="com.coachhe.fruit.controller.FruitController">
+        <property name="fruitService" ref="fruitService"/>
+    </bean>
+</beans>
