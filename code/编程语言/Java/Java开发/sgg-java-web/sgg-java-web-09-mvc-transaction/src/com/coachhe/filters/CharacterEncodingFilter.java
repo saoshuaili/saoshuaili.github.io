@@ -1,4 +1,4 @@
-package com.coachhe.filter;
+package com.coachhe.filters;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;

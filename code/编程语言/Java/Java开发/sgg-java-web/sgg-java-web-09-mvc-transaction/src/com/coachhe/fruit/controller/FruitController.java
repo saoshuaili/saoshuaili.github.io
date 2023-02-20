@@ -1,7 +1,7 @@
 package com.coachhe.fruit.controller;
 
-import com.coachhe.fruit.service.FruitService;
 import com.coachhe.fruit.pojo.Fruit;
+import com.coachhe.fruit.service.FruitService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

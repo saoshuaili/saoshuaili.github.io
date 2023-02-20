@@ -1,8 +1,8 @@
 package com.coachhe.fruit.service.impl;
 
-import com.coachhe.fruit.service.FruitService;
 import com.coachhe.fruit.dao.FruitDAO;
 import com.coachhe.fruit.pojo.Fruit;
+import com.coachhe.fruit.service.FruitService;
 
 import java.util.List;
 
