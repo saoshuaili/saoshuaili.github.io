@@ -1,6 +1,7 @@
 package com.coachhe.fruit.service.impl;
 
 import com.coachhe.fruit.dao.FruitDAO;
+import com.coachhe.fruit.dao.base.ConnUtil;
 import com.coachhe.fruit.pojo.Fruit;
 import com.coachhe.fruit.service.FruitService;
 
@@ -16,6 +17,8 @@ public class FruitServiceImpl implements FruitService {
 
     @Override
     public List<Fruit> getFruitList(String keyword, Integer pageNumber) {
+        // 打印Connection，判断是否处于同一事务
+        System.out.println("getFruitList -> ConnUtil.getConn() = " + ConnUtil.getConn());
         return fruitDao.getFruitList(pageNumber);
     }
 

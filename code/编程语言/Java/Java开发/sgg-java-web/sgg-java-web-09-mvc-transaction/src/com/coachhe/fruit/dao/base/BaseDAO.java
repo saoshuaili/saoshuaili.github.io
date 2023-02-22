@@ -39,31 +39,11 @@ public abstract class BaseDAO<T> {
     }
 
     protected Connection getConn(){
-        try {
-            //1.加载驱动
-            Class.forName(DRIVER);
-            //2.通过驱动管理器获取连接对象
-            return DriverManager.getConnection(URL, USER, PWD);
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-        return null ;
+        return ConnUtil.getConn() ;
     }
 
-    protected void close(ResultSet rs , PreparedStatement psmt , Connection conn){
-        try {
-            if (rs != null) {
-                rs.close();
-            }
-            if(psmt!=null){
-                psmt.close();
-            }
-            if(conn!=null && !conn.isClosed()){
-                conn.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    protected void close(ResultSet rs, PreparedStatement psmt, Connection conn){
+        // 删除这里的代码，什么都不做
     }
 
     //给预处理命令对象设置参数
