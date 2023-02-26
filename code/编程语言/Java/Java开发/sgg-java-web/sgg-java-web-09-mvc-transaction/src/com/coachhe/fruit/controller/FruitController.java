@@ -30,7 +30,7 @@ public class FruitController {
         return "index";
     }
 
-    private String add(String fname, Integer price, Integer fcount, String remark) {
+    private String add(String fname, Integer price, Integer fcount, String remark) throws RuntimeException {
         Fruit fruit = new Fruit(0, fname, price, fcount, remark);
         fruitService.addFruit(fruit);
         System.out.println("fruit 添加成功");

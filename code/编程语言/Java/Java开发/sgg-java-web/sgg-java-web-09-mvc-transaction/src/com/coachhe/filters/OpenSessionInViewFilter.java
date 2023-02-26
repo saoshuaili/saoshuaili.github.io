@@ -24,7 +24,7 @@ public class OpenSessionInViewFilter implements Filter {
             TransactionManager.beginTrans();
             filterChain.doFilter(servletRequest, servletResponse);
             TransactionManager.commit();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             try {
                 TransactionManager.rollback();
