@@ -33,7 +33,10 @@ public class FruitController {
     private String add(String fname, Integer price, Integer fcount, String remark) {
         Fruit fruit = new Fruit(0, fname, price, fcount, remark);
         fruitService.addFruit(fruit);
-        return "redirect:fruit.do";
+        System.out.println("fruit 添加成功");
+        // 在这里增加一个报错逻辑，测试事务使用使用成功
+        throw new RuntimeException("测试报错");
+//        return "redirect:fruit.do";
     }
 
     private String edit(Integer fid, HttpServletRequest request) {
