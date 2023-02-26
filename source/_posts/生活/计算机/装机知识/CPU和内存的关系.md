@@ -1,3 +1,10 @@
+---
+title: CPU和内存的关系  
+date: 2023-02-26 15:42:12  
+tags: []  
+---
+
+
 [cpu和内存条怎么搭配更合适?](https://www.bufeishi.cn/33395.html)
 
 # CPU 配内存的三条基本准则
