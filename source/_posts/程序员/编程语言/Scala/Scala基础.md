@@ -1,10 +1,11 @@
 ---
-title: Scala基础  
-date: 2022-12-04 02:25:02  
-tags: []  
+title: Scala基础
+tags: []
 categories:
+  - 程序员
   - 编程语言
   - Scala
+date: 2022-12-04 02:25:02
 ---
 
 # 一、Scala 简介

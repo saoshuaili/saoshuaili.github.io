@@ -1,13 +1,14 @@
 ---
-title: 2 Perjob Mode  
-date: 2022-12-04 02:42:26  
-tags: []  
+title: 2 Perjob Mode
+tags: []
 categories:
+  - 程序员
   - 大数据
   - 实时计算
   - Flink
   - 极客时间
   - flink on k8s配置说明
+date: 2022-12-04 02:42:26
 ---
 
 # 配置文件

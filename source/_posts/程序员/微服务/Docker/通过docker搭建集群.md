@@ -1,10 +1,11 @@
 ---
-title: 通过docker搭建集群  
-date: 2022-12-04 02:36:27  
-tags: []  
+title: 通过docker搭建集群
+tags: []
 categories:
+  - 程序员
   - 微服务
   - Docker
+date: 2022-12-04 02:36:27
 ---
 1. 首先下载最新版的centos
 

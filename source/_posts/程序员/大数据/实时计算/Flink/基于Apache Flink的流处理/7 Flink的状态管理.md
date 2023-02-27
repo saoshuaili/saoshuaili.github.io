@@ -1,12 +1,13 @@
 ---
-title: 7 Flink的状态管理  
-date: 2022-12-04 02:13:48  
-tags: []  
+title: 7 Flink的状态管理
+tags: []
 categories:
+  - 程序员
   - 大数据
   - 实时计算
   - Flink
   - 基于Apache Flink的流处理
+date: 2022-12-04 02:13:48
 ---
 
 # 7 Flink的状态管理

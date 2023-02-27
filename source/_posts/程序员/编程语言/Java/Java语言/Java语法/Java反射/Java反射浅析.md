@@ -1,13 +1,14 @@
 ---
-title: Java反射浅析  
-date: 2022-12-04 02:23:05  
-tags: []  
+title: Java反射浅析
+tags: []
 categories:
+  - 程序员
   - 编程语言
   - Java
   - Java语言
   - Java语法
   - Java反射
+date: 2022-12-04 02:23:05
 ---
 
 # JVM构建实例浅析

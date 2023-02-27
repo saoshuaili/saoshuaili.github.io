@@ -1,11 +1,12 @@
 ---
-title: APUE-11-线程  
-date: 2022-12-04 02:38:30  
-tags: []  
+title: APUE-11-线程
+tags: []
 categories:
+  - 程序员
   - 计算机
   - Linux
   - APUE
+date: 2022-12-04 02:38:30
 ---
 
 # 1 线程的概念

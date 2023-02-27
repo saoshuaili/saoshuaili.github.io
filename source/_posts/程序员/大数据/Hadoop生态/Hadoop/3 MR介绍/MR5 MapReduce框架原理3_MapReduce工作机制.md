@@ -1,12 +1,13 @@
 ---
-title: MR5 MapReduce框架原理3_MapReduce工作机制  
-date: 2022-12-04 02:45:43  
-tags: []  
+title: MR5 MapReduce框架原理3_MapReduce工作机制
+tags: []
 categories:
+  - 程序员
   - 大数据
   - Hadoop生态
   - Hadoop
   - 3 MR介绍
+date: 2022-12-04 02:45:43
 ---
 # 1 MapTasks工作机制
 

@@ -1,12 +1,13 @@
 ---
-title: MR1 基本介绍  
-date: 2022-12-04 02:45:20  
-tags: []  
+title: MR1 基本介绍
+tags: []
 categories:
+  - 程序员
   - 大数据
   - Hadoop生态
   - Hadoop
   - 3 MR介绍
+date: 2022-12-04 02:45:20
 ---
 # 1 概述
 

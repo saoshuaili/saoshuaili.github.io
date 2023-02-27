@@ -1,12 +1,13 @@
 ---
-title: 8 Flink容错机制  
-date: 2022-12-04 02:14:37  
-tags: []  
+title: 8 Flink容错机制
+tags: []
 categories:
+  - 程序员
   - 大数据
   - 实时计算
   - Flink
   - 基于Apache Flink的流处理
+date: 2022-12-04 02:14:37
 ---
 
 # 主要内容

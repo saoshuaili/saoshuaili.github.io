@@ -1,11 +1,12 @@
 ---
-title: APUE-10-信号  
-date: 2022-12-04 02:38:18  
-tags: []  
+title: APUE-10-信号
+tags: []
 categories:
+  - 程序员
   - 计算机
   - Linux
   - APUE
+date: 2022-12-04 02:38:18
 ---
 
 # 引言-异步事件处理的两种方式

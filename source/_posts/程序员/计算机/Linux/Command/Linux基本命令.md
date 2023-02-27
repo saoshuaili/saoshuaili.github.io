@@ -1,11 +1,12 @@
 ---
-title: Linux基本命令  
-date: 2022-12-04 02:38:48  
-tags: []  
+title: Linux基本命令
+tags: []
 categories:
+  - 程序员
   - 计算机
   - Linux
   - Command
+date: 2022-12-04 02:38:48
 ---
 
 # cat

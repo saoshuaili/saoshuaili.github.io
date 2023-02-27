@@ -1,12 +1,13 @@
 ---
-title: MR2 MR序列化  
-date: 2022-12-04 02:45:24  
-tags: []  
+title: MR2 MR序列化
+tags: []
 categories:
+  - 程序员
   - 大数据
   - Hadoop生态
   - Hadoop
   - 3 MR介绍
+date: 2022-12-04 02:45:24
 ---
 # 一 序列化基本介绍
 

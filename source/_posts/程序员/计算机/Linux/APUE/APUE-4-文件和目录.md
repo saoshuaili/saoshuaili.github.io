@@ -1,11 +1,12 @@
 ---
-title: APUE-4-文件和目录  
-date: 2022-12-04 02:37:34  
-tags: []  
+title: APUE-4-文件和目录
+tags: []
 categories:
+  - 程序员
   - 计算机
   - Linux
   - APUE
+date: 2022-12-04 02:37:34
 ---
 
 # 1 文件系统

@@ -1,12 +1,13 @@
 ---
-title: Chapter37_找到容器不容易:Service、DNS与服务发现  
-date: 2022-12-04 02:34:14  
-tags: []  
+title: 'Chapter37_找到容器不容易:Service、DNS与服务发现'
+tags: []
 categories:
+  - 程序员
   - 微服务
   - K8S
   - 极客时间
   - 深入剖析k8s
+date: 2022-12-04 02:34:14
 ---
 # ClusterIP 模式的 Service
 

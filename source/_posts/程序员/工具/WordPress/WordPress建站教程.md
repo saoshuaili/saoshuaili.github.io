@@ -1,10 +1,11 @@
 ---
-title: WordPress建站教程  
-date: 2022-12-04 02:36:53  
-tags: []  
+title: WordPress建站教程
+tags: []
 categories:
+  - 程序员
   - 工具
   - WordPress
+date: 2022-12-04 02:36:53
 ---
 # 工具
 腾讯云轻量服务器，可以直接购买 wordpress，会配置上用户名和密码。

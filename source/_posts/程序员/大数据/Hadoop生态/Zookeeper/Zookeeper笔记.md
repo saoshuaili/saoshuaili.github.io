@@ -1,11 +1,12 @@
 ---
-title: Zookeeper笔记  
-date: 2022-12-04 02:45:56  
-tags: []  
+title: Zookeeper笔记
+tags: []
 categories:
+  - 程序员
   - 大数据
   - Hadoop生态
   - Zookeeper
+date: 2022-12-04 02:45:56
 ---
 # 一、zookeeper简介
 

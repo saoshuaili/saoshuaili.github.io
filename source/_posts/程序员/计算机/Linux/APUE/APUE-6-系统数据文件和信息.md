@@ -1,11 +1,12 @@
 ---
-title: APUE-6-系统数据文件和信息  
-date: 2022-12-04 02:37:52  
-tags: []  
+title: APUE-6-系统数据文件和信息
+tags: []
 categories:
+  - 程序员
   - 计算机
   - Linux
   - APUE
+date: 2022-12-04 02:37:52
 ---
 
 # 口令文件（用户数据库文件）

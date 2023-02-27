@@ -1,11 +1,12 @@
 ---
-title: APUE-3-文件IO  
-date: 2022-12-04 02:37:21  
-tags: []  
+title: APUE-3-文件IO
+tags: []
 categories:
+  - 程序员
   - 计算机
   - Linux
   - APUE
+date: 2022-12-04 02:37:21
 ---
 
 # 1 引言

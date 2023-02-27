@@ -1,12 +1,13 @@
 ---
-title: Hadoop1 介绍3（源码编译）  
-date: 2022-12-04 02:44:34  
-tags: []  
+title: Hadoop1 介绍3（源码编译）
+tags: []
 categories:
+  - 程序员
   - 大数据
   - Hadoop生态
   - Hadoop
   - 1 Hadoop介绍
+date: 2022-12-04 02:44:34
 ---
 # 编译源码的原因
 

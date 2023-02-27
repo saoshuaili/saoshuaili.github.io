@@ -1,11 +1,12 @@
 ---
-title: tshark使用技巧  
-date: 2022-12-04 02:39:15  
-tags: []  
+title: tshark使用技巧
+tags: []
 categories:
+  - 程序员
   - 计算机
   - 计算机网络
   - TCP
+date: 2022-12-04 02:39:15
 ---
 
 1、捕获接口参数

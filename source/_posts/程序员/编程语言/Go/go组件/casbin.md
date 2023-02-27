@@ -1,11 +1,12 @@
 ---
-title: casbin  
-date: 2022-12-04 02:30:07  
-tags: []  
+title: casbin
+tags: []
 categories:
+  - 程序员
   - 编程语言
   - Go
   - go组件
+date: 2022-12-04 02:30:07
 ---
 # Golang最强⼤的访问控制框架casbin全解析
 

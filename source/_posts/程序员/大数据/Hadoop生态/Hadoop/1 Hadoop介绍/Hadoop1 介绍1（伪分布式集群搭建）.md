@@ -1,12 +1,13 @@
 ---
-title: Hadoop1 介绍1（伪分布式集群搭建）  
-date: 2022-12-04 02:44:26  
-tags: []  
+title: Hadoop1 介绍1（伪分布式集群搭建）
+tags: []
 categories:
+  - 程序员
   - 大数据
   - Hadoop生态
   - Hadoop
   - 1 Hadoop介绍
+date: 2022-12-04 02:44:26
 ---
 #  Hadoop介绍
 

@@ -1,13 +1,14 @@
 ---
-title: Spring注解  
-date: 2022-12-04 02:23:16  
-tags: []  
+title: Spring注解
+tags: []
 categories:
+  - 程序员
   - 编程语言
   - Java
   - Java语言
   - Java语法
   - Java注解
+date: 2022-12-04 02:23:16
 ---
 # @Import
 `@Import`是`Spring`基于 Java 注解配置的主要组成部分。`@Import`注解提供了`@Bean`注解的功能，同时还有原来`Spring`基于 xml 配置文件里的`<import>`标签组织多个分散的xml文件的功能，当然在这里是组织多个分散的`@Configuration`的类。

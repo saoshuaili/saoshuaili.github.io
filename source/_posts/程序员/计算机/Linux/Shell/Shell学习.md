@@ -1,11 +1,12 @@
 ---
-title: Shell学习  
-date: 2022-12-04 02:39:04  
-tags: []  
+title: Shell学习
+tags: []
 categories:
+  - 程序员
   - 计算机
   - Linux
   - Shell
+date: 2022-12-04 02:39:04
 ---
 
 ### 1 基本概念

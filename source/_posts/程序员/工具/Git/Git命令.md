@@ -1,10 +1,11 @@
 ---
-title: Git命令  
-date: 2022-12-04 02:36:45  
-tags: []  
+title: Git命令
+tags: []
 categories:
+  - 程序员
   - 工具
   - Git
+date: 2022-12-04 02:36:45
 ---
 # 主要部分
 

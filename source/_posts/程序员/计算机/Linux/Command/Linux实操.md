@@ -1,11 +1,12 @@
 ---
-title: Linux实操  
-date: 2022-12-04 02:38:58  
-tags: []  
+title: Linux实操
+tags: []
 categories:
+  - 程序员
   - 计算机
   - Linux
   - Command
+date: 2022-12-04 02:38:58
 ---
 # 一、登录
 

@@ -1,12 +1,13 @@
 ---
-title: Chapter38_从外界联通Service与Service  
-date: 2022-12-04 02:34:53  
-tags: []  
+title: Chapter38_从外界联通Service与Service
+tags: []
 categories:
+  - 程序员
   - 微服务
   - K8S
   - 极客时间
   - 深入剖析k8s
+date: 2022-12-04 02:34:53
 ---
 # Session mode
 

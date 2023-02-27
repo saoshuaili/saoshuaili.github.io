@@ -1,11 +1,12 @@
 ---
-title: 1 Kafka介绍  
-date: 2022-12-04 02:42:50  
-tags: []  
+title: 1 Kafka介绍
+tags: []
 categories:
+  - 程序员
   - 大数据
   - MQ
   - KafKa
+date: 2022-12-04 02:42:50
 ---
 
 # 一 Kafka概述

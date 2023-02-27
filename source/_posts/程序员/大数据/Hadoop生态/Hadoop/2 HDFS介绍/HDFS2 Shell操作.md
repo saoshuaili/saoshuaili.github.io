@@ -1,12 +1,13 @@
 ---
-title: HDFS2 Shell操作  
-date: 2022-12-04 02:44:47  
-tags: []  
+title: HDFS2 Shell操作
+tags: []
 categories:
+  - 程序员
   - 大数据
   - Hadoop生态
   - Hadoop
   - 2 HDFS介绍
+date: 2022-12-04 02:44:47
 ---
 # dfs和fs的区别
 

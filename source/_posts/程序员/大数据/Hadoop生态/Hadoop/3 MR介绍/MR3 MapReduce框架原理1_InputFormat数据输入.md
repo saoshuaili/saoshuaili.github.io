@@ -1,12 +1,13 @@
 ---
-title: MR3 MapReduce框架原理1_InputFormat数据输入  
-date: 2022-12-04 02:45:28  
-tags: []  
+title: MR3 MapReduce框架原理1_InputFormat数据输入
+tags: []
 categories:
+  - 程序员
   - 大数据
   - Hadoop生态
   - Hadoop
   - 3 MR介绍
+date: 2022-12-04 02:45:28
 ---
 # InputFormat数据输入
 

@@ -1,8 +1,8 @@
 ---
-title: 2、Bean生命周期处理机制  
-date: 2022-12-04 02:27:16  
-tags: []  
+title: 2、Bean生命周期处理机制
+tags: []
 categories:
+  - 程序员
   - 编程语言
   - Java
   - Java开发
@@ -10,6 +10,7 @@ categories:
   - Spring
   - 源码
   - Spring源码解析-coachhe
+date: 2022-12-04 02:27:16
 ---
 有了 [Spring1-IOC容器启动创建bean - CoachHe-Blog](https://coachhe.studio/11.html) 的基础，我们现在更加深入地对整个 spring 的核心，也就是 bean 做更加深入的理解。
 

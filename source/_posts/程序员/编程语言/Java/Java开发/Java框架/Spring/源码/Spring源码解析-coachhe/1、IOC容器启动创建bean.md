@@ -1,8 +1,8 @@
 ---
-title: 1、IOC容器启动创建bean  
-date: 2022-12-04 02:25:26  
-tags: []  
+title: 1、IOC容器启动创建bean
+tags: []
 categories:
+  - 程序员
   - 编程语言
   - Java
   - Java开发
@@ -10,6 +10,7 @@ categories:
   - Spring
   - 源码
   - Spring源码解析-coachhe
+date: 2022-12-04 02:25:26
 ---
 # 从一个最简单的实例开始：
 

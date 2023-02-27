@@ -1,13 +1,13 @@
 ---
 categories:
+  - 程序员
   - 计算机
   - Linux
   - 网络编程
   - UNP
-title: 第6章 IO复用：Select和poll函数  
-date: 2022-12-11 17:30:58  
-tags: []  
-
+title: 第6章 IO复用：Select和poll函数
+tags: []
+date: 2022-12-11 17:30:58
 ---
 
 # 1. 概述

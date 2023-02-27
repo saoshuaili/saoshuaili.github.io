@@ -1,8 +1,8 @@
 ---
-title: Springboot4- 自动配置原理  
-date: 2022-12-04 02:29:07  
-tags: []  
+title: Springboot4- 自动配置原理
+tags: []
 categories:
+  - 程序员
   - 编程语言
   - Java
   - Java开发
@@ -10,6 +10,7 @@ categories:
   - SpringBoot
   - 尚硅谷Springboot
   - SpringBoot3-自动配置
+date: 2022-12-04 02:29:07
 ---
 # 一 引导加载自动配置类
 最重要的一个注解：`@SpringBootApplication`

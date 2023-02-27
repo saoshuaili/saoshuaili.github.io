@@ -1,12 +1,13 @@
 ---
-title: HDFS5 NN和2NN  
-date: 2022-12-04 02:45:00  
-tags: []  
+title: HDFS5 NN和2NN
+tags: []
 categories:
+  - 程序员
   - 大数据
   - Hadoop生态
   - Hadoop
   - 2 HDFS介绍
+date: 2022-12-04 02:45:00
 ---
 # NN和2NN工作机制
 

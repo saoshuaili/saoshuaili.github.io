@@ -2,6 +2,7 @@
 title: Vim
 tags: []
 categories:
+  - 程序员
   - 工具
   - Vim
 date: 2022-12-04 02:39:21

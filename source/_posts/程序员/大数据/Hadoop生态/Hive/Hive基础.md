@@ -1,11 +1,12 @@
 ---
-title: Hive基础  
-date: 2022-12-04 02:45:15  
-tags: []  
+title: Hive基础
+tags: []
 categories:
+  - 程序员
   - 大数据
   - Hadoop生态
   - Hive
+date: 2022-12-04 02:45:15
 ---
 # 一、 Hive基本概念
 

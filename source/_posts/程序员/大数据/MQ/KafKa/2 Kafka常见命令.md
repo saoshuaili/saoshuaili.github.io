@@ -1,11 +1,12 @@
 ---
-title: 2 Kafka常见命令  
-date: 2022-12-04 02:42:57  
-tags: []  
+title: 2 Kafka常见命令
+tags: []
 categories:
+  - 程序员
   - 大数据
   - MQ
   - KafKa
+date: 2022-12-04 02:42:57
 ---
 
 # 1. 创建和查看主题

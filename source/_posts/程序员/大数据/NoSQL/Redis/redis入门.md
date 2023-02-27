@@ -1,11 +1,12 @@
 ---
-title: redis入门  
-date: 2022-12-04 02:45:51  
-tags: []  
+title: redis入门
+tags: []
 categories:
+  - 程序员
   - 大数据
   - NoSQL
   - Redis
+date: 2022-12-04 02:45:51
 ---
 # Redis简介
 

@@ -1,8 +1,8 @@
 ---
-title: SpringBoot3-依赖管理  
-date: 2022-12-04 02:28:57  
-tags: []  
+title: SpringBoot3-依赖管理
+tags: []
 categories:
+  - 程序员
   - 编程语言
   - Java
   - Java开发
@@ -10,6 +10,7 @@ categories:
   - SpringBoot
   - 尚硅谷Springboot
   - SpringBoot1-基础入门
+date: 2022-12-04 02:28:57
 ---
 # 了解自动配置原理
 

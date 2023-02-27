@@ -1,11 +1,12 @@
 ---
-title: APUE-15-进程间通信  
-date: 2022-12-04 02:38:42  
-tags: []  
+title: APUE-15-进程间通信
+tags: []
 categories:
+  - 程序员
   - 计算机
   - Linux
   - APUE
+date: 2022-12-04 02:38:42
 ---
 
 # 1 进程间通信分类

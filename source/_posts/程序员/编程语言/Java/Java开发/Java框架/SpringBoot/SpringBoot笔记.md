@@ -1,13 +1,14 @@
 ---
-title: SpringBoot笔记  
-date: 2022-12-04 02:29:15  
-tags: []  
+title: SpringBoot笔记
+tags: []
 categories:
+  - 程序员
   - 编程语言
   - Java
   - Java开发
   - Java框架
   - SpringBoot
+date: 2022-12-04 02:29:15
 ---
 # 原理初探
 

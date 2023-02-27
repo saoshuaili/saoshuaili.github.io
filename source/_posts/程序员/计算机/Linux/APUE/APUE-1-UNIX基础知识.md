@@ -1,11 +1,12 @@
 ---
-title: APUE-1-UNIX基础知识  
-date: 2022-12-04 02:37:15  
-tags: []  
+title: APUE-1-UNIX基础知识
+tags: []
 categories:
+  - 程序员
   - 计算机
   - Linux
   - APUE
+date: 2022-12-04 02:37:15
 ---
 
 # 前言：APUE的实验环境的搭建

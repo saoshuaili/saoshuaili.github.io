@@ -1,13 +1,14 @@
 ---
-title: Gradle 构建基础  
-date: 2022-12-04 02:28:34  
-tags: []  
+title: Gradle 构建基础
+tags: []
 categories:
+  - 程序员
   - 编程语言
   - Java
   - Java开发
   - Java工具
   - Gradle
+date: 2022-12-04 02:28:34
 ---
 # 构建基础
 ## Projects 和 tasks

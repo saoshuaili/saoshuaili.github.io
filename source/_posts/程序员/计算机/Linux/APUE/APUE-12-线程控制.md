@@ -1,11 +1,12 @@
 ---
-title: APUE-12-线程控制  
-date: 2022-12-04 02:38:37  
-tags: []  
+title: APUE-12-线程控制
+tags: []
 categories:
+  - 程序员
   - 计算机
   - Linux
   - APUE
+date: 2022-12-04 02:38:37
 ---
 
 # 1 线程属性

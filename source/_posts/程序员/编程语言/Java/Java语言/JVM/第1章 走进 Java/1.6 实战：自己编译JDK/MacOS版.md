@@ -2,6 +2,7 @@
 title: MacOS版
 tags: []
 categories:
+  - 程序员
   - 编程语言
   - Java
   - Java语言

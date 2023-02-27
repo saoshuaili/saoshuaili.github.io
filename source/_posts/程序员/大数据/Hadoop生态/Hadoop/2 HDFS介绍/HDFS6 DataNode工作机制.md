@@ -1,12 +1,13 @@
 ---
-title: HDFS6 DataNode工作机制  
-date: 2022-12-04 02:45:06  
-tags: []  
+title: HDFS6 DataNode工作机制
+tags: []
 categories:
+  - 程序员
   - 大数据
   - Hadoop生态
   - Hadoop
   - 2 HDFS介绍
+date: 2022-12-04 02:45:06
 ---
 <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210184302.png" style="zoom: 67%;" />
 

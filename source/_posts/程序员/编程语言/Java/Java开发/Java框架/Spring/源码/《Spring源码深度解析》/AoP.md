@@ -1,8 +1,8 @@
 ---
-title: AoP  
-date: 2022-12-04 02:27:56  
-tags: []  
+title: AoP
+tags: []
 categories:
+  - 程序员
   - 编程语言
   - Java
   - Java开发
@@ -10,6 +10,7 @@ categories:
   - Spring
   - 源码
   - 《Spring源码深度解析》
+date: 2022-12-04 02:27:56
 ---
 
 # 什么是 AOP

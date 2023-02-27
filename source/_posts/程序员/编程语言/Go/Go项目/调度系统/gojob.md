@@ -1,12 +1,13 @@
 ---
-title: gojob  
-date: 2022-12-04 02:30:15  
-tags: []  
+title: gojob
+tags: []
 categories:
+  - 程序员
   - 编程语言
   - Go
   - Go项目
   - 调度系统
+date: 2022-12-04 02:30:15
 ---
 
 

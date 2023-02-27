@@ -2,6 +2,7 @@
 title: 补充：Class 实例是在堆中还是方法区中？
 tags: []
 categories:
+  - 程序员
   - 编程语言
   - Java
   - Java语言

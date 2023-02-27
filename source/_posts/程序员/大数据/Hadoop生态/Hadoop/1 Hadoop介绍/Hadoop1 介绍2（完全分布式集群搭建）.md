@@ -1,12 +1,13 @@
 ---
-title: Hadoop1 介绍2（完全分布式集群搭建）  
-date: 2022-12-04 02:44:30  
-tags: []  
+title: Hadoop1 介绍2（完全分布式集群搭建）
+tags: []
 categories:
+  - 程序员
   - 大数据
   - Hadoop生态
   - Hadoop
   - 1 Hadoop介绍
+date: 2022-12-04 02:44:30
 ---
 # 环境和工具准备
 

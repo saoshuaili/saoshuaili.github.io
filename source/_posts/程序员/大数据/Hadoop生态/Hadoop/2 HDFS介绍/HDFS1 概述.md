@@ -1,12 +1,13 @@
 ---
-title: HDFS1 概述  
-date: 2022-12-04 02:44:42  
-tags: []  
+title: HDFS1 概述
+tags: []
 categories:
+  - 程序员
   - 大数据
   - Hadoop生态
   - Hadoop
   - 2 HDFS介绍
+date: 2022-12-04 02:44:42
 ---
 # 一、HDFS定义
 

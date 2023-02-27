@@ -1,10 +1,11 @@
 ---
-title: Git基础  
-date: 2022-12-04 02:36:48  
-tags: []  
+title: Git基础
+tags: []
 categories:
+  - 程序员
   - 工具
   - Git
+date: 2022-12-04 02:36:48
 ---
 # git和github的关系
 

@@ -1,11 +1,12 @@
 ---
-title: PulSar操作  
-date: 2022-12-04 02:43:05  
-tags: []  
+title: PulSar操作
+tags: []
 categories:
+  - 程序员
   - 大数据
   - MQ
   - pulsar
+date: 2022-12-04 02:43:05
 ---
 ```shell
 [root@chadoop01 apache-pulsar-2.8.0]# bin/pulsar-admin tenants list
