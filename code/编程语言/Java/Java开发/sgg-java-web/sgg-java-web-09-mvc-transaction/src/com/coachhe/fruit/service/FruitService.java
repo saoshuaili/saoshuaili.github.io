@@ -2,6 +2,7 @@ package com.coachhe.fruit.service;
 
 import com.coachhe.fruit.pojo.Fruit;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -10,17 +11,17 @@ import java.util.List;
  **/
 public interface FruitService {
     // 获取指定页面的库表信息
-    List<Fruit> getFruitList(String keyword, Integer pageNumber);
+    List<Fruit> getFruitList(String keyword, Integer pageNumber) throws SQLException, NoSuchFieldException, InstantiationException, IllegalAccessException;
 
     // 添加库存记录信息
-    void addFruit(Fruit fruit);
+    void addFruit(Fruit fruit) throws SQLException;
 
 
     //......
-    Fruit getFruitByFid(Integer fid);
+    Fruit getFruitByFid(Integer fid) throws SQLException, NoSuchFieldException, InstantiationException, IllegalAccessException;
 
 
-    void delFruitByFid(Integer fid);
+    void delFruitByFid(Integer fid) throws SQLException;
 
-    void updateFruit(Fruit fruit);
+    void updateFruit(Fruit fruit) throws SQLException;
 }
