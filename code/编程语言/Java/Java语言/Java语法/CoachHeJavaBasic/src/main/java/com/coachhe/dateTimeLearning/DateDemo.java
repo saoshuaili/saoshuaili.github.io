@@ -1,5 +1,7 @@
 package com.coachhe.dateTimeLearning;
 
+import java.util.Date;
+
 /**
  * Created with IntelliJ IDEA.
  * User: coachhe
@@ -8,5 +10,8 @@ package com.coachhe.dateTimeLearning;
  * Description:
  */
 public class DateDemo {
-
+    public static void main(String[] args) {
+        Date date = new Date();
+        System.out.println(date);
+    }
 }
