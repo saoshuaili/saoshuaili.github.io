@@ -1,5 +1,8 @@
 package com.coachhe.dateTimeLearning;
 
+import org.junit.Test;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -12,7 +15,28 @@ import java.util.Date;
  */
 public class SimpleDateFormatDemo {
 
-    public static void main(String[] args) {
+    // 解析字符串为时间
+    @Test
+    public void strToDate() {
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+
+        String input = "1818-11-11";
+
+        System.out.println(input + " Parses as ");
+
+        Date t;
+
+        try {
+            t = ft.parse(input);
+            System.out.println(t);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // printf格式化打印时间
+    @Test
+    public void printfDate() {
         Date now_date = new Date();
         SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
         System.out.println("当前时间为: " + ft.format(now_date));
