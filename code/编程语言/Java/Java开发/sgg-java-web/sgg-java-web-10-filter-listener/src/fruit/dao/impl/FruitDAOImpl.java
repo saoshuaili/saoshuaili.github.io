@@ -1,8 +1,9 @@
 package fruit.dao.impl;
 
-import com.coachhe.fruit.dao.FruitDAO;
-import com.coachhe.fruit.dao.base.BaseDAO;
-import com.coachhe.fruit.pojo.Fruit;
+
+import fruit.dao.FruitDAO;
+import fruit.dao.base.BaseDAO;
+import fruit.pojo.Fruit;
 
 import java.sql.SQLException;
 import java.util.List;

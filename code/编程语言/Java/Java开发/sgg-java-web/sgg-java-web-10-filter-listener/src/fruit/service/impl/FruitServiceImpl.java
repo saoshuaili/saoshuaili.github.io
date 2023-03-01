@@ -1,9 +1,10 @@
 package fruit.service.impl;
 
-import com.coachhe.fruit.dao.FruitDAO;
-import com.coachhe.fruit.dao.base.ConnUtil;
-import com.coachhe.fruit.pojo.Fruit;
-import com.coachhe.fruit.service.FruitService;
+
+import fruit.dao.FruitDAO;
+import fruit.dao.base.ConnUtil;
+import fruit.pojo.Fruit;
+import fruit.service.FruitService;
 
 import java.sql.SQLException;
 import java.util.List;

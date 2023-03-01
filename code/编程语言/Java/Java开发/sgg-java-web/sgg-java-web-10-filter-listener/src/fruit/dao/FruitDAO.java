@@ -1,7 +1,8 @@
 package fruit.dao;
 
 
-import com.coachhe.fruit.pojo.Fruit;
+
+import fruit.pojo.Fruit;
 
 import java.sql.SQLException;
 import java.util.List;
