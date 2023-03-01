@@ -1,6 +1,7 @@
-package com.coachhe.filters;
+package filters;
 
-import com.coachhe.trans.TransactionManager;
+
+import trans.TransactionManager;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
