@@ -1,5 +1,6 @@
 package com.coachhe.ioc;
 
+import com.coachhe.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -20,11 +21,15 @@ public class ClassPathXmlApplicationContext implements BeanFactory {
 
     private Map<String, Object> beanMap = new HashMap<>();
 
-    public ClassPathXmlApplicationContext() {
+    private String path = "application.xml";
 
+    public ClassPathXmlApplicationContext(String path) {
+        if (StringUtil.isEmpty(path)) {
+            throw new RuntimeException("没有指定xml文件");
+        }
         try {
             ClassLoader classLoader = getClass().getClassLoader();
-            InputStream inputStream = classLoader.getResourceAsStream("applicationContext.xml");
+            InputStream inputStream = classLoader.getResourceAsStream(path);
             // 1. 创建DocumentBuilderFactory
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             // 2. 创建DocumentBuilder对象

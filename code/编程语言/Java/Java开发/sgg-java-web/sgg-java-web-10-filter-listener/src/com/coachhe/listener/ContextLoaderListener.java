@@ -22,8 +22,13 @@ public class ContextLoaderListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        BeanFactory beanFactory = new ClassPathXmlApplicationContext();
+        // 1. 获取上下文对象
         ServletContext application = servletContextEvent.getServletContext();
+        // 2. 获取上下文初始化参数
+        String contextConfigLocation = application.getInitParameter("contextConfigLocation");
+        // 3. 创建ioc容器
+        BeanFactory beanFactory = new ClassPathXmlApplicationContext(contextConfigLocation);
+        // 4. 将ioc容器保存到application作用域
         application.setAttribute("beanFactory", beanFactory);
     }
 

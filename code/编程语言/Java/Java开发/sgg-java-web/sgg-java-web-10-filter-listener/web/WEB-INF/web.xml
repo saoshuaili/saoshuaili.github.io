@@ -12,4 +12,9 @@
         <param-value>.html</param-value>
     </context-param>
 
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>applicationContext.xml</param-value>
+    </context-param>
+
 </web-app>
