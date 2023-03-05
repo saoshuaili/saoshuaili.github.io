@@ -1,7 +1,14 @@
 ---
-title: ThreadLocal  
-date: 2023-02-27 11:24:49  
-tags: []  
+title: ThreadLocal
+tags: []
+categories:
+  - 程序员
+  - 编程语言
+  - Java
+  - Java语言
+  - Java语法
+  - Java线程
+date: 2023-02-27 11:24:49
 ---
 
 代码链接:
