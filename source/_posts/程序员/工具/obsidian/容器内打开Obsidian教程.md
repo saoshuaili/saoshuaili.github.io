@@ -27,5 +27,16 @@ yum update nss -y
 
 这步不知道为啥要，反正执行就是了
 
-# 
+# 进入文件夹运行程序
+
+```shell
+cd squashfs-root
+./obsidian --no-sandbox
+```
+
+注意，这步必须要在有图形界面的环境中执行，不能直接
+
+# 注意
+
+这里执行完成之后，我们需要打开
 
