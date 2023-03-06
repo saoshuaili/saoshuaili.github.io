@@ -34,9 +34,14 @@ cd squashfs-root
 ./obsidian --no-sandbox
 ```
 
-注意，这步必须要在有图形界面的环境中执行，不能直接
+注意，这步必须要在有图形界面的环境中执行，不能直接在命令行中执行。
 
 # 注意
 
-这里执行完成之后，我们需要打开
+这里执行完成之后，我们就打开 obsidian 了，此时注意必须要更新一个配置：
+
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230306202747.png" width = "50%" />
+
+这里需要关闭硬件加速，这是因为硬件加速的原理是使用 GPU 让 Obsidian 运行更
+
 
