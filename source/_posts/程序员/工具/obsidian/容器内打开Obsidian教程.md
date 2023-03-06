@@ -42,6 +42,10 @@ cd squashfs-root
 
 <img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230306202747.png" width = "50%" />
 
-这里需要关闭硬件加速，这是因为硬件加速的原理是使用 GPU 让 Obsidian 运行更
+这里需要关闭硬件加速，这是因为硬件加速的原理是使用 GPU 让 Obsidian 运行更流畅，但是 linux 的图形界面不存在 GPU 概念，因此不能使用，否则会卡死。
+
+现在就可以开始美滋滋地使用 linux 版本 obsidian 啦。
+
+
 
 
