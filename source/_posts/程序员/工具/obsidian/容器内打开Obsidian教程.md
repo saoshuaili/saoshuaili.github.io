@@ -10,3 +10,9 @@
 
 命令为：
 
+```shell
+chmod u+x Obsidian-1.1.16.AppImage # 赋予执行权限
+./Obsidian-1.1.16.AppImage --appimage-extract  # 解压文件
+```
+
+此时会获得一个文件夹
