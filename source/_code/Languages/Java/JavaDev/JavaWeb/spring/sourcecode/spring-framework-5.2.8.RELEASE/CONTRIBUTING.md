@@ -73,7 +73,7 @@ created, we will close the issue as superseded by the pull request, and the disc
 about the issue will continue under the pull request.
 
 1. Always check out the `master` branch and submit pull requests against it
-(for target version see [settings.gradle](source/code/Languages/Java/JavaDev/JavaWeb/spring/sourcecode/spring-framework-5.2.8.RELEASE/settings.gradle)).
+(for target version see [settings.gradle](source/_code/Languages/Java/JavaDev/JavaWeb/spring/sourcecode/spring-framework-5.2.8.RELEASE/settings.gradle)).
 Backports to prior versions will be considered on a case-by-case basis and reflected as
 the fix version in the issue tracker.
 

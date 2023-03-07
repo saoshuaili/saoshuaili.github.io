@@ -14,7 +14,7 @@ date: 2023-02-27 11:24:49
 
 代码链接:
 
-[[]]
+[[source/_code/Languages/Java/JavaLanguage/JavaGrammar/CoachHeJavaBasic/src/main/java/com/coachhe/threadlocalLearning/README]]
 
 ThreadLocal, 称之为本地线程，主要有 `get()` 和 `set()` 两个方法。
 
