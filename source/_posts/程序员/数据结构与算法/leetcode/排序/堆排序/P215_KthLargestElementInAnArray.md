@@ -1,3 +1,11 @@
+---
+categories:
+  - 程序员
+  - 数据结构与算法
+  - leetcode
+  - 排序
+  - 堆排序
+---
 <p>给定整数数组 <code>nums</code> 和整数 <code>k</code>，请返回数组中第 <code><strong>k</strong></code> 个最大的元素。</p>
 
 <p>请注意，你需要找的是数组排序后的第 <code>k</code> 个最大的元素，而不是第 <code>k</code> 个不同的元素。</p>

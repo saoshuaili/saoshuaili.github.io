@@ -1,3 +1,11 @@
+---
+categories:
+  - 程序员
+  - 数据结构与算法
+  - leetcode
+  - 排序
+  - 堆排序
+---
 <p>给定一个字符串 <code>s</code> ，根据字符出现的 <strong>频率</strong> 对其进行 <strong>降序排序</strong> 。一个字符出现的 <strong>频率</strong> 是它出现在字符串中的次数。</p>
 
 <p>返回 <em>已排序的字符串&nbsp;</em>。如果有多个答案，返回其中任何一个。</p>

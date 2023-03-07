@@ -1,3 +1,11 @@
+---
+categories:
+  - 程序员
+  - 数据结构与算法
+  - leetcode
+  - 排序
+  - 堆排序
+---
 <p>设计一个找到数据流中第 <code>k</code> 大元素的类（class）。注意是排序后的第 <code>k</code> 大元素，不是第 <code>k</code> 个不同的元素。</p>
 
 <p>请实现 <code>KthLargest</code>&nbsp;类：</p>

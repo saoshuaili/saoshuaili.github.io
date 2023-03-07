@@ -1,3 +1,11 @@
+---
+categories:
+  - 程序员
+  - 数据结构与算法
+  - leetcode
+  - 排序
+  - 归并排序
+---
 <p>给定一个数组&nbsp;<code>nums</code>&nbsp;，如果&nbsp;<code>i &lt; j</code>&nbsp;且&nbsp;<code>nums[i] &gt; 2*nums[j]</code>&nbsp;我们就将&nbsp;<code>(i, j)</code>&nbsp;称作一个<strong><em>重要翻转对</em></strong>。</p>
 
 <p>你需要返回给定数组中的重要翻转对的数量。</p>

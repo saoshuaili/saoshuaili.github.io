@@ -1,3 +1,11 @@
+---
+categories:
+  - 程序员
+  - 数据结构与算法
+  - leetcode
+  - 二叉树
+  - 通用解法
+---
 <p>给定一个不重复的整数数组&nbsp;<code>nums</code> 。&nbsp;<strong>最大二叉树</strong>&nbsp;可以用下面的算法从&nbsp;<code>nums</code> 递归地构建:</p>
 
 <ol> 

@@ -1,3 +1,11 @@
+---
+categories:
+  - 程序员
+  - 数据结构与算法
+  - leetcode
+  - 二叉树
+  - 遍历
+---
 左神在
 
 [B站视频](https://www.bilibili.com/video/BV13g41157hK?p=7&vd_source=6678074a8e5a52b13a742aa7a335eb49)

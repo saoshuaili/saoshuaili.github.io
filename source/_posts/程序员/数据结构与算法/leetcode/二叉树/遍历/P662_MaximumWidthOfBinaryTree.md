@@ -1,3 +1,11 @@
+---
+categories:
+  - 程序员
+  - 数据结构与算法
+  - leetcode
+  - 二叉树
+  - 遍历
+---
 <p>给你一棵二叉树的根节点 <code>root</code> ，返回树的 <strong>最大宽度</strong> 。</p>
 
 <p>树的 <strong>最大宽度</strong> 是所有层中最大的 <strong>宽度</strong> 。</p>

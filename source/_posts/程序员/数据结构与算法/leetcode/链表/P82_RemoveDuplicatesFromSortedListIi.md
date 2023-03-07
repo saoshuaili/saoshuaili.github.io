@@ -1,3 +1,10 @@
+---
+categories:
+  - 程序员
+  - 数据结构与算法
+  - leetcode
+  - 链表
+---
 <p>给定一个已排序的链表的头&nbsp;<code>head</code> ，&nbsp;<em>删除原始链表中所有重复数字的节点，只留下不同的数字</em>&nbsp;。返回 <em>已排序的链表</em>&nbsp;。</p>
 
 <p>&nbsp;</p>

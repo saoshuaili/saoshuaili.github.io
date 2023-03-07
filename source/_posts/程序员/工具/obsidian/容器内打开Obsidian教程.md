@@ -1,7 +1,11 @@
 ---
-title: 容器内打开Obsidian教程  
-date: 2023-03-06 20:31:12  
-tags: []  
+title: 容器内打开Obsidian教程
+tags: []
+categories:
+  - 程序员
+  - 工具
+  - obsidian
+date: 2023-03-06 20:31:12
 ---
 
 # 下载 Obsidian Linux 版本

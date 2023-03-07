@@ -1,3 +1,10 @@
+---
+categories:
+  - 程序员
+  - 数据结构与算法
+  - leetcode
+  - 链表
+---
 给你单链表的头节点 <code>head</code> ，请你反转链表，并返回反转后的链表。
 
 <div class="original__bRMd"> 

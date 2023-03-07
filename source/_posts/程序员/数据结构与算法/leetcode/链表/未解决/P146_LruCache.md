@@ -1,3 +1,11 @@
+---
+categories:
+  - 程序员
+  - 数据结构与算法
+  - leetcode
+  - 链表
+  - 未解决
+---
 <div class="title__3Vvk">
  请你设计并实现一个满足&nbsp; 
  <a href="https://baike.baidu.com/item/LRU" target="_blank">LRU (最近最少使用) 缓存</a> 约束的数据结构。

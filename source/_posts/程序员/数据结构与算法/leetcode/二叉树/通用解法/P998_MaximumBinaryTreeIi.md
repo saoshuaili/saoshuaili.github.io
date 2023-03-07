@@ -1,3 +1,11 @@
+---
+categories:
+  - 程序员
+  - 数据结构与算法
+  - leetcode
+  - 二叉树
+  - 通用解法
+---
 <p><strong>最大树</strong> 定义：一棵树，并满足：其中每个节点的值都大于其子树中的任何其他值。</p>
 
 <p>给你最大树的根节点 <code>root</code> 和一个整数 <code>val</code> 。</p>

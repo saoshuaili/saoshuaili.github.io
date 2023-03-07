@@ -1,3 +1,11 @@
+---
+categories:
+  - 程序员
+  - 数据结构与算法
+  - leetcode
+  - 排序
+  - 归并排序
+---
 <p>给你一个整数数组&nbsp;<code>nums</code> 以及两个整数&nbsp;<code>lower</code> 和 <code>upper</code> 。求数组中，值位于范围 <code>[lower, upper]</code> （包含&nbsp;<code>lower</code>&nbsp;和&nbsp;<code>upper</code>）之内的 <strong>区间和的个数</strong> 。</p>
 
 <p><strong>区间和</strong>&nbsp;<code>S(i, j)</code>&nbsp;表示在&nbsp;<code>nums</code>&nbsp;中，位置从&nbsp;<code>i</code>&nbsp;到&nbsp;<code>j</code>&nbsp;的元素之和，包含&nbsp;<code>i</code>&nbsp;和&nbsp;<code>j</code>&nbsp;(<code>i</code> ≤ <code>j</code>)。</p>
