@@ -1,4 +1,4 @@
-package com.coachhe.剑指offer.editor.cn.code.链表;
+package com.coachhe.leetcode.editor.cn.链表.P06_从头到尾打印链表;
 
 import com.coachhe.leetcode.editor.cn.链表.ListNode;
 import org.testng.annotations.Test;

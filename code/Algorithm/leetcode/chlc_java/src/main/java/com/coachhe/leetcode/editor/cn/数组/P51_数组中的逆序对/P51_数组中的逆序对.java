@@ -1,4 +1,4 @@
-package com.coachhe.剑指offer.editor.cn.code.排序;
+package com.coachhe.leetcode.editor.cn.数组.P51_数组中的逆序对;
 
 import org.testng.annotations.Test;
 

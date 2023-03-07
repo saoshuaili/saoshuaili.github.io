@@ -1,4 +1,4 @@
-package com.coachhe.剑指offer.editor.cn.code.链表;
+package com.coachhe.leetcode.editor.cn.链表.P35_复杂链表的复刻;
 
 import com.coachhe.leetcode.editor.cn.链表.Node;
 import org.testng.annotations.Test;

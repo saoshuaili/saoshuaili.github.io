@@ -1,4 +1,4 @@
-package com.coachhe.剑指offer.editor.cn.code.二叉树.二叉搜索树;
+package com.coachhe.leetcode.editor.cn.二叉树.搜索二叉树.P53_二叉搜索树的中序后继;
 
 import com.coachhe.leetcode.editor.cn.二叉树.TreeNode;
 import org.testng.annotations.Test;
