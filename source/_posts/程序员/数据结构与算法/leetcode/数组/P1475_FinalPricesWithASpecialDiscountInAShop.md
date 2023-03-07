@@ -1,4 +1,7 @@
 ---
+title: P1475_FinalPricesWithASpecialDiscountInAShop  
+date: 2023-03-08 01:00:38  
+tags: []  
 categories:
   - 程序员
   - 数据结构与算法

@@ -1,4 +1,7 @@
 ---
+title: P1470_ShuffleTheArray  
+date: 2023-03-08 01:00:35  
+tags: []  
 categories:
   - 程序员
   - 数据结构与算法
