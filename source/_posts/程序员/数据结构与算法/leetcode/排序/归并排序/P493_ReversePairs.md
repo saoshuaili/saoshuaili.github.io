@@ -1,4 +1,7 @@
 ---
+title: P493_ReversePairs  
+date: 2023-03-08 00:59:14  
+tags: []  
 categories:
   - 程序员
   - 数据结构与算法
