@@ -1,4 +1,7 @@
 ---
+title: P144_BinaryTreePreorderTraversal  
+date: 2023-03-08 00:54:29  
+tags: []  
 categories:
   - 程序员
   - 数据结构与算法
