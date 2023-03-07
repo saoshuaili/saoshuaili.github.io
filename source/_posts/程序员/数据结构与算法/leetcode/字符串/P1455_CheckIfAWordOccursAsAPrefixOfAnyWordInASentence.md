@@ -1,4 +1,7 @@
 ---
+title: P1455_CheckIfAWordOccursAsAPrefixOfAnyWordInASentence  
+date: 2023-03-08 01:01:10  
+tags: []  
 categories:
   - 程序员
   - 数据结构与算法

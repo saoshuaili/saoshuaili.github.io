@@ -12,7 +12,6 @@ categories:
 
 <p>如果你可以删除 <code>words[j]</code>&nbsp;最左侧和/或最右侧的若干字符得到 <code>word[i]</code> ，那么字符串 <code>words[i]</code> 就是 <code>words[j]</code> 的一个子字符串。</p>
 
-<p>&nbsp;</p>
 
 <p><strong>示例 1：</strong></p>
 
