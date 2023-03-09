@@ -5,11 +5,11 @@
     "fontSize": 16,
     "iconColor": "#162260",
     "recentlyUsedIcons": [
+      "SiAdblock",
       "SiAbbott",
       "SiAdguard",
       "SiAdonisjs",
-      "SiAirplayvideo",
-      "SiAmazonalexa"
+      "SiAirplayvideo"
     ],
     "recentlyUsedIconsSize": 5,
     "rules": [],
@@ -61,5 +61,18 @@
   "source/_posts/程序员/编程语言/Python/Python分析excel": "SiAbbott",
   "source/_posts/程序员/大数据/实时计算/Flink": "SiAbbott",
   "source/_posts/程序员/大数据/数据仓库/离线数仓": "SiAbbott",
-  "source/_posts/程序员/大数据/数据仓库/实时数仓": "SiAbbott"
+  "source/_posts/程序员/大数据/数据仓库/实时数仓": "SiAbbott",
+  "source/_posts/程序员/大数据/Hadoop生态/Hadoop": "SiAbbott",
+  "source/_posts/程序员/大数据/Hadoop生态/HBase": "SiAbbott",
+  "source/_posts/程序员/大数据/Hadoop生态/Hive": "SiAbbott",
+  "source/_posts/程序员/大数据/Hadoop生态/Zookeeper": "SiAbbott",
+  "source/_posts/程序员/大数据/MQ/KafKa": "SiAbbott",
+  "source/_posts/程序员/大数据/MQ/pulsar": "SiAbbott",
+  "source/_posts/程序员/大数据/NoSQL/Redis": "SiAbbott",
+  "source/_posts/程序员/编程语言/Java/Java开发/Java Web": "SiAdblock",
+  "source/_posts/程序员/编程语言/Java/Java开发/Java工具": "SiAdblock",
+  "source/_posts/程序员/编程语言/Java/Java开发/Java框架": "SiAdblock",
+  "source/_posts/程序员/编程语言/Java/Java开发/JUC": "SiAdblock",
+  "source/_posts/程序员/编程语言/Java/Java语言/Java IO": "SiAdblock",
+  "source/_posts/程序员/编程语言/Java/Java语言/Java语法": "SiAdblock"
 }
