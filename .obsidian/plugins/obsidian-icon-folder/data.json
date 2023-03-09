@@ -4,7 +4,9 @@
     "iconPacksPath": ".obsidian/plugins/obsidian-icon-folder/icons",
     "fontSize": 16,
     "iconColor": "#162260",
-    "recentlyUsedIcons": [],
+    "recentlyUsedIcons": [
+      "SiAcademia"
+    ],
     "recentlyUsedIconsSize": 5,
     "rules": [],
     "extraMargin": {
@@ -13,6 +15,7 @@
       "bottom": 0,
       "left": 0
     },
-    "emojiStyle": "twemoji"
-  }
+    "emojiStyle": "none"
+  },
+  "source": "SiAcademia"
 }
