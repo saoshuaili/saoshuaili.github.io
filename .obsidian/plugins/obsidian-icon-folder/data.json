@@ -1,15 +1,16 @@
 {
+  "2022": "SiAcademia",
   "settings": {
     "migrated": true,
     "iconPacksPath": ".obsidian/plugins/obsidian-icon-folder/icons",
     "fontSize": 16,
     "iconColor": "#162260",
     "recentlyUsedIcons": [
+      "SiAcademia",
       "SiAffinity",
       "SiAdblock",
       "SiAbbott",
-      "SiAdguard",
-      "SiAdonisjs"
+      "SiAdguard"
     ],
     "recentlyUsedIconsSize": 5,
     "rules": [],
@@ -93,5 +94,7 @@
   "source/_posts/程序员/编程语言/Java/Java语言/Java语法/Java反射": "SiAffinity",
   "source/_posts/程序员/编程语言/Java/Java语言/Java语法/Java语法工具": "SiAffinity",
   "source/_posts/程序员/编程语言/Java/Java语言/Java语法/Java注解": "SiAffinity",
-  "source/_posts/程序员/编程语言/Java/Java语言/Java语法/Stream API": "SiAffinity"
+  "source/_posts/程序员/编程语言/Java/Java语言/Java语法/Stream API": "SiAffinity",
+  "scaffolds": "SiAcademia",
+  "themes": "SiAcademia"
 }
