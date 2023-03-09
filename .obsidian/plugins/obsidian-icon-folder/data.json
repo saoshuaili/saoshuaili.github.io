@@ -22,8 +22,18 @@
     "emojiStyle": "none"
   },
   "source": "SiAcademia",
-  "source/_code": "SiAmazonalexa",
+  "source/_code": "SiAirplayvideo",
   "source/_posts": "SiAirplayvideo",
-  "source/_obsidian": "SiAdonisjs",
-  "source/_posts/程序员": "SiAdguard"
+  "source/_obsidian": "SiAirplayvideo",
+  "source/_posts/程序员": "SiAdguard",
+  "source/_posts/程序员/编程语言": "SiAmazonalexa",
+  "source/_posts/生活": "SiAdguard",
+  "source/_posts/程序员/大数据": "SiAmazonalexa",
+  "source/_posts/程序员/工具": "SiAmazonalexa",
+  "source/_posts/程序员/计算机": "SiAmazonalexa",
+  "source/_posts/程序员/数据结构与算法": "SiAmazonalexa",
+  "source/_posts/程序员/微服务": "SiAmazonalexa",
+  "source/_posts/程序员/编程语言/Go": "SiAdonisjs",
+  "source/_posts/程序员/编程语言/Java": "SiAdonisjs",
+  "source/_posts/程序员/编程语言/Python": "SiAdonisjs"
 }
