@@ -111,22 +111,8 @@
     }
   ],
   "hotkeysplus-obsidian:duplicate-lines-up": [],
-  "editor:swap-line-up": [
-    {
-      "modifiers": [
-        "Mod"
-      ],
-      "key": "ArrowUp"
-    }
-  ],
-  "editor:swap-line-down": [
-    {
-      "modifiers": [
-        "Mod"
-      ],
-      "key": "ArrowDown"
-    }
-  ],
+  "editor:swap-line-up": [],
+  "editor:swap-line-down": [],
   "markdown:toggle-preview": [],
   "obsidian-quiet-outline:quiet-outline": [
     {
@@ -148,22 +134,8 @@
       "key": "M"
     }
   ],
-  "editor:set-heading-1": [
-    {
-      "modifiers": [
-        "Mod"
-      ],
-      "key": "1"
-    }
-  ],
-  "editor:set-heading-2": [
-    {
-      "modifiers": [
-        "Mod"
-      ],
-      "key": "2"
-    }
-  ],
+  "editor:set-heading-1": [],
+  "editor:set-heading-2": [],
   "workspace:goto-tab-1": [],
   "workspace:goto-tab-2": [],
   "workspace:goto-tab-3": [],
@@ -172,38 +144,10 @@
   "workspace:goto-tab-6": [],
   "workspace:goto-tab-7": [],
   "workspace:goto-tab-8": [],
-  "editor:set-heading-3": [
-    {
-      "modifiers": [
-        "Mod"
-      ],
-      "key": "3"
-    }
-  ],
-  "editor:set-heading-4": [
-    {
-      "modifiers": [
-        "Mod"
-      ],
-      "key": "4"
-    }
-  ],
-  "editor:set-heading-5": [
-    {
-      "modifiers": [
-        "Mod"
-      ],
-      "key": "5"
-    }
-  ],
-  "editor:set-heading-6": [
-    {
-      "modifiers": [
-        "Mod"
-      ],
-      "key": "6"
-    }
-  ],
+  "editor:set-heading-3": [],
+  "editor:set-heading-4": [],
+  "editor:set-heading-5": [],
+  "editor:set-heading-6": [],
   "insert-template": [
     {
       "modifiers": [
