@@ -250,5 +250,14 @@
   "shortcuts-extender:heading-3": [],
   "shortcuts-extender:heading-4": [],
   "shortcuts-extender:heading-5": [],
-  "shortcuts-extender:heading-6": []
+  "shortcuts-extender:heading-6": [],
+  "omnisearch:show-modal-infile": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "F"
+    }
+  ],
+  "editor:open-search": []
 }
