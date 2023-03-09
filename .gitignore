@@ -5,12 +5,9 @@ db.json
 node_modules/
 public/
 .deploy*/
-.obsidian/workspace
-.obsidian/workspace.json
+.obsidian/
 .idea/
 target/
-.obsidian/plugins/recent-files-obsidian/
-.obsidian/plugins/remember-cursor-position/
 out/
 *.java.hsp
 *.sonarj
@@ -55,4 +52,3 @@ out
 test-output
 atlassian-ide-plugin.xml
 .gradletasknamecache
-.obsidian/plugins/obsidian-git/data.json
