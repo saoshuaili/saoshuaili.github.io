@@ -5,6 +5,8 @@
     "fontSize": 16,
     "iconColor": "#162260",
     "recentlyUsedIcons": [
+      "SiAdguard",
+      "SiAdonisjs",
       "SiAirplayvideo",
       "SiAmazonalexa",
       "SiAcademia"
@@ -21,5 +23,7 @@
   },
   "source": "SiAcademia",
   "source/_code": "SiAmazonalexa",
-  "source/_posts": "SiAirplayvideo"
+  "source/_posts": "SiAirplayvideo",
+  "source/_obsidian": "SiAdonisjs",
+  "source/_posts/程序员": "SiAdguard"
 }
