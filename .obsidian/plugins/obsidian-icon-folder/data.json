@@ -35,5 +35,22 @@
   "source/_posts/程序员/微服务": "SiAmazonalexa",
   "source/_posts/程序员/编程语言/Go": "SiAdonisjs",
   "source/_posts/程序员/编程语言/Java": "SiAdonisjs",
-  "source/_posts/程序员/编程语言/Python": "SiAdonisjs"
+  "source/_posts/程序员/编程语言/Python": "SiAdonisjs",
+  "source/_posts/程序员/编程语言/Scala": "SiAdonisjs",
+  "source/_posts/程序员/大数据/实时计算": "SiAdonisjs",
+  "source/_posts/程序员/大数据/数据仓库": "SiAdonisjs",
+  "source/_posts/程序员/大数据/Hadoop生态": "SiAdonisjs",
+  "source/_posts/程序员/大数据/MQ": "SiAdonisjs",
+  "source/_posts/程序员/大数据/NoSQL": "SiAdonisjs",
+  "source/_posts/程序员/工具/Git": "SiAdonisjs",
+  "source/_posts/程序员/工具/obsidian": "SiAdonisjs",
+  "source/_posts/程序员/工具/Vim": "SiAdonisjs",
+  "source/_posts/程序员/工具/WordPress": "SiAdonisjs",
+  "source/_posts/程序员/计算机/操作系统": "SiAdonisjs",
+  "source/_posts/程序员/计算机/计算机网络": "SiAdonisjs",
+  "source/_posts/程序员/计算机/设计模式": "SiAdonisjs",
+  "source/_posts/程序员/计算机/Linux": "SiAdonisjs",
+  "source/_posts/程序员/数据结构与算法/leetcode": "SiAdonisjs",
+  "source/_posts/程序员/微服务/Docker": "SiAdonisjs",
+  "source/_posts/程序员/微服务/K8S": "SiAdonisjs"
 }
