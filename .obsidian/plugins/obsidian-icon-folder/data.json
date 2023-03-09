@@ -5,11 +5,11 @@
     "fontSize": 16,
     "iconColor": "#162260",
     "recentlyUsedIcons": [
+      "SiAbbott",
       "SiAdguard",
       "SiAdonisjs",
       "SiAirplayvideo",
-      "SiAmazonalexa",
-      "SiAcademia"
+      "SiAmazonalexa"
     ],
     "recentlyUsedIconsSize": 5,
     "rules": [],
@@ -52,5 +52,14 @@
   "source/_posts/程序员/计算机/Linux": "SiAdonisjs",
   "source/_posts/程序员/数据结构与算法/leetcode": "SiAdonisjs",
   "source/_posts/程序员/微服务/Docker": "SiAdonisjs",
-  "source/_posts/程序员/微服务/K8S": "SiAdonisjs"
+  "source/_posts/程序员/微服务/K8S": "SiAdonisjs",
+  "source/_posts/程序员/编程语言/Go/Go项目": "SiAbbott",
+  "source/_posts/程序员/编程语言/Go/go组件": "SiAbbott",
+  "source/_posts/程序员/编程语言/Java/Java开发": "SiAbbott",
+  "source/_posts/程序员/编程语言/Java/Java语言": "SiAbbott",
+  "source/_posts/程序员/编程语言/Java/jdk": "SiAbbott",
+  "source/_posts/程序员/编程语言/Python/Python分析excel": "SiAbbott",
+  "source/_posts/程序员/大数据/实时计算/Flink": "SiAbbott",
+  "source/_posts/程序员/大数据/数据仓库/离线数仓": "SiAbbott",
+  "source/_posts/程序员/大数据/数据仓库/实时数仓": "SiAbbott"
 }
