@@ -1,4 +1,5 @@
 {
   "blue-topaz-theme@@transparent-setting-panel": false,
-  "blue-topaz-theme@@color-scheme-options": "color-scheme-options-avocado-topaz"
+  "blue-topaz-theme@@color-scheme-options": "color-scheme-options-default",
+  "blue-topaz-theme@@background-settings-workplace-background-image": false
 }
