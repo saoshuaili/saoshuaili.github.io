@@ -5,6 +5,8 @@
     "fontSize": 16,
     "iconColor": "#162260",
     "recentlyUsedIcons": [
+      "SiAirplayvideo",
+      "SiAmazonalexa",
       "SiAcademia"
     ],
     "recentlyUsedIconsSize": 5,
@@ -17,5 +19,7 @@
     },
     "emojiStyle": "none"
   },
-  "source": "SiAcademia"
+  "source": "SiAcademia",
+  "source/_code": "SiAmazonalexa",
+  "source/_posts": "SiAirplayvideo"
 }
