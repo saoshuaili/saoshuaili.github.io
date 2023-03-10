@@ -256,12 +256,14 @@ git remote add origin https://github.com/CoachHe/testgit.git
 
 
 
-<img src="" width=50%>
-![](https://pic.downk.cc/item/5fc752a0394ac523789ea63e.png)
+<img src="https://pic.downk.cc/item/5fc752a0394ac523789ea63e.png" width=50%>
 
 结果如下：  
+
 ![](https://pic.downk.cc/item/5fc752a0394ac523789ea633.png)  
+
 ##### 注意（-u参数）：
+
 由于远程库是空的，我们第一次推送master分支时，加上了-u参数，Git不但会把本地的master分支内容推送的远程新的master分支，还会把本地的master分支与远程的master分支关联起来，在以后的推送或者拉取时就可以简化命令。推送成功后，可以立刻在github页面中看到远程库的内容已经和本地一模一样了。
 
 
