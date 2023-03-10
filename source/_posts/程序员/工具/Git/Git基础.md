@@ -47,8 +47,7 @@ git init
 
 使用命令 git add readme.txt 添加到暂存区里面去，如下： 
 
-<img src="https://pic.downk.cc/item/5fc75027394ac523789cfd6e.png?ynotemdtimestamp=1617365973827" width=50%>
-![img](https://pic.downk.cc/item/5fc75027394ac523789cfd5d.png?ynotemdtimestamp=1617365973827)
+<img src="https://pic.downk.cc/item/5fc75027394ac523789cfd5d.png?ynotemdtimestamp=1617365973827" width=50%>
 
 没有任何提示说明添加成功
 
@@ -56,8 +55,13 @@ git init
 ### 第二步（将文件提交）
 
 用命令git commit告诉Git，把文件提交到仓库
-![img](https://pic.downk.cc/item/5fc75027394ac523789cfd51.png?ynotemdtimestamp=1617365973827)后面双引号内的内容为提交的注释
+
+<img src="https://pic.downk.cc/item/5fc75027394ac523789cfd51.png?ynotemdtimestamp=1617365973827" width=50%>
+
+后面双引号内的内容为提交的注释
+
 目前已经提交了一个readme.txt文件了，下面可以通过命令git.ststus来查看是否还有文件未提交，如下： ![img](https://pic.downk.cc/item/5fc75027394ac523789cfd46.png?ynotemdtimestamp=1617365973827)说明没有任何文件未提交
+
 
 ### 第三步（修改并提交修改文件）
 
