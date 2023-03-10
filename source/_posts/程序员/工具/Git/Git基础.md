@@ -22,6 +22,7 @@ git是代码管理工具，gitHub是基于git打造的一个开源社区。
 	
 ### 创建版本库
 在这里创建了名为testgit的仓库
+
 ![](https://pic.downk.cc/item/5fc75027394ac523789cfd8d.png)
 
 ### 通过git init把这个目录变成git可以管理的仓库：
