@@ -173,11 +173,15 @@ git reset --hard 版本号
 	
 
 ### 查看状态
-![](https://pic.downk.cc/item/5fc75026394ac523789cfcb4.png)	  
+
+<img src="https://pic.downk.cc/item/5fc75026394ac523789cfcb4.png" width=50%>
+
 可以看到，b.txt文件已经被删除
 
 ### 此时有两种选择
-1. 直接commit掉
+
+#### 直接 commit 掉
+
 ![](https://pic.downk.cc/item/5fc75026394ac523789cfca7.png)
 2. 从版本库中恢复被删除的文件
 ![](https://pic.downk.cc/item/5fc75026394ac523789cfc9e.png)
