@@ -10,7 +10,7 @@ date: 2022-12-04 02:36:53
 # 工具
 腾讯云轻量服务器，可以直接购买 wordpress，会配置上用户名和密码。
 
-![](https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20211212233928.png)
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20211212233928.png" width=50%>
 
 # 基础设置
 
