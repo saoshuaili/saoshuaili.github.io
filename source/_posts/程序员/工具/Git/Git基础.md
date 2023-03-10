@@ -268,9 +268,12 @@ git remote add origin https://github.com/CoachHe/testgit.git
 
 
 ### b. 从远程GitHub仓库中克隆
+
 先有远程库的时候,如果远程库有了新内容,如何克隆到本地来呢?
 #### 首先创建远程库
+
 ![](https://pic.downk.cc/item/5fc752a0394ac523789ea624.png)
+
 #### 接着将远程库克隆到本地
 ```
 git clone https://github.com/CoachHe/testgit2
