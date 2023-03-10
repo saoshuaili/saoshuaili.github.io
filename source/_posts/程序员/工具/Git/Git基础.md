@@ -110,11 +110,11 @@ git diff xxx.xxx
 
 使用命令 git log
 
-![img](https://pic.downk.cc/item/5fc75026394ac523789cfcfa.png?ynotemdtimestamp=1617365973827)
+<img src="https://pic.downk.cc/item/5fc75026394ac523789cfcfa.png?ynotemdtimestamp=1617365973827" width=50%>
 
 如果觉得显示的信息太多，那么可以使用命令
 
-```
+```shell
 git log --pretty=oneline
 ```
 
@@ -122,7 +122,7 @@ git log --pretty=oneline
 
 有两种命令：
 
-```
+```sh
 git reset --hard HEAD^
 ```
 
@@ -132,14 +132,17 @@ git reset --hard HEAD^
 
 回退版本之后git log也会相应减少
 
-```
+```sh
 git reset --hard 版本号
 ```
 
 首先通过git reflog得到版本号
-![img](https://pic.downk.cc/item/5fc75026394ac523789cfceb.png?ynotemdtimestamp=1617365973827)然后通过
 
-```
+<img src="https://pic.downk.cc/item/5fc75026394ac523789cfceb.png?ynotemdtimestamp=1617365973827" width=50%>
+
+然后通过
+
+```sh
 git reset --hard 版本号
 ```
 
@@ -161,7 +164,8 @@ git reset --hard 版本号
 ### 提交
 
 如下：
-![](https://pic.downk.cc/item/5fc75026394ac523789cfcc1.png)	
+
+<img src="https://pic.downk.cc/item/5fc75026394ac523789cfcc1.png" width=50%>
 
 ### 然后删除
 - 方法1：直接从文件夹中删除
