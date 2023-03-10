@@ -23,8 +23,7 @@ git是代码管理工具，gitHub是基于git打造的一个开源社区。
 ### 创建版本库
 在这里创建了名为testgit的仓库
 
-<img src=" https://pic.downk.cc/item/5fc75027394ac523789cfd8d.png" width=
-![]()
+<img src=" https://pic.downk.cc/item/5fc75027394ac523789cfd8d.png" width=50%>
 
 ### 通过git init把这个目录变成git可以管理的仓库：
 
@@ -32,7 +31,7 @@ git是代码管理工具，gitHub是基于git打造的一个开源社区。
 git init
 ```
 
-![](https://pic.downk.cc/item/5fc75027394ac523789cfd7a.png)
+<img src="https://pic.downk.cc/item/5fc75027394ac523789cfd7a.png" width=50%>
 
 
 
@@ -41,7 +40,9 @@ git init
 ### 先创建一个记事本文件readme.txt
 
 内容为：This is my first git file.
-![img](https://pic.downk.cc/item/5fc75027394ac523789cfd6e.png?ynotemdtimestamp=1617365973827)
+
+<img src="https://pic.downk.cc/item/5fc75027394ac523789cfd6e.png?ynotemdtimestamp=1617365973827" width=>
+![img]()
 
 ### 第一步（将文件添加到git中）
 
