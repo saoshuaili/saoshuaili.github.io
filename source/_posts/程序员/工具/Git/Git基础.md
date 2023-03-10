@@ -94,23 +94,24 @@ git diff xxx.xxx
 
 #### 3. 修改后add需要被提交的部分来更新
 
-<img src="https://pic.downk.cc/item/5fc75026394ac523789cfd31.png?ynotemdtimestamp=1617365973827" width=50%>
-
-![img](https://pic.downk.cc/item/5fc75026394ac523789cfd26.png?ynotemdtimestamp=1617365973827)
+<img src="https://pic.downk.cc/item/5fc75026394ac523789cfd26.png?ynotemdtimestamp=1617365973827" width=50%>
 
 #### 4. 最后提交更改
 
-![img](https://pic.downk.cc/item/5fc75026394ac523789cfd1b.png?ynotemdtimestamp=1617365973827)
+<img src="https://pic.downk.cc/item/5fc75026394ac523789cfd1b.png?ynotemdtimestamp=1617365973827" width=50%>
 
 ### 第四步（回退版本）
 
 #### 1. 再次进行修改
 
-![img](https://pic.downk.cc/item/5fc75026394ac523789cfd12.png?ynotemdtimestamp=1617365973827)
+<img src="https://pic.downk.cc/item/5fc75026394ac523789cfd12.png?ynotemdtimestamp=1617365973827" width=50%>
 
 #### 2. 查看历史记录
 
-使用命令git log ![img](https://pic.downk.cc/item/5fc75026394ac523789cfcfa.png?ynotemdtimestamp=1617365973827)
+使用命令 git log
+
+![img](https://pic.downk.cc/item/5fc75026394ac523789cfcfa.png?ynotemdtimestamp=1617365973827)
+
 如果觉得显示的信息太多，那么可以使用命令
 
 ```
