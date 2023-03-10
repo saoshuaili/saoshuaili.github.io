@@ -94,6 +94,8 @@ git diff xxx.xxx
 
 #### 3. 修改后add需要被提交的部分来更新
 
+<img src="https://pic.downk.cc/item/5fc75026394ac523789cfd31.png?ynotemdtimestamp=1617365973827" width=50%>
+
 ![img](https://pic.downk.cc/item/5fc75026394ac523789cfd26.png?ynotemdtimestamp=1617365973827)
 
 #### 4. 最后提交更改
