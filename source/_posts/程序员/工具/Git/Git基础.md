@@ -73,12 +73,15 @@ git init
 
 现在继续修改readme.txt的内容，例如添加"This is the change I made"
 
-![img](https://pic.downk.cc/item/5fc75027394ac523789cfd3b.png?ynotemdtimestamp=1617365973827)
+<img src="https://pic.downk.cc/item/5fc75027394ac523789cfd3b.png?ynotemdtimestamp=1617365973827" width=50%>
 
 #### 2. 查看修改
 
 如下，然后再用git status来查看结果。
-![img](https://pic.downk.cc/item/5fc75026394ac523789cfd31.png?ynotemdtimestamp=1617365973827)这里说明readme.txt已经被修改，但是还没提交。
+
+<img src="https://pic.downk.cc/item/5fc75026394ac523789cfd31.png?ynotemdtimestamp=1617365973827" width=50%>
+
+这里说明readme.txt已经被修改，但是还没提交。
 
 ##### 注意：
 
