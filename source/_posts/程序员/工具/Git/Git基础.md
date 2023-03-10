@@ -41,12 +41,17 @@ git init
 
 内容为：This is my first git file.
 
-<img src="https://pic.downk.cc/item/5fc75027394ac523789cfd6e.png?ynotemdtimestamp=1617365973827" width=>
-![img]()
+<img src="https://pic.downk.cc/item/5fc75027394ac523789cfd6e.png?ynotemdtimestamp=1617365973827" width=50%>
 
 ### 第一步（将文件添加到git中）
 
-使用命令git add readme.txt添加到暂存区里面去，如下： ![img](https://pic.downk.cc/item/5fc75027394ac523789cfd5d.png?ynotemdtimestamp=1617365973827)没有任何提示说明添加成功
+使用命令 git add readme.txt 添加到暂存区里面去，如下： 
+
+<img src="https://pic.downk.cc/item/5fc75027394ac523789cfd6e.png?ynotemdtimestamp=1617365973827" width=50%>
+![img](https://pic.downk.cc/item/5fc75027394ac523789cfd5d.png?ynotemdtimestamp=1617365973827)
+
+没有任何提示说明添加成功
+
 
 ### 第二步（将文件提交）
 
