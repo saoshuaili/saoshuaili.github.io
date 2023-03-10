@@ -60,7 +60,11 @@ git init
 
 后面双引号内的内容为提交的注释
 
-目前已经提交了一个readme.txt文件了，下面可以通过命令git.ststus来查看是否还有文件未提交，如下： ![img](https://pic.downk.cc/item/5fc75027394ac523789cfd46.png?ynotemdtimestamp=1617365973827)说明没有任何文件未提交
+目前已经提交了一个 readme.txt 文件了，下面可以通过命令 git.ststus 来查看是否还有文件未提交，如下：
+
+<img src="https://pic.downk.cc/item/5fc75027394ac523789cfd46.png?ynotemdtimestamp=1617365973827" width=50%>
+
+说明没有任何文件未提交
 
 
 ### 第三步（修改并提交修改文件）
@@ -68,6 +72,7 @@ git init
 #### 1. 修改文件
 
 现在继续修改readme.txt的内容，例如添加"This is the change I made"
+
 ![img](https://pic.downk.cc/item/5fc75027394ac523789cfd3b.png?ynotemdtimestamp=1617365973827)
 
 #### 2. 查看修改
