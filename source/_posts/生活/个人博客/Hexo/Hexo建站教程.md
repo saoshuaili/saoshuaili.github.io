@@ -16,7 +16,9 @@ tags: []
 
 <img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195249.png" width = "50%" />
 
-分类：会根据你本地文奸
+分类：**会根据你本地文件夹的格式来进行分类**，这点真的完美！
+
+
 
 
 下面我仔细说说
