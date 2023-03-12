@@ -34,6 +34,14 @@ tags: []
 
 这里只有一个 BigData 标签是因为我为了测试只做了这个标签，有多个标签的时候完全是没问题的。
 
+留言：
+
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195824.png" width = "50%" />
+
+正文：
+
+最重要的当然是正文，这里是使用 markdown 语言，并且也支持留言
+
 
 
 下面我仔细说说
