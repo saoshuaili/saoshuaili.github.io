@@ -8,11 +8,13 @@ tags: []
 
 # 效果
 
-效果如下：[CoachHe's Blog](https://coachhe.cn:8081/)
+效果如下：[CoachHe's Blog](https://coachhe.cn:8081/) 或者 
 
 ## 首页 
 
 <img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195147.png" width = "50%" />
+
+简单清爽的首页
 
 ## 归档
 
