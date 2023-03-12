@@ -43,9 +43,7 @@
   "source/_posts/程序员/大数据/MQ": "SiApacherocketmq",
   "source/_posts/程序员/大数据/NoSQL": "SiRedis",
   "source/_posts/程序员/工具/Git": "SiGit",
-  "source/_posts/程序员/工具/obsidian": "SiObsidian",
   "source/_posts/程序员/工具/Vim": "SiVim",
-  "source/_posts/程序员/工具/WordPress": "SiWordpress",
   "source/_posts/程序员/数据结构与算法/leetcode": "SiLeetcode",
   "source/_posts/程序员/微服务/Docker": "SiDocker",
   "source/_posts/程序员/微服务/K8S": "SiKubernetes",
@@ -54,5 +52,7 @@
   "source/_posts/程序员/大数据/Hadoop生态/HBase": "SiApachenetbeanside",
   "source/_posts/程序员/大数据/Hadoop生态/Hive": "SiHive",
   "source/_posts/程序员/大数据/Hadoop生态/Zookeeper": "SiZotero",
-  "source/_posts/程序员/大数据/实时计算/Flink": "SiApacheflink"
+  "source/_posts/程序员/大数据/实时计算/Flink": "SiApacheflink",
+  "source/_posts/生活/个人博客/WordPress": "SiWordpress",
+  "source/_posts/生活/软件使用/obsidian": "SiObsidian"
 }
