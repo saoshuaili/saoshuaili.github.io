@@ -6,11 +6,11 @@
     "emojiStyle": "none",
     "iconColor": null,
     "recentlyUsedIcons": [
+      "SiJirasoftware",
+      "SiC",
       "SiHexo",
       "SiMicrodotblog",
-      "SiBloglovin",
-      "SiApacheflink",
-      "SiZotero"
+      "SiBloglovin"
     ],
     "recentlyUsedIconsSize": 5,
     "rules": [],
@@ -56,5 +56,7 @@
   "source/_posts/生活/个人博客/WordPress": "SiWordpress",
   "source/_posts/生活/软件使用/obsidian": "SiObsidian",
   "source/_posts/生活/个人博客": "SiMicrodotblog",
-  "source/_posts/生活/个人博客/Hexo": "SiHexo"
+  "source/_posts/生活/个人博客/Hexo": "SiHexo",
+  "source/_posts/生活/计算机": "SiC",
+  "source/_posts/生活/软件使用": "SiJirasoftware"
 }
