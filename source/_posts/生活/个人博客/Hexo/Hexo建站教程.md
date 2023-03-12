@@ -28,7 +28,11 @@ tags: []
 
 可以看到，远端和本地的目录结构是完全相同的。
 
+标签：
 
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195730.png" width = "50%" />
+
+这里只有一个 BigData 标签是因为我为了测试只做了这个标签，有多个标签的时候完全是没问题的。
 
 
 
