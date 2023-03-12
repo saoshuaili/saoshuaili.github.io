@@ -75,4 +75,9 @@ tags: []
 
 # 安装教程
 
-## 
+## 安装 hexo
+
+首先肯定需要 hexo 这个博客软件，具体教程很多，我就不赘述了，直接给个网站：[Hexo 快速搭建指南 | EsunR-Blog](https://blog.esunr.xyz/2022/06/64163235c30f.html#1-%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8-Hexo)
+
+
+
