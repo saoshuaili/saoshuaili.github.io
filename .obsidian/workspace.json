@@ -15,6 +15,7 @@
               "state": {
                 "file": "source/_posts/程序员/工具/Vim/Vim 基本语法.md",
                 "mode": "source",
+                "backlinks": true,
                 "source": false
               }
             }
@@ -27,6 +28,7 @@
               "state": {
                 "file": "source/_posts/程序员/工具/obsidian/容器内打开Obsidian教程.md",
                 "mode": "source",
+                "backlinks": true,
                 "source": false
               }
             }
@@ -87,7 +89,7 @@
             }
           },
           {
-            "id": "f4c7037ddb08bdee",
+            "id": "1a074186d9afa1d0",
             "type": "leaf",
             "state": {
               "type": "tagfolder-view",
@@ -193,11 +195,10 @@
       "canvas:新建白板": false,
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
-      "command-palette:打开命令面板": false,
-      "omnisearch:Omnisearch": false
+      "command-palette:打开命令面板": false
     }
   },
-  "active": "a5900a875bb93b60",
+  "active": "fbeca56a3283ba08",
   "lastOpenFiles": [
     "source/_posts/程序员/工具/Vim/Vim 进阶.md",
     "source/_posts/程序员/工具/Vim/Vim 基本语法.md",
