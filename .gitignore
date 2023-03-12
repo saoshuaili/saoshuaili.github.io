@@ -52,5 +52,5 @@ atlassian-ide-plugin.xml
 .obsidian/plugins/remember-cursor-position
 .obsidian/plugins/obsidian-git
 .obsidian/plugins/recent-files-obsidian
-.obsidian/text-extractor/cache
+.obsidian/plugins/text-extractor/cache
 .obsidian/workspace.json
