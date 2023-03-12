@@ -171,5 +171,7 @@ tags: []
 因为留言页不像友链这样，已经预设好了，因此需要手动进行创建。首先在根目录下使用 hexo 命令创建一个新的页面：
 
 ```shell
-hexo 
+hexo new page remark
 ```
+
+然后更新 `source/remak`
