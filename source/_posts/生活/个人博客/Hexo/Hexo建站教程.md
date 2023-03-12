@@ -8,7 +8,7 @@ tags: []
 
 # 效果
 
-效果如下：[CoachHe's Blog](https://coachhe.cn:8081/) 或者 
+效果如下：[CoachHe's Blog](https://coachhe.cn:8081/) 或者 [CoachHe's Blog](https://coachhe.github.io/)
 
 ## 首页 
 
@@ -71,7 +71,8 @@ tags: []
 
 1. 云服务器一台，本人使用的是腾讯云的轻量服务器，位置在香港，2 核 2 g，感觉已经完全可以满足日常需求，不过现在香港的好像没货了
 2. 安装了 obsidian-git 的 obsidian
-3. 
+3. Github 账号
 
+# 安装教程
 
-
+## 
