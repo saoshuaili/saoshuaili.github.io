@@ -148,3 +148,19 @@ tags: []
 # Links Page
 #---------------------------
 ```
+
+里面的 Comments：
+
+```yml
+  # 评论插件
+  # Comment plugin
+  comments:
+    enable: false
+    # 指定的插件，需要同时设置对应插件的必要参数
+    # The specified plugin needs to set the necessary parameters at the same time
+    # Options: utterances | disqus | gitalk | valine | waline | changyan | livere | remark42 | twikoo | cusdis | giscus
+    type: disqus
+```
+
+同样将 false 改为 true 即可。这样评论功能也就打开了
+
