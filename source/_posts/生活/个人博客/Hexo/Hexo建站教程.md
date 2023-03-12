@@ -8,6 +8,11 @@ tags: []
 
 效果如下：[CoachHe's Blog](https://coachhe.cn:8081/)
 
+首页：
+
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195147.png" width = "50%" />
+
+
 下面我仔细说说
 
 # 需求
