@@ -6,11 +6,11 @@
     "emojiStyle": "none",
     "iconColor": null,
     "recentlyUsedIcons": [
-      "SiApachehadoop",
-      "SiLinux",
-      "SiKubernetes",
-      "SiDocker",
-      "SiLeetcode"
+      "SiApacheflink",
+      "SiZotero",
+      "SiHive",
+      "SiApachenetbeanside",
+      "SiApachehadoop"
     ],
     "recentlyUsedIconsSize": 5,
     "rules": [],
@@ -50,5 +50,9 @@
   "source/_posts/程序员/微服务/Docker": "SiDocker",
   "source/_posts/程序员/微服务/K8S": "SiKubernetes",
   "source/_posts/程序员/计算机/Linux": "SiLinux",
-  "source/_posts/程序员/大数据/Hadoop生态/Hadoop": "SiApachehadoop"
+  "source/_posts/程序员/大数据/Hadoop生态/Hadoop": "SiApachehadoop",
+  "source/_posts/程序员/大数据/Hadoop生态/HBase": "SiApachenetbeanside",
+  "source/_posts/程序员/大数据/Hadoop生态/Hive": "SiHive",
+  "source/_posts/程序员/大数据/Hadoop生态/Zookeeper": "SiZotero",
+  "source/_posts/程序员/大数据/实时计算/Flink": "SiApacheflink"
 }
