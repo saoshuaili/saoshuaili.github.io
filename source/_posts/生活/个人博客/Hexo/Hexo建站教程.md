@@ -221,4 +221,6 @@ comment: 'disqus'
 
 还是非常棒的，目前使用方式是：
 
-1. 新建一个闭幕，
+1. 新建一个笔记
+2. 使用 obsidian-git 会自动同步到远端
+3. 当闲暇时，登陆远端，执行：`hexo clean & hexo g `
