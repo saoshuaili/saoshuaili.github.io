@@ -6,11 +6,11 @@
     "emojiStyle": "none",
     "iconColor": null,
     "recentlyUsedIcons": [
+      "SiHexo",
+      "SiMicrodotblog",
+      "SiBloglovin",
       "SiApacheflink",
-      "SiZotero",
-      "SiHive",
-      "SiApachenetbeanside",
-      "SiApachehadoop"
+      "SiZotero"
     ],
     "recentlyUsedIconsSize": 5,
     "rules": [],
@@ -54,5 +54,7 @@
   "source/_posts/程序员/大数据/Hadoop生态/Zookeeper": "SiZotero",
   "source/_posts/程序员/大数据/实时计算/Flink": "SiApacheflink",
   "source/_posts/生活/个人博客/WordPress": "SiWordpress",
-  "source/_posts/生活/软件使用/obsidian": "SiObsidian"
+  "source/_posts/生活/软件使用/obsidian": "SiObsidian",
+  "source/_posts/生活/个人博客": "SiMicrodotblog",
+  "source/_posts/生活/个人博客/Hexo": "SiHexo"
 }
