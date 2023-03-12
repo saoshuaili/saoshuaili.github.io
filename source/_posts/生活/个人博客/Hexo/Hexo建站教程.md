@@ -225,4 +225,6 @@ comment: 'disqus'
 2. 使用 obsidian-git 会自动同步到远端
 3. 当闲暇时，登陆远端，执行：`hexo clean & hexo g & hexo d`，会生成同步到 github 的配置文件，并且会将笔记加好目录
 4. 在远端执行 `git add . & git commit -m "reformat category" & git push`
-5. 最后在本地执行 `git 
+5. 最后在本地执行 `git pull`
+
+这样一个完美的笔记使用方案就出现拉~
