@@ -174,4 +174,18 @@ tags: []
 hexo new page remark
 ```
 
-然后更新 `source/remak`
+然后更新 `source/remark/index.md` 的内容：
+
+```md
+---
+title: 留言板
+date: 2023-03-12 15:46:47
+comment: 'disqus'
+---
+
+欢迎留言，请留下邮箱方便我回复您！
+```
+
+注意，这里 comment 必须要加上，否则不会打开留言功能。
+
+最后再 `_config.fluid.yml_`
