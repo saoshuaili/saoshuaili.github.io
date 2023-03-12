@@ -79,5 +79,10 @@ tags: []
 
 首先肯定需要 hexo 这个博客软件，具体教程很多，我就不赘述了，直接给个网站：[Hexo 快速搭建指南 | EsunR-Blog](https://blog.esunr.xyz/2022/06/64163235c30f.html#1-%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8-Hexo)
 
+## 快速配置 hexo+obsidian+git 实现一键部署和同步上传 github
+
+这块我也是参照了这个很详细的教程：[Hexo + Obsidian + Git 完美的博客部署与编辑方案 | EsunR-Blog](https://blog.esunr.xyz/2022/07/e9b42b453d9f.html#1-%E5%89%8D%E8%A8%80)
+
+
 
 
