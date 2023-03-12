@@ -8,7 +8,9 @@ categories:
 date: 2023-03-06 20:31:12
 ---
 
-# 下载 Obsidian Linux 版本
+# 下载和安装
+
+## 下载 Obsidian Linux 版本
 
 [Obsidian](https://obsidian.md/)
 
@@ -16,7 +18,7 @@ date: 2023-03-06 20:31:12
 
 注意，这里要选择 AppImage 版本。
 
-# 解压 AppImage 文件
+## 解压 AppImage 文件
 
 命令为：
 
@@ -29,7 +31,7 @@ chmod u+x Obsidian-1.1.16.AppImage # 赋予执行权限
 
 <img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230306202531.png" width = "50%" />
 
-# 升级 nss
+## 升级 nss
 
 ```shell
 yum update nss -y
@@ -37,7 +39,7 @@ yum update nss -y
 
 这步不知道为啥要，反正执行就是了
 
-# 进入文件夹运行程序
+## 进入文件夹运行程序
 
 ```shell
 cd squashfs-root
@@ -46,7 +48,9 @@ cd squashfs-root
 
 注意，这步必须要在有图形界面的环境中执行，不能直接在命令行中执行。
 
-# 注意
+# 注意事项
+
+## 注意 1
 
 这里执行完成之后，我们就打开 obsidian 了，此时注意必须要更新一个配置：
 
@@ -56,6 +60,7 @@ cd squashfs-root
 
 现在就可以开始美滋滋地使用 linux 版本 obsidian 啦。
 
+## 注意 2
 
 
 
