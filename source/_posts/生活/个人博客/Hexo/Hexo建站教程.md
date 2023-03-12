@@ -24,6 +24,10 @@ tags: []
 
 本地：
 
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195639.png" width = "50%" />
+
+可以看到，远端和本地的目录结构是完全相同的。
+
 
 
 
