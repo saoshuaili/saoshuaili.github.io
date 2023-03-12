@@ -2,8 +2,8 @@
 title: obsidian 同步
 tags: []
 categories:
-  - 程序员
-  - 工具
+  - 生活
+  - 软件使用
   - obsidian
 date: 2023-03-12 00:00:00
 ---

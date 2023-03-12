@@ -2,8 +2,8 @@
 title: 容器内打开Obsidian教程
 tags: []
 categories:
-  - 程序员
-  - 工具
+  - 生活
+  - 软件使用
   - obsidian
 date: 2023-03-06 20:31:12
 ---

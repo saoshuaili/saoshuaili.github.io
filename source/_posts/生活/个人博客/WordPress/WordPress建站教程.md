@@ -2,8 +2,8 @@
 title: WordPress建站教程
 tags: []
 categories:
-  - 程序员
-  - 工具
+  - 生活
+  - 个人博客
   - WordPress
 date: 2022-12-04 02:36:53
 ---
