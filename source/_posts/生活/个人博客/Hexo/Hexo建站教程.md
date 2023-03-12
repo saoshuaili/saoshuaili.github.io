@@ -203,4 +203,6 @@ comment: 'disqus'
     - { key: "links", link: "/links/", icon: "iconfont icon-link-fill" }
 ```
 
-可以看到，有一个 key 为 remark 的，就是我们对应的留言界面，
+可以看到，有一个 key 为 remark 的，就是我们对应的留言界面，这里我新增了一个 name 属性，否则默认名会是 remark。
+
+至此，基本功能已经完成。另外还有一个很重要的，就是怎么在不同设备中同步 obsidian，因为这块部署
