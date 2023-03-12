@@ -140,4 +140,11 @@ tags: []
     #- { key: "links", link: "/links/", icon: "iconfont icon-link-fill" }
 ```
 
-将 key 为 links 的那行
+将 key 为 links 的那行展开，然后如果要打开评论区等功能，就找到下面的友链页面，
+
+```yml
+#---------------------------
+# 友链页
+# Links Page
+#---------------------------
+```
