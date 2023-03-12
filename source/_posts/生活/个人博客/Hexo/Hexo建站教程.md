@@ -83,6 +83,10 @@ tags: []
 
 这块我也是参照了这个很详细的教程：[Hexo + Obsidian + Git 完美的博客部署与编辑方案 | EsunR-Blog](https://blog.esunr.xyz/2022/07/e9b42b453d9f.html#1-%E5%89%8D%E8%A8%80)
 
+## 安装评论等功能
+
+前面的都是参照了 EsunR-Blog 的内容，接下来我自己补充了一些功能，例如这块是需要新增评论等功能。
+
 
 
 
