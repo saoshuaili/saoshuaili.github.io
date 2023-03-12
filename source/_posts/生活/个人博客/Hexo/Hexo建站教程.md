@@ -6,13 +6,17 @@ tags: []
 
 为了建立个人博客，来回折腾了好多次，这次终于是找到了一个最符合我需求，个人认为最完美的一个博客方案了。
 
+# 效果
+
 效果如下：[CoachHe's Blog](https://coachhe.cn:8081/)
 
-首页：
+## 首页 
 
 <img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195147.png" width = "50%" />
 
-归档：会根据具体文件的上传日期记录笔记：
+## 归档
+
+会根据具体文件的上传日期记录笔记，相当于一个流水线功能
 
 <img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195249.png" width = "50%" />
 
