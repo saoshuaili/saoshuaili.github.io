@@ -1,0 +1,16 @@
+{
+  "hidden": true,
+  "hiddenList": [
+    "_config.yml",
+    "_config.fluid.yml",
+    "_config.landscape.yml",
+    "hexo_work.sh",
+    "package.json",
+    "package-lock.json",
+    "pininfo.md",
+    "yarn.lock",
+    "themes",
+    "scaffolds",
+    "2022"
+  ]
+}

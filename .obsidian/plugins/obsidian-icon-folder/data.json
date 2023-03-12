@@ -1,0 +1,53 @@
+{
+  "settings": {
+    "migrated": true,
+    "iconPacksPath": ".obsidian/plugins/obsidian-icon-folder/icons",
+    "fontSize": 16,
+    "emojiStyle": "none",
+    "iconColor": null,
+    "recentlyUsedIcons": [
+      "SiLinux",
+      "SiKubernetes",
+      "SiDocker",
+      "SiLeetcode",
+      "SiWordpress"
+    ],
+    "recentlyUsedIconsSize": 5,
+    "rules": [],
+    "extraMargin": {
+      "top": 0,
+      "right": 4,
+      "bottom": 0,
+      "left": 0
+    }
+  },
+  "source": "SiAcademia",
+  "source/_code": "SiAcclaim",
+  "source/_obsidian": "SiAcclaim",
+  "source/_posts": "SiAcclaim",
+  "source/_posts/程序员": "SiAdguard",
+  "source/_posts/生活": "SiAdguard",
+  "source/_posts/程序员/编程语言": "SiAdafruit",
+  "source/_posts/程序员/大数据": "SiAdafruit",
+  "source/_posts/程序员/工具": "SiAdafruit",
+  "source/_posts/程序员/计算机": "SiAdafruit",
+  "source/_posts/程序员/数据结构与算法": "SiAdafruit",
+  "source/_posts/程序员/微服务": "SiAdafruit",
+  "source/_posts/程序员/编程语言/Go": "SiGoland",
+  "source/_posts/程序员/编程语言/Java": "SiHotjar",
+  "source/_posts/程序员/编程语言/Python": "SiPython",
+  "source/_posts/程序员/编程语言/Scala": "SiScala",
+  "source/_posts/程序员/大数据/实时计算": "SiApacheflink",
+  "source/_posts/程序员/大数据/数据仓库": "SiThemoviedatabase",
+  "source/_posts/程序员/大数据/Hadoop生态": "SiApachehadoop",
+  "source/_posts/程序员/大数据/MQ": "SiApacherocketmq",
+  "source/_posts/程序员/大数据/NoSQL": "SiRedis",
+  "source/_posts/程序员/工具/Git": "SiGit",
+  "source/_posts/程序员/工具/obsidian": "SiObsidian",
+  "source/_posts/程序员/工具/Vim": "SiVim",
+  "source/_posts/程序员/工具/WordPress": "SiWordpress",
+  "source/_posts/程序员/数据结构与算法/leetcode": "SiLeetcode",
+  "source/_posts/程序员/微服务/Docker": "SiDocker",
+  "source/_posts/程序员/微服务/K8S": "SiKubernetes",
+  "source/_posts/程序员/计算机/Linux": "SiLinux"
+}

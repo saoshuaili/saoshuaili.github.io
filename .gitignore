@@ -5,10 +5,6 @@ db.json
 node_modules/
 public/
 .deploy*/
-.obsidian/
-.idea/
-target/
-out/
 *.java.hsp
 *.sonarj
 *.sw*
@@ -43,8 +39,7 @@ target/
 .project
 spring-*/src/main/java/META-INF/MANIFEST.MF
 
-# IDEA artifacts and output dirs
-#*.iml
+# IDEA配置
 *.ipr
 *.iws
 .idea
@@ -52,3 +47,7 @@ out
 test-output
 atlassian-ide-plugin.xml
 .gradletasknamecache
+
+# obsidian配置
+.obsidian/remember-cursor-position/
+.obsidian/obsidian-git/
