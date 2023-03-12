@@ -188,4 +188,19 @@ comment: 'disqus'
 
 注意，这里 comment 必须要加上，否则不会打开留言功能。
 
-最后再 `_config.fluid.yml_`
+最后再 `_config.fluid.yml` 文件中的 menu 属性中新增对应的 key：
+
+```yml
+  # 导航栏菜单，可自行增减，key 用来关联 languages/*.yml，如不存在关联则显示 key 本身的值；icon 是 css class，可以省略；增加 name 可以强制显示指定名称
+  # Navigation bar menu. `key` is used to associate languages/*.yml. If there is no association, the value of `key` itself will be displayed; if `icon` is a css class, it can be omitted; adding `name` can force the display of the specified name
+  menu:
+    - { key: "home", link: "/", icon: "iconfont icon-home-fill" }
+    - { key: "archive", link: "/archives/", icon: "iconfont icon-archive-fill" }
+    - { key: "category", link: "/categories/", icon: "iconfont icon-category-fill" }
+    - { key: "tag", link: "/tags/", icon: "iconfont icon-tags-fill" }
+    - { key: "about", link: "/about/", icon: "iconfont icon-user-fill" }
+    - { key: "remark", link: "/remark/", icon: "iconfont icon-user-fill", name: "留言"}
+    - { key: "links", link: "/links/", icon: "iconfont icon-link-fill" }
+```
+
+可以看到，有一个 key 为 remark 的，就是我们对应的留言界面，
