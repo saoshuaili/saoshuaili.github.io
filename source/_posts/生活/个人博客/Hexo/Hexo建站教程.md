@@ -215,3 +215,10 @@ comment: 'disqus'
 
 ### Obsiidan 多端同步
 
+[(24条消息) hexo博客 多终端同步使用_hexo多端同步_Mliak的博客-CSDN博客](https://blog.csdn.net/qq_34291777/article/details/98723401)
+
+# 总结
+
+还是非常棒的，目前使用方式是：
+
+1. 新建一个闭幕，
