@@ -6,11 +6,11 @@
     "emojiStyle": "none",
     "iconColor": null,
     "recentlyUsedIcons": [
+      "SiApachehadoop",
       "SiLinux",
       "SiKubernetes",
       "SiDocker",
-      "SiLeetcode",
-      "SiWordpress"
+      "SiLeetcode"
     ],
     "recentlyUsedIconsSize": 5,
     "rules": [],
@@ -49,5 +49,6 @@
   "source/_posts/程序员/数据结构与算法/leetcode": "SiLeetcode",
   "source/_posts/程序员/微服务/Docker": "SiDocker",
   "source/_posts/程序员/微服务/K8S": "SiKubernetes",
-  "source/_posts/程序员/计算机/Linux": "SiLinux"
+  "source/_posts/程序员/计算机/Linux": "SiLinux",
+  "source/_posts/程序员/大数据/Hadoop生态/Hadoop": "SiApachehadoop"
 }
