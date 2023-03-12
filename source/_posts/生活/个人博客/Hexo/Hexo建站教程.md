@@ -18,6 +18,13 @@ tags: []
 
 分类：**会根据你本地文件夹的格式来进行分类**，这点真的完美！
 
+远端：
+
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195537.png" width = "50%" />
+
+本地：
+
+
 
 
 
