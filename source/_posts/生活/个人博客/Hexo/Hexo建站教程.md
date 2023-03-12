@@ -40,7 +40,11 @@ tags: []
 
 正文：
 
-最重要的当然是正文，这里是使用 markdown 语言，并且也支持留言
+最重要的当然是正文，这里是使用 markdown 语言，并且也支持评论等功能。
+
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195924.png" width = "50%" />
+
+
 
 
 
