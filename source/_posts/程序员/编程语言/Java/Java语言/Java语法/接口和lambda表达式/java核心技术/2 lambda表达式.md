@@ -8,7 +8,7 @@ categories:
   - Java语言
   - Java语法
   - 接口和lambda表达式
-  - jiava核心技术
+  - java核心技术
 date: 2022-12-15 00:31:30
 ---
 

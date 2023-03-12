@@ -1,7 +1,11 @@
 ---
-title: obsidian 同步  
-date: 2023-03-12  
-tags: []  
+title: obsidian 同步
+tags: []
+categories:
+  - 程序员
+  - 工具
+  - obsidian
+date: 2023-03-12 00:00:00
 ---
 
 # 背景
