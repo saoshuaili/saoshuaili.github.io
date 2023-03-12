@@ -49,5 +49,5 @@ atlassian-ide-plugin.xml
 .gradletasknamecache
 
 # obsidian配置
-.obsidian/remember-cursor-position/
-.obsidian/obsidian-git/
+.obsidian/remember-cursor-position
+.obsidian/obsidian-git
