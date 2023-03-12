@@ -5,12 +5,12 @@
       "path": "source/_posts/程序员/工具/obsidian/容器内打开Obsidian教程.md"
     },
     {
-      "basename": "Vim 进阶",
-      "path": "source/_posts/程序员/工具/Vim/Vim 进阶.md"
-    },
-    {
       "basename": "Vim 基本语法",
       "path": "source/_posts/程序员/工具/Vim/Vim 基本语法.md"
+    },
+    {
+      "basename": "Vim 进阶",
+      "path": "source/_posts/程序员/工具/Vim/Vim 进阶.md"
     },
     {
       "basename": "git 问题解决",

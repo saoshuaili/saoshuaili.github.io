@@ -89,7 +89,7 @@
             }
           },
           {
-            "id": "1a074186d9afa1d0",
+            "id": "0e6b426ba75e89b3",
             "type": "leaf",
             "state": {
               "type": "tagfolder-view",
@@ -97,7 +97,7 @@
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
@@ -198,10 +198,10 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "fbeca56a3283ba08",
+  "active": "0e6b426ba75e89b3",
   "lastOpenFiles": [
-    "source/_posts/程序员/工具/Vim/Vim 进阶.md",
     "source/_posts/程序员/工具/Vim/Vim 基本语法.md",
+    "source/_posts/程序员/工具/Vim/Vim 进阶.md",
     "source/_posts/程序员/工具/Git/git 问题解决.md",
     "source/_posts/程序员/工具/obsidian/容器内打开Obsidian教程.md",
     "source/_posts/程序员/工具/Vim/Vim.md",
