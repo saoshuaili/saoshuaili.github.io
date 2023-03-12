@@ -213,3 +213,5 @@ comment: 'disqus'
 
 至此，基本功能已经完成。另外还有一个很重要的，就是怎么在不同设备中同步 obsidian，因为这块部署在 github 中的其实是 release 这个 branch，但是我们本地存放原始 md 笔记的其实不是这个 branch，那么怎么同步呢？ 这里有一个对应的教程：
 
+### Obsiidan 多端同步
+
