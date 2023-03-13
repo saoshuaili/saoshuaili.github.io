@@ -33,6 +33,9 @@ EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
 ```
 
+```
+```
+
 3. 通过Dockerfile创建镜像centos7-ssh
 
 ```shell
