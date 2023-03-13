@@ -36,7 +36,12 @@ CMD ["/usr/sbin/sshd", "-D"]
 ```ad-note
 更新： 20230314
 
-因为Centos已经停止维护了Centos
+因为Centos已经停止维护了Centos Linux，并推出了CentOS Stream项目，这里需要将镜像对应更新，更新版本放在这里：
+
+```
+
+```sh
+
 ```
 
 3. 通过Dockerfile创建镜像centos7-ssh
