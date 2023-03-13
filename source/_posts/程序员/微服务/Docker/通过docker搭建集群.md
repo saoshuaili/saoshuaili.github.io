@@ -33,7 +33,10 @@ EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
 ```
 
-```
+```ad-note
+更新： 20230314
+
+因为Centos已经停止维护了Centos
 ```
 
 3. 通过Dockerfile创建镜像centos7-ssh
