@@ -34,7 +34,7 @@ date: 2022-12-04 02:44:56
 <img src="https://pic.downk.cc/item/5fc78128394ac52378b3221b.png" style="zoom:50%;" />
 	
 
-	## 3 副本存储节点选择
+## 3 副本存储节点选择
 
 <img src="https://pic.downk.cc/item/5fc78128394ac52378b32203.png" style="zoom:50%;" />
 
