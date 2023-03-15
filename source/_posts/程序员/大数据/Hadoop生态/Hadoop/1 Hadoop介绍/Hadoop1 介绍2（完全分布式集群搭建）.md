@@ -736,3 +736,33 @@ hadoop104
 
 ## 配置日志的聚集
 
+日志聚集概念：应用运行完成以后，将程序运行日志信息上传到 HDFS 系统上。
+
+日志聚集功能好处：可以方便的查看到程序运行详情，方便开发调试。
+
+注意：开启日志聚集功能，需要重新启动 NodeManager 、ResourceManager 和 HistoryManager。
+
+### 1. 配置 `yarn-site.xml`
+
+```xml
+<!-- 开启日志聚集功能 -->
+<property>
+    <name>yarn.log-aggregation-enable</name>
+    <value>true</value>
+</property>
+
+<!-- 设置日志聚集服务器地址 -->
+<property>  
+    <name>yarn.log.server.url</name>  
+    <value>http://hadoop102:19888/jobhistory/logs</value>
+</property>
+
+<!-- 设置日志保留时间为7天 -->
+<property>
+    <name>yarn.log-aggregation.retain-seconds</name>
+    <value>604800</value>
+</property>
+
+```
+
+然后就可以群起 hadoop 
