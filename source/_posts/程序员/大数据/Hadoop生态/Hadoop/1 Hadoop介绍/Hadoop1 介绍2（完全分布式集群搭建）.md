@@ -582,7 +582,29 @@ crontab -e:
 
 ## `hdfs-site.xml`
 
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+		<!-- nn web端访问地址-->
+    <property>
+        <name>dfs.namenode.http-address</name>
+        <value>hadoop102:9870</value>
+    </property>
+	<!-- 2nn web端访问地址-->
+    <property>
+        <name>dfs.namenode.secondary.http-address</name>
+        <value>hadoop104:9868</value>
+    </property>
+    <!-- 测试环境指定HDFS副本的数量1 -->
+    <property>
+        <name>dfs.replication</name>
+        <value>3</value>
+    </property>
+</configuration>
+```
 
+可以看到，最大的变化也是
 
 ## `yarn-site.xml`
 
@@ -661,4 +683,6 @@ crontab -e:
     <property>
         <name>yarn.nodemanager.env-whitelist</name>
         <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME</value>
-    </p
+    </property>
+```
+
