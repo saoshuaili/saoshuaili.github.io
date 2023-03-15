@@ -535,3 +535,6 @@ crontab -e:
 
 # `Hadoop3.x` 配置变更
 
+## `core-site.xml`
+
+
