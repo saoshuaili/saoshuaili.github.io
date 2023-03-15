@@ -114,7 +114,7 @@ rsync -rvl $pdir/$fname $user@hadoop$host:$host:$pdir/$fname
 | -v   | 显示复制过程 |
 | -l   | 拷贝符号连接 |
 
-### 题目
+### `rsync` 使用案例
 
 将hadoop100机器上的/home/newdisk目录同步到hadoop101服务器root目录下的/home/newdisk下。 
 
