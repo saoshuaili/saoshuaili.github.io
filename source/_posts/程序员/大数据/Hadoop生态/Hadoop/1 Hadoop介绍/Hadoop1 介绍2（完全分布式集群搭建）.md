@@ -249,7 +249,7 @@ hdfs namenode -format
 
 #### 注意
 
-格式化之前需要删除 logs 和 data，否则再次启动时就会
+格式化之前需要删除 logs 和 data，否则再次启动时就会报错，因为格式化时分配了新的
 
 ### 2. 启动所有节点的namenode和datanode  
    ![](https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155338.png)
