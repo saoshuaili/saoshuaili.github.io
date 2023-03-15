@@ -40,7 +40,7 @@ scp -r $pdir/$fname  $user@hadoop$host:$pdir/$fname
 2. 从别的服务器将数据拷贝到本机 
 3. 将某台非本机的服务器的数据拷贝到另一台主机 
 
-### 案例1 
+# 案例1 
 
 在hadoop100上，将hadoop100中/home/hadoop_learning目录下的软件拷贝到hadoop102上。 
 
@@ -50,11 +50,11 @@ scp -r hadoop_learning/ root@hadoop101:/home/hadoop_learning
 
 <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194735.png" width=50% />
 
-### 结果 
+## 结果 
 
 <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194820.png" style="zoom:80%;" />
 
-### 注意
+## 注意
 
 <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194842.png" style="zoom:80%;" />
 
