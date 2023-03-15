@@ -259,9 +259,9 @@ hdfs namenode -format
 
 hadoop101和hadoop102的Namenode不用启动   
 
-<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155347.png" width=50%>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155347.png" width=30%>
 
-![](https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155400.png)
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155400.png" width=30%>
 
 ## 3 SSH无密登录配置
 
@@ -277,11 +277,11 @@ ssh可以直接访问其他服务器
 
 <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210201558.png" style="zoom:50%;" />
 
- ### 生成公钥和私钥
+### 生成公钥和私钥
 
 在.ssh目录下执行 
 
-```
+```sh
 ssh-keygen -t rsa 
 ```
 
