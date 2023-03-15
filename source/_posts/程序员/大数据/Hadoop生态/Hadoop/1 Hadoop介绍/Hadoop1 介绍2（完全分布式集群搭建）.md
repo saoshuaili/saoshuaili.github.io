@@ -773,3 +773,22 @@ hadoop104
 
 ### `start-dfs.sh`
 
+需要在最上方加上对应配置：
+
+```xml
+HDFS_DATANODE_USER=root
+HADOOP_SECURE_DN_USER=hdfs
+HDFS_NAMENODE_USER=root
+HDFS_SECONDARYNAMENODE_USER=root
+```
+
+### `start-yarn.sh`
+
+```xml
+YARN_RESOURCEMANAGER_USER=root
+HADOOP_SECURE_DN_USER=yarn
+YARN_NODEMANAGER_USER=root
+```
+
+## `stop-dfs.sh`
+
