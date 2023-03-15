@@ -580,6 +580,10 @@ crontab -e:
 
 其余其实变化不大。
 
+## `hdfs-site.xml`
+
+
+
 ## `yarn-site.xml`
 
 ```xml
@@ -650,4 +654,11 @@ crontab -e:
 </configuration>
 ```
 
-可以看到，和 `1.`
+可以看到，和 `1.x` 版本最大的差别来自于需要显式指定 JAVA_HOME 等配置参数
+
+```xml
+    <!-- 环境变量的继承 -->
+    <property>
+        <name>yarn.nodemanager.env-whitelist</name>
+        <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME</value>
+    </p
