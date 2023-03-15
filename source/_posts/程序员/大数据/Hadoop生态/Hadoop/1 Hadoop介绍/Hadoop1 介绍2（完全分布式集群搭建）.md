@@ -531,3 +531,6 @@ crontab -e:
 然后用date -s XXX来随意将时间进行设置  
 然后等待1分钟之后看时间是否会恢复  
 <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160346.png" style="zoom:67%;" />
+
+
+# Hadoop
