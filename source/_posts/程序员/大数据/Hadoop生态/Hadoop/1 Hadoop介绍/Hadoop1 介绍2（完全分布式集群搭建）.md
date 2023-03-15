@@ -533,4 +533,5 @@ crontab -e:
 <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160346.png" style="zoom:67%;" />
 
 
-# Hadoop
+# `Hadoop3.x` 配置变更
+
