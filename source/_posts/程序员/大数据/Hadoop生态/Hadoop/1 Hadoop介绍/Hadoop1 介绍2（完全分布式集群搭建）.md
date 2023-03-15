@@ -241,8 +241,8 @@ done
 
 ## 2 集群单点启动
 
-1. 格式化namenode  
-
+### 1. 格式化namenode  
+	`hdfs namenode -format`
    注意：格式化之前需要删除logs和data 
 2. 启动所有节点的namenode和datanode  
    ![](https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155338.png)
