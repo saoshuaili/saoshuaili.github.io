@@ -249,10 +249,13 @@ hdfs namenode -format
 
 #### 注意
 
-格式化之前需要删除 logs 和 data，否则再次启动时就会报错，因为格式化时为 namenode 分配了新的 ID，但是因为没有删除 data 文件夹，里面的 DataNode 对应的 ID 还是原先分配的 ID
+**格式化之前需要删除 logs 和 data**，否则再次启动时就会报错，因为格式化时为 namenode 分配了新的 ID，但是因为没有删除 data 文件夹，里面的 DataNode 对应的 ID 还是原先分配的 ID，匹配不上就会报错。
 
-### 2. 启动所有节点的namenode和datanode  
-   ![](https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155338.png)
+### 2. 启动所有节点的 namenode 和 datanode  
+
+<img src="" width=%>
+![](https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155338.png)
+
 #### 注意：  
    hadoop101和hadoop102的Namenode不用启动   
    ![](https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155347.png)    
