@@ -48,7 +48,7 @@ scp -r $pdir/$fname  $user@hadoop$host:$pdir/$fname
 scp -r hadoop_learning/ root@hadoop101:/home/hadoop_learning 
 ```
 
-<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194735.png" style="zoom: 67%;" />
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194735.png" width=50% />
 
 ### 结果 
 
