@@ -553,9 +553,7 @@ crontab -e:
   See the License for the specific language governing permissions and
   limitations under the License. See accompanying LICENSE file.
 -->
-
 <!-- Put site-specific property overrides in this file. -->
-
 <configuration>
     <!-- 指定NameNode的地址 -->
     <property>
@@ -589,10 +587,7 @@ crontab -e:
         <name>hadoop.proxyuser.root.users</name>
         <value>*</value>
     </property>
-
-
 </configuration>
-
 ```
 
 可以看到，最大的变更来自于
