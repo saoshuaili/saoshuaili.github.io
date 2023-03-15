@@ -790,5 +790,23 @@ HADOOP_SECURE_DN_USER=yarn
 YARN_NODEMANAGER_USER=root
 ```
 
-## `stop-dfs.sh`
+### `stop-dfs.sh`
 
+这里和上面的 start 对应配置是相同的
+
+```xml
+HDFS_DATANODE_USER=root
+HADOOP_SECURE_DN_USER=hdfs
+HDFS_NAMENODE_USER=root
+HDFS_SECONDARYNAMENODE_USER=root
+```
+
+### `stop-yarn.sh`
+
+```xml
+YARN_RESOURCEMANAGER_USER=root
+HADOOP_SECURE_DN_USER=yarn
+YARN_NODEMANAGER_USER=root
+```
+
+这样就可以完美启动啦
