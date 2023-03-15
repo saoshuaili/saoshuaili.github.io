@@ -533,7 +533,7 @@ crontab -e:
 <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160346.png" style="zoom:67%;" />
 
 
-# `Hadoop3.x` 配置变更
+# `Hadoop3.x` 配置
 
 ## `core-site.xml`
 
@@ -604,7 +604,7 @@ crontab -e:
 </configuration>
 ```
 
-可以看到，最大的变化也是
+可以看到，最大的变化也是来自端口上。默认的端口变动了。
 
 ## `yarn-site.xml`
 
@@ -686,3 +686,21 @@ crontab -e:
     </property>
 ```
 
+## `mapred-site.xml`
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+	<!-- 指定MapReduce程序运行在Yarn上 -->
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+</configuration>
+```
+
+这块没有变动
+
+## ``
