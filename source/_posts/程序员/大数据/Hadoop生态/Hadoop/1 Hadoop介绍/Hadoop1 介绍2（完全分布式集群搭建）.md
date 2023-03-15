@@ -253,13 +253,15 @@ hdfs namenode -format
 
 ### 2. 启动所有节点的 namenode 和 datanode  
 
-<img src="" width=%>
-![](https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155338.png)
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155338.png" width=50%>
 
-#### 注意：  
-   hadoop101和hadoop102的Namenode不用启动   
-   ![](https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155347.png)    
-   ![](https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155400.png)
+#### 注意
+
+hadoop101和hadoop102的Namenode不用启动   
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155347.png" width=50%>
+
+![](https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155400.png)
 
 ## 3 SSH无密登录配置
 
