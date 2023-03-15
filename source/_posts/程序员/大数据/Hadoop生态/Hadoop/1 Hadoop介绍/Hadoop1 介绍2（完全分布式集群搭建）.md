@@ -703,4 +703,12 @@ crontab -e:
 
 这块没有变动
 
-## ``
+## `workers`
+
+```xml
+hadoop102
+hadoop103
+hadoop104
+```
+
+这块其实就是 `hadoop1.x` 中的 slaves，但是在 `hadoop3.x` 中换成了 workers，里面内容是完全相同的，也是不能有空格
