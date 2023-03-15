@@ -34,7 +34,7 @@ scp -r $pdir/$fname  $user@hadoop$host:$pdir/$fname
 
 ![](https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194648.png)
 
-### 三种用法： 
+### 三种用法
 
 1. 本机数据拷贝到别的服务器 
 2. 从别的服务器将数据拷贝到本机 
@@ -58,7 +58,7 @@ scp -r hadoop_learning/ root@hadoop101:/home/hadoop_learning
 
 <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194842.png" style="zoom:80%;" />
 
-# 案例2
+### `scp` 使用案例2
 
 在hadoop102上从hadoop100处拉取/home/hadoop_learning下的数据 
 
@@ -68,16 +68,16 @@ sudo scp -r coachhe@hadoop100:/home/hadoop_learning /home/hadoop_learning
 
 <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194924.png" style="zoom:67%;" />
 
-## 结果 
+#### 结果 
 
 <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210154825.png" style="zoom:80%;" />
 
-## 注意
+#### 注意
 
 <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210154916.png" style="zoom:80%;" />
 
 
-# 案例3
+### `scp` 使用案例3
 
 在hadoop101上将hadoop100的数据拷贝到hadoop102 
 
