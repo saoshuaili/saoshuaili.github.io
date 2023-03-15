@@ -180,7 +180,7 @@ done
 
 # 集群配置和启动
 
-## 集群配置
+## 1. 集群配置
 
 ### 1 大纲
 
@@ -242,6 +242,7 @@ done
 ## 2 集群单点启动
 
 1. 格式化namenode  
+
    注意：格式化之前需要删除logs和data 
 2. 启动所有节点的namenode和datanode  
    ![](https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155338.png)
