@@ -713,3 +713,23 @@ hadoop104
 
 这块其实就是 `hadoop1.x` 中的 slaves，但是在 `hadoop3.x` 中换成了 workers，里面内容是完全相同的，也是不能有空格和空行
 
+## 配置历史服务器
+
+要修改 `mapred-site.xml`
+
+```xml
+<!-- 历史服务器端地址 -->
+<property>
+    <name>mapreduce.jobhistory.address</name>
+    <value>hadoop102:10020</value>
+</property>
+
+<!-- 历史服务器web端地址 -->
+<property>
+    <name>mapreduce.jobhistory.webapp.address</name>
+    <value>hadoop102:19888</value>
+</property>
+
+```
+
+这里也是和
