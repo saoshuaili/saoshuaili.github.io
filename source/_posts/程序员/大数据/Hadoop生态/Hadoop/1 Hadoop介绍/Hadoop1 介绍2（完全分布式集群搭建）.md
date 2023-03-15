@@ -118,7 +118,7 @@ rsync -rvl $pdir/$fname $user@hadoop$host:$host:$pdir/$fname
 
 将hadoop100机器上的/home/newdisk目录同步到hadoop101服务器root目录下的/home/newdisk下。 
 
-### 解答
+#### 解答
 
 ```shell
 sudo rsync -rvl /home/newdisk/ root@hadoop101:/home/newdisk 
