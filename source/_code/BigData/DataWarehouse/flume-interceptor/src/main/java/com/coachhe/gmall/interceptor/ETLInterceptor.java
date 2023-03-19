@@ -58,7 +58,7 @@ public class ETLInterceptor implements Interceptor {
 
         @Override
         public Interceptor build() {
-            return null;
+            return new ETLInterceptor();
         }
 
         @Override
