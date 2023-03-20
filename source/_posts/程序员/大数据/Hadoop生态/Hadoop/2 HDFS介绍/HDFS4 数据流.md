@@ -34,7 +34,7 @@ date: 2022-12-04 02:44:56
 <img src="https://pic.downk.cc/item/5fc78128394ac52378b3221b.png" style="zoom:50%;" />
 	
 
-	## 3 副本存储节点选择
+## 3 副本存储节点选择
 
 <img src="https://pic.downk.cc/item/5fc78128394ac52378b32203.png" style="zoom:50%;" />
 
@@ -42,8 +42,8 @@ date: 2022-12-04 02:44:56
 
 <img src="https://pic.downk.cc/item/5fc78128394ac52378b321e0.png" style="zoom:50%;" />
 
-1）客户端通过Distributed FileSystem向NameNode请求下载文件，NameNode通过查询元数据，找到文件块所在的DataNode地址。 
-2）挑选一台DataNode（就近原则，然后随机）服务器，请求读取数据。 
-3）DataNode开始传输数据给客户端（从磁盘里面读取数据输入流，以Packet为单位来做校验）。 
-4）客户端以Packet为单位接收，先在本地缓存，然后写入目标文件。  
+1.  客户端通过 Distributed FileSystem 向 NameNode 请求下载文件，NameNode 通过查询元数据，找到文件块所在的 DataNode 地址。 
+2.  挑选一台 DataNode（就近原则，然后随机）服务器，请求读取数据。 
+3.  DataNode 开始传输数据给客户端（从磁盘里面读取数据输入流，以 Packet 为单位来做校验）。 
+4.  客户端以 Packet 为单位接收，先在本地缓存，然后写入目标文件。  
 

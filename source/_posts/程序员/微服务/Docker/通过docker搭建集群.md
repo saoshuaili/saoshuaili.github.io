@@ -33,6 +33,39 @@ EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
 ```
 
+```ad-note
+更新： 20230314
+
+因为Centos已经停止维护了Centos Linux，并推出了CentOS Stream项目，这里需要将镜像对应更新，更新版本放在下方
+
+```
+
+```sh
+FROM centos
+MAINTAINER mwf
+
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+
+RUN yum makecache
+RUN yum update -y
+
+RUN yum install -y openssh-server sudo
+RUN sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
+RUN yum  install -y openssh-clients
+
+
+
+RUN echo "root:HYZsucceed!!11" | chpasswd
+RUN echo "root   ALL=(ALL)       ALL" >> /etc/sudoers
+RUN ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key
+RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key
+
+RUN mkdir /var/run/sshd
+EXPOSE 22
+CMD ["/usr/sbin/sshd", "-D"]
+```
+
 3. 通过Dockerfile创建镜像centos7-ssh
 
 ```shell
