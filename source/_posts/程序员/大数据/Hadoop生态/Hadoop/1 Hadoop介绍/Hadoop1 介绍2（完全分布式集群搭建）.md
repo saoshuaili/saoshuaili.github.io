@@ -809,4 +809,6 @@ HADOOP_SECURE_DN_USER=yarn
 YARN_NODEMANAGER_USER=root
 ```
 
+还有一个要注意的，需要更新 `hadoop-env.s`
+
 这样就可以完美启动啦
