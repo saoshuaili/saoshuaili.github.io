@@ -809,6 +809,12 @@ HADOOP_SECURE_DN_USER=yarn
 YARN_NODEMANAGER_USER=root
 ```
 
-还有一个要注意的，需要更新 `hadoop-env.s`
+还有一个要注意的，需要更新 `hadoop-env.sh` 配置
+
+`hadoop-env.sh`
+
+```sh
+export JAVA_HOME="/root/module/jdk/tencent_jdk8"
+```
 
 这样就可以完美启动啦
