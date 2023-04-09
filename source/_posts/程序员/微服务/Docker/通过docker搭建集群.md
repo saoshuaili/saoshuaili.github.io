@@ -88,8 +88,9 @@ RUN yum -y install vim
 RUN yum -y install net-tools
 RUN mkdir /opt/module
 RUN mkdir /opt/software
-RUN yum install ncurses
-RUN yum install rsync
+RUN yum -y install ncurses
+RUN yum -y install rsync
+RUN yum -y install lrzsz
 
 
 ADD jdk-8u144-linux-x64.tar.gz /opt/module
