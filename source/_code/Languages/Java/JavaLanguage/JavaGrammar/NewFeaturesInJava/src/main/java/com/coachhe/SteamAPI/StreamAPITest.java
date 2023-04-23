@@ -1,2 +1,5 @@
-package com.coachhe.SteamAPI;public class StreamAPITest {
+package com.coachhe.SteamAPI;
+
+public class StreamAPITest {
+
 }
