@@ -46,6 +46,10 @@ public class StreamAPITest {
         // 4. 方法4：创建无限流
         Stream.iterate(0, t -> t + 2).limit(10).forEach(System.out::println);
 
+        // 5. generate
+        Stream.generate(Math::random).limit(10).forEach(System.out::println);
+
+
     }
 
 
