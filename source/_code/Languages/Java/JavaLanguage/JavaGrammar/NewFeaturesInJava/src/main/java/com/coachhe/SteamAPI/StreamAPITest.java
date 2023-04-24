@@ -3,7 +3,9 @@ package com.coachhe.SteamAPI;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * 1. Stream关注的是对数据的运算，与CPU打交道
@@ -32,6 +34,12 @@ public class StreamAPITest {
         lists.add("e2");
         lists.add("e3");
         lists.add("e4");
+        Stream<String> stream = lists.stream(); // 返回一个顺序流
+        Stream<String> parStream = lists.parallelStream(); // 返回一个并行流
+
+        // 2. 方式2：通过数组
+        Stream<String> arrStream = Arrays.stream(new String[]{"e1", "e2", "e3"});
+
 
     }
 
