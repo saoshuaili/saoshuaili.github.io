@@ -40,6 +40,11 @@ public class StreamAPITest {
         // 2. 方式2：通过数组
         Stream<String> arrStream = Arrays.stream(new String[]{"e1", "e2", "e3"});
 
+        // 3. 方法3：通过Stream的of()
+        Stream<Integer> integerStream = Stream.of(1, 2, 3, 4, 5);
+
+        // 4. 方法4：创建无限流
+         
 
     }
 
