@@ -53,7 +53,7 @@ public class StreamAPITest {
     }
 
     /**
-     * 测试中间操作
+     * 测试中间操作1
      */
     @Test
     public void test2(){
@@ -77,5 +77,17 @@ public class StreamAPITest {
         arrStream.distinct().forEach(System.out::println);
     }
 
+    /**
+     * 测试中间操作2 映射 */
+    @Test
+    public void test3(){
+
+        Stream<Integer> arrStream = Arrays.stream(new Integer[]{1, 2, 3, 4, 5});
+
+        // map操作
+        arrStream.map(e -> e + 1).forEach(System.out::println);
+
+
+    }
 
 }
