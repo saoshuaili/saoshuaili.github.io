@@ -64,7 +64,13 @@ public class StreamAPITest {
         arrStream.filter(e -> e > 3).forEach(System.out::println);
 
         // 截断流 用limit
+        // 注意，上面的终止操作会导致stream终止，就不能再使用了，因此要重新生成
+        arrStream = Arrays.stream(new Integer[]{1, 2, 3, 4, 5});
         arrStream.limit(3).forEach(System.out::println);
+
+        // 跳过元素，扔掉前n个元素，如果不满足n个，返回一个空的流
+        arrStream = Arrays.stream(new Integer[]{1, 2, 3, 4, 5});
+        arrStream.skip(30).forEach(System.out::println);
 
 
     }
