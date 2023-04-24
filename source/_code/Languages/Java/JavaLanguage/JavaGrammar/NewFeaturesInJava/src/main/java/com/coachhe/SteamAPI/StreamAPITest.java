@@ -17,4 +17,11 @@ package com.coachhe.SteamAPI;
  */
 public class StreamAPITest {
 
+    // 创建Stream
+    @Test
+    public void test1(){
+
+    }
+
+
 }
