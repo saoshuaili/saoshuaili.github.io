@@ -1,5 +1,10 @@
 package com.coachhe.SteamAPI;
 
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 1. Stream关注的是对数据的运算，与CPU打交道
  *      集合关注的是数据的存储，与内存打交道
@@ -20,6 +25,13 @@ public class StreamAPITest {
     // 创建Stream
     @Test
     public void test1(){
+
+        // 1. 方式1：通过集合
+        List<String> lists = new ArrayList<>();
+        lists.add("e1");
+        lists.add("e2");
+        lists.add("e3");
+        lists.add("e4");
 
     }
 
