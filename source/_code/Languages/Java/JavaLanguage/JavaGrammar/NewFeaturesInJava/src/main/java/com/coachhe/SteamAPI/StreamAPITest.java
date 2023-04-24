@@ -52,5 +52,18 @@ public class StreamAPITest {
 
     }
 
+    /**
+     * 测试中间操作
+     */
+    @Test
+    public void test2(){
+
+        // 1. 筛选与切片
+        Stream<Integer> arrStream = Arrays.stream(new Integer[]{1, 2, 3, 4, 5});
+        arrStream.filter(e -> e > 3).forEach(System.out::println);
+        
+
+    }
+
 
 }
