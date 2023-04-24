@@ -72,7 +72,9 @@ public class StreamAPITest {
         arrStream = Arrays.stream(new Integer[]{1, 2, 3, 4, 5});
         arrStream.skip(30).forEach(System.out::println);
 
-
+        // 去重 distinct
+        arrStream = Arrays.stream(new Integer[]{1, 2, 3, 4, 5, 1, 3, 4});
+        arrStream.distinct().forEach(System.out::println);
     }
 
 
