@@ -44,7 +44,7 @@ public class StreamAPITest {
         Stream<Integer> integerStream = Stream.of(1, 2, 3, 4, 5);
 
         // 4. 方法4：创建无限流
-         
+        Stream.iterate(0, )
 
     }
 
