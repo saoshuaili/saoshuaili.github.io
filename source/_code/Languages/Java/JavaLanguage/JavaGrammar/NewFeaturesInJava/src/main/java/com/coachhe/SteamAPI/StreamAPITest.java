@@ -60,8 +60,12 @@ public class StreamAPITest {
 
         // 1. 筛选与切片
         Stream<Integer> arrStream = Arrays.stream(new Integer[]{1, 2, 3, 4, 5});
+        // 找出所有大于3的值,用filter
         arrStream.filter(e -> e > 3).forEach(System.out::println);
-        
+
+        // 截断流 用limit
+        arrStream.limit(3).forEach(System.out::println);
+
 
     }
 
