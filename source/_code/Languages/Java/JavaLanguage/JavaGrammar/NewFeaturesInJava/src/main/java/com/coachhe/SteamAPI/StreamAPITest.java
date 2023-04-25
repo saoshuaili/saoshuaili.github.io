@@ -125,7 +125,6 @@ public class StreamAPITest {
         List<Integer> list = Arrays.asList(12, 43, 64, 2, 5);
         list.stream().sorted().forEach(System.out::println);
 
-
         // sorted(Comparator com) 定制排序
 
 
