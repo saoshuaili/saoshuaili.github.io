@@ -101,8 +101,11 @@ public class StreamAPITest {
         // 进一步了解
         List<String> list = Arrays.asList("aa", "bb", "cc", "dd");
         // 可以看到，list.stream()首先获取到了一个Stream<String>，然后通过map，里面的每个String元素又变成了Stream<Character>的类型
-        // 因此，最终变成了Stream<Stream<String>>这样的类型，Stream里面还有个Stream
-        list.stream().map(StreamAPITest::fromStringToStream);
+        // 因此，最终变成了Stream<Stream<Character>>这样的类型，Stream里面还有个Stream
+        // 如果我们想获取每个Character，那就很麻烦了
+        list.stream().map(StreamAPITest::fromStringToStream).forEach(System.out::println);
+        // 这里就需要使用flatMap
+        list.stream().flatMap(StreamAPITest::fromStringToStream).forEach(System.out::println);
 
     }
 
