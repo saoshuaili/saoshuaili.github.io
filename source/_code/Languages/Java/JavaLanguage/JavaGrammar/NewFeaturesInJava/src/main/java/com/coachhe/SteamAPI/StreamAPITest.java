@@ -88,6 +88,7 @@ public class StreamAPITest {
         arrStream.map(e -> e + 1).forEach(System.out::println);
 
         // flatMap，接受一个函数作为参数，将流中的每个值都换成另一个流，然后把所有流连接成一个流
+        // 类似下面的操作
         ArrayList<Integer> arr1 = new ArrayList<>();
         arr1.add(1);
         arr1.add(2);
@@ -97,8 +98,20 @@ public class StreamAPITest {
         arr2.add(5);
         arr2.add(6);
         arr1.addAll(arr2);
+        // 进一步了解
+        List<String> list = Arrays.asList("aa", "bb", "cc", "dd");
+        // 可以看到，list.stream()首先获取到了一个Stream<String>，然后通过map，里面的每个String元素又变成了Stream<Character>的类型
+        // 因此，最终变成了Stream<Stream<String>>这样的类型，Stream里面还有个Stream
+        list.stream().map(StreamAPITest::fromStringToStream);
 
+    }
 
+    public static Stream<Character> fromStringToStream(String str) {
+        List<Character> list = new ArrayList<>();
+        for (char c : str.toCharArray()) {
+            list.add(c);
+        }
+        return list.stream();
     }
 
 }
