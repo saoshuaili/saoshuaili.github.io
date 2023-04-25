@@ -98,6 +98,7 @@ public class StreamAPITest {
         arr2.add(5);
         arr2.add(6);
         arr1.addAll(arr2);
+        System.out.println(arr1);
         // 进一步了解
         List<String> list = Arrays.asList("aa", "bb", "cc", "dd");
         // 可以看到，list.stream()首先获取到了一个Stream<String>，然后通过map，里面的每个String元素又变成了Stream<Character>的类型
@@ -115,6 +116,12 @@ public class StreamAPITest {
             list.add(c);
         }
         return list.stream();
+    }
+
+    // 排序操作
+    @Test
+    public void test4(){
+        
     }
 
 }
