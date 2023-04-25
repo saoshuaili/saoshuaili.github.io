@@ -87,6 +87,17 @@ public class StreamAPITest {
         // map操作
         arrStream.map(e -> e + 1).forEach(System.out::println);
 
+        // flatMap，接受一个函数作为参数，将流中的每个值都换成另一个流，然后把所有流连接成一个流
+        ArrayList<Integer> arr1 = new ArrayList<>();
+        arr1.add(1);
+        arr1.add(2);
+        arr1.add(3);
+        ArrayList<Integer> arr2 = new ArrayList<>();
+        arr2.add(4);
+        arr2.add(5);
+        arr2.add(6);
+        arr1.addAll(arr2);
+
 
     }
 
