@@ -139,6 +139,10 @@ public class StreamAPITest {
         boolean b = list.stream().allMatch(e -> e > 6);
         System.out.println(b);
 
+        // 是否存在某一个元素  anyMatch
+        boolean b1 = list.stream().anyMatch(e -> e > 6);
+        System.out.println(b1);
+
     }
 
 }
