@@ -125,7 +125,9 @@ public class StreamAPITest {
         List<Integer> list = Arrays.asList(12, 43, 64, 2, 5);
         list.stream().sorted().forEach(System.out::println);
 
-        // sorted(Comparator com) 定制排序
+        // sorted(Comparator com) 定制排序,例如这里打印了从大到小比较的结果
+        list.stream().sorted((e1, e2) -> e2 - e1).forEach(System.out::println);
+
 
 
 
