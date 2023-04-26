@@ -148,11 +148,13 @@ public class StreamAPITest {
         boolean b2 = list.stream().noneMatch(e -> e > 6);
         System.out.println(b2);
 
-        // 查找第一个元素
+        // 查找第一个元素 findFirst
         Optional<Integer> first = list.stream().findFirst();
         System.out.println(first);
 
-        // 返回当前流
+        // 返回当前流任何符合的元素 findAny
+        Optional<Integer> any = list.stream().findAny();
+        System.out.println(any);
     }
 
 }
