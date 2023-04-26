@@ -3,6 +3,7 @@ package com.coachhe.SteamAPI;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -186,9 +187,21 @@ public class StreamAPITest {
         System.out.println(reduce);
 
         // reduce(BinaryOperator) -> 可以将流中元素反复结合起来，得到一个值。
-        // 这里是没有初始值的情况
+        // 这里是没有初始值的情况，分析过程和上面一样
         Optional<Integer> reduce1 = list.stream().reduce(Integer::sum);
         System.out.println(reduce1);
+
+    }
+
+    // 终止操作3 - 收集
+    @Test
+    public void test7(){
+
+        List<Integer> list = Arrays.asList(12, 43, 64, 2, 5);
+        
+        // collect(Collector c)
+        List<Integer> collect = list.stream().filter(e -> e > 6).collect(Collectors.toList());
+        System.out.println(collect);
 
     }
 
