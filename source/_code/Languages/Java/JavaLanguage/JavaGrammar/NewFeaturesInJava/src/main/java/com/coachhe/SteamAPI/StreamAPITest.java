@@ -176,7 +176,8 @@ public class StreamAPITest {
 
         List<Integer> list = Arrays.asList(12, 43, 64, 2, 5);
 
-        Integer reduce = list.stream().reduce(0, Integer::sum);
+        // reduce(T identity, BinaryOperator) -> 可以将流中元素反复结合起来，得到一个值，返回T
+        Integer reduce = list.stream().reduce(8, Integer::sum);
         System.out.println(reduce);
 
     }
