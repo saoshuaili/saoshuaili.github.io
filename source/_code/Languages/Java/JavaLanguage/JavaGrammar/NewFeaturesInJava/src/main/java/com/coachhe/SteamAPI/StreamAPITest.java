@@ -155,6 +155,10 @@ public class StreamAPITest {
         // 返回当前流任何符合的元素 findAny
         Optional<Integer> any = list.stream().findAny();
         System.out.println(any);
+        
+        // 求个数 count
+        long count = list.stream().filter(e -> e > 6).count();
+        System.out.println(count);
     }
 
 }
