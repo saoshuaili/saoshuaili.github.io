@@ -40,7 +40,11 @@ public class OptionTest {
         // 创建一个Optional实例，将boy包装进去
         Optional<Boy> boyOptional = Optional.ofNullable(boy);
         Boy boy1 = boyOptional.orElse(new Boy(new Girl("赵丽颖")));
-        System.out.println(boy1);
+        Girl girl1 = boy1.getGirl();
+//        System.out.println(boy1);
+        Optional<Girl> girl11 = Optional.ofNullable(girl1);
+        Girl girl111 = girl11.orElse(new Girl("迪丽热巴"));
+        System.out.println(girl111);
         return boy1.getGirl().getName();
     }
 
