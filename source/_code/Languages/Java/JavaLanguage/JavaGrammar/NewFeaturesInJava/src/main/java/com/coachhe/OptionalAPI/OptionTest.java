@@ -39,14 +39,8 @@ public class OptionTest {
     public String getGirlNameNew(Boy boy) {
         // 创建一个Optional实例，将boy包装进去
         Optional<Boy> boyOptional = Optional.ofNullable(boy);
-        Boy test = new Boy(new Girl("test"));
-//        Boy boy1 = boyOptional.orElse(new Boy(new Girl("赵丽颖")));
-        Boy boy1 = boyOptional.orElse(test);
-        Girl girl1 = boy1.getGirl();
-//        System.out.println(boy1);
-        Optional<Girl> girl11 = Optional.ofNullable(girl1);
-        Girl girl111 = girl11.orElse(new Girl("迪丽热巴"));
-        System.out.println(girl111);
+        Boy boy1 = boyOptional.orElse(new Boy(new Girl("赵丽颖")));
+        System.out.println(boy1);
         return boy1.getGirl().getName();
     }
 
@@ -55,6 +49,7 @@ public class OptionTest {
     public void test2(){
         Boy boy = new Boy();
 //        String girlName = getGirlName(boy); // 这里一定有空指针异常
+        boy = null;
         String girlName = getGirlNameNew(boy);
         System.out.println(girlName);
     }
