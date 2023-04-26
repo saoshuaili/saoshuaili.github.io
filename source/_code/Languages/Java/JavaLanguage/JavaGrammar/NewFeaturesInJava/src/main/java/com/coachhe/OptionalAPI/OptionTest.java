@@ -11,6 +11,7 @@ import java.util.Optional;
 public class OptionTest {
 
     /**
+     * Optional实例创建
      * Optional.of(T t) 创建一个Optional实例，t必须非空
      * Optional.empty() 创建一个空的Optional实例
      * Optional.ofNullable(T t) t可以为null
@@ -31,6 +32,14 @@ public class OptionTest {
 
     public String getGirlName(Boy boy) {
         return boy.getGirl().getName();
+    }
+
+    // Optional实例使用以及如何避免空指针异常
+    @Test
+    public void test2(){
+        Boy boy = new Boy();
+        String girlName = getGirlName(boy); // 这里一定有空指针异常
+        System.out.println(girlName);
     }
 
 
