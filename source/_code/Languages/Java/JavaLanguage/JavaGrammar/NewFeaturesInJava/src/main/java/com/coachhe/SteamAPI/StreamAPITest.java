@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -143,6 +144,15 @@ public class StreamAPITest {
         boolean b1 = list.stream().anyMatch(e -> e > 6);
         System.out.println(b1);
 
+        // 是否所有元素都不满足 noneMatch
+        boolean b2 = list.stream().noneMatch(e -> e > 6);
+        System.out.println(b2);
+
+        // 查找第一个元素
+        Optional<Integer> first = list.stream().findFirst();
+        System.out.println(first);
+
+        // 返回当前流
     }
 
 }
