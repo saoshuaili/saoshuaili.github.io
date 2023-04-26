@@ -170,4 +170,15 @@ public class StreamAPITest {
 
     }
 
+    // 终止操作2 - 规约
+    @Test
+    public void test6(){
+
+        List<Integer> list = Arrays.asList(12, 43, 64, 2, 5);
+
+        Integer reduce = list.stream().reduce(0, Integer::sum);
+        System.out.println(reduce);
+
+    }
+
 }
