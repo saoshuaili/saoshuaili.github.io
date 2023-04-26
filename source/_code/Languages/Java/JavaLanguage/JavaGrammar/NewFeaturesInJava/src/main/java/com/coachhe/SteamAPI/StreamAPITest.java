@@ -127,9 +127,17 @@ public class StreamAPITest {
 
         // sorted(Comparator com) 定制排序,例如这里打印了从大到小比较的结果
         list.stream().sorted((e1, e2) -> e2 - e1).forEach(System.out::println);
+    }
 
+    // 终止操作1 - 匹配与查找
+    @Test
+    public void test5(){
 
+        List<Integer> list = Arrays.asList(12, 43, 64, 2, 5);
 
+        // 是否全部匹配 allMatch
+        boolean b = list.stream().allMatch(e -> e > 6);
+        System.out.println(b);
 
     }
 
