@@ -164,6 +164,9 @@ public class StreamAPITest {
         // 求最小值 min
         Optional<Integer> min = list.stream().max((e1, e2) -> e2 - e1);
         System.out.println(min);
+        
+        // 内部迭代 forEach
+        list.stream().filter(e -> e > 6).forEach(System.out::println);
 
     }
 
