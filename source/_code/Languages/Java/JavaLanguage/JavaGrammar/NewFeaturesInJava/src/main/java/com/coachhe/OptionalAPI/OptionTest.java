@@ -30,15 +30,26 @@ public class OptionTest {
 
     }
 
+    // 优化之前的方法
     public String getGirlName(Boy boy) {
         return boy.getGirl().getName();
+    }
+
+    // 优化之后的方法
+    public String getGirlNameNew(Boy boy) {
+        // 创建一个Optional实例，将boy包装进去
+        Optional<Boy> boyOptional = Optional.ofNullable(boy);
+        Boy boy1 = boyOptional.orElse(new Boy(new Girl("赵丽颖")));
+        System.out.println(boy1);
+        return boy1.getGirl().getName();
     }
 
     // Optional实例使用以及如何避免空指针异常
     @Test
     public void test2(){
         Boy boy = new Boy();
-        String girlName = getGirlName(boy); // 这里一定有空指针异常
+//        String girlName = getGirlName(boy); // 这里一定有空指针异常
+        String girlName = getGirlNameNew(boy);
         System.out.println(girlName);
     }
 
@@ -47,6 +58,8 @@ public class OptionTest {
 
 @Data
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 class Girl{
     private String name;
 }
