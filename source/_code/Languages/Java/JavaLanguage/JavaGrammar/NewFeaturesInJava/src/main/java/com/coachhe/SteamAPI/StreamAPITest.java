@@ -2,10 +2,7 @@ package com.coachhe.SteamAPI;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -155,10 +152,19 @@ public class StreamAPITest {
         // 返回当前流任何符合的元素 findAny
         Optional<Integer> any = list.stream().findAny();
         System.out.println(any);
-        
+
         // 求个数 count
         long count = list.stream().filter(e -> e > 6).count();
         System.out.println(count);
+
+        // 求最大值 max
+        Optional<Integer> max = list.stream().max(Comparator.comparingInt(e -> e));
+        System.out.println(max);
+
+        // 求最小值 min
+        Optional<Integer> min = list.stream().max((e1, e2) -> e2 - e1);
+        System.out.println(min);
+
     }
 
 }
