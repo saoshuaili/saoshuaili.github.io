@@ -19,7 +19,18 @@ public class OptionTest {
     public void test1(){
         Girl girl = new Girl();
         girl = null;
-        Optional<Girl> optionalGirl = Optional.of(girl);
+        Optional<Girl> optionalGirl = Optional.of(girl); // 会报错
+
+        // 创建一个空的Optional实例
+        Optional<Object> empty = Optional.empty();
+
+        // 创建一个元素为空的Optional实例
+        Optional<Girl> girl1 = Optional.ofNullable(girl);
+
+    }
+
+    public String getGirlName(Boy boy) {
+        return boy.getGirl().getName();
     }
 
 
@@ -28,6 +39,7 @@ public class OptionTest {
 @Data
 @ToString
 class Girl{
+    private String name;
 }
 
 @Data
