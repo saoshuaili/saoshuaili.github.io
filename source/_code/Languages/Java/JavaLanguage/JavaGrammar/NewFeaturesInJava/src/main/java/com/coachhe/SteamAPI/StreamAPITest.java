@@ -198,10 +198,14 @@ public class StreamAPITest {
     public void test7(){
 
         List<Integer> list = Arrays.asList(12, 43, 64, 2, 5);
-        
+
         // collect(Collector c)
+        // 这里返回一个list
         List<Integer> collect = list.stream().filter(e -> e > 6).collect(Collectors.toList());
         System.out.println(collect);
+        // 这里返回一个set
+        Set<Integer> collect1 = list.stream().filter(e -> e > 6).collect(Collectors.toSet());
+        System.out.println(collect1);
 
     }
 
