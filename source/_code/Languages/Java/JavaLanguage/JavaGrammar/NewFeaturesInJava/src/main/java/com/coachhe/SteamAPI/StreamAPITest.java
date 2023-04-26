@@ -177,12 +177,18 @@ public class StreamAPITest {
         List<Integer> list = Arrays.asList(12, 43, 64, 2, 5);
 
         // reduce(T identity, BinaryOperator) -> 可以将流中元素反复结合起来，得到一个值，返回T
+        // 这里是有初始值T的情况
         Integer reduce = list.stream().reduce(8, Integer::sum);
         // 解释，在这里，第一个参数identity是一个起始值，我随便写了个8，代表第一个元素是8
         // 然后接下来的操作是Integer::sum，会一直读取stream中的元素，和第一个元素一起执行sum操作
         // 在这里就是第一个元素是8，然后和stream中的第一个元素12执行了sum操作，得到20
         // 然后20再和第二个元素43做sum操作，得到63，以此类推，得到最终的值
         System.out.println(reduce);
+
+        // reduce(BinaryOperator) -> 可以将流中元素反复结合起来，得到一个值。
+        // 这里是没有初始值的情况
+        Optional<Integer> reduce1 = list.stream().reduce(Integer::sum);
+        System.out.println(reduce1);
 
     }
 
