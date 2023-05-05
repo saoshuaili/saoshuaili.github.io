@@ -2,6 +2,9 @@ package com.coachhe.juc.base;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 守护线程实例
+ */
 public class DaemonDemo {
     public static void main(String[] args) {
         Thread t1 = new Thread(() -> {
