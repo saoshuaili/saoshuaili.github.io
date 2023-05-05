@@ -12,6 +12,8 @@ public class DaemonDemo {
             }
         }, "t1");
 
+        t1.setDaemon(true);
+
         t1.start();
 
         // 暂停几秒钟线程
