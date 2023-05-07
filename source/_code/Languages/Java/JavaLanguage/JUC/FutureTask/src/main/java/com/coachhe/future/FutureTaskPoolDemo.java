@@ -10,7 +10,7 @@ import java.util.concurrent.*;
  */
 public class FutureTaskPoolDemo {
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
 
         FutureTask<String> futureTask = new FutureTask<>(() -> {
             try {
@@ -24,7 +24,8 @@ public class FutureTaskPoolDemo {
 
         new Thread(futureTask, "t1").start();
 
-        System.out.println(futureTask.get());
+//        System.out.println(futureTask.get());
+        System.out.println(futureTask.get(3, TimeUnit.SECONDS));
 
         System.out.println(Thread.currentThread().getName() + "\t + 忙其他任务了");
 
