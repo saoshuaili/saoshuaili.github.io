@@ -14,6 +14,7 @@ public class FutureTaskPoolDemo {
 
         FutureTask<String> futureTask = new FutureTask<>(() -> {
             try {
+                System.out.println(Thread.currentThread().getName() + "\t -----come in");
                 TimeUnit.SECONDS.sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -23,9 +24,9 @@ public class FutureTaskPoolDemo {
 
         new Thread(futureTask, "t1").start();
 
-        System.out.println(Thread.currentThread().getName() + "\t + 忙其他任务了");
-
         System.out.println(futureTask.get());
+
+        System.out.println(Thread.currentThread().getName() + "\t + 忙其他任务了");
 
 
     }
