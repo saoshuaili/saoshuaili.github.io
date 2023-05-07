@@ -1,9 +1,6 @@
 package com.coachhe.future;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @PROJECT_NAME: JUC
@@ -13,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class FutureTaskPoolDemo {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
 
         long startTime = System.currentTimeMillis();
 
@@ -38,6 +35,9 @@ public class FutureTaskPoolDemo {
             return "task1 over";
         });
         threadPool.submit(futureTask2);
+
+        System.out.println(futureTask1.get());
+        System.out.println(futureTask2.get());
 
         try {
             TimeUnit.MILLISECONDS.sleep(500);
