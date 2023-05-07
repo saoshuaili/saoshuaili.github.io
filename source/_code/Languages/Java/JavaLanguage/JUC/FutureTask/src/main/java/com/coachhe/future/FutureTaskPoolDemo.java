@@ -16,6 +16,7 @@ public class FutureTaskPoolDemo {
 
 
     // 三个任务，目前只有一个线程来处理，要耗时多久
+    // 每个线程都需要执行500毫秒，总耗时大概1500毫秒
     private static void m1() {
         long startTime = System.currentTimeMillis();
 
