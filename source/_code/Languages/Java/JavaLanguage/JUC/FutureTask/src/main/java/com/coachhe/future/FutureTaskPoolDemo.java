@@ -11,7 +11,29 @@ import java.util.concurrent.*;
 public class FutureTaskPoolDemo {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
+        m2();
+    }
 
+
+    // 三个任务，目前只有一个线程来处理，要耗时多久
+    private static void m1() {
+        long startTime = System.currentTimeMillis();
+
+        // 暂停毫秒
+        try {
+            TimeUnit.MILLISECONDS.sleep(500);
+            TimeUnit.MILLISECONDS.sleep(500);
+            TimeUnit.MILLISECONDS.sleep(500);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("---cost time: " + (endTime - startTime) + " 毫秒");
+    }
+
+    // 三个任务，使用线程池来执行，需要耗时多久
+    private static void m2() throws InterruptedException, ExecutionException {
         long startTime = System.currentTimeMillis();
 
         ExecutorService threadPool = Executors.newFixedThreadPool(3);
@@ -36,34 +58,23 @@ public class FutureTaskPoolDemo {
         });
         threadPool.submit(futureTask2);
 
+        FutureTask<String> futureTask3 = new FutureTask<>(() -> {
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "task3 over";
+        });
+        threadPool.submit(futureTask3);
+
         System.out.println(futureTask1.get());
         System.out.println(futureTask2.get());
-
-        try {
-            TimeUnit.MILLISECONDS.sleep(500);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.println(futureTask3.get());
 
         threadPool.shutdown();
         long endTime = System.currentTimeMillis();
         System.out.println("---cost time: " + (endTime - startTime) + " 毫秒");
     }
 
-    private static void m1() {
-        // 三个任务，目前只有一个main线程来处理，要耗时多久
-        long startTime = System.currentTimeMillis();
-
-        // 暂停毫秒
-        try {
-            TimeUnit.MILLISECONDS.sleep(500);
-            TimeUnit.MILLISECONDS.sleep(500);
-            TimeUnit.MILLISECONDS.sleep(500);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        long endTime = System.currentTimeMillis();
-        System.out.println("---cost time: " + (endTime - startTime) + " 毫秒");
-    }
 }
