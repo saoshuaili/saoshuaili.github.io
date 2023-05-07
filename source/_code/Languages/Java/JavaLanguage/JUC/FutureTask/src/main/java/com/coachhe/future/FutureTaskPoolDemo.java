@@ -11,8 +11,20 @@ import java.util.concurrent.*;
 public class FutureTaskPoolDemo {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        m1();
-        m2();
+
+        FutureTask<String> futureTask = new FutureTask<>(() -> {
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return "task over";
+        });
+
+        new Thread(futureTask, "t1").start();
+
+        System.out.println("忙其他任务了");
+
     }
 
 
