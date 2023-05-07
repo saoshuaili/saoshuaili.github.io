@@ -12,6 +12,10 @@ public class FutureTaskPoolDemo {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
 
+    }
+
+    // get()方法会导致阻塞
+    private static void getTest() throws InterruptedException, ExecutionException, TimeoutException {
         FutureTask<String> futureTask = new FutureTask<>(() -> {
             try {
                 System.out.println(Thread.currentThread().getName() + "\t -----come in");
@@ -28,8 +32,6 @@ public class FutureTaskPoolDemo {
         System.out.println(futureTask.get(3, TimeUnit.SECONDS));
 
         System.out.println(Thread.currentThread().getName() + "\t + 忙其他任务了");
-
-
     }
 
 
