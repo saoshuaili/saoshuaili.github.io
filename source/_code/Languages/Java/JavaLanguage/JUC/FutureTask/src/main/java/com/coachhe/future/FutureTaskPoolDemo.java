@@ -23,7 +23,10 @@ public class FutureTaskPoolDemo {
 
         new Thread(futureTask, "t1").start();
 
-        System.out.println("忙其他任务了");
+        System.out.println(Thread.currentThread().getName() + "\t + 忙其他任务了");
+
+        System.out.println(futureTask.get());
+
 
     }
 
