@@ -1,11 +1,13 @@
 package com.coachhe.future;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.RunnableFuture;
 
 public class CompletableFutureDemo {
 
     public static void main(String[] args) {
         Thread i = new Thread();
+//        RunnableFuture<>
     }
 
 }
