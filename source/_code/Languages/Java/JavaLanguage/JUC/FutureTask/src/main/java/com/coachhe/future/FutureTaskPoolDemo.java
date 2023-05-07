@@ -1,5 +1,7 @@
 package com.coachhe.future;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
@@ -13,6 +15,10 @@ public class FutureTaskPoolDemo {
 
     public static void main(String[] args) {
 
+        long startTime = System.currentTimeMillis();
+
+        ExecutorService threadPool = Executors.newFixedThreadPool(3);
+
         FutureTask<String> futureTask1 = new FutureTask<>(() -> {
             try {
                 TimeUnit.MILLISECONDS.sleep(500);
@@ -21,9 +27,27 @@ public class FutureTaskPoolDemo {
             }
             return "task1 over";
         });
-        Thread t1 = new Thread(futureTask1, "t1");
-        t1.start();
+        threadPool.submit(futureTask1);
 
+        FutureTask<String> futureTask2 = new FutureTask<>(() -> {
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "task1 over";
+        });
+        threadPool.submit(futureTask2);
+
+        try {
+            TimeUnit.MILLISECONDS.sleep(500);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        threadPool.shutdown();
+        long endTime = System.currentTimeMillis();
+        System.out.println("---cost time: " + (endTime - startTime) + " 毫秒");
     }
 
     private static void m1() {
