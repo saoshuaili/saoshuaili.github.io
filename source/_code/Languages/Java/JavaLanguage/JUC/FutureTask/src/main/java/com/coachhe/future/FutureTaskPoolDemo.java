@@ -28,10 +28,11 @@ public class FutureTaskPoolDemo {
 
         new Thread(futureTask, "t1").start();
 
-        System.out.println(Thread.currentThread().getName() + "\t + 忙其他任务了");
 
         System.out.println(futureTask.get());
 //        System.out.println(futureTask.get(3, TimeUnit.SECONDS));
+        
+        System.out.println(Thread.currentThread().getName() + "\t + 忙其他任务了");
 
     }
 
