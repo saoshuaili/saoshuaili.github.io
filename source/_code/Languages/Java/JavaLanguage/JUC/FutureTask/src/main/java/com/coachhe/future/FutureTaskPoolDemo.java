@@ -1,4 +1,6 @@
-package com.coachhe.future;/** 
+package com.coachhe.future;
+
+/**
  * @PROJECT_NAME: JUC
  * @DESCRIPTION:
  * @USER: CoachHe
