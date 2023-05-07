@@ -11,6 +11,7 @@ import java.util.concurrent.*;
 public class FutureTaskPoolDemo {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
+        m1();
         m2();
     }
 
@@ -34,6 +35,7 @@ public class FutureTaskPoolDemo {
     }
 
     // 三个任务，使用线程池来执行，需要耗时多久
+    // 三个线程一起执行，总耗时大概500毫秒
     private static void m2() throws InterruptedException, ExecutionException {
         long startTime = System.currentTimeMillis();
 
