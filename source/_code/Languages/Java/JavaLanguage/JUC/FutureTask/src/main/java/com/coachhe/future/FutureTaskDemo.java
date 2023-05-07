@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-public class CompletableFutureDemo {
+public class FutureTaskDemo {
 
     public static void main(String[] args) {
         FutureTask<String> futureTask = new FutureTask<>(new MyThread2());
