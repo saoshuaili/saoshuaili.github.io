@@ -11,11 +11,11 @@ public class CompletableFutureDemo {
         Thread thread = new Thread(futureTask, "t1");
         thread.start();
 
-//        try {
-//            System.out.println(futureTask.get());
-//        } catch (InterruptedException | ExecutionException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            System.out.println(futureTask.get());
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
