@@ -12,7 +12,6 @@ public class FutureTaskDemo {
         thread.start();
 
 
-
         try {
             System.out.println(futureTask.get());
         } catch (InterruptedException | ExecutionException e) {
