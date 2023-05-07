@@ -32,7 +32,7 @@ public class FutureTaskPoolDemo {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return "task1 over";
+            return "task2 over";
         });
         threadPool.submit(futureTask2);
 
