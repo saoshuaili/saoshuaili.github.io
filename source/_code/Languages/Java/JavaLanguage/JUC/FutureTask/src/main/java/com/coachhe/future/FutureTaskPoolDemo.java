@@ -12,8 +12,8 @@ public class FutureTaskPoolDemo {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
 //        getTest();
-        m1();
-        m2();
+//        m1();
+//        m2();
     }
 
     // get()方法会导致阻塞
