@@ -1,7 +1,11 @@
 ---
-title: IDEA 快捷键  
-date: 2023-05-08  
-tags: []  
+title: IDEA 快捷键
+tags: []
+categories:
+  - 程序员
+  - 工具
+  - IDEA
+date: 2023-05-08 00:00:00
 ---
 
 ### 1. Ctrl
