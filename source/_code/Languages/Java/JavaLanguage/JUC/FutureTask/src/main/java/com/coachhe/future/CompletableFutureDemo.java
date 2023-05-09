@@ -9,6 +9,30 @@ import java.util.concurrent.*;
 public class CompletableFutureDemo {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
+
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+
+        CompletableFuture<Integer> integerCompletableFuture = CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread().getName() + "---come in");
+            int result = ThreadLocalRandom.current().nextInt(10); //产生一个随机数
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("1秒后出结果" + result);
+            return result;
+        }, executorService);
+
+        System.out.println(Thread.currentThread().getName() + " 线程先去忙其他事了");
+        System.out.println(integerCompletableFuture.get());
+
+        executorService.shutdown();
+
+    }
+
+    // 创建一个CompletableFuture的四种静态方法
+    private static void completableFutureStaticMethod() throws InterruptedException, ExecutionException {
         completableFutureSupplyAsync1();
         completableFutureSupplyAsync2();
         completableFutureAsync1();
