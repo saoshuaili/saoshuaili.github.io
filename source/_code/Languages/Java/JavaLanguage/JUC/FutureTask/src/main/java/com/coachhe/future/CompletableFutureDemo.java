@@ -8,6 +8,11 @@ import java.util.concurrent.*;
  */
 public class CompletableFutureDemo {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
+        CompletableFuture.supplyAsync()
+    }
+
+    // 带线程池版本的runAsync
+    private static void completableFutureAsync2() {
         ExecutorService executorService = Executors.newFixedThreadPool(3);
 
         CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(() -> {
@@ -25,6 +30,7 @@ public class CompletableFutureDemo {
         System.out.println(Thread.currentThread().getName() + "---忙其他任务去了");
     }
 
+    // 无线程池版本的runAsync
     private static void completableFutureAsync1() {
         CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(() -> {
             System.out.println(Thread.currentThread().getName());
