@@ -7,7 +7,15 @@ import java.util.concurrent.*;
  * @Date: 2023/5/9 10:06
  */
 public class CompletableFutureDemo {
+
     public static void main(String[] args) throws ExecutionException, InterruptedException {
+        completableFutureSupplyAsync1();
+        completableFutureSupplyAsync2();
+        completableFutureAsync1();
+        completableFutureAsync2();
+    }
+
+    private static void completableFutureSupplyAsync2() throws InterruptedException, ExecutionException {
         ExecutorService executorService = Executors.newFixedThreadPool(3);
         CompletableFuture<String> stringCompletableFuture = CompletableFuture.supplyAsync(() -> {
             System.out.println(Thread.currentThread().getName());
@@ -19,7 +27,6 @@ public class CompletableFutureDemo {
             return "hello supplyAsync";
         }, executorService);
         System.out.println(stringCompletableFuture.get());
-
     }
 
     // 无线程池版本的supplyAsync
