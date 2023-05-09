@@ -18,7 +18,9 @@ public class CompletableFutureDemo {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println(Thread.currentThread().getName() + "----come in");
         });
-        System.out.println(voidCompletableFuture.get());
+//        System.out.println(voidCompletableFuture.get());
+        System.out.println(Thread.currentThread().getName() + "---忙其他任务去了");
     }
 }
