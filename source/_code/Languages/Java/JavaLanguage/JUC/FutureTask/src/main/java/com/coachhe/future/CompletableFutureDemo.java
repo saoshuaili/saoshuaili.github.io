@@ -1,8 +1,6 @@
 package com.coachhe.future;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @Author: CoachHe
@@ -10,6 +8,24 @@ import java.util.concurrent.TimeUnit;
  */
 public class CompletableFutureDemo {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+
+        CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(() -> {
+            System.out.println(Thread.currentThread().getName());
+            // 停顿几秒钟
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + "----end");
+        }, executorService);
+//        System.out.println(voidCompletableFuture.get());
+        executorService.shutdown();
+        System.out.println(Thread.currentThread().getName() + "---忙其他任务去了");
+    }
+
+    private static void completableFutureAsync1() {
         CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(() -> {
             System.out.println(Thread.currentThread().getName());
             // 停顿几秒钟
