@@ -22,7 +22,7 @@ public class CompletableFutureDemo {
             return result;
         }, executorService).whenComplete((v, e) -> { // 代表没有异常的情况
             if (e == null) {
-                System.out.println("=== 计算完成 ===");
+                System.out.printf("=== 计算完成, 结果为%s ===%n", v);
             }
         }).exceptionally(e -> { // 有异常的情况
             e.printStackTrace();
@@ -31,7 +31,8 @@ public class CompletableFutureDemo {
         });
 
         System.out.println(Thread.currentThread().getName() + "线程先去忙其他事情了");
-        
+        executorService.shutdown();
+
     }
 
     // 证明CompletableFuture可以完成Future的功能
