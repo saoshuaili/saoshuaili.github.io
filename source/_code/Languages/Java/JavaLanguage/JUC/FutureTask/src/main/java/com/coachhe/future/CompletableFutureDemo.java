@@ -11,6 +11,32 @@ public class CompletableFutureDemo {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
 
         ExecutorService executorService = Executors.newFixedThreadPool(3);
+        CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread().getName() + " -----come in");
+            int result = ThreadLocalRandom.current().nextInt(10);
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return result;
+        }, executorService).whenComplete((v, e) -> { // 代表没有异常的情况
+            if (e == null) {
+                System.out.println("=== 计算完成 ===");
+            }
+        }).exceptionally(e -> { // 有异常的情况
+            e.printStackTrace();
+            System.out.println("异常情况" + e.getCause() + ":\t" + e.getMessage());
+            return null;
+        });
+
+        System.out.println(Thread.currentThread().getName() + "线程先去忙其他事情了");
+        
+    }
+
+    // 证明CompletableFuture可以完成Future的功能
+    private static void futureLikeDemo() throws InterruptedException, ExecutionException {
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
 
         CompletableFuture<Integer> integerCompletableFuture = CompletableFuture.supplyAsync(() -> {
             System.out.println(Thread.currentThread().getName() + "---come in");
@@ -28,7 +54,6 @@ public class CompletableFutureDemo {
         System.out.println(integerCompletableFuture.get());
 
         executorService.shutdown();
-
     }
 
     // 创建一个CompletableFuture的四种静态方法
