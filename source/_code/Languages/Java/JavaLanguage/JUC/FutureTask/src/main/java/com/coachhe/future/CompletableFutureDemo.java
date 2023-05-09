@@ -8,6 +8,22 @@ import java.util.concurrent.*;
  */
 public class CompletableFutureDemo {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        CompletableFuture<String> stringCompletableFuture = CompletableFuture.supplyAsync(() -> {
+            System.out.println(Thread.currentThread().getName());
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return "hello supplyAsync";
+        }, executorService);
+        System.out.println(stringCompletableFuture.get());
+
+    }
+
+    // 无线程池版本的supplyAsync
+    private static void completableFutureSupplyAsync1() throws InterruptedException, ExecutionException {
         CompletableFuture<String> stringCompletableFuture = CompletableFuture.supplyAsync(() -> {
             System.out.println(Thread.currentThread().getName());
             try {
