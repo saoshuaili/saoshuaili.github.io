@@ -1,4 +1,4 @@
-package com.coachhe.juc.base;
+package com.coachhe.jucBase;
 
 import java.util.concurrent.TimeUnit;
 

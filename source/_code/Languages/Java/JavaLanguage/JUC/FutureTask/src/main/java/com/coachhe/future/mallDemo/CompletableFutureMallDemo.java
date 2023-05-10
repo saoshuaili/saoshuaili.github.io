@@ -1,8 +1,20 @@
-package com.coachhe.future.mallDemo;/** 
+package com.coachhe.future.mallDemo;
+
+/**
  * @PROJECT_NAME: JUC
  * @DESCRIPTION:
  * @AUTHOR: CoachHe
  * @DATE: 2023/5/10 23:06
  */
 public class CompletableFutureMallDemo {
+    public static void main(String[] args) {
+
+    }
+}
+
+@Data
+class Student {
+    private Integer id;
+    private String studentName;
+    private String major;
 }
