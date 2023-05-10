@@ -26,7 +26,7 @@ public class CompletableFutureMallDemo {
         }, executorService);
 
         System.out.println(stringCompletableFuture.get());
-        
+
         executorService.shutdown();
     }
 
