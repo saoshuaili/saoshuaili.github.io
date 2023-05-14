@@ -15,22 +15,34 @@ public class SteamAPIOrder {
     public static void main(String[] args) {
         Stream.of("a", "b", "c", "d", "e")
                 .map(a -> {
-                            System.out.printf("map print: %s\n", a);
+                            try {
+                                System.out.printf("filter %s start\n", a);
+                                TimeUnit.SECONDS.sleep(2);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.printf("filter %s end\n", a);
                             return a.toUpperCase();
                         }
                 )
                 .filter(a -> {
                     try {
-                        System.out.printf("filter %s start", a);
+                        System.out.printf("filter %s start\n", a);
                         TimeUnit.SECONDS.sleep(2);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    System.out.printf("filter %s end", a);
+                    System.out.printf("filter %s end\n", a);
                     return a.equals("B");
                 })
                 .forEach(a -> {
-                    System.out.printf("for each print, %s\n", a);
+                    try {
+                        System.out.printf("foreach %s start\n", a);
+                        TimeUnit.SECONDS.sleep(2);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.printf("foreach %s end\n", a);
                 });
     }
 }
