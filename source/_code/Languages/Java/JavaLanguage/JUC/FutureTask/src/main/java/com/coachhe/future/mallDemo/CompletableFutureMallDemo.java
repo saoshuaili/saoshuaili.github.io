@@ -55,18 +55,26 @@ public class CompletableFutureMallDemo {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 万箭齐发
+     * @param list
+     * @param productName
+     * @return
+     */
     public static List<String> getPriceByCompletableFuture(List<NetMall> list, String productName) {
-        return list.stream().map(netMall -> {
-            CompletableFuture.supplyAsync(() -> {
-                String.format(productName + " in %s pr=ice is %.2f",
-                        netMall.getNetMallName(),
-                        netMall.calcPrice(productName)))})
-        });
+        return list.stream().map(netMall -> CompletableFuture.supplyAsync(() -> String.format(productName + " in %s pr=ice is %.2f",
+                netMall.getNetMallName(),
+                netMall.calcPrice(productName))))
+                .toList()
+                .stream()
+                .map(CompletableFuture::join)
+                .collect(Collectors.toList());
     }
 
     public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
-        List<String> list1 = getPriceStepByStep(list, "mysql");
+//        List<String> list1 = getPriceStepByStep(list, "mysql");
+        List<String> list1 = getPriceByCompletableFuture(list, "mysql");
         for (String element : list1) {
             System.out.println(element);
         }
