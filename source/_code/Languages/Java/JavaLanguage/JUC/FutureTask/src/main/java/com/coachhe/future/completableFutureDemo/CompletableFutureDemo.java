@@ -1,4 +1,4 @@
-package com.coachhe.future;
+package com.coachhe.future.completableFutureDemo;
 
 import java.util.concurrent.*;
 
