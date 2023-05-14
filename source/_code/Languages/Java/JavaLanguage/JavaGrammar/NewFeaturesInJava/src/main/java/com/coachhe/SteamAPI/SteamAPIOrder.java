@@ -15,7 +15,14 @@ import java.util.stream.Stream;
  */
 public class SteamAPIOrder {
     public static void main(String[] args) {
-//        streamOrder();
+        ParallelStreamOrder();
+    }
+
+    /**
+     * 并行流的执行顺序
+     */
+    private static void ParallelStreamOrder() {
+        //        streamOrder();
         List<String> list = new ArrayList<>();
         list.add("a");
         list.add("b");
@@ -52,12 +59,12 @@ public class SteamAPIOrder {
                     }
                     System.out.printf("foreach %s end\n", a);
                 });
-
-
     }
 
 
-
+    /**
+     * 并行流的执行顺序
+     */
     private static void streamOrder() {
         Stream.of("a", "b", "c", "d", "e")
                 .map(a -> {
