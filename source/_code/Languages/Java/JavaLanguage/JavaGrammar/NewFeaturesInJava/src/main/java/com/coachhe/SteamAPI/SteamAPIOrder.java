@@ -13,6 +13,14 @@ import java.util.stream.Stream;
  */
 public class SteamAPIOrder {
     public static void main(String[] args) {
+//        streamOrder();
+        Stream.of("a", "b", "c", "d", "e");
+
+    }
+
+
+
+    private static void streamOrder() {
         Stream.of("a", "b", "c", "d", "e")
                 .map(a -> {
                             try {
