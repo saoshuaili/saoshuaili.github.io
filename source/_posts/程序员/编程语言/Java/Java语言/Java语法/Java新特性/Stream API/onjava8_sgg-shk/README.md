@@ -18,3 +18,7 @@ date: 2023-03-05 22:15:58
 
 对应的代码目录为：[[source/_code/Languages/Java/JavaLanguage/JavaGrammar/OnJava8/Chapter14_StreamingPrograming/README]]
 
+和
+
+[[StreamAPIDemo]]
+
