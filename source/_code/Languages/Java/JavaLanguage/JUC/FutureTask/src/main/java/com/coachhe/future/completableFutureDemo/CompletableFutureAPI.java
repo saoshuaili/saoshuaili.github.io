@@ -24,15 +24,17 @@ public class CompletableFutureAPI {
             System.out.println("111");
             return 1024;
         }).thenApply(f -> {
+            int a = 10 / 0;
             System.out.println("222");
             return f + 1;
         }).thenApply(f -> {
-            int a = 10 / 0;
+//            int a = 10 / 0;
             System.out.println("333");
             return f + 1;
         }).whenCompleteAsync((v,e) -> {
             System.out.println("---v: " + v);
         }).exceptionally(e -> {
+            System.out.println("hi");
             e.printStackTrace();
             return null;
         });
