@@ -12,11 +12,11 @@ import java.util.stream.Stream;
  */
 public class SteamAPIOrder {
     public static void main(String[] args) {
-        Stream.of("a", "b", "c", "d", "e").map(
-                a -> {
-                    System.out.println(a);
-                    return a.toUpperCase();
-                }
-        );
+        Stream.of("a", "b", "c", "d", "e")
+                .map(a -> {
+                            System.out.println(a);
+                            return a.toUpperCase();
+                        }
+                ).forEach(System.out::println);
     }
 }
