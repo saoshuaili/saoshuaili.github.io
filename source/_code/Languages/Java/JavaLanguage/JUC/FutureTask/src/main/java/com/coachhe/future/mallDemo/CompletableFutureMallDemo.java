@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import lombok.experimental.Accessors;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +44,7 @@ public class CompletableFutureMallDemo {
      * @param productName
      * @return
      */
-    public static List<String> getPrice(List<NetMall> list, String productName){
+    public static List<String> getPriceStepByStep(List<NetMall> list, String productName){
         return list
                 .stream()
                 .map(netMall ->
@@ -57,7 +56,7 @@ public class CompletableFutureMallDemo {
 
     public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
-        List<String> list1 = getPrice(list, "mysql");
+        List<String> list1 = getPriceStepByStep(list, "mysql");
         for (String element : list1) {
             System.out.println(element);
         }
