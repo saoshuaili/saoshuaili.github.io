@@ -35,17 +35,13 @@ public class CompletableFutureAPI {
             e.printStackTrace();
             return null;
         });
-
         System.out.println("------ 主线程结束");
-
         // 主线程不立即结束，否则默认使用的线程池会关闭
         try {
             TimeUnit.SECONDS.sleep(2);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
     }
 
     private static void completeAPIDemo() throws InterruptedException, ExecutionException {
