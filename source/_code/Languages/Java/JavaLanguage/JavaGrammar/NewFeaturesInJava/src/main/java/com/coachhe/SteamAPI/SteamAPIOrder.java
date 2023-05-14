@@ -14,12 +14,12 @@ public class SteamAPIOrder {
     public static void main(String[] args) {
         Stream.of("a", "b", "c", "d", "e")
                 .map(a -> {
-                            System.out.println(a);
+                            System.out.printf("map print: %s", a);
                             return a.toUpperCase();
                         }
                 )
                 .filter(a -> {
-                    System.out.printf("%s equals B ? %s\n", a, a.equals("B"));
+                    System.out.printf("filter print: %s equals B ? %s\n", a, a.equals("B"));
                     return a.equals("B");
                 })
                 .forEach(a -> {
