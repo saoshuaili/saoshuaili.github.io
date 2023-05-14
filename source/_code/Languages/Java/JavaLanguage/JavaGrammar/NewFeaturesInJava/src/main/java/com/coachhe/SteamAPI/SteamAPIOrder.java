@@ -19,7 +19,7 @@ public class SteamAPIOrder {
                         }
                 )
                 .filter(a -> {
-                    System.out.printf("%s equals b ? %s", a, a.equals("b"));
+                    System.out.printf("%s equals b ? %s\n", a, a.equals("b"));
                     return a.equals("b");
                 })
                 .forEach(System.out::println);
