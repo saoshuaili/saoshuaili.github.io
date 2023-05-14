@@ -2,6 +2,7 @@ package com.coachhe.SteamAPI;
 
 import org.w3c.dom.ls.LSOutput;
 
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 /**
@@ -19,7 +20,13 @@ public class SteamAPIOrder {
                         }
                 )
                 .filter(a -> {
-                    System.out.printf("filter print: %s equals B ? %s\n", a, a.equals("B"));
+                    try {
+                        System.out.printf("filter %s start", a);
+                        TimeUnit.SECONDS.sleep(2);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.printf("filter %s end", a);
                     return a.equals("B");
                 })
                 .forEach(a -> {
