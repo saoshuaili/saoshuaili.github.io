@@ -27,6 +27,7 @@ public class CompletableFutureAPI {
             System.out.println("222");
             return f + 1;
         }).thenApply(f -> {
+            int a = 10 / 0;
             System.out.println("333");
             return f + 1;
         }).whenCompleteAsync((v,e) -> {
