@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -52,6 +53,15 @@ public class CompletableFutureMallDemo {
                                 netMall.getNetMallName(),
                                 netMall.calcPrice(productName)))
                 .collect(Collectors.toList());
+    }
+
+    public static List<String> getPriceByCompletableFuture(List<NetMall> list, String productName) {
+        return list.stream().map(netMall -> {
+            CompletableFuture.supplyAsync(() -> {
+                String.format(productName + " in %s pr=ice is %.2f",
+                        netMall.getNetMallName(),
+                        netMall.calcPrice(productName)))})
+        });
     }
 
     public static void main(String[] args) {
