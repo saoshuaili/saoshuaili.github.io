@@ -14,6 +14,16 @@ public class CompletableFutureAPI {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
 //        completeAPIDemo();
+//        thenApplyAPIDemo();
+        CompletableFuture.supplyAsync(() -> 1)
+                .thenApply(f -> f + 2)
+                .thenApply(f -> f + 3)
+                .thenApply(f -> f + 4)
+                .thenAccept(System.out::println);
+    }
+
+    private static void thenApplyAPIDemo() {
+        //        completeAPIDemo();
         CompletableFuture.supplyAsync(() -> {
             // 暂停几秒钟线程
             try {
@@ -31,7 +41,7 @@ public class CompletableFutureAPI {
 //            int a = 10 / 0;
             System.out.println("333");
             return f + 1;
-        }).whenCompleteAsync((v,e) -> {
+        }).whenCompleteAsync((v, e) -> {
             System.out.println("---v: " + v);
         }).exceptionally(e -> {
             System.out.println("hi");
