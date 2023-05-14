@@ -67,7 +67,10 @@ public class CompletableFutureMallDemo {
                 netMall.calcPrice(productName))))
                 .toList()
                 .stream()
-                .map(CompletableFuture::join)
+                .map(s -> {
+                    System.out.printf("map print: %s", s);
+                    return s.join();
+                })
                 .collect(Collectors.toList());
     }
 
