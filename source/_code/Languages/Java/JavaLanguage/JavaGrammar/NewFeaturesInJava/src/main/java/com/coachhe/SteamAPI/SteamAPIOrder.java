@@ -16,12 +16,12 @@ public class SteamAPIOrder {
         Stream.of("a", "b", "c", "d", "e")
                 .map(a -> {
                             try {
-                                System.out.printf("filter %s start\n", a);
+                                System.out.printf("map %s start\n", a);
                                 TimeUnit.SECONDS.sleep(2);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            System.out.printf("filter %s end\n", a);
+                            System.out.printf("map %s end\n", a);
                             return a.toUpperCase();
                         }
                 )
