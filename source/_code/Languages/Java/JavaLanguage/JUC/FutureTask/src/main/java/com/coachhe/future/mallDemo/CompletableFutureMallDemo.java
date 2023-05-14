@@ -63,7 +63,24 @@ public class CompletableFutureMallDemo {
      * @return
      */
     public static List<String> getPriceByCompletableFuture(List<NetMall> list, String productName) {
-        return list.stream()
+//        return list.stream()
+//                .map(netMall -> {
+//                            System.out.printf("map1 print: %s\n", netMall.getNetMallName());
+//                            return CompletableFuture.supplyAsync(
+//                                    () -> String.format(productName + " in %s pr=ice is %.2f", netMall.getNetMallName(), netMall.calcPrice(productName))
+//                            );
+//                        }
+//                )
+//                .toList()
+//                .stream()
+//                .map(s -> {
+//                    system.out.printf("map2 print: %s\n", s.join());
+//                    return s.join();
+//                })
+//                .collect(collectors.tolist());
+
+        // 第二种等价的写法
+        List<CompletableFuture<String>> list1 = list.stream()
                 .map(netMall -> {
                             System.out.printf("map1 print: %s\n", netMall.getNetMallName());
                             return CompletableFuture.supplyAsync(
@@ -71,13 +88,17 @@ public class CompletableFutureMallDemo {
                             );
                         }
                 )
-                .toList()
+                .toList();
+        return list1
                 .stream()
-                .map(s -> {
-                    System.out.printf("map2 print: %s\n", s.join());
-                    return s.join();
-                })
-                .collect(Collectors.toList());
+                .map(netMall -> {
+                            System.out.printf("map1 print: %s\n", netMall.getNetMallName());
+                            return CompletableFuture.supplyAsync(
+                                    () -> String.format(productName + " in %s pr=ice is %.2f", netMall.getNetMallName(), netMall.calcPrice(productName))
+                            );
+                        }
+                )
+                .toList();
     }
 
     public static void main(String[] args) {
