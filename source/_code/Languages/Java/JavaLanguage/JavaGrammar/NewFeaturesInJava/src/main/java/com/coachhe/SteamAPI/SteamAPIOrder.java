@@ -14,7 +14,7 @@ public class SteamAPIOrder {
     public static void main(String[] args) {
         Stream.of("a", "b", "c", "d", "e")
                 .map(a -> {
-                            System.out.printf("map print: %s", a);
+                            System.out.printf("map print: %s\n", a);
                             return a.toUpperCase();
                         }
                 )
