@@ -68,7 +68,7 @@ public class CompletableFutureMallDemo {
                 .toList()
                 .stream()
                 .map(s -> {
-                    System.out.printf("map print: %s", s);
+                    System.out.printf("map print: %s\n", s.join());
                     return s.join();
                 })
                 .collect(Collectors.toList());
