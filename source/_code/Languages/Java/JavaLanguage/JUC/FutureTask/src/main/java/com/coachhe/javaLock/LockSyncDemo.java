@@ -16,6 +16,6 @@ public class LockSyncDemo {
     }
 
     public static void main(String[] args) {
-        
+
     }
 }
