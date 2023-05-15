@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class BasicLock {
     public static void main(String[] args) {
         Phone phone = new Phone();
-//        Phone phone2 = new Phone();
+        Phone phone2 = new Phone();
 //        new Thread(phone::sendEmail, "a").start();
         new Thread(() -> {
             phone.sendEmail();
@@ -23,7 +23,7 @@ public class BasicLock {
             e.printStackTrace();
         }
         new Thread(() -> {
-            phone.sendSMS();
+            phone2.sendSMS();
         }, "a").start();
 //        new Thread(phone2::sendSMS, "b").start();
 //        new Thread(phone::hello, "b").start();
