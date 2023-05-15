@@ -11,21 +11,27 @@ import java.util.concurrent.TimeUnit;
 public class BasicLock {
     public static void main(String[] args) {
         Phone phone = new Phone();
-        Phone phone2 = new Phone();
-        new Thread(phone::sendEmail, "a").start();
+//        Phone phone2 = new Phone();
+//        new Thread(phone::sendEmail, "a").start();
+        new Thread(() -> {
+            phone.sendEmail();
+        }, "a").start();
         // 暂停200毫秒，保证a线程先启动
         try {
             TimeUnit.MILLISECONDS.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        new Thread(phone2::sendSMS, "b").start();
+        new Thread(() -> {
+            phone.sendSMS();
+        }, "a").start();
+//        new Thread(phone2::sendSMS, "b").start();
 //        new Thread(phone::hello, "b").start();
     }
 }
 
 class Phone {
-    public synchronized void sendEmail(){
+    public static synchronized void sendEmail() {
         try {
             TimeUnit.SECONDS.sleep(3);
         } catch (InterruptedException e) {
@@ -33,9 +39,11 @@ class Phone {
         }
         System.out.println("------sendEmail");
     }
-    public synchronized void sendSMS() {
+
+    public static synchronized void sendSMS() {
         System.out.println("------sendSMS");
     }
+
     public void hello() {
         System.out.println("-------hello");
     }
