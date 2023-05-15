@@ -19,7 +19,8 @@ public class BasicLock {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-        new Thread(phone::sendSMS, "b").start();
+//        new Thread(phone::sendSMS, "b").start();
+        new Thread(phone::hello, "b").start();
     }
 }
 
