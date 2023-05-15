@@ -15,6 +15,10 @@ public class LockSyncDemo {
         }
     }
 
+    public synchronized void m2() {
+        System.out.println("---- hello synchronized code m2");
+    }
+
     public static void main(String[] args) {
 
     }
