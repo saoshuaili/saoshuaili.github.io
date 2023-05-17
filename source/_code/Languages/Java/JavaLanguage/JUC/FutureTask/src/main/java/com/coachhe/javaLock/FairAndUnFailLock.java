@@ -35,7 +35,9 @@ class TicKet{
 
     private int number = 30;
     // 非公平锁
-    ReentrantLock lock = new ReentrantLock();
+//    ReentrantLock lock = new ReentrantLock();
+    // 公平锁
+    ReentrantLock lock = new ReentrantLock(true);
 
     public void sale() {
         lock.lock();
