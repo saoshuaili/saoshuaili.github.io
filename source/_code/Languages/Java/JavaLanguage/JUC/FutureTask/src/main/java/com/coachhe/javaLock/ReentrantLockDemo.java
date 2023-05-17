@@ -44,15 +44,13 @@ public class ReentrantLockDemo {
                 lock.lock();
                 try {
                     System.out.println(Thread.currentThread().getName() + "\t -- 内层调用");
-                } catch (Exception e){
-                    e.printStackTrace();
-
+                } finally {
+                    lock.unlock();
                 }
-            } catch (Exception e){
-                e.printStackTrace();
-
+            } finally {
+                lock.unlock();
             }
-        })
+        }, "t1").start();
     }
 
 }
