@@ -1,5 +1,8 @@
 package com.coachhe.javaLock;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * @PROJECT_NAME: JUC
  * @DESCRIPTION: 可重入锁，不是 ReEntrantLock类
@@ -31,9 +34,25 @@ public class ReentrantLockDemo {
         m2(i - 1);
     }
 
+    public static Lock lock = new ReentrantLock();
+
     public static void main(String[] args) {
-//        m1();
-        m2(3);
+        new Thread(() -> {
+            lock.lock();
+            try {
+                System.out.println(Thread.currentThread().getName() + "\t -- 外层调用");
+                lock.lock();
+                try {
+                    System.out.println(Thread.currentThread().getName() + "\t -- 内层调用");
+                } catch (Exception e){
+                    e.printStackTrace();
+
+                }
+            } catch (Exception e){
+                e.printStackTrace();
+
+            }
+        })
     }
 
 }
