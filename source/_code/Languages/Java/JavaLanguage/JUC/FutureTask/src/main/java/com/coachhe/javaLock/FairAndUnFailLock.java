@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @DATE: 2023/5/18 0:29
  * @DESCRIPTION: 公平锁和非公平锁
  */
-public class FairAndNotFailLock {
+public class FairAndUnfailLock {
 
     public static void main(String[] args) {
         TicKet ticKet = new TicKet();
