@@ -37,6 +37,11 @@ public class ReentrantLockDemo {
     public static Lock lock = new ReentrantLock();
 
     public static void main(String[] args) {
+        lockDemo();
+    }
+
+    // lock可重入案例
+    private static void lockDemo() {
         new Thread(() -> {
             lock.lock();
             try {
