@@ -7,7 +7,7 @@ package com.coachhe.javaLock;
  * @DATE: 2023/5/16 1:30
  */
 public class LockSyncDemo {
-    Object object = new Object();
+    final Object object = new Object();
 
     public void m1() {
         synchronized (object) {
