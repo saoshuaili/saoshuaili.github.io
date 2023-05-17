@@ -13,7 +13,7 @@ public class DeadLockDemo {
     public static void main(String[] args) {
         m1();
     }
-    
+
     public static void m1(){
         Object o1 = new Object();
         Object o2 = new Object();
