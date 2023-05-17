@@ -13,7 +13,7 @@ public class DeadLockDemo {
 
         new Thread(() -> {
             synchronized (o1) {
-                System.out.println(Thread.currentThread().getName() + "\t 持有o1");
+                System.out.println(Thread.currentThread().getName() + "\t 持有o1锁，想获得o2锁");
             }
         })
     }
