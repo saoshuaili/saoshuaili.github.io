@@ -22,8 +22,18 @@ public class ReentrantLockDemo {
         }, "a").start();
     }
 
+    // 在同步方法中实现可重入
+    public static synchronized void m2(int i) {
+        System.out.printf("---- print: %s ----\n", i);
+        if (i <= 0) {
+            return;
+        }
+        m2(i - 1);
+    }
+
     public static void main(String[] args) {
-        m1();
+//        m1();
+        m2(3);
     }
 
 }
