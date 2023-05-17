@@ -4,11 +4,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @PROJECT_NAME: JUC
- * @DESCRIPTION:
+ * @DESCRIPTION: 乐观锁和悲观锁
  * @AUTHOR: CoachHe
  * @DATE: 2023/5/16 1:30
  */
-public class LockSyncDemo {
+public class PessimisticLocAndOptimisticLockDemo {
     final Object object = new Object();
 
     // 悲观锁 demo1
