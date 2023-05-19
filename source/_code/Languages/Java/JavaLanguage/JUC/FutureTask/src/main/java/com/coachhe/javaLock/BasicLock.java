@@ -21,6 +21,9 @@ import java.util.concurrent.TimeUnit;
 public class BasicLock {
     public static void main(String[] args) {
 
+
+
+
         Phone phone = new Phone();
         Phone phone2 = new Phone();
 //        new Thread(phone::sendEmail, "a").start();
