@@ -21,12 +21,6 @@ import java.util.concurrent.TimeUnit;
 public class BasicLock {
     public static void main(String[] args) {
 
-        long a = 2000L;
-        long b = Long.MAX_VALUE;
-        System.out.println((int)Math.ceil((double)a / (double)b));
-        System.out.println((double)Long.MAX_VALUE);
-        System.out.println(Math.ceil(24.2));
-
         Phone phone = new Phone();
         Phone phone2 = new Phone();
 //        new Thread(phone::sendEmail, "a").start();
