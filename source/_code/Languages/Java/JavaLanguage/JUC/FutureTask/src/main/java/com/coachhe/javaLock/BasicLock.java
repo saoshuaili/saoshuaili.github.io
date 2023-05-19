@@ -1,5 +1,7 @@
 package com.coachhe.javaLock;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,9 +22,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class BasicLock {
     public static void main(String[] args) {
-
-
-
 
         Phone phone = new Phone();
         Phone phone2 = new Phone();
