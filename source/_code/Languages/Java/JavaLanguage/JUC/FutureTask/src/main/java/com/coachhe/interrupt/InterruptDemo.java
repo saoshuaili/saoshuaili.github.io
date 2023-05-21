@@ -17,10 +17,22 @@ public class InterruptDemo {
             }
             System.out.println("after t1.interrupt()---第2次---" +
                     Thread.currentThread().isInterrupted());
-            
         }, "t1");
         t1.start();
-
+        System.out.println("before t1.interrupt()---" + t1.isInterrupted());
+        t1.interrupt();
+        try {
+            TimeUnit.MILLISECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("after t1.interrupt()---第1次---" + t1.isInterrupted());
+        try {
+            TimeUnit.MILLISECONDS.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("after t1.interrupt()---第3次---" + t1.isInterrupted());
 
     }
 
