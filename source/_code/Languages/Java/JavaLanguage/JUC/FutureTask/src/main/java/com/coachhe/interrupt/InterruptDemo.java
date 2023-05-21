@@ -12,7 +12,7 @@ public class InterruptDemo {
 
     public static void main(String[] args) {
         Thread t1 = new Thread(() -> {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 300; i++) {
                 System.out.println("------" + i);
             }
             System.out.println("after t1.interrupt()---第2次---" +
@@ -22,7 +22,7 @@ public class InterruptDemo {
         System.out.println("before t1.interrupt()---" + t1.isInterrupted());
         t1.interrupt();
         try {
-            TimeUnit.MILLISECONDS.sleep(3);
+            TimeUnit.MILLISECONDS.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
