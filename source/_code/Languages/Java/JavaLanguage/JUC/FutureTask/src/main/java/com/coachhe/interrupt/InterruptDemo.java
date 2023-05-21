@@ -25,12 +25,14 @@ public class InterruptDemo {
             System.out.println("-----hello interruptDemo03");
         }, "t1");
         t1.start();
+        System.out.println("before t1.interrupt()---" + t1.isInterrupted());
+        t1.interrupt();
         try {
             TimeUnit.MILLISECONDS.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        new Thread(t1::interrupt).start();
+        System.out.println("after t1.interrupt()---第3次---" + t1.isInterrupted());
     }
 
     /**
