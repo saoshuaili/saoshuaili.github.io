@@ -17,6 +17,32 @@ public class InterruptDemo {
             }
             System.out.println("after t1.interrupt()---第2次---" +
                     Thread.currentThread().isInterrupted());
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("-----hello interruptDemo03");
+        }, "t1");
+        t1.start();
+        try {
+            TimeUnit.MILLISECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        new Thread(t1::interrupt).start();
+    }
+
+    /**
+     * 前手案例，证明线程的中断标识符置为true之后，不会影响线程的正常运行
+     */
+    private static void interruptDemo02() {
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 300; i++) {
+                System.out.println("------" + i);
+            }
+            System.out.println("after t1.interrupt()---第2次---" +
+                    Thread.currentThread().isInterrupted());
         }, "t1");
         t1.start();
         System.out.println("before t1.interrupt()---" + t1.isInterrupted());
@@ -33,7 +59,6 @@ public class InterruptDemo {
             e.printStackTrace();
         }
         System.out.println("after t1.interrupt()---第3次---" + t1.isInterrupted());
-
     }
 
     /**
