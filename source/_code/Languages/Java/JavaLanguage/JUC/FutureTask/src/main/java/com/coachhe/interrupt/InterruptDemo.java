@@ -4,13 +4,30 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @PROJECT_NAME: JUC
- * @DESCRIPTION:
+ * @DESCRIPTION: 中断的基本使用
  * @AUTHOR: CoachHe
  * @DATE: 2023/5/21 22:48
  */
 public class InterruptDemo {
 
     public static void main(String[] args) {
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 300; i++) {
+                System.out.println("------" + i);
+            }
+            System.out.println("after t1.interrupt()---第2次---" +
+                    Thread.currentThread().isInterrupted());
+            
+        }, "t1");
+        t1.start();
+
+
+    }
+
+    /**
+     * 中断的基本使用
+     */
+    private static void interruptDemo01() {
         Thread t1 = new Thread(() -> {
             while (true) {
                 if (Thread.currentThread().isInterrupted()) {
