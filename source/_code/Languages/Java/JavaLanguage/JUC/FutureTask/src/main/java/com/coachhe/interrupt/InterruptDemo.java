@@ -22,7 +22,7 @@ public class InterruptDemo {
         }, "t1");
         t1.start();
         try {
-            TimeUnit.MILLISECONDS.sleep(20);
+            TimeUnit.MILLISECONDS.sleep(2);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
