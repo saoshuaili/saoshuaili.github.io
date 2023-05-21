@@ -17,20 +17,15 @@ public class InterruptDemo {
                     System.out.println(Thread.currentThread().getName() + "\t stop");
                     break;
                 }
+                System.out.println("t1 ---hello interrupt");
             }
         }, "t1");
         t1.start();
-
         try {
-            TimeUnit.MILLISECONDS.sleep(200);
+            TimeUnit.MILLISECONDS.sleep(20);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
-
-
-
+        new Thread(t1::interrupt, "t1").start();
     }
-
 }
