@@ -1,5 +1,6 @@
 package com.coachhe.interrupt;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -11,6 +12,17 @@ import java.util.concurrent.TimeUnit;
 public class InterruptDemo {
 
     public static void main(String[] args) {
+        StringBuilder sb = new StringBuilder("hello");
+        byte[] bytes = sb.toString().getBytes(StandardCharsets.UTF_8);
+        int contextLength = 0;
+        contextLength += sb.length();
+        System.out.println(contextLength);
+        for (byte b : bytes) {
+            System.out.println(b);
+        }
+    }
+
+    private static void interruptDemo03() {
         Thread t1 = new Thread(() -> {
             for (int i = 0; i < 300; i++) {
                 System.out.println("------" + i);
