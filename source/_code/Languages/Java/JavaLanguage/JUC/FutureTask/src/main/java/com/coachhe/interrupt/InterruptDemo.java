@@ -17,13 +17,16 @@ public class InterruptDemo {
 
     private static void interruptDemo03() {
         Thread t1 = new Thread(() -> {
-            for (int i = 0; i < 300; i++) {
-                System.out.println("------" + i);
+            while (true) {
+                if (Thread.currentThread().isInterrupted()){
+                    System.out.println(Thread.currentThread().getName() + "\t" +
+                            "中断标志位: " + Thread.currentThread().isInterrupted() + "程序终止");
+                    break;
+                }
+
             }
-            System.out.println("after t1.interrupt()---第2次---" +
-                    Thread.currentThread().isInterrupted());
             try {
-                Thread.sleep(1);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
