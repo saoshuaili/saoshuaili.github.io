@@ -12,9 +12,18 @@ import java.util.concurrent.TimeUnit;
 public class InterruptDemo {
 
     public static void main(String[] args) {
-        interruptDemo03();
+        System.out.println(Thread.currentThread().getName() + "\t" + Thread.interrupted());
+        System.out.println(Thread.currentThread().getName() + "\t" + Thread.interrupted());
+        System.out.println("----1");
+        Thread.currentThread().interrupt();
+        System.out.println("----2");
+        System.out.println(Thread.currentThread().getName() + "\t" + Thread.interrupted());
+        System.out.println(Thread.currentThread().getName() + "\t" + Thread.interrupted());
     }
 
+    /**
+     * 表明在执行sleep方法时，其他线程调用该线程的中断方法，那么会直接抛出异常，同时中断标识会被重新置位false
+     */
     private static void interruptDemo03() {
         Thread t1 = new Thread(() -> {
             while (true) {
