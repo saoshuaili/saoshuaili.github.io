@@ -23,24 +23,21 @@ public class InterruptDemo {
                             "中断标志位: " + Thread.currentThread().isInterrupted() + "程序终止");
                     break;
                 }
-
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("-----hello interruptDemo03");
             }
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println("-----hello interruptDemo03");
         }, "t1");
         t1.start();
-        System.out.println("before t1.interrupt()---" + t1.isInterrupted());
-        t1.interrupt();
         try {
             TimeUnit.MILLISECONDS.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("after t1.interrupt()---第3次---" + t1.isInterrupted());
+        new Thread(t1::interrupt).start();
     }
 
     /**
