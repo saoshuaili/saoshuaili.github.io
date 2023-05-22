@@ -12,14 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class InterruptDemo {
 
     public static void main(String[] args) {
-        StringBuilder sb = new StringBuilder("hello");
-        byte[] bytes = sb.toString().getBytes(StandardCharsets.UTF_8);
-        int contextLength = 0;
-        contextLength += sb.length();
-        System.out.println(contextLength);
-        for (byte b : bytes) {
-            System.out.println(b);
-        }
+        interruptDemo03();
     }
 
     private static void interruptDemo03() {
