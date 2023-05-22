@@ -23,7 +23,7 @@ public class InterruptDemo {
             System.out.println("after t1.interrupt()---第2次---" +
                     Thread.currentThread().isInterrupted());
             try {
-                Thread.sleep(200);
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
