@@ -41,7 +41,7 @@ public class LockSupportDemo {
     }
 
     // 展示了去掉synchronized之后对锁的操作会报错
-    private static void LockSupportDemo02() {
+    private static void () {
         Object objectLock = new Object();
 
         Thread t1 = new Thread(() -> {
