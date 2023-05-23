@@ -38,7 +38,6 @@ public class LockSupportDemo {
 //            }
         }, "t2");
         t2.start();
-
     }
 
     // 表明正常情况下，wait和notify的用法
