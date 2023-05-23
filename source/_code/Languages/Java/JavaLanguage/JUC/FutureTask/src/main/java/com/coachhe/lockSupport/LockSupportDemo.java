@@ -16,6 +16,27 @@ public class LockSupportDemo {
 
     public static void main(String[] args) {
         Thread t1 = new Thread(() -> {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + "\t --- come in");
+            LockSupport.park();
+            System.out.println(Thread.currentThread().getName() + "\t ---over");
+        }, "t1");
+        t1.start();
+
+        new Thread(() -> {
+            LockSupport.unpark(t1);
+            System.out.println(Thread.currentThread().getName() + "\t --- 进行唤醒");
+        }, "t1").start();
+    }
+
+
+    // 展现了park和unpark方法的基本使用
+    private static void lockSupportDemo01() {
+        Thread t1 = new Thread(() -> {
             System.out.println(Thread.currentThread().getName() + "\t --- come in");
             LockSupport.park();
             System.out.println(Thread.currentThread().getName() + "\t ---over");
