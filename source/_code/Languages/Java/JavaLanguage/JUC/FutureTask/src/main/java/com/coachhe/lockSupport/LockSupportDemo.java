@@ -23,6 +23,28 @@ public class LockSupportDemo {
             }
             System.out.println(Thread.currentThread().getName() + "\t --- come in");
             LockSupport.park();
+            LockSupport.park();
+            System.out.println(Thread.currentThread().getName() + "\t ---over");
+        }, "t1");
+        t1.start();
+
+        new Thread(() -> {
+            LockSupport.unpark(t1);
+            LockSupport.unpark(t1);
+            System.out.println(Thread.currentThread().getName() + "\t --- 进行唤醒");
+        }, "t1").start();
+    }
+
+    // 展示先唤醒后阻塞也是可行的
+    private static void lockSupportDemo02() {
+        Thread t1 = new Thread(() -> {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println(Thread.currentThread().getName() + "\t --- come in");
+            LockSupport.park();
             System.out.println(Thread.currentThread().getName() + "\t ---over");
         }, "t1");
         t1.start();
