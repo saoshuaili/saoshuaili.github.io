@@ -11,17 +11,47 @@ import java.util.concurrent.TimeUnit;
 public class LockSupportDemo {
 
     public static void main(String[] args) {
-
         Object objectLock = new Object();
 
         Thread t1 = new Thread(() -> {
-//            synchronized (objectLock) {
+            // 暂停几秒钟线程
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            synchronized (objectLock) {
                 System.out.println(Thread.currentThread().getName() + "\t ---come in");
                 try {
                     objectLock.wait();  /// --- 先等待
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
+        }, "t1");
+        t1.start();
+
+        Thread t2 = new Thread(() -> {
+//            synchronized (objectLock) {
+            objectLock.notify(); // ---唤醒
+            System.out.println(Thread.currentThread().getName() + "\t --- 发出通知");
+//            }
+        }, "t2");
+        t2.start();
+    }
+
+    // 展示了去掉synchronized之后对锁的操作会报错
+    private static void LockSupportDemo02() {
+        Object objectLock = new Object();
+
+        Thread t1 = new Thread(() -> {
+//            synchronized (objectLock) {
+            System.out.println(Thread.currentThread().getName() + "\t ---come in");
+            try {
+                objectLock.wait();  /// --- 先等待
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 //            }
         }, "t1");
         t1.start();
@@ -33,8 +63,8 @@ public class LockSupportDemo {
         }
         Thread t2 = new Thread(() -> {
 //            synchronized (objectLock) {
-                objectLock.notify(); // ---唤醒
-                System.out.println(Thread.currentThread().getName() + "\t --- 发出通知");
+            objectLock.notify(); // ---唤醒
+            System.out.println(Thread.currentThread().getName() + "\t --- 发出通知");
 //            }
         }, "t2");
         t2.start();
