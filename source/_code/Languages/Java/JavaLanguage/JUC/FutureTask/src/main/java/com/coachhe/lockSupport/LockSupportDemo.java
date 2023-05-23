@@ -3,6 +3,7 @@ package com.coachhe.lockSupport;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -14,6 +15,21 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LockSupportDemo {
 
     public static void main(String[] args) {
+        Thread t1 = new Thread(() -> {
+            System.out.println(Thread.currentThread().getName() + "\t --- come in");
+            LockSupport.park();
+            System.out.println(Thread.currentThread().getName() + "\t ---over");
+        }, "t1");
+        t1.start();
+
+        new Thread(() -> {
+            LockSupport.unpark(t1);
+            System.out.println(Thread.currentThread().getName() + "\t --- 进行唤醒");
+        }, "t1").start();
+    }
+
+    // 讲解了await和signal的用法
+    private static void awaitAndSignalDemo() {
         Lock lock = new ReentrantLock();
         Condition condition = lock.newCondition();
 
