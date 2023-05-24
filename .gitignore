@@ -54,6 +54,7 @@ atlassian-ide-plugin.xml
 .obsidian/plugins/recent-files-obsidian
 .obsidian/plugins/text-extractor/cache
 .obsidian/workspace.json
+.obsidian/vault-stats.json
 
 # 远端服务器配置
 nohup.out
