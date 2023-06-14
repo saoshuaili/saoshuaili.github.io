@@ -1,5 +1,7 @@
 package com.coachhe.jmm;
 
+import sun.misc.Unsafe;
+
 /**
  * @PROJECT_NAME: JUC
  * @DESCRIPTION:
@@ -11,7 +13,7 @@ public class DoubleCheckLockSingleton {
     private static DoubleCheckLockSingleton instance = null;
 
     private DoubleCheckLockSingleton() {
-
+        Unsafe unsafe = Unsafe.getUnsafe();
     }
 
     // DCL
