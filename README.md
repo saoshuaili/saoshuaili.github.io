@@ -1,3 +1,4 @@
 # 简介
 
-作者本人是一个 tencent 打工人，记录了一路的学习经历~
+从https://github.com/CoachHe/coachhe.github.io
+拉个hexo源码当我的知识库使用
