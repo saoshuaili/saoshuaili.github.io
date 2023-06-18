@@ -1,0 +1,773 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1 进程间通信分类 管道 XSI -&gt; SysV 网络套接字  其中1和2是在同一台主机上的，3是在不同主机上的。 管道内核提供，单工通信（一端作为读端，一端作为写端），自同步机制 管道分类 匿名管道匿名管道是由内核创建的，磁盘不可见（也就是使用ls命令时看不到），通过调用pipe函数创建一个匿名管道。 命名管道  管道的创建通过调用pipe函数创建一个匿名管道 123#include &amp;l">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APUE-15-进程间通信">
+<meta property="og:url" content="http://example.com/2022/12/bd95ec7aebba.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="1 进程间通信分类 管道 XSI -&gt; SysV 网络套接字  其中1和2是在同一台主机上的，3是在不同主机上的。 管道内核提供，单工通信（一端作为读端，一端作为写端），自同步机制 管道分类 匿名管道匿名管道是由内核创建的，磁盘不可见（也就是使用ls命令时看不到），通过调用pipe函数创建一个匿名管道。 命名管道  管道的创建通过调用pipe函数创建一个匿名管道 123#include &amp;l">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63658f81f7e3bd97ee579.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63633f81f7e3bd97eddb4.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6361ff81f7e3bd97eda29.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6369df81f7e3bd97f3894.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6367cf81f7e3bd97f06eb.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63694f81f7e3bd97f2e75.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63707f81f7e3bd97f5228.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63658f81f7e3bd97ee57e.jpg">
+<meta property="article:published_time" content="2022-12-03T18:38:42.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pic.downk.cc/item/5fc63658f81f7e3bd97ee579.jpg">
+  
+  
+  
+  <title>APUE-15-进程间通信 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="APUE-15-进程间通信"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:38" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          50 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">APUE-15-进程间通信</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-进程间通信分类"><a href="#1-进程间通信分类" class="headerlink" title="1 进程间通信分类"></a>1 进程间通信分类</h1><ol>
+<li>管道</li>
+<li>XSI -&gt; SysV</li>
+<li>网络套接字</li>
+</ol>
+<p>其中1和2是在同一台主机上的，3是在不同主机上的。</p>
+<h2 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h2><p>内核提供，单工通信（一端作为读端，一端作为写端），自同步机制</p>
+<h3 id="管道分类"><a href="#管道分类" class="headerlink" title="管道分类"></a>管道分类</h3><ol>
+<li>匿名管道<br>匿名管道是由内核创建的，磁盘不可见（也就是使用ls命令时看不到），通过调用pipe函数创建一个匿名管道。</li>
+<li>命名管道</li>
+</ol>
+<h3 id="管道的创建"><a href="#管道的创建" class="headerlink" title="管道的创建"></a>管道的创建</h3><p>通过调用pipe函数创建一个匿名管道</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">pipe</span><span class="hljs-params">(<span class="hljs-type">int</span> fd[<span class="hljs-number">2</span>])</span>;<br></code></pre></td></tr></table></figure>
+<p>返回值：<br>若成功返回0，若出错返回-1.<br>并且通过参数fd返回两个文件描述符：fd[0]为读而打开，fd[1]为写而打开。fd[1]的输出是fd[0]的输入。</p>
+<h4 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h4><p>也就是说，通过参数fd返回两个文件，一个文件专门读，一个文件专门写。<br>如图所示：<br><img src="https://pic.downk.cc/item/5fc63658f81f7e3bd97ee579.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>单个进程的管道几乎没有任何用户，通常，进程会先调用pipe，然后调用fork，创建从父进程到子进程的IPC通道，反之亦然。<br>也就是说，父进程先调用pipe，创建两个可以互相沟通的文件，再调用fork，因为fork出来的子进程完全继承了父进程的一切特性，因此他也拥有者两个文件，因此父子进程可以通过这两个文件进行沟通。<br>如图所示：<br><img src="https://pic.downk.cc/item/5fc63633f81f7e3bd97eddb4.jpg" srcset="/img/loading.gif" lazyload></p>
+<h3 id="管道的方向"><a href="#管道的方向" class="headerlink" title="管道的方向"></a>管道的方向</h3><p>对于从父进程到子进程的管道，父进程关闭管道的读端（fd[0]），子进程关闭写端（fd[1]）。<br><img src="https://pic.downk.cc/item/5fc6361ff81f7e3bd97eda29.jpg" srcset="/img/loading.gif" lazyload><br>这样就创建了一个单方向的从父进程到子进程的管道。</p>
+<h3 id="管道实例（fig15-5）"><a href="#管道实例（fig15-5）" class="headerlink" title="管道实例（fig15.5）"></a>管道实例（fig15.5）</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;apue.h&quot;</span></span><br><br><span class="hljs-type">int</span><br><span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-type">int</span>		n;<br>	<span class="hljs-type">int</span>		fd[<span class="hljs-number">2</span>];<br>	<span class="hljs-type">pid_t</span>	pid;<br>	<span class="hljs-type">char</span>	line[MAXLINE];<br><br>	<span class="hljs-keyword">if</span> (pipe(fd) &lt; <span class="hljs-number">0</span>)<br>		err_sys(<span class="hljs-string">&quot;pipe error&quot;</span>);<br>	<span class="hljs-keyword">if</span> ((pid = fork()) &lt; <span class="hljs-number">0</span>) &#123;<br>		err_sys(<span class="hljs-string">&quot;fork error&quot;</span>);<br>	&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pid &gt; <span class="hljs-number">0</span>) &#123;		<span class="hljs-comment">/* parent */</span><br>		close(fd[<span class="hljs-number">0</span>]);<br>		write(fd[<span class="hljs-number">1</span>], <span class="hljs-string">&quot;hello world\n&quot;</span>, <span class="hljs-number">12</span>);<br>	&#125; <span class="hljs-keyword">else</span> &#123;					<span class="hljs-comment">/* child */</span><br>		close(fd[<span class="hljs-number">1</span>]);<br>		n = read(fd[<span class="hljs-number">0</span>], line, MAXLINE);<br>		write(STDOUT_FILENO, line, n);<br>	&#125;<br>	<span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>输出：</p>
+<p><img src="https://pic.downk.cc/item/5fc6369df81f7e3bd97f3894.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>解释：</p>
+<p>可以看到，先创建了一个pipe，然后调用fork创建子进程，将父进程的fd[0]关闭，再将子进程的fd[1]关闭，变成了一个单向管道。</p>
+<h3 id="管道的应用"><a href="#管道的应用" class="headerlink" title="管道的应用"></a>管道的应用</h3><p>我们有一个父进程，此时我们需要通过输入来进行一些操作，而这些操作不可能通过父进程来完成，那么可以先让父进程创建一个管道，然后fork一个子进程，让子进程调用exec，执行接收到的命令。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;apue.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/wait.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span>	DEF_PAGER	<span class="hljs-string">&quot;/bin/more&quot;</span>		<span class="hljs-comment">/* default pager program */</span></span><br><br><span class="hljs-type">int</span><br><span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span><br>&#123;<br>	<span class="hljs-type">int</span>		n;<br>	<span class="hljs-type">int</span>		fd[<span class="hljs-number">2</span>];<br>	<span class="hljs-type">pid_t</span>	pid;<br>	<span class="hljs-type">char</span>	*pager, *argv0;<br>	<span class="hljs-type">char</span>	line[MAXLINE];<br>	FILE	*fp;<br><br>	<span class="hljs-keyword">if</span> (argc != <span class="hljs-number">2</span>)<br>		err_quit(<span class="hljs-string">&quot;usage: a.out &lt;pathname&gt;&quot;</span>);<br><br>	<span class="hljs-keyword">if</span> ((fp = fopen(argv[<span class="hljs-number">1</span>], <span class="hljs-string">&quot;r&quot;</span>)) == <span class="hljs-literal">NULL</span>)<br>		err_sys(<span class="hljs-string">&quot;can&#x27;t open %s&quot;</span>, argv[<span class="hljs-number">1</span>]);<br>	<span class="hljs-keyword">if</span> (pipe(fd) &lt; <span class="hljs-number">0</span>)<br>		err_sys(<span class="hljs-string">&quot;pipe error&quot;</span>);<br><br>	<span class="hljs-keyword">if</span> ((pid = fork()) &lt; <span class="hljs-number">0</span>) &#123;<br>		err_sys(<span class="hljs-string">&quot;fork error&quot;</span>);<br>	&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pid &gt; <span class="hljs-number">0</span>) &#123;								<span class="hljs-comment">/* parent */</span><br>		close(fd[<span class="hljs-number">0</span>]);		<span class="hljs-comment">/* close read end */</span><br><br>		<span class="hljs-comment">/* parent copies argv[1] to pipe */</span><br>		<span class="hljs-keyword">while</span> (fgets(line, MAXLINE, fp) != <span class="hljs-literal">NULL</span>) &#123;<br>			n = <span class="hljs-built_in">strlen</span>(line);<br>			<span class="hljs-keyword">if</span> (write(fd[<span class="hljs-number">1</span>], line, n) != n)<br>				err_sys(<span class="hljs-string">&quot;write error to pipe&quot;</span>);<br>		&#125;<br>		<span class="hljs-keyword">if</span> (ferror(fp))<br>			err_sys(<span class="hljs-string">&quot;fgets error&quot;</span>);<br><br>		close(fd[<span class="hljs-number">1</span>]);	<span class="hljs-comment">/* close write end of pipe for reader */</span><br><br>		<span class="hljs-keyword">if</span> (waitpid(pid, <span class="hljs-literal">NULL</span>, <span class="hljs-number">0</span>) &lt; <span class="hljs-number">0</span>)<br>			err_sys(<span class="hljs-string">&quot;waitpid error&quot;</span>);<br>		<span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>	&#125; <span class="hljs-keyword">else</span> &#123;										<span class="hljs-comment">/* child */</span><br>		close(fd[<span class="hljs-number">1</span>]);	<span class="hljs-comment">/* close write end */</span><br>		<span class="hljs-keyword">if</span> (fd[<span class="hljs-number">0</span>] != STDIN_FILENO) &#123;<br>			<span class="hljs-keyword">if</span> (dup2(fd[<span class="hljs-number">0</span>], STDIN_FILENO) != STDIN_FILENO)<br>				err_sys(<span class="hljs-string">&quot;dup2 error to stdin&quot;</span>);<br>			close(fd[<span class="hljs-number">0</span>]);	<span class="hljs-comment">/* don&#x27;t need this after dup2 */</span><br>		&#125;<br><br>		<span class="hljs-comment">/* get arguments for execl() */</span><br>		<span class="hljs-keyword">if</span> ((pager = getenv(<span class="hljs-string">&quot;PAGER&quot;</span>)) == <span class="hljs-literal">NULL</span>)<br>			pager = DEF_PAGER;<br>		<span class="hljs-keyword">if</span> ((argv0 = <span class="hljs-built_in">strrchr</span>(pager, <span class="hljs-string">&#x27;/&#x27;</span>)) != <span class="hljs-literal">NULL</span>)<br>			argv0++;		<span class="hljs-comment">/* step past rightmost slash */</span><br>		<span class="hljs-keyword">else</span><br>			argv0 = pager;	<span class="hljs-comment">/* no slash in pager */</span><br><br>		<span class="hljs-keyword">if</span> (execl(pager, argv0, (<span class="hljs-type">char</span> *)<span class="hljs-number">0</span>) &lt; <span class="hljs-number">0</span>)<br>			err_sys(<span class="hljs-string">&quot;execl error for %s&quot;</span>, pager);<br>	&#125;<br>	<span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="2-命名管道"><a href="#2-命名管道" class="headerlink" title="2 命名管道"></a>2 命名管道</h1><p>命名管道叫FIFO，之前介绍的管道都是匿名管道，只能在两个相关的进程间使用（也就是说，fork的一个有血缘关系的进程之间使用）。</p>
+<h2 id="命名管道的创建"><a href="#命名管道的创建" class="headerlink" title="命名管道的创建"></a>命名管道的创建</h2><p>我们用函数mkfifo来创建管道</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/stat.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">mkfifo</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *path, <span class="hljs-type">mode_t</span> mode)</span>;<br></code></pre></td></tr></table></figure>
+<p>也可以直接使用命令mkfifo来创建一个命名管道，效果：<br><img src="https://pic.downk.cc/item/5fc6367cf81f7e3bd97f06eb.jpg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="FIFO的使用"><a href="#FIFO的使用" class="headerlink" title="FIFO的使用"></a>FIFO的使用</h2><p>创建了名为my_fifo的管道之后，我们可以用两个shell（两个进程）对其进行读写。<br>例如我们将天气情况读入my_fifo中。<br><img src="https://pic.downk.cc/item/5fc63694f81f7e3bd97f2e75.jpg" srcset="/img/loading.gif" lazyload><br>可以看到如图所示，将date的信息写入my_fifo之后不会结束，因为比如得有进程将其读出之后才能结束，因此我们再用另一个shell来读这个FIFO。<br><img src="https://pic.downk.cc/item/5fc63707f81f7e3bd97f5228.jpg" srcset="/img/loading.gif" lazyload><br><img src="https://pic.downk.cc/item/5fc63658f81f7e3bd97ee57e.jpg" srcset="/img/loading.gif" lazyload><br>可以看到，将信息读出之后之前读入的进程也结束了。</p>
+<h1 id="3-XSI-IPC"><a href="#3-XSI-IPC" class="headerlink" title="3 XSI IPC"></a>3 XSI IPC</h1><h2 id="XSI定义"><a href="#XSI定义" class="headerlink" title="XSI定义"></a>XSI定义</h2><p>XSI就是System Interface and Headers:是一种UNIX系统协议<br>IPC就是Interprocess Communication：进程间通信</p>
+<h2 id="种类"><a href="#种类" class="headerlink" title="种类"></a>种类</h2><p>有三种称为XSI IPC的IPC：<strong>消息队列</strong>、<strong>信息量</strong>和<strong>共享存储器</strong>。</p>
+<h2 id="IPC的通用功能。"><a href="#IPC的通用功能。" class="headerlink" title="IPC的通用功能。"></a>IPC的通用功能。</h2><h3 id="1-标识符和键"><a href="#1-标识符和键" class="headerlink" title="1 标识符和键"></a>1 标识符和键</h3><p>每个内核中的IPC结构都用一个非负整数的标识符加以引用。<br>标识符是IPC对象的内部名。每个IPC对象都与一个键（key）相关联，将这个键作为该对象的外部名。</p>
+<h4 id="创建键的方法"><a href="#创建键的方法" class="headerlink" title="创建键的方法"></a>创建键的方法</h4><p>使用ftok能使用路径名和项目ID产生一个键</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/ipc.h&gt;</span></span><br><br><span class="hljs-type">key_t</span> <span class="hljs-title function_">ftok</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *path, <span class="hljs-type">int</span> id)</span>;<br></code></pre></td></tr></table></figure>
+<p>参数：<br>path参数必须引用一个现有的文件。并且产生键时，只使用id参数的低8位。<br>因此对于不同文件的两个路径名，如果使用同一项目ID，那么可能产生相同的键。</p>
+<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/ipc.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-type">key_t</span> key = ftok(<span class="hljs-string">&quot;/Users/heyizhi/程序员/Linux/Linux学习/UNIX环境高级编程/apue.3e/figlinks/ipc/pipe&quot;</span>, <span class="hljs-number">500</span>);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d\n&quot;</span>, key);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>在这里我们使用一个管道的路径和项目ID&#x3D;500来创建了一个key。<br>输出：<br>![IMAGE](resources&#x2F;9528BA501FB592F</p>
+<h3 id="2-key和flag"><a href="#2-key和flag" class="headerlink" title="2 key和flag"></a>2 key和flag</h3><p>3中IPC的get函数功能相同，就是创建或者打开一个IPC。例如msgget的作用就是打开或者创建一个消息队列。他们都有两个类似的参数：一个key和一个整型flag。在创建新的IPC结构时，如果key是IPC_PRIVATE或者和当前某种类型的IPC结构无关，则需要指明flag的IPC_CREAT标志位。<br>若需要引用一个现有队列，key必须等于队列创建时指定的key的值，并且ICP_CREAT必须不被指明</p>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><p>绝不能指定IPC_PRIVATE作为键来引用一个现有的队列。</p>
+<h1 id="4-消息队列"><a href="#4-消息队列" class="headerlink" title="4 消息队列"></a>4 消息队列</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>消息队列是消息的链接表，存储在内核中，由消息队列标识符标识。</p>
+<h2 id="1-调用的第一个函数通常是msgget"><a href="#1-调用的第一个函数通常是msgget" class="headerlink" title="1 调用的第一个函数通常是msgget"></a>1 调用的第一个函数通常是msgget</h2><h3 id="1-1-作用"><a href="#1-1-作用" class="headerlink" title="1.1 作用"></a>1.1 作用</h3><p>其功能是打开一个现有队列或创建一个新队列</p>
+<h3 id="1-2-函数"><a href="#1-2-函数" class="headerlink" title="1.2 函数"></a>1.2 函数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">include &lt;sys/msg.h&gt;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">msgget</span><span class="hljs-params">(<span class="hljs-type">key_t</span> key, <span class="hljs-type">int</span> flag)</span>;<br></code></pre></td></tr></table></figure>
+<p>key是通过之前提高的ftok()函数所生成的。flag在第三节已经讲过。在创建新队列时，需要初始化msqid_ds结构的下列成员。</p>
+<h2 id="举例-1"><a href="#举例-1" class="headerlink" title="举例"></a>举例</h2><p>由三个文件组成，分别是发射端，接收端和头文件。</p>
+<h3 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a>头文件</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//在这里是我们的头文件，设定了传输协议，预定双方对话格式</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> PROTO_H_</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PROTO_H_</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> KEYPATH <span class="hljs-string">&quot;/etc/services&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> KEYPROJ <span class="hljs-string">&#x27;g&#x27;</span>  <span class="hljs-comment">//表示当前字符一定可以转型给转型数</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NAMESIZE 32</span><br><br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">msg_st</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-type">long</span> mtype;<br>    <span class="hljs-type">char</span> name[NAMESIZE];<br>    <span class="hljs-type">int</span> math;<br>    <span class="hljs-type">int</span> chinese;<br>&#125;;<br><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br></code></pre></td></tr></table></figure>
+
+<h3 id="接收端"><a href="#接收端" class="headerlink" title="接收端"></a>接收端</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/ipc.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/msg.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;proto.h&quot;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br>    <span class="hljs-type">key_t</span> key;<br>    <span class="hljs-type">int</span> msgid;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">msg_st</span> <span class="hljs-title">rbuf</span>;</span><br><br>    key = ftok(KEYPATH, KEYPROJ);<br>    <span class="hljs-keyword">if</span>(key &lt; <span class="hljs-number">0</span>)<br>    &#123;<br>        perror(<span class="hljs-string">&quot;ftok()&quot;</span>);<br>    &#125;<br><br>    msgid = msgget(key, IPC_CREAT|<span class="hljs-number">0600</span>);<br>    <span class="hljs-keyword">if</span>(msgid &lt; <span class="hljs-number">0</span>)<br>    &#123;<br>        perror(<span class="hljs-string">&quot;msgget()&quot;</span>);<br>        <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)<br>    &#123;<br>        <span class="hljs-keyword">if</span>(msgrcv(msgid, &amp;rbuf, <span class="hljs-keyword">sizeof</span>(rbuf) - <span class="hljs-keyword">sizeof</span>(<span class="hljs-type">long</span>),<span class="hljs-number">0</span>,<span class="hljs-number">0</span>) &lt; <span class="hljs-number">0</span>)<br>        &#123;<br>            perror(<span class="hljs-string">&quot;msgrcv()&quot;</span>);<br>            <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>        &#125;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;NAME = %s\n&quot;</span>, rbuf.name);<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;MATH = %d\n&quot;</span>, rbuf.math);<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;CHINESE = %d\n&quot;</span>,rbuf.chinese);<br>    &#125;<br><br>    msgctl(msgid, IPC_RMID, <span class="hljs-literal">NULL</span>);<br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="发射端"><a href="#发射端" class="headerlink" title="发射端"></a>发射端</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/ipc.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/msg.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;proto.h&quot;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br><br>    <span class="hljs-type">key_t</span> key;<br>    <span class="hljs-type">int</span> msgid;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">msg_st</span> <span class="hljs-title">sbuf</span>;</span><br><br>    key = ftok(KEYPATH, KEYPROJ);<br>    <span class="hljs-keyword">if</span>(key &lt; <span class="hljs-number">0</span>)<br>    &#123;<br>        perror(<span class="hljs-string">&quot;ftok()&quot;</span>);<br>        <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125;<br><br>    msgid = msgget(key, <span class="hljs-number">0</span>);<br>    <span class="hljs-keyword">if</span>(msgid &lt; <span class="hljs-number">0</span>)<br>    &#123;<br>        perror(<span class="hljs-string">&quot;msgid()&quot;</span>);<br>        <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125;<br><br>    sbuf.mtype = <span class="hljs-number">1</span>;<br>    <span class="hljs-built_in">strcpy</span>(sbuf.name, <span class="hljs-string">&quot;Alan&quot;</span>);<br>    sbuf.math = rand()%<span class="hljs-number">100</span>;<br>    sbuf.chinese = rand()%<span class="hljs-number">100</span>;<br>    <span class="hljs-keyword">if</span>(msgsnd(msgid, &amp;sbuf, <span class="hljs-keyword">sizeof</span>(sbuf) - <span class="hljs-keyword">sizeof</span>(<span class="hljs-type">long</span>), <span class="hljs-number">0</span>) &lt; <span class="hljs-number">0</span>)&#123;<br>        perror(<span class="hljs-string">&quot;msgsnd();&quot;</span>);<br>        <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125;<br><br>    <span class="hljs-built_in">puts</span>(<span class="hljs-string">&quot;OK!&quot;</span>);<br><br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="5-信号量"><a href="#5-信号量" class="headerlink" title="5 信号量"></a>5 信号量</h1><p>信号量的英文是Semephore</p>
+<p>同样的，主要是三种函数，分别是semget()、semop()和semctl()</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/" class="category-chain-item">计算机</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/" class="category-chain-item">Linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/APUE/" class="category-chain-item">APUE</a>
+  
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>APUE-15-进程间通信</div>
+      <div>http://example.com/2022/12/bd95ec7aebba.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/4eea16d6ca37.html" title="Linux基本命令">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Linux基本命令</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/9fb1fe7796db.html" title="APUE-12-线程控制">
+                        <span class="hidden-mobile">APUE-12-线程控制</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/bd95ec7aebba.html';
+          this.page.identifier = '/2022/12/bd95ec7aebba.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,801 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="is a 关系是继承的一个明显特征。例如在这里例子所给出的，公司里的经理和普通员工都是员工，只是普通员工在完成本职工作之后仅领取薪水，而经理在完成了预期的业绩之后还能得到奖金。 这样就能定义一个员工类 Employee，经理定义一个新类 Manager，但可以继承于 Employee 类，重用 Employee 类中已经编写的部分代码，并保留原来 Employee 类中所有的字段。 在这里，Man">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1 类、超类和子类">
+<meta property="og:url" content="http://example.com/2022/12/caec2bd1e80f.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="is a 关系是继承的一个明显特征。例如在这里例子所给出的，公司里的经理和普通员工都是员工，只是普通员工在完成本职工作之后仅领取薪水，而经理在完成了预期的业绩之后还能得到奖金。 这样就能定义一个员工类 Employee，经理定义一个新类 Manager，但可以继承于 Employee 类，重用 Employee 类中已经编写的部分代码，并保留原来 Employee 类中所有的字段。 在这里，Man">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221220184154.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221220195006.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221221003441.png">
+<meta property="article:published_time" content="2022-12-20T06:30:25.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221220184154.png">
+  
+  
+  
+  <title>1 类、超类和子类 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="1 类、超类和子类"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-20 14:30" pubdate>
+          2022年12月20日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          41 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">1 类、超类和子类</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><code>is a</code> 关系是继承的一个明显特征。例如在这里例子所给出的，公司里的经理和普通员工都是员工，只是普通员工在完成本职工作之后仅领取薪水，而经理在完成了预期的业绩之后还能得到奖金。</p>
+<p>这样就能定义一个员工类 <code>Employee</code>，经理定义一个新类 <code>Manager</code>，但可以继承于 <code>Employee</code> 类，重用 <code>Employee</code> 类中已经编写的部分代码，并保留原来 <code>Employee</code> 类中所有的字段。</p>
+<p>在这里，<code>Manager</code> 与 <code>Employee</code> 之间存在明显的 <code>is a</code>（是）关系，每个经理都是一个员工。</p>
+<h1 id="1-定义子类"><a href="#1-定义子类" class="headerlink" title="1. 定义子类"></a>1. 定义子类</h1><p>关键字 <code>extends</code> 表明正在构造的新类派生于一个已存在的类。</p>
+<p>这个已存在的类称为**超类 (superclass)**、基类 (base class) 或父类 (parent class); </p>
+<p>新类称为**子类 (subclass)**、派生类 (derived class) 或孩子类 (child class)。</p>
+<p>超类和子类是 Java 程序员最常用的两个术语，而了解其他语言的程序员可能更加偏爱使用父类和孩子类，这也能很贴切地体现“继承”。</p>
+<h2 id="子类的特点"><a href="#子类的特点" class="headerlink" title="子类的特点"></a>子类的特点</h2><p>尽管 Employee 类是一个超类，但并不是因为它优于子类或者拥有比子类更多的功能。实际上恰恰相反，<strong>子类比超类拥有的功能更多</strong>。例如，看过 Manager 类的源代码之后就会发现，Manager 类比超类 Employee 封装了更多的数据，拥有更多的功能。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Manager</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Employee</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">double</span> bonus;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> name the employee&#x27;s name</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> salary the salary</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> year the hire year</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> month the hire month</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> day the hire day</span><br><span class="hljs-comment">     */</span><br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Manager</span><span class="hljs-params">(String name, <span class="hljs-type">double</span> salary, <span class="hljs-type">int</span> year, <span class="hljs-type">int</span> month, <span class="hljs-type">int</span> day)</span> &#123;<br>        <span class="hljs-built_in">super</span>(name, salary, year, month, day);<br>        bonus = <span class="hljs-number">0</span>;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">double</span> <span class="hljs-title function_">getSalary</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-type">double</span> <span class="hljs-variable">baseSalary</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">super</span>.getSalary();<br>        <span class="hljs-keyword">return</span> baseSalary + bonus;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setBonus</span><span class="hljs-params">(<span class="hljs-type">double</span> b)</span> &#123;<br>        bonus = b;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，<code>Manager</code> 类继承自 <code>Employee</code> 类，自己定义了一个字段 <code>bonus</code>，这个字段是只有 <code>Manager</code> 有的，但是 <code>Manager</code> 类拥有其父类 <code>Employee</code> 拥有的所有字段和属性。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ManagerTest</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[]args)</span> &#123;<br><br>        <span class="hljs-comment">//construct a Manager object</span><br>        <span class="hljs-type">Manager</span> <span class="hljs-variable">boss</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Manager</span>(<span class="hljs-string">&quot;Carl Cracker&quot;</span>, <span class="hljs-number">80000</span>, <span class="hljs-number">1987</span>, <span class="hljs-number">12</span>, <span class="hljs-number">15</span>);<br>        boss.setBonus(<span class="hljs-number">5000</span>);<br><br>        Employee[] staff = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Employee</span>[<span class="hljs-number">3</span>];<br><br>        <span class="hljs-comment">//fill the staff array with Manager and Employee objects</span><br><span class="hljs-comment">//        boss = (Manager) staff[0];    //强制转换</span><br>        staff[<span class="hljs-number">0</span>] = boss;<br>        staff[<span class="hljs-number">1</span>] = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Employee</span>(<span class="hljs-string">&quot;Harry Hacker&quot;</span>, <span class="hljs-number">50000</span>, <span class="hljs-number">1989</span>, <span class="hljs-number">10</span>, <span class="hljs-number">1</span>);<br>        staff[<span class="hljs-number">2</span>] = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Employee</span>(<span class="hljs-string">&quot;Tommy Tester&quot;</span>, <span class="hljs-number">40000</span>, <span class="hljs-number">1990</span>, <span class="hljs-number">3</span>, <span class="hljs-number">15</span>);<br><br>        <span class="hljs-comment">// print out information about all Employee objects</span><br>        <span class="hljs-keyword">for</span> (Employee e : staff) &#123;<br>            System.out.println(<span class="hljs-string">&quot;name = &quot;</span> + e.getName() + <span class="hljs-string">&quot;, salary = &quot;</span> + e.getSalary());<br>        &#125;<br><br>        <span class="hljs-comment">//多态</span><br>        <span class="hljs-type">Manager</span> <span class="hljs-variable">boss2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Manager</span>(<span class="hljs-string">&quot;Harry Hacker&quot;</span>, <span class="hljs-number">50000</span>, <span class="hljs-number">1989</span>, <span class="hljs-number">10</span>, <span class="hljs-number">1</span>);<br>        <span class="hljs-type">Employee</span> <span class="hljs-variable">staff2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Employee</span>(<span class="hljs-string">&quot;Harry Hacker&quot;</span>, <span class="hljs-number">50000</span>, <span class="hljs-number">1989</span>, <span class="hljs-number">10</span>, <span class="hljs-number">1</span>);<br>        staff2 = boss;<br>        boss.setBonus(<span class="hljs-number">5000</span>);<span class="hljs-comment">//correct</span><br><span class="hljs-comment">//        staff2.setBonus(5000);//Error</span><br><br>        <span class="hljs-comment">//警告</span><br>        Manager[] managers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Manager</span>[<span class="hljs-number">10</span>];<span class="hljs-comment">//合法</span><br>        Employee[] staff3 = managers;          <span class="hljs-comment">//同样合法</span><br><span class="hljs-comment">//        staff3[0] = new Employee(&quot;Hi&quot;, 10, 1,1,1);</span><br><span class="hljs-comment">//        managers[0].setBonus(5000);             //这种调用方法是错误的，这是因为编辑器是认为managers是个Manager对象，但是实际上和</span><br>        <span class="hljs-comment">//staff3引用了同一个数组，因此就导致实际上没有setBonus这个方法</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，这里</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">managers[<span class="hljs-number">0</span>].setBonus(<span class="hljs-number">5000</span>); <span class="hljs-comment">//这种调用方法是错误的，这是因为编辑器是认为managers是个Manager对象，但是实际上和</span><br></code></pre></td></tr></table></figure>
+
+<p>这种调用方式是错误的。</p>
+<h1 id="2-覆盖方法"><a href="#2-覆盖方法" class="headerlink" title="2. 覆盖方法"></a>2. 覆盖方法</h1><p>超类中的有些方法对子类不一定使用。</p>
+<p>具体来说，<code>Manager</code> 类的 <code>getSalaray</code> 方法应该返回薪水和奖金的总和。为此，需要提供一个新的方法来覆盖超类中的这个方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">manager</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Employee</span>&#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">double</span> bonus;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setBonus</span><span class="hljs-params">(<span class="hljs-type">double</span> bonus)</span>&#123;<br>        <span class="hljs-built_in">this</span>.bonus = bonus;<br>    &#125;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">double</span> <span class="hljs-title function_">getSalary</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-type">double</span> <span class="hljs-variable">baseSalary</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">super</span>.getSalary();<br>        <span class="hljs-keyword">return</span> baseSalary + bonus;<br>    &#125;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">manager</span> <span class="hljs-variable">m</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">manager</span>(<span class="hljs-string">&quot;Harry&quot;</span>, <span class="hljs-number">1000</span>, <span class="hljs-number">2019</span>,<span class="hljs-number">8</span>,<span class="hljs-number">13</span>);<br>        System.out.println(m.getName());<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，这里重写了父类的 <code>getSalary()</code> 方法，首先调用了父类的 <code>getSalary()</code> 方法，获取其作为员工的薪水值，然后将其加上本身的奖金，就可以得到 <code>Manager</code> 类的实际总薪水。</p>
+<h2 id="super-的描述"><a href="#super-的描述" class="headerlink" title="super 的描述"></a>super 的描述</h2><p>super 不是一个对象的引用，例如，不能将值 super 赋给另一个对象变量，它只是一个指示编译器调用超类方法的特殊关键字。因此不能将 super 和 this 的概念混淆。</p>
+<h1 id="3-子类构造器"><a href="#3-子类构造器" class="headerlink" title="3. 子类构造器"></a>3. 子类构造器</h1><p>来看看我们提供的一个构造函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-title function_">manager</span><span class="hljs-params">(String name, <span class="hljs-type">double</span> salary, <span class="hljs-type">int</span> year, <span class="hljs-type">int</span> month, <span class="hljs-type">int</span> day)</span> &#123;<br>    <span class="hljs-built_in">super</span>(name, salary, year, month, day);<br>    bonus = <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里的关键字 <code>super</code> 有不同含义。语句</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-built_in">super</span>(name, salary, year, month, day);<br></code></pre></td></tr></table></figure>
+
+<p>代表调用超类 <code>Employee</code> 中带有五个参数的构造器的简写。</p>
+<p>并且需要注意的是，<code>Manager</code> 类是无法访问 <code>Employee</code> 类的私有字段的，所以必须通过一个构造器来初始化这些私有字段。</p>
+<p>如果子类的构造器没有显式调用超类的构造器，将自动地调用超类的无参数构造器。如果超类没有无参数构造器，并且在子类的构造器中又没有显式地调用超类的其他构造器，那么 Java 编译器就会报一个错误。</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221220184154.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，如果注释掉了子类的构造器，并且父类又没有对应的无参构造器，那么 Java 是无法编译通过的。</p>
+<h1 id="4-继承层次"><a href="#4-继承层次" class="headerlink" title="4 继承层次"></a>4 继承层次</h1><p>继承并不仅限于一个层次。例如，可以由 <code>Manager</code> 类派生 <code>Executive</code> 类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/20 19:48</span><br><span class="hljs-comment"> **/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Executive</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Manager</span> &#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> name   the employee&#x27;s name</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> salary the salary</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> year   the hire year</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> month  the hire month</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> day    the hire day</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Executive</span><span class="hljs-params">(String name, <span class="hljs-type">double</span> salary, <span class="hljs-type">int</span> year, <span class="hljs-type">int</span> month, <span class="hljs-type">int</span> day)</span> &#123;<br>        <span class="hljs-built_in">super</span>(name, salary, year, month, day);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">Executive</span> <span class="hljs-variable">e</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Executive</span>(<span class="hljs-string">&quot;coachhe&quot;</span>, <span class="hljs-number">100</span>, <span class="hljs-number">26</span>, <span class="hljs-number">4</span>, <span class="hljs-number">3</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>让我们看下 <code>Executive</code> 类的对象 <code>e</code> 有哪些方法和字段：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221220195006.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<p>从图中可以看到，里面既有 <code>Manager</code> 的方法，也有 <code>Employee</code> 的方法。</p>
+<h1 id="5-多态"><a href="#5-多态" class="headerlink" title="5 多态"></a>5 多态</h1><p><code>is-a</code> 规则的另一种表述是替换原则。它指出程序中出现超类对象的任何地方都可以使用子类对象替换。</p>
+<p>例如，可以将子类的对象赋给超类变量。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">Employee e;<br>e = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Employee</span>(...) <span class="hljs-comment">// ok</span><br>e = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Manager</span>(...) <span class="hljs-comment">// ok</span><br></code></pre></td></tr></table></figure>
+
+<p>可以看到，在 Java 程序设计语言中，对象变量是<strong>多态的</strong>。</p>
+<h2 id="多态的描述"><a href="#多态的描述" class="headerlink" title="多态的描述"></a>多态的描述</h2><p>一个 <code>Employee</code> 类型的变量既可以引用一个 <code>Employee</code> 类型的对象，也可以引用 <code>Employee</code> 类的任何一个子类的对象。</p>
+<h2 id="警告"><a href="#警告" class="headerlink" title="警告"></a>警告</h2><p>在 Java 中，子类引用的数组可以转换成超类引用的数组，而不需要使用强制类型转换。但是会出现类型转换的问题：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/20 20:16</span><br><span class="hljs-comment"> **/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">PolymorphicTest</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        Employee e;<br><span class="hljs-comment">//        e = new Manager(&quot;manager&quot;, 1, 1, 1, 1); //ok</span><br>        e = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Employee</span>(<span class="hljs-string">&quot;employee&quot;</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>); <span class="hljs-comment">//ok</span><br><br>        Manager[] managers = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Manager</span>[<span class="hljs-number">10</span>];<br>        Employee[] staff = managers; <span class="hljs-comment">// 此时是合理的，因为将经理转换为员工是合理的</span><br>        staff[<span class="hljs-number">0</span>] = e; <span class="hljs-comment">// 此时好像也是合理的，因为这就是一个员工类，但实际上这应该是不合理的，因为这实际是一个经理类</span><br>        System.out.println(staff[<span class="hljs-number">0</span>]); <span class="hljs-comment">// 直接报错ArrayStoreException</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里会直接报错：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221221003441.png" srcset="/img/loading.gif" lazyload width = "80%" />
+
+<p>可以看到，我们先创建了一个经理类的集合，然后将其赋值给了员工类的集合，此时应该是合理的，因为经理一定是员工。</p>
+<p>但是奇怪的事情发生了，我们将这个类的第一个对象置为员工时，竟然编译器通过了，因为编译器认为你已经是一个员工类，那嵌入一个员工类自然是合理的。</p>
+<p>但是在这里，<code>staff[0]</code> 与 <code>manager[0]</code> 是相同的引用，似乎我们把一个普通员工擅自归入经理行列中了。在实际执行的时候就报错了。</p>
+<p>关于多态的具体描述</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" class="category-chain-item">编程语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" class="category-chain-item">Java</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/" class="category-chain-item">Java语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/Java%E8%AF%AD%E6%B3%95/" class="category-chain-item">Java语法</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/Java%E8%AF%AD%E6%B3%95/%E5%AF%B9%E8%B1%A1%E6%A6%82%E5%BF%B5/" class="category-chain-item">对象概念</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/Java%E8%AF%AD%E6%B3%95/%E5%AF%B9%E8%B1%A1%E6%A6%82%E5%BF%B5/%E7%BB%A7%E6%89%BF/" class="category-chain-item">继承</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/Java%E8%AF%AD%E6%B3%95/%E5%AF%B9%E8%B1%A1%E6%A6%82%E5%BF%B5/%E7%BB%A7%E6%89%BF/onjava8/" class="category-chain-item">onjava8</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>1 类、超类和子类</div>
+      <div>http://example.com/2022/12/caec2bd1e80f.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/6adc1fc68ea1.html" title="0 简介">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">0 简介</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/722f56f08f83.html" title="8.1.1 概述">
+                        <span class="hidden-mobile">8.1.1 概述</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/caec2bd1e80f.html';
+          this.page.identifier = '/2022/12/caec2bd1e80f.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

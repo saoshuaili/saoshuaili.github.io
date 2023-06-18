@@ -1,0 +1,799 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="为了建立个人博客，来回折腾了好多次，这次终于是找到了一个最符合我需求，个人认为最完美的一个博客方案了。 效果效果如下：CoachHe’s Blog 或者 CoachHe’s Blog 对应的 github 仓库为：CoachHe&#x2F;coachhe.github.io 首页  简单清爽的首页 归档会根据具体文件的上传日期记录笔记，相当于一个流水线功能   分类会根据你本地文件夹的格式来进行分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo建站教程">
+<meta property="og:url" content="http://example.com/2023/03/a3285987cdc9.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="为了建立个人博客，来回折腾了好多次，这次终于是找到了一个最符合我需求，个人认为最完美的一个博客方案了。 效果效果如下：CoachHe’s Blog 或者 CoachHe’s Blog 对应的 github 仓库为：CoachHe&#x2F;coachhe.github.io 首页  简单清爽的首页 归档会根据具体文件的上传日期记录笔记，相当于一个流水线功能   分类会根据你本地文件夹的格式来进行分">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195147.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195249.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195537.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195639.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195730.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195824.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195924.png">
+<meta property="article:published_time" content="2023-03-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195147.png">
+  
+  
+  
+  <title>Hexo建站教程 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Hexo建站教程"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-03-12 00:00" pubdate>
+          2023年3月12日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          41 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Hexo建站教程</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>为了建立个人博客，来回折腾了好多次，这次终于是找到了一个最符合我需求，个人认为最完美的一个博客方案了。</p>
+<h1 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h1><p>效果如下：<a target="_blank" rel="noopener" href="https://coachhe.cn:8081/">CoachHe’s Blog</a> 或者 <a target="_blank" rel="noopener" href="https://coachhe.github.io/">CoachHe’s Blog</a></p>
+<p>对应的 github 仓库为：<a target="_blank" rel="noopener" href="https://github.com/CoachHe/coachhe.github.io">CoachHe&#x2F;coachhe.github.io</a></p>
+<h2 id="首页"><a href="#首页" class="headerlink" title="首页"></a>首页</h2><img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195147.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>简单清爽的首页</p>
+<h2 id="归档"><a href="#归档" class="headerlink" title="归档"></a>归档</h2><p>会根据具体文件的上传日期记录笔记，相当于一个流水线功能</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195249.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p><strong>会根据你本地文件夹的格式来进行分类</strong>，这点真的完美！</p>
+<p>远端：</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195537.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>本地：</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195639.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，远端和本地的目录结构是完全相同的。</p>
+<h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195730.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>这里只有一个 BigData 标签是因为我为了测试只做了这个标签，有多个标签的时候完全是没问题的。</p>
+<h2 id="留言"><a href="#留言" class="headerlink" title="留言"></a>留言</h2><img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195824.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>最重要的当然是正文，这里是使用 markdown 语言，并且也支持评论等功能。</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230312195924.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>下面我仔细说说</p>
+<h1 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h1><p>本人腾讯打工的码农一枚，日常学习时会通过 obsidian 做一些笔记，使用 obsidian-git 来进行同步，理论上足以满足日常跨设备同步+查看的需求。但是总感觉自己做的笔记如果不放在网络端查看少了一些仪式感。但是如果自己建一个博客或者传到知乎上，又会感觉很麻烦，因为每次写完笔记还需要去各个平台同步。</p>
+<p>因此，是否有一种方案可以满足我写完笔记，就可以用很简单的步骤一键部署到云端和查看呢？ 并且需要满足以下功能：</p>
+<ol>
+<li>文档目录会跟你本地文件的文件夹格式相同，避免大量的格式整理</li>
+<li>正文需要有评论功能</li>
+<li>需要有留言功能</li>
+<li>需要友链等一系列功能支持</li>
+</ol>
+<p>之前折腾了好几次，都不太满足自身需求，直到现在找到了 Hexo + Github + Obsidian 的这种方式，能完美实现我的所有需求。</p>
+<h1 id="所需工具"><a href="#所需工具" class="headerlink" title="所需工具"></a>所需工具</h1><ol>
+<li>云服务器一台，本人使用的是腾讯云的轻量服务器，位置在香港，2 核 2 g，感觉已经完全可以满足日常需求，不过现在香港的好像没货了</li>
+<li>安装了 obsidian-git 的 obsidian</li>
+<li>Github 账号</li>
+</ol>
+<h1 id="安装教程"><a href="#安装教程" class="headerlink" title="安装教程"></a>安装教程</h1><h2 id="安装-hexo"><a href="#安装-hexo" class="headerlink" title="安装 hexo"></a>安装 hexo</h2><p>首先肯定需要 hexo 这个博客软件，具体教程很多，我就不赘述了，直接给个网站：<a target="_blank" rel="noopener" href="https://blog.esunr.xyz/2022/06/64163235c30f.html#1-%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8-Hexo">Hexo 快速搭建指南 | EsunR-Blog</a></p>
+<h2 id="快速配置-hexo-obsidian-git-实现一键部署和同步上传-github"><a href="#快速配置-hexo-obsidian-git-实现一键部署和同步上传-github" class="headerlink" title="快速配置 hexo+obsidian+git 实现一键部署和同步上传 github"></a>快速配置 hexo+obsidian+git 实现一键部署和同步上传 github</h2><p>这块我也是参照了这个很详细的教程：<a target="_blank" rel="noopener" href="https://blog.esunr.xyz/2022/07/e9b42b453d9f.html#1-%E5%89%8D%E8%A8%80">Hexo + Obsidian + Git 完美的博客部署与编辑方案 | EsunR-Blog</a></p>
+<h2 id="额外功能"><a href="#额外功能" class="headerlink" title="额外功能"></a>额外功能</h2><p>具体的功能配置都在官网可以找到：<a target="_blank" rel="noopener" href="https://hexo.fluid-dev.com/docs/guide/#%E5%85%B3%E4%BA%8E%E6%8C%87%E5%8D%97">配置指南 | Hexo Fluid 用户手册 (fluid-dev.com)</a></p>
+<p>这里我针对几个展开讲解：</p>
+<h3 id="安装评论等功能"><a href="#安装评论等功能" class="headerlink" title="安装评论等功能"></a>安装评论等功能</h3><p>前面的都是参照了 EsunR-Blog 的内容，接下来我自己补充了一些功能，例如这块是需要新增评论等功能。</p>
+<p>编辑 <code>_config.fluid.yml</code> 文件，找到文章页。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-comment">#---------------------------</span><br><span class="hljs-comment"># 文章页</span><br><span class="hljs-comment"># Post Page</span><br><span class="hljs-comment">#---------------------------</span><br></code></pre></td></tr></table></figure>
+
+<p>下面的</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-comment"># 评论插件</span><br><span class="hljs-comment"># Comment plugin</span><br><span class="hljs-attr">comments:</span><br>  <span class="hljs-attr">enable:</span> <span class="hljs-literal">false</span><br>  <span class="hljs-comment"># 指定的插件，需要同时设置对应插件的必要参数</span><br>  <span class="hljs-comment"># The specified plugin needs to set the necessary parameters at the same time</span><br>  <span class="hljs-comment"># Options: utterances | disqus | gitalk | valine | waline | changyan | livere | remark42 | twikoo | cusdis | giscus</span><br>  <span class="hljs-attr">type:</span> <span class="hljs-string">disqus</span><br></code></pre></td></tr></table></figure>
+
+<p>将 enable 改为 true，也就是：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-comment"># 评论插件</span><br><span class="hljs-comment"># Comment plugin</span><br><span class="hljs-attr">comments:</span><br>  <span class="hljs-attr">enable:</span> <span class="hljs-literal">true</span><br>  <span class="hljs-comment"># 指定的插件，需要同时设置对应插件的必要参数</span><br>  <span class="hljs-comment"># The specified plugin needs to set the necessary parameters at the same time</span><br>  <span class="hljs-comment"># Options: utterances | disqus | gitalk | valine | waline | changyan | livere | remark42 | twikoo | cusdis | giscus</span><br>  <span class="hljs-attr">type:</span> <span class="hljs-string">disqus</span><br></code></pre></td></tr></table></figure>
+
+<p>这样评论功能就打开了，type 这里我选择的是 disqus，效果就是最开始的时候我展示的效果，其实 twikoo 是更好的，也不需要外网支持，不过需要依赖腾讯云的云开发，现在没有免费的了，一个月要 20 块，想想还是划不来，所以选择了 disqus，这里只需要去注册一个账号就可以了，很方便。</p>
+<h3 id="新增友链"><a href="#新增友链" class="headerlink" title="新增友链"></a>新增友链</h3><p>新增友链功能更简单，打开 <code>_config.fluid.yml</code>，找到 menu</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-comment"># 导航栏菜单，可自行增减，key 用来关联 languages/*.yml，如不存在关联则显示 key 本身的值；icon 是 css class，可以省略；增加 name 可以强制显示指定名称</span><br><span class="hljs-comment"># Navigation bar menu. `key` is used to associate languages/*.yml. If there is no association, the value of `key` itself will be displayed; if `icon` is a css class, it can be omitted; adding `name` can force the display of the specified name</span><br><span class="hljs-attr">menu:</span><br>  <span class="hljs-bullet">-</span> &#123; <span class="hljs-attr">key:</span> <span class="hljs-string">&quot;home&quot;</span>, <span class="hljs-attr">link:</span> <span class="hljs-string">&quot;/&quot;</span>, <span class="hljs-attr">icon:</span> <span class="hljs-string">&quot;iconfont icon-home-fill&quot;</span> &#125;<br>  <span class="hljs-bullet">-</span> &#123; <span class="hljs-attr">key:</span> <span class="hljs-string">&quot;archive&quot;</span>, <span class="hljs-attr">link:</span> <span class="hljs-string">&quot;/archives/&quot;</span>, <span class="hljs-attr">icon:</span> <span class="hljs-string">&quot;iconfont icon-archive-fill&quot;</span> &#125;<br>  <span class="hljs-bullet">-</span> &#123; <span class="hljs-attr">key:</span> <span class="hljs-string">&quot;category&quot;</span>, <span class="hljs-attr">link:</span> <span class="hljs-string">&quot;/categories/&quot;</span>, <span class="hljs-attr">icon:</span> <span class="hljs-string">&quot;iconfont icon-category-fill&quot;</span> &#125;<br>  <span class="hljs-bullet">-</span> &#123; <span class="hljs-attr">key:</span> <span class="hljs-string">&quot;tag&quot;</span>, <span class="hljs-attr">link:</span> <span class="hljs-string">&quot;/tags/&quot;</span>, <span class="hljs-attr">icon:</span> <span class="hljs-string">&quot;iconfont icon-tags-fill&quot;</span> &#125;<br>  <span class="hljs-bullet">-</span> &#123; <span class="hljs-attr">key:</span> <span class="hljs-string">&quot;about&quot;</span>, <span class="hljs-attr">link:</span> <span class="hljs-string">&quot;/about/&quot;</span>, <span class="hljs-attr">icon:</span> <span class="hljs-string">&quot;iconfont icon-user-fill&quot;</span> &#125;<br>  <span class="hljs-comment">#- &#123; key: &quot;links&quot;, link: &quot;/links/&quot;, icon: &quot;iconfont icon-link-fill&quot; &#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>将 key 为 links 的那行展开，然后如果要打开评论区等功能，就找到下面的友链页面，</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-comment">#---------------------------</span><br><span class="hljs-comment"># 友链页</span><br><span class="hljs-comment"># Links Page</span><br><span class="hljs-comment">#---------------------------</span><br></code></pre></td></tr></table></figure>
+
+<p>里面的 Comments：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-comment"># 评论插件</span><br><span class="hljs-comment"># Comment plugin</span><br><span class="hljs-attr">comments:</span><br>  <span class="hljs-attr">enable:</span> <span class="hljs-literal">false</span><br>  <span class="hljs-comment"># 指定的插件，需要同时设置对应插件的必要参数</span><br>  <span class="hljs-comment"># The specified plugin needs to set the necessary parameters at the same time</span><br>  <span class="hljs-comment"># Options: utterances | disqus | gitalk | valine | waline | changyan | livere | remark42 | twikoo | cusdis | giscus</span><br>  <span class="hljs-attr">type:</span> <span class="hljs-string">disqus</span><br></code></pre></td></tr></table></figure>
+
+<p>同样将 false 改为 true 即可。这样评论功能也就打开了</p>
+<h3 id="新增留言页"><a href="#新增留言页" class="headerlink" title="新增留言页"></a>新增留言页</h3><p>因为留言页不像友链这样，已经预设好了，因此需要手动进行创建。首先在根目录下使用 hexo 命令创建一个新的页面：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">hexo new page remark<br></code></pre></td></tr></table></figure>
+
+<p>然后更新 <code>source/remark/index.md</code> 的内容：</p>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs md">---<br>title: 留言板<br>date: 2023-03-12 15:46:47<br><span class="hljs-section">comment: &#x27;disqus&#x27;</span><br><span class="hljs-section">---</span><br><br>欢迎留言，请留下邮箱方便我回复您！<br></code></pre></td></tr></table></figure>
+
+<p>注意，这里 comment 必须要加上，否则不会打开留言功能。</p>
+<p>最后再 <code>_config.fluid.yml</code> 文件中的 menu 属性中新增对应的 key：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs yml"><span class="hljs-comment"># 导航栏菜单，可自行增减，key 用来关联 languages/*.yml，如不存在关联则显示 key 本身的值；icon 是 css class，可以省略；增加 name 可以强制显示指定名称</span><br><span class="hljs-comment"># Navigation bar menu. `key` is used to associate languages/*.yml. If there is no association, the value of `key` itself will be displayed; if `icon` is a css class, it can be omitted; adding `name` can force the display of the specified name</span><br><span class="hljs-attr">menu:</span><br>  <span class="hljs-bullet">-</span> &#123; <span class="hljs-attr">key:</span> <span class="hljs-string">&quot;home&quot;</span>, <span class="hljs-attr">link:</span> <span class="hljs-string">&quot;/&quot;</span>, <span class="hljs-attr">icon:</span> <span class="hljs-string">&quot;iconfont icon-home-fill&quot;</span> &#125;<br>  <span class="hljs-bullet">-</span> &#123; <span class="hljs-attr">key:</span> <span class="hljs-string">&quot;archive&quot;</span>, <span class="hljs-attr">link:</span> <span class="hljs-string">&quot;/archives/&quot;</span>, <span class="hljs-attr">icon:</span> <span class="hljs-string">&quot;iconfont icon-archive-fill&quot;</span> &#125;<br>  <span class="hljs-bullet">-</span> &#123; <span class="hljs-attr">key:</span> <span class="hljs-string">&quot;category&quot;</span>, <span class="hljs-attr">link:</span> <span class="hljs-string">&quot;/categories/&quot;</span>, <span class="hljs-attr">icon:</span> <span class="hljs-string">&quot;iconfont icon-category-fill&quot;</span> &#125;<br>  <span class="hljs-bullet">-</span> &#123; <span class="hljs-attr">key:</span> <span class="hljs-string">&quot;tag&quot;</span>, <span class="hljs-attr">link:</span> <span class="hljs-string">&quot;/tags/&quot;</span>, <span class="hljs-attr">icon:</span> <span class="hljs-string">&quot;iconfont icon-tags-fill&quot;</span> &#125;<br>  <span class="hljs-bullet">-</span> &#123; <span class="hljs-attr">key:</span> <span class="hljs-string">&quot;about&quot;</span>, <span class="hljs-attr">link:</span> <span class="hljs-string">&quot;/about/&quot;</span>, <span class="hljs-attr">icon:</span> <span class="hljs-string">&quot;iconfont icon-user-fill&quot;</span> &#125;<br>  <span class="hljs-bullet">-</span> &#123; <span class="hljs-attr">key:</span> <span class="hljs-string">&quot;remark&quot;</span>, <span class="hljs-attr">link:</span> <span class="hljs-string">&quot;/remark/&quot;</span>, <span class="hljs-attr">icon:</span> <span class="hljs-string">&quot;iconfont icon-user-fill&quot;</span>, <span class="hljs-attr">name:</span> <span class="hljs-string">&quot;留言&quot;</span>&#125;<br>  <span class="hljs-bullet">-</span> &#123; <span class="hljs-attr">key:</span> <span class="hljs-string">&quot;links&quot;</span>, <span class="hljs-attr">link:</span> <span class="hljs-string">&quot;/links/&quot;</span>, <span class="hljs-attr">icon:</span> <span class="hljs-string">&quot;iconfont icon-link-fill&quot;</span> &#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，有一个 key 为 remark 的，就是我们对应的留言界面，这里我新增了一个 name 属性，否则默认名会是 remark。</p>
+<p>至此，基本功能已经完成。另外还有一个很重要的，就是怎么在不同设备中同步 obsidian，因为这块部署在 github 中的其实是 release 这个 branch，但是我们本地存放原始 md 笔记的其实不是这个 branch，那么怎么同步呢？ 这里有一个对应的教程：</p>
+<h3 id="Obsiidan-多端同步"><a href="#Obsiidan-多端同步" class="headerlink" title="Obsiidan 多端同步"></a>Obsiidan 多端同步</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34291777/article/details/98723401">(24条消息) hexo博客 多终端同步使用_hexo多端同步_Mliak的博客-CSDN博客</a></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>还是非常棒的，目前使用方式是：</p>
+<ol>
+<li>新建一个笔记</li>
+<li>使用 obsidian-git 会自动同步到远端</li>
+<li>当闲暇时，登陆远端，执行：<code>hexo clean &amp; hexo g &amp; hexo d</code>，会生成同步到 github 的配置文件，并且会将笔记加好目录</li>
+<li>在远端执行 <code>git add . &amp; git commit -m &quot;reformat category&quot; &amp; git push</code></li>
+<li>最后在本地执行 <code>git pull</code></li>
+</ol>
+<p>这样一个完美的笔记使用方案就出现拉~</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%94%9F%E6%B4%BB/" class="category-chain-item">生活</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%94%9F%E6%B4%BB/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" class="category-chain-item">个人博客</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%94%9F%E6%B4%BB/%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/Hexo/" class="category-chain-item">Hexo</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Hexo建站教程</div>
+      <div>http://example.com/2023/03/a3285987cdc9.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年3月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/03/728211df1f5a.html" title="3. 数仓项目用户行为日志">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">3. 数仓项目用户行为日志</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/6f525b1acb42.html" title="obsidian 同步">
+                        <span class="hidden-mobile">obsidian 同步</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2023/03/a3285987cdc9.html';
+          this.page.identifier = '/2023/03/a3285987cdc9.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

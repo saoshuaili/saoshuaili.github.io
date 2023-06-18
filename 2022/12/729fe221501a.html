@@ -1,0 +1,1392 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="注意：任何一个Class文件都对应着唯一一个类或接口的定义信息。但是反过来并不成立，也就是类或者接口并不一定非得定义在Class文件里，例如可以通过类加载器直接生成。 Class文件是一组以8位字节为基础单位的二进制流，，各个数据项目严格按照顺序紧凑地排列在Class文件之中，中间没有添加任何分隔符，这使得整个Class文件中存储的内容几乎全部都是程序运行的必要数据，没有空隙存在。 Class文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2 类文件结构">
+<meta property="og:url" content="http://example.com/2022/12/729fe221501a.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="注意：任何一个Class文件都对应着唯一一个类或接口的定义信息。但是反过来并不成立，也就是类或者接口并不一定非得定义在Class文件里，例如可以通过类加载器直接生成。 Class文件是一组以8位字节为基础单位的二进制流，，各个数据项目严格按照顺序紧凑地排列在Class文件之中，中间没有添加任何分隔符，这使得整个Class文件中存储的内容几乎全部都是程序运行的必要数据，没有空隙存在。 Class文件">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210811202057.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20210811234110.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20210812004431.png">
+<meta property="article:published_time" content="2022-12-03T18:20:50.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210811202057.png">
+  
+  
+  
+  <title>2 类文件结构 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2 类文件结构"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:20" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          12k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          103 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">2 类文件结构</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>注意：<br>任何一个Class文件都对应着<strong>唯一一个</strong>类或接口的定义信息。但是反过来并不成立，也就是类或者接口并不一定非得定义在Class文件里，例如可以通过类加载器直接生成。</p>
+<p>Class文件是一组以8位字节为基础单位的二进制流，，各个数据项目严格按照顺序紧凑地排列在Class文件之中，中间没有添加任何分隔符，这使得整个Class文件中存储的内容几乎全部都是程序运行的必要数据，没有空隙存在。</p>
+<h2 id="Class文件格式"><a href="#Class文件格式" class="headerlink" title="Class文件格式"></a>Class文件格式</h2><p>根据 JVM 规范，Class 文件格式采用一种类似 C 语言结构体的<strong>伪结构</strong>来存储数据</p>
+<h3 id="伪结构数据类型："><a href="#伪结构数据类型：" class="headerlink" title="伪结构数据类型："></a>伪结构数据类型：</h3><h4 id="无符号数"><a href="#无符号数" class="headerlink" title="无符号数"></a>无符号数</h4><p>介绍:<br>无符号数属于基本数据类型，以u1、u2、u4、u8来分别代表1个字节、2个字节、4个字节和8个字节的无符号数</p>
+<p>作用:<br>无符号数可以用来描述数字、索引引用、数量值或者按照UTF-8编码构成的字符串值。</p>
+<p>表:</p>
+<ul>
+<li>表是多个无符号数或者其他表作为数据项构成的复合数据类型，所有表都习惯性以<code>_info</code>结尾。</li>
+<li>表用于描述有层次关系的符合数据结构的数据。</li>
+</ul>
+<p>整个Class文件本质上就是一张表</p>
+<h2 id="组成Class文件的数据项"><a href="#组成Class文件的数据项" class="headerlink" title="组成Class文件的数据项"></a>组成Class文件的数据项</h2><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>名称</th>
+<th>数量</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>u4</td>
+<td>magic</td>
+<td>1</td>
+<td>魔数，代表这是一个Class文件</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>minor_version</td>
+<td>1</td>
+<td>次版本号</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>major_version</td>
+<td>1</td>
+<td>主版本号</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>const_pool_count</td>
+<td>1</td>
+<td>常量池标志</td>
+</tr>
+<tr>
+<td>cp_info</td>
+<td>const_pool</td>
+<td>constant_pool_count-1</td>
+<td>常量池</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>access_flages</td>
+<td>1</td>
+<td>访问标志</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>this_class</td>
+<td>1</td>
+<td>类索引</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>super_class</td>
+<td>1</td>
+<td>父类索引</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>interfaces_count</td>
+<td>1</td>
+<td>接口数量</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>interfaces</td>
+<td>interfaces_count</td>
+<td>接口索引</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>fields_count</td>
+<td>1</td>
+<td>字段表数量</td>
+</tr>
+<tr>
+<td>field_info</td>
+<td>fields</td>
+<td>fields_count</td>
+<td>字段表集合</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>methods_count</td>
+<td>1</td>
+<td>方法表数量</td>
+</tr>
+<tr>
+<td>method_info</td>
+<td>methods</td>
+<td>methods_count</td>
+<td>方法表集合</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>attributes_count</td>
+<td>1</td>
+<td>属性数量</td>
+</tr>
+<tr>
+<td>attribute_info</td>
+<td>attributes</td>
+<td>attributes_count</td>
+<td>属性集合</td>
+</tr>
+</tbody></table>
+<p>接下来让我们一一进行分析</p>
+<h3 id="魔数"><a href="#魔数" class="headerlink" title="魔数"></a>魔数</h3><p>每个Class文件的头四个字节被称为魔数（magic number），它的唯一作用是确定这个文件是否为一个能被虚拟机接收的Class文件。</p>
+<h3 id="版本号"><a href="#版本号" class="headerlink" title="版本号"></a>版本号</h3><p>紧接着魔术的4个字节存储的是Class文件的版本号：5 6字节存储的是此版本号，7 8字节存储的是主版本号</p>
+<h4 id="演示："><a href="#演示：" class="headerlink" title="演示："></a>演示：</h4><p>在这里准备了一段简单的代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.clazz;  <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TestClass</span> &#123;  <br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> m;  <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">inc</span><span class="hljs-params">()</span>&#123;  <br>        <span class="hljs-keyword">return</span> m + <span class="hljs-number">1</span>;  <br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>将其用<code>javac TestClass.java</code>编译成<code>TestClass.class</code>文件之后我们将其用vim打开，并且转换成16进制。</p>
+<p>方法为：</p>
+<ol>
+<li>用<code>vim -b</code>打开</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">vim -b TestClass.class<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>输入<code>:%!xxd</code></li>
+</ol>
+<p>我们可以看到：</p>
+<img src= https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210811103802.png width="50%">
+
+<p>首先是头4个字节，为<code>cafe babe</code>，表名这是一个class文件，后两个字节<code>0000</code>代表次版本号，再两个字节<code>0034</code>表示主版本号，为<code>(3</code>$\times$<code>16)+4=52</code>，对应的版本为JDK8（具体版本对应关系可以百度查一下，因为内容不是特别重要我就不在这里全部列出了），也就是说，该版本号说明这个文件是可以被JDK8或以上版本的虚拟机执行的Class文件。</p>
+<h3 id="常量池"><a href="#常量池" class="headerlink" title="常量池"></a>常量池</h3><p>常量池可以理解为Class文件之中的<strong>资源仓库</strong>。</p>
+<h4 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h4><ol>
+<li>常量池是Class文件结构中与其他项目关联最多的数据类型</li>
+<li>也是占用Class文件空间最大的数据项目之一</li>
+<li>同时它还是在Class文件中第一个出现的表类型数据项目</li>
+</ol>
+<p>由于常量池的数量是不固定的，所以在常量池的入口需要放置一项u2类型的数据，代表常量池容量计数器。</p>
+<p>注意：</p>
+<p>常量池容量的索引池范围为1~21，若索引值为0，则表示<strong>不可引用任何一个常量池项目</strong></p>
+<img src= https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210811194509.png width="50%">
+
+<p>可以看到，常量池容量为<code>0x0013</code>，也就是十进制的19，这就代表常量池有18项常量，索引值为0~18。</p>
+<h4 id="主要存放的常量"><a href="#主要存放的常量" class="headerlink" title="主要存放的常量"></a>主要存放的常量</h4><ol>
+<li>字面量<br> 字面量比较接近于 Java 语言层面的常量概念，如文本字符串、被声明为 final 的常量值等。</li>
+<li>符号引用<br> 符号引用则属于编译原理方面的概念，主要包括下面几类常量：<ul>
+<li>被模块导出或者开放的包（Package）</li>
+<li>类和接口的全限定名</li>
+<li>字段的名称和描述符</li>
+<li>方法的名称和描述符</li>
+<li>方法句柄和方法类型</li>
+<li>动态调用点和动态常量</li>
+</ul>
+</li>
+</ol>
+<p>Java代码在运行Javac编译的时候，并不像C和C++一样有“连接”的步骤，而是在虚拟机加载Class文件的时候进行动态连接，也就是说，在Class文件中不会保存各个方法、字段的最终内存布局信息，因此这些字段、方法的符号不经过运行期转换的话无法得到真正的内存入口地址，也就无法直接被虚拟机使用。当虚拟机运行时，需要从常量池获得对应的符号引用，再在类创建时或运行时解析、翻译到具体的内存地址之中。（具体见[[8.2.2 局部变量表]]和[[7.3 类加载的过程]]）</p>
+<p>常量池的项目类型：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>标志</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CONSTANT_Utf8_info</td>
+<td>1</td>
+<td>UTF-8编码的字符串</td>
+</tr>
+<tr>
+<td>CONSTANT_Integer_info</td>
+<td>3</td>
+<td>整型字面量</td>
+</tr>
+<tr>
+<td>CONSTANT_Float_info</td>
+<td>4</td>
+<td>浮点型字面量</td>
+</tr>
+<tr>
+<td>CONSTANT_Long_info</td>
+<td>5</td>
+<td>长整型字面量</td>
+</tr>
+<tr>
+<td>CONSTANT_Double_info</td>
+<td>6</td>
+<td>双精度浮点型字面量</td>
+</tr>
+<tr>
+<td>CONSTANT_Class_info</td>
+<td>7</td>
+<td>类或接口的符号引用</td>
+</tr>
+<tr>
+<td>CONSTANT_Fieldref_info</td>
+<td>8</td>
+<td>字符串的符号引用</td>
+</tr>
+<tr>
+<td>CONSTANT_String_info</td>
+<td>9</td>
+<td>字段和符号引用</td>
+</tr>
+<tr>
+<td>CONSTANT_Methodref_info</td>
+<td>10</td>
+<td>类中方法的符号引用</td>
+</tr>
+<tr>
+<td>CONSTANT_InterfaceMethodre_info</td>
+<td>11</td>
+<td>接口中方法的符号引用</td>
+</tr>
+<tr>
+<td>CONSTANT_NameAndType_info</td>
+<td>12</td>
+<td>字段活方法的部分符号引用</td>
+</tr>
+<tr>
+<td>CONSTANT_MethodHandle_info</td>
+<td>15</td>
+<td>表示方法句柄</td>
+</tr>
+<tr>
+<td>CONSTANT_Dynamic_info</td>
+<td>16</td>
+<td>表示方法类型</td>
+</tr>
+<tr>
+<td>CONSTANT_McthodType_info</td>
+<td>17</td>
+<td>表示一个动态计算常量</td>
+</tr>
+<tr>
+<td>CONSTANT_InvokeDynamic_info</td>
+<td>18</td>
+<td>表示一个动态方法调用点</td>
+</tr>
+<tr>
+<td>CONSTANT_Module_info</td>
+<td>19</td>
+<td>表示一个模块</td>
+</tr>
+<tr>
+<td>CONSTANT_Package_info</td>
+<td>20</td>
+<td>表示一个模块中开发或者导出的包</td>
+</tr>
+</tbody></table>
+<p>接下来看常量池的第一项常量，它的标志位为<code>0x0a</code></p>
+<img src= https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210811194944.png width="50%">
+
+<p>对应十进制为10，表示类中方法的符号引用。</p>
+<p>我们用<code>javap -verbose TestClass.class</code>来分析Class文件字节码。</p>
+<img src= https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210811195614.png width="50%">
+
+<p>图中的第一项就是我们刚才推断出来的方法引用，那么接着看：</p>
+<img src= https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210811200720.png width="50%">
+
+<p>我们代码中的常量和方法名等数据都在里面有对应。</p>
+<p><strong>问题</strong>：在图中我们可以看到，V、I、<code>&lt;init&gt;</code>方法在我们的代码里没有呀，这些常量是哪里来的呢？<br><strong>回答</strong>：它们都是编译器自动生成的，会被后面即将讲到的字段表(field_info)、方法表(method_info)、属性表(attribute_info)所引用，它们将会被用来描述一些不方便使用 “固定字节”进行表达的内容，譬如描述方法的返回值是什么，有几个参数，每个参数的类型是什么。因为Java中的“类”是无穷无尽的，无法通过简单的无符号数来描述一个方法用到了什么类，因此在描述方法的这些信息时，需要引用 常量表中的符号引用进行表达。这部分内容将在后面进一步详细阐述。</p>
+<p>常量池中有17种数据类型，在这里就不一一列出了，有需要的可以翻阅《深入理解Java虚拟机》第222页-224页。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>总的来说，常量池就是将所有常量进行记录，但是需要注意的是，这些常量并不一定可以直接使用，还需要进一步进行解析等操作。</p>
+<h2 id="访问标志"><a href="#访问标志" class="headerlink" title="访问标志"></a>访问标志</h2><p>在常量池结束之后，紧接着的2个字节代表访问标志(access_flags),这个标志用于识别一些类或者接口层次的访问信息，包括：这个Class是类还是接口；是否定义为public类型；是否定义为abstract类型；如果是类的话，是否被声明为final，等等</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210811202057.png" srcset="/img/loading.gif" lazyload width="50%">
+
+<p><code>0x0021</code>为<code>0x0020|0x0001</code>，也就是<code>ACC_PUBLIC|ACC_SUPER</code>，具体的对应关系为：</p>
+<img src= https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210811202409.png width="50%">
+
+<h2 id="类索引、父类索引与接口索引集合"><a href="#类索引、父类索引与接口索引集合" class="headerlink" title="类索引、父类索引与接口索引集合"></a>类索引、父类索引与接口索引集合</h2><img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20210811234110.png" srcset="/img/loading.gif" lazyload width="30%">
+
+<p>如图所示，介绍完前面几个数据之后，接下来是类索引、父类索引与接口索引集合。</p>
+<h3 id="类索引、父类索引介绍"><a href="#类索引、父类索引介绍" class="headerlink" title="类索引、父类索引介绍"></a>类索引、父类索引介绍</h3><p>类索引、父类索引和接口索引集合都按顺序排列在访问标志之后，类索引和父类索引用两个 u2 类型的索引值表示，它们各自指向一个类型为 CONSTANT_Class_info 的类描述符常量，通过 CONSTANT_Class_info 类型的常量中的索引值可以找到定义在 CONSTANT, Utf8_info 类型的常量中的全限定名字符串。</p>
+<h3 id="接口索引集合介绍"><a href="#接口索引集合介绍" class="headerlink" title="接口索引集合介绍"></a>接口索引集合介绍</h3><p>接口索引集合就用来描述这个类实现了哪些接口，这些被实现的接口将按implements关键字(如果这个Class文件表示的是一个接口，则应当是extends关键字)后的接口顺序从左到右排列在接口索引集合中。</p>
+<h3 id="以我们的TestClass-class为例"><a href="#以我们的TestClass-class为例" class="headerlink" title="以我们的TestClass.class为例"></a>以我们的TestClass.class为例</h3><img src= https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20210811235226.png width="50%">
+
+<p>看到访问标志之后为<code>0x0003、0x0004、0x0000</code>，也就是说，类索引为3，父类索引为4，接口索引集合大小为0。查看我们对应的常量池：</p>
+<img src= https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210811195614.png width="50%">
+
+<p>可以看到，类索引对应的常量池中的数据为#17，对应的Utf-8类型常量全限定名为TestClass类，对应的父类索引为#18，对应的Utf-8类型常量全限定名为Object类，接口索引集合大小为0，这是因为我们没有实现任何接口。</p>
+<h2 id="字段表集合"><a href="#字段表集合" class="headerlink" title="字段表集合"></a>字段表集合</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>字段表（field_info）用于描述接口或者类中声明的变量。</p>
+<p>Java 语言中的“字段”（Field） 包括类级变量以及实例级变量，但不包括在方法内部声明的局部变量。</p>
+<p>例如TestClass.class中的<code>private int m</code> 或者<code>private static int m</code>也可以，但是这个m不能在inc()方法之中，必须得在方法外。</p>
+<h3 id="字段的修饰符"><a href="#字段的修饰符" class="headerlink" title="字段的修饰符"></a>字段的修饰符</h3><p>字段可以包括的修饰符有:</p>
+<ol>
+<li>字段的作用域 （public, private, protected修饰符）</li>
+<li>是实例变量还是类变量（static修饰符）</li>
+<li>可变性（final）</li>
+<li>并发可见性（volatile修饰符，是否强制从主内存读写）</li>
+<li>可否被序列化（transient修饰符）</li>
+<li>字段数据类型（基本类型、对象、数组）</li>
+<li>字段名称</li>
+</ol>
+<p>上述这些信息中，各个修饰符（1-5）都是布尔值，要么有某个修饰符，要么没有，很适合使用标志位来表示。</p>
+<p>而字段叫做什么名字、字段被定义为什么数据类型（6-7），这些都是无法固定的，只能引用常量池中的常量来描述</p>
+<h3 id="字段表结构"><a href="#字段表结构" class="headerlink" title="字段表结构"></a>字段表结构</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>名称</th>
+<th>数量</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>u2</td>
+<td>access_flags</td>
+<td>1</td>
+<td>字段修饰符（例如public或private）</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>name_index</td>
+<td>1</td>
+<td>字段的简单名称(例如private int m)中就是m</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>descriptor_index</td>
+<td>1</td>
+<td>字段的描述索引，例如private int m中就是I,也就是对应的int</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>attributes_count</td>
+<td>1</td>
+<td>字段的属性值的数量</td>
+</tr>
+<tr>
+<td>attribute_info</td>
+<td>attributes</td>
+<td>attributes_count</td>
+<td>例如private int m &#x3D; 100中的100</td>
+</tr>
+</tbody></table>
+<ol>
+<li>access_flag<br>字段访问标志，如下所示：</li>
+</ol>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20210812004431.png" srcset="/img/loading.gif" lazyload width="50%">
+
+<p>与我们之前介绍的类中的access_flags是很类似的。用来描述方法的标志。</p>
+<p>跟随access_flags标志的是两项索引值，name_index和descriptor_index，它们都是<strong>对常量池的引用</strong>，分别代表字段的<strong>简单名称</strong>以及字段和方法的<strong>描述符</strong>。</p>
+<ul>
+<li>全限定名<br><code>com/coachhe/clazz/TestClass</code>是这个类的全限定名，仅仅是把类全名中的”.“换成了”&#x2F;“。</li>
+<li>简单名称<br>简单名称就是指没有类型和参数修饰的方法或者字段名称，比如inc()方法和m字段的简单名称就是inc和m</li>
+<li>描述符<br>  描述符作用：<br>  描述符的作用是用来描述字段的数据类型、方法的参数列表（包括数量、类型以及顺序）和返回值。<br>  描述符规则：<br>  基本数据类型以及代表无返回值的void类型都用一个大写字符来表示，而对象用L加对象的全限定名来表示。而对于数组，每一维度将使用一个前置的”[“来描述。比如一个被定义为”java.lang.String[][]“类型的二维数组将被记录成[[Ljava&#x2F;lang&#x2F;String，其中前面两个[表示这是一个二维数组，后面的L表示是一个对象，“java&#x2F;lang&#x2F;String”表示这是一个String类型。<br>  用描述符来描述方法时，按照先参数列表、后返回值的顺序描述，参数列表按照参数的严格顺序放在一组小括号“()”里。如方法<code>void inc()</code>的描述符为<code>()V</code>，方法<code>java.lang.String toString()</code>的描述符为<code>()Ljava/Lang/String</code>，方法<code>int indexOf(char[] source, int sourceOffset, char[] target, int targetOffset, int fromIndex)</code>的描述符为<code>([CII[CIII)I</code>。</li>
+</ul>
+<h3 id="以我们的TestClass-class为例-1"><a href="#以我们的TestClass-class为例-1" class="headerlink" title="以我们的TestClass.class为例"></a>以我们的TestClass.class为例</h3><img src= https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20210812234554.png width="50%">
+
+<p>结合之前的顺序表：</p>
+<img src= https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20210812234711.png width="30%">
+
+<p>和fields的数据结构：</p>
+<img src= https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20210812235756.png width="30%">
+
+<p>可以看到，接口索引之后是fields_count，为<code>0x0001</code>，也就是数量为1，表示我们类中的字段表只有1个（也就是我们定义的m）。<br>fields_count之后是fields，fields结构为在之前已经讲过，首先是2个字节的access_flags，值为<code>0x0002</code>，是十进制的2，查阅我们之前的标志位表，表明为private方法。接着是2个字节的name_index，值为<code>0x0005</code>，从常量表中可以看到，对应的是一个UTF8类型的m，再接着是2个字节的descriptor_index，值为<code>0x0006</code>，对应常量池为UTF8类型的I，表明为一个int类型，此时已经知道，我们定义了一个类变量，并且定义的方式是<code>private int m</code>。</p>
+<p>注意：<br>因为我们这里没有给其赋值，所以后面再接了两个字节的attributes_count大小为0，如果我们将字段m的声明改为<code>final static int m = 123</code>，那么就会存在一个ConstantValue的属性，其值指向常量123.</p>
+<h2 id="方法表集合"><a href="#方法表集合" class="headerlink" title="方法表集合"></a>方法表集合</h2><p>Class文件存储格式中对方法的描述与字段的描述采用了几乎完全一致的方式。</p>
+<p>方法表结构：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>名称</th>
+<th>数量</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>u2</td>
+<td>access_flags</td>
+<td>1</td>
+<td>方法修饰符（例如public或private）</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>name_index</td>
+<td>1</td>
+<td>方法的简单名称(例如private int imc())中就是imc</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>descriptor_index</td>
+<td>1</td>
+<td>方法的描述索引，例如private int imc()中就是I,也就是对应的int</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>attributes_count</td>
+<td>1</td>
+<td>方法的属性值的数量</td>
+</tr>
+<tr>
+<td>attribute_info</td>
+<td>attributes</td>
+<td>attributes_count</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="以我们的TestClass-class为例-2"><a href="#以我们的TestClass-class为例-2" class="headerlink" title="以我们的TestClass.class为例"></a>以我们的TestClass.class为例</h3><img src=https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20210813001217.png height=500>
+
+<p>可以看到，和字段表集合非常类似，首先是0002，表示集合里有两个方法，一个是源码中的inc()，第二个方法是为编译器添加的实例构造器&lt;init&gt;。<br>接下来首先看看第一个方法，</p>
+<ol>
+<li>标志为0001，表明是一个public方法</li>
+<li>接着是名称索引0007，查看常量池对应为&lt;init&gt;，说明方法名叫做&lt;init&gt;</li>
+<li>然后是描述符索引值为0008，对应()V，也就是说这是一个void方法，并且没有参数</li>
+</ol>
+<p>此时我们已经可以得到，这个方法为<code>public void &lt;init&gt;()</code></p>
+<ol start="4">
+<li>接着属性表计数器attributes_count的值为0001，表示此方法的属性表集合有一个属性</li>
+<li>接着看为0009，对应常量池为Code，说明这个属性是方法的字节码描述。</li>
+</ol>
+<p>看到这里，相信大家都会有跟我一样的疑惑，我们现在知道方法为<code>public void &lt;init&gt;()</code>，但是里面的代码呢？？被吃了吗？只知道对应一个Code，这到底是啥？<br>实际上，方法里的Java代码，经过Javac编译器编译成字节码指令之后，存放在方法属性表集合中一个名为“Code”的属性里面，属性表作为Class文件格式中最具拓展性的一种数据项目，我们现在来好好分析分析。</p>
+<h2 id="属性表集合"><a href="#属性表集合" class="headerlink" title="属性表集合"></a>属性表集合</h2><p>属性表集合相信大家都不陌生，在Class文件、字段表、方法表中都可以携带自己的属性表集合，以描述某些场景转悠的信息。</p>
+<p>与Class文件中其他的数据项目要求严格的顺序、长度和内容不同，属性表集合的限制稍微宽松一些，不再要求各个属性表具有严格顺序，并且《Java虚拟机规范》允许只要不与已有属性名重复，任何人实现的编译器都可以向属性表中写入自己定义的属性信息，Java 虚拟机运行时会忽略掉它不认识的属性 。为了能正确解析Class文件，《Java虚拟机规范》 最初只预定义了 9项所有Java虚拟机实现都应当能识别的属性，而在最新的《Java虚拟机规范》的Java SE 12版本中，预定义属性已经增加到29项。</p>
+<p>在这里列出部分常见的预定义属性，具体的可以查看《深入理解Java虚拟机》第三版P231。</p>
+<table>
+<thead>
+<tr>
+<th>属性名称</th>
+<th>使用位置</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Code</td>
+<td>方法表</td>
+<td>Java代码编译成的字节码指令</td>
+</tr>
+<tr>
+<td>ConstantValue</td>
+<td>字段表</td>
+<td>由final关键字定义的常量值</td>
+</tr>
+<tr>
+<td>Deprecated</td>
+<td>类、方发表、字段表</td>
+<td>被声明为deprecated的方法和字段</td>
+</tr>
+<tr>
+<td>Exceptions</td>
+<td>方法表</td>
+<td>方法抛出的异常列表</td>
+</tr>
+<tr>
+<td>…….</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>对于每一个属性，它的名称都要从常量池中引出一个CONSTANT_Utf8_info类型的常量所占用的位数即可。<br>一个符合规则的属性表应该满足以下定义的结构：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>名称</th>
+<th>数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>u2</td>
+<td>attribute_name_index</td>
+<td>1</td>
+</tr>
+<tr>
+<td>u4</td>
+<td>attribute_length</td>
+<td>1</td>
+</tr>
+<tr>
+<td>u1</td>
+<td>info</td>
+<td>attribute_length</td>
+</tr>
+</tbody></table>
+<h3 id="Code属性"><a href="#Code属性" class="headerlink" title="Code属性"></a>Code属性</h3><p>Java 程序方法体里面的代码经过 Javac 编译器处理之后，最终变为字节码指令存储在 Code 属性内。Code 属性出现在方法表的属性集合之中 </p>
+<p>注意：</p>
+<p>但并非所有的方法表都必须存在这个属性，譬如接口或者抽象类中的方法就不存在Code属性，如果方法表有Code属性存在, 那么它的结构将如下所示：</p>
+<p>Code属性表的结构：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>名称</th>
+<th>数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>u2</td>
+<td>attribute_name_index</td>
+<td>1</td>
+</tr>
+<tr>
+<td>u4</td>
+<td>attribute_length</td>
+<td>1</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>max_stack</td>
+<td>1</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>max_locals</td>
+<td>1</td>
+</tr>
+<tr>
+<td>u4</td>
+<td>code_length</td>
+<td>1</td>
+</tr>
+<tr>
+<td>u1</td>
+<td>code</td>
+<td>code_length</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>exception_table_length</td>
+<td>1</td>
+</tr>
+<tr>
+<td>exception_info</td>
+<td>exception_table</td>
+<td>exception_table_length</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>attributes_count</td>
+<td>1</td>
+</tr>
+<tr>
+<td>attribute_info</td>
+<td>attributes</td>
+<td>attributes_count</td>
+</tr>
+</tbody></table>
+<p>注意：</p>
+<p>这里并不和上面的属性表结构相冲突，只是info部分更加具体化了。</p>
+<ol>
+<li><code>attribute_name_index</code>(属性名称)<br> attribute_name_index 是一项指向 CONSTANT_Utf8_info 型常量的索引，此常量值固定为”Code”，它代表该属性的属性名称。</li>
+<li><code>attribute_length</code>(属性值长度)<br> attribute_length 指示了属性值的长度。由于前两个类型分别为 u2 和 u4，共 6 个字节，所以属性值的长度固定为整个属性表长度-6</li>
+<li><code>max_stack</code>(操作数栈深度最大值)<br> max_stack 代表了操作数栈深度的最大值。在方法执行时操作数栈不会超过这个深度。虚拟机运行的时候需要根据这个值来分配栈帧中的操作栈深度。</li>
+<li><code>max_locals</code>(局部变量表所需存储空间)<br> max_locals 代表了局部变量表所需的存储空间。max_locals 的单位是变量槽（Slot），变量槽是虚拟机为<strong>局部变量</strong>分配内存所使用的最小单位。</li>
+</ol>
+<p><strong>注意</strong> :<br>局部变量就是方法中的变量，区别于之前的类变量和实例变量。<br>局部变量表占用Slot情况：<br>    1. 对于 byte、char、float、int、short、boolean 和 returnAddress 等长度不超过 32 位的数据类型，每个局部变量占用一个变量槽。<br>    2. double 和 long 这两种 64 位的数据类型则需要两个变量槽来存放。<br>    3. 方法参数（包括实例方法中的隐藏参数“this”）<br>    4. 显式异常处理程序的参数（也就是 <code>try-catch</code> 块中所定义的异常）<br>    5. 方法体中定义的局部变量也需要依赖局部变量表来存放</p>
+<p>注意，并不是在方法中用了多少个局部变量，就把这些局部变量所占变量槽数量之和作为<code>max_locals</code>的值，操作数栈和局部变量表直接决定一个该方法的栈帧所耗费的内存，不必要的操作数栈深度和变量槽数量会造成内存的浪费。Java虚拟机的做法是将局部变量表中的变量槽进行重用，当代码执行超出一个局部变量的作用域时，这个局部变量所占的变量槽可以被其他局部变量所使用 ，Javac编译器会根据变量的作用域来分配变量槽给各个变量使用，根据同时生存的最大局部变量数量和类型计算出max_ locals的大小。</p>
+<ol start="5">
+<li><code>code_length</code>和<code>code</code><br><code>code_length</code>和<code>code</code>用来存储程序编译后生成的字节码指令。<br><code>code_length</code> 代表字节码长度，<code>code</code> 是用于存储字节码指令的一系列字节流</li>
+</ol>
+<p>字节码指令的含义：</p>
+<p>每个指令就是一个u1类型的单字节，当虚拟机读取到code中的一个字节码时，就可以 对应找出这个字节码代表的是什么指令 ，并且可以知道这条指令后面是否需要跟随参数， 以及后续的参数应当如何解析。</p>
+<h4 id="Code属性的重要性"><a href="#Code属性的重要性" class="headerlink" title="Code属性的重要性"></a>Code属性的重要性</h4><p>Code 属性是 Class 文件中&#x3D;&#x3D;最重要的一个属性&#x3D;&#x3D;，如果把一个 Java 程序中的信息分为代码 （Code, 方法体里面的 Java 代码）和元数据（Metadata, 包括类、字段、方法定义及其他信息）两部分，那么<strong>在整个 Class 文件里，Code 属性用于描述代码，所有的其他数据项目都用于描述元数据</strong>。</p>
+<p>了解Code属性是学习后面关于字节码执行引擎内容的<strong>必要基础</strong>，能直接阅读字节码也是工作中分析Java代码语义问题的<strong>必要工具和基本技能</strong>，</p>
+<p>因为Code属性如此重要，因此我们用一个很详细的实例来分析一下JVM是怎么使用这个属性的</p>
+<h4 id="Code属性的使用"><a href="#Code属性的使用" class="headerlink" title="Code属性的使用"></a>Code属性的使用</h4><p>让我们接着分析之前的TestClass.class。之前分析到0009，对应常量池为Code，说明这个属性是方法的字节码描述。<br>接着往下看：<br><img src= https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210813101723.png width="50%"></p>
+<p>根据之前的分析我们知道，首先attribute_name_index是0009，固定指向常量池的Code，接着是0000001d，4个字节，转换成10进制为30，也就是说，属性值长度为30。<br>再接着看，接下来2个字节为max_stack，值为0001，再接着2个字节为max_locals，也为0001，再接着4个字节为00000005，为code_length，表示字节码长度，表示接下来5个字节是对应的字节码，我们可以看到，为<code>2a b7 00 01 b1</code>。<br>我们知道，每个字节码对应一个字节，所以我们一个一个来进行分析。</p>
+<ol>
+<li><code>0x2a</code><br>第一个字节是2a，通过查表可以得到，对应的指令为aload_0</li>
+</ol>
+<p>我们先看看aload_所对应的字节码指令：</p>
+<table>
+<thead>
+<tr>
+<th>字节码</th>
+<th>助记码</th>
+<th>指令含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>0x2a</code></td>
+<td>aload_0</td>
+<td>将第一个引用类型本地变量推送至栈顶</td>
+</tr>
+<tr>
+<td><code>0x2b</code></td>
+<td>aload_1</td>
+<td>将第二个引用类型本地变量推送至栈顶</td>
+</tr>
+<tr>
+<td><code>0x2c</code></td>
+<td>aload_2</td>
+<td>将第三个引用类型本地变量推送至栈顶</td>
+</tr>
+<tr>
+<td><code>0x2d</code></td>
+<td>aload_3</td>
+<td>将第四个引用类型本地变量推送至栈顶</td>
+</tr>
+</tbody></table>
+<p>从表中可以看到，<code>aload_0</code>这个指令的含义是将第0个<strong>变量槽</strong>（也就是局部变量表，下面的LocalVariableTable）中名为reference类型的本地变量推送到操作数栈顶。在这里，就是将this引用推送至栈顶。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell">public com.coachhe.clazz.LocalVariableTest();<br>  descriptor: ()V<br>  flags: (0x0001) ACC_PUBLIC<br>  Code:<br>    stack=1, locals=1, args_size=1<br>       0: aload_0<br>       1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V<br>       4: return<br>    LocalVariableTable:<br>      Start  Length  Slot  Name   Signature<br>          0       5     0  this   Lcom/coachhe/clazz/LocalVariableTest;<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><code>0xb7</code><br>将this引用推送至栈顶之后，读入<code>0xb7</code>，查表得到其对应的指令为invokespecial</li>
+</ol>
+<p>invokespecial指令：<br>这条指令的作用是以栈顶reference类型的数据所指向的对象作为方法接受者，调用此对象的实例构造方法、private方法或者它的父类的方法。<br>这个方法有一个u2类型的参数说明具体调用哪一个方法，他指向常量池中的CONSTANT_Methodref_info类型常量，也就是这个方法的符号引用。</p>
+<ol start="3">
+<li><code>0x0001</code><br>这是invokespecial指令的参数，代表一个符号引用，查看对应的常量为实例构造器“&lt;init&gt;()”方法的符号引用。</li>
+<li><code>0xb1</code><br>查表之后发现对应指令为return，含义是从方法的返回，并且返回值为void。这条指令执行后，当前方法正常结束。</li>
+</ol>
+<p>这段字节码虽然很短，但我们可以从中看出它执行过程中的数据交换、方法调用等操作都是基于栈（操作数栈）的。关于虚拟机字节码执行的讲解是后面两章的话题，我们不妨把这里的疑问放到[[8.2.2 局部变量表]]去解决。</p>
+<p>再次执行<code>javap -verbose TestClass</code>，我们可以验证刚才的计算，并且可以验证我们刚才的另一个方法<code>inc()</code>。</p>
+<img src= https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210813131057.png width="50%">
+
+<p>可以看到，这个跟我们之前的计算结果是完全相同的。</p>
+<p>注意：<br><img src= https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210813131303.png width="30%"></p>
+<p>可是我明明没有参数，为什么这里的 size 为什么会是 1 呢？</p>
+<p>回答：</p>
+<p>这是因为在任何实例方法里面，都可以<strong>通过this关键字访问到此方法所属的对象</strong>。具体可以查看 [[8.2.2 局部变量表]] 中的局部变量表</p>
+<p>这个访问机制对Java程序的编写很重要，而它的实现非常简单，仅仅是通过在Javac编译器编译的时候把对this关键字的访问转变为对一个普通方法参数的访问，然后再虚拟机调用实例方法时自动传入此参数而已。因此在实例方法的局部变量表中至少会存在一个指向当前对象实例的局部变量，局部变量表也会预留出第一个变量槽位来存放对象实例的引用，所以实例方法参数值从1开始计算。<br>不过这种方式只对实例方法有效，对于static修饰的方法，如果没有参数，size就为0了。</p>
+<h4 id="异常表"><a href="#异常表" class="headerlink" title="异常表"></a>异常表</h4><p>如果存在异常表，那它的格式应如下所示:</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>名称</th>
+<th>数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>u2</td>
+<td>start_pc</td>
+<td>1</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>end_pc</td>
+<td>1</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>handler_pc</td>
+<td>1</td>
+</tr>
+<tr>
+<td>u2</td>
+<td>catch_type</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<p>包含四个字段，这些字段的含义为: 如果当字节码从第start_pc行到第end_pc行之间(不含第end_pc行)出现了类型为catch_type或者其子类的异常(catch_type为指向一个CONSTANT_Class_info型常量的索引)，则转到第handler_pc行继续处理。当catchjype的值为0时，代表任意异常情况都需要转到handler_pc处进行处理。</p>
+<p>Java源代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.clazz;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ExceptionTestClass</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">inc</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-type">int</span> x;<br>        <span class="hljs-keyword">try</span> &#123;<br>            x = <span class="hljs-number">1</span>;<br>            <span class="hljs-keyword">return</span> x;<br>        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>            x = <span class="hljs-number">2</span>;<br>            <span class="hljs-keyword">return</span> x;<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            x = <span class="hljs-number">3</span>;<br>        &#125;<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>编译后的ByteCode字节码及异常表</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs java">  <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">inc</span><span class="hljs-params">()</span>;<br>    descriptor: ()I<br>    flags: ACC_PUBLIC<br>    Code:<br>      stack=<span class="hljs-number">1</span>, locals=<span class="hljs-number">5</span>, args_size=<span class="hljs-number">1</span><br>         <span class="hljs-number">0</span>: iconst_1    <span class="hljs-comment">// 将int型1推送至栈顶</span><br>         <span class="hljs-number">1</span>: istore_1	<span class="hljs-comment">// 将栈顶int型数值存入第二个本地变量</span><br>         <span class="hljs-number">2</span>: iload_1		<span class="hljs-comment">// 将第二个int型本地变量推送至栈顶</span><br>         <span class="hljs-number">3</span>: istore_2	<span class="hljs-comment">// 将栈顶int型数值存入第三个本地变量</span><br>         <span class="hljs-number">4</span>: iconst_3<br>         <span class="hljs-number">5</span>: istore_1<br>         <span class="hljs-number">6</span>: iload_2<br>         <span class="hljs-number">7</span>: ireturn<br>         <span class="hljs-number">8</span>: astore_2<br>         <span class="hljs-number">9</span>: iconst_2<br>        <span class="hljs-number">10</span>: istore_1<br>        <span class="hljs-number">11</span>: iload_1<br>        <span class="hljs-number">12</span>: istore_3<br>        <span class="hljs-number">13</span>: iconst_3<br>        <span class="hljs-number">14</span>: istore_1<br>        <span class="hljs-number">15</span>: iload_3<br>        <span class="hljs-number">16</span>: ireturn<br>        <span class="hljs-number">17</span>: astore        <span class="hljs-number">4</span><br>        <span class="hljs-number">19</span>: iconst_3<br>        <span class="hljs-number">20</span>: istore_1<br>        <span class="hljs-number">21</span>: aload         <span class="hljs-number">4</span><br>        <span class="hljs-number">23</span>: athrow<br>      Exception table:<br>         from    to  target type<br>             <span class="hljs-number">0</span>     <span class="hljs-number">4</span>     <span class="hljs-number">8</span>   Class java/lang/Exception<br>             <span class="hljs-number">0</span>     <span class="hljs-number">4</span>    <span class="hljs-number">17</span>   any<br>             <span class="hljs-number">8</span>    <span class="hljs-number">13</span>    <span class="hljs-number">17</span>   any<br>            <span class="hljs-number">17</span>    <span class="hljs-number">19</span>    <span class="hljs-number">17</span>   any<br>      LineNumberTable:<br>        line <span class="hljs-number">7</span>: <span class="hljs-number">0</span><br>        line <span class="hljs-number">8</span>: <span class="hljs-number">2</span><br>        line <span class="hljs-number">13</span>: <span class="hljs-number">4</span><br>        line <span class="hljs-number">8</span>: <span class="hljs-number">6</span><br>        line <span class="hljs-number">9</span>: <span class="hljs-number">8</span><br>        line <span class="hljs-number">10</span>: <span class="hljs-number">9</span><br>        line <span class="hljs-number">11</span>: <span class="hljs-number">11</span><br>        line <span class="hljs-number">13</span>: <span class="hljs-number">13</span><br>        line <span class="hljs-number">11</span>: <span class="hljs-number">15</span><br>        line <span class="hljs-number">13</span>: <span class="hljs-number">17</span><br>        line <span class="hljs-number">14</span>: <span class="hljs-number">21</span><br>      StackMapTable: number_of_entries = <span class="hljs-number">2</span><br>        frame_type = <span class="hljs-number">72</span> <span class="hljs-comment">/* same_locals_1_stack_item */</span><br>          stack = [ <span class="hljs-keyword">class</span> <span class="hljs-title class_">java</span>/lang/Exception ]<br>        frame_type = <span class="hljs-number">72</span> <span class="hljs-comment">/* same_locals_1_stack_item */</span><br>          stack = [ <span class="hljs-keyword">class</span> <span class="hljs-title class_">java</span>/lang/Throwable ]<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>编译器为这段Java源码生成了三条异常表记录，对应三条可能出现的代码执行路径。 从Java代码的语义上讲，这三条执行路径分别为：</p>
+<ul>
+<li>如果try语句块中出现属于Exception或其子类的异常，转到catch语句块处理；</li>
+<li>如果try语句块中出现不属于Exception或其子类的异常，转到finally语句块处理；</li>
+<li>如果catch语句块中出现任何异常，转到finally语句块处理。</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" class="category-chain-item">编程语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" class="category-chain-item">Java</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/" class="category-chain-item">Java语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/JVM/" class="category-chain-item">JVM</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/JVM/%E7%AC%AC6%E7%AB%A0-%E7%B1%BB%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/" class="category-chain-item">第6章 类文件结构</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2 类文件结构</div>
+      <div>http://example.com/2022/12/729fe221501a.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/6b28a1d73926.html" title="jdk编译过程（Centos）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">jdk编译过程（Centos）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/f8ea64ee1678.html" title="4 虚拟机性能监控、故障处理工具">
+                        <span class="hidden-mobile">4 虚拟机性能监控、故障处理工具</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/729fe221501a.html';
+          this.page.identifier = '/2022/12/729fe221501a.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

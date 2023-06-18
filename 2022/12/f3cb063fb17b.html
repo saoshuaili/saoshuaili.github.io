@@ -1,0 +1,1435 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、登录虚拟机网络的三种连接方式 桥接模式  如图中张三所示，centos虚拟机的地址和张三共享了同一个网段。    好处  大家都在同一个网段，可以相互通讯  缺点  因为IP地址有限，可能造成ip冲突   NAT模式【网络地址转换模式】  在windows基础上会生成一个新的地址，该地址不和原来的地址在一个网段中。    好处  虚拟机不再占用原来的网段  缺点  该虚拟机不能被除了本机以外的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux实操">
+<meta property="og:url" content="http://example.com/2022/12/f3cb063fb17b.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="一、登录虚拟机网络的三种连接方式 桥接模式  如图中张三所示，centos虚拟机的地址和张三共享了同一个网段。    好处  大家都在同一个网段，可以相互通讯  缺点  因为IP地址有限，可能造成ip冲突   NAT模式【网络地址转换模式】  在windows基础上会生成一个新的地址，该地址不和原来的地址在一个网段中。    好处  虚拟机不再占用原来的网段  缺点  该虚拟机不能被除了本机以外的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404043439.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404043646.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404043829.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404044234.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404044414.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404045035.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404045056.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406105833.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406110015.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406110219.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406110259.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406110656.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406111550.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406111630.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406111652.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406171957.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406172145.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406172310.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406172337.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406172352.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406190626.png">
+<meta property="og:image" content="http://example.com/Users/coachhe/Library/Application%20Support/typora-user-images/image-20210406190821577.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406191330.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406191507.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406191617.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406192043.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406192202.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406192331.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406192450.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406192841.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406211202.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406211236.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406211323.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406211436.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406211623.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406211650.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406211821.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406212421.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406212630.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406212704.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406212855.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406212937.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213003.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213045.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213113.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213148.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213207.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213330.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213446.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213525.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213625.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210406233939.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210406234421.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210406234511.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210406234737.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210406235842.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407000655.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407000802.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407000728.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407000745.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407000959.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001036.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001128.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001140.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001251.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001354.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001455.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001534.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001859.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002036.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002141.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002358.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002431.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002458.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002609.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002643.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002752.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002810.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002904.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002923.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002957.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407003014.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407003136.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407003342.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407003424.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407003538.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407003804.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407003907.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407004153.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407004227.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407004310.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407004741.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407004817.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005004.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005114.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005236.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005256.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005619.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005656.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005821.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005848.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005934.png">
+<meta property="article:published_time" content="2022-12-03T18:38:58.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404043439.png">
+  
+  
+  
+  <title>Linux实操 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Linux实操"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:38" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          73 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Linux实操</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="一、登录"><a href="#一、登录" class="headerlink" title="一、登录"></a>一、登录</h1><h2 id="虚拟机网络的三种连接方式"><a href="#虚拟机网络的三种连接方式" class="headerlink" title="虚拟机网络的三种连接方式"></a>虚拟机网络的三种连接方式</h2><ol>
+<li><p>桥接模式 </p>
+<p>如图中张三所示，centos虚拟机的地址和张三共享了同一个网段。</p>
+ <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404043439.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p><strong>好处</strong> </p>
+<p>大家都在同一个网段，可以相互通讯 </p>
+<p><strong>缺点</strong> </p>
+<p>因为IP地址有限，可能造成ip冲突 </p>
+</li>
+<li><p>NAT模式【网络地址转换模式】 </p>
+<p>在windows基础上会<strong>生成一个新的地址</strong>，该地址不和原来的地址在一个网段中。 </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404043646.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p><strong>好处</strong> </p>
+<p>虚拟机不再占用原来的网段 </p>
+<p><strong>缺点</strong> </p>
+<p>该虚拟机不能被除了本机以外的其他机器找到，但是反过来该虚拟机可以找到其他机器（通过代理）。 </p>
+</li>
+<li><p>主机模式 </p>
+<p>单独的一台电脑</p>
+</li>
+</ol>
+<h2 id="linux目录结构"><a href="#linux目录结构" class="headerlink" title="linux目录结构"></a>linux目录结构</h2><h3 id="基本介绍"><a href="#基本介绍" class="headerlink" title="基本介绍"></a>基本介绍</h3><p>linux的文件系统是采用级层式的树状目录结构。在此结构中最上层的根目录是”&#x2F;“，然后在此目录下再创建其他目录。 </p>
+<p> 在<strong>Linux</strong>世界中，<strong>一切皆文件</strong></p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404043829.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3><ol>
+<li>linux的目录中有且只有一个根目录&#x2F; </li>
+<li>linux的各个目录存放的内容是规划好的，不用乱放文件 </li>
+<li>linux是文件的形式管理我们的设备，因此linux系统，一切皆为文件。 </li>
+<li>linux的各个文件目录下存放什么内容需要有一个认识。</li>
+</ol>
+<h1 id="二、用户"><a href="#二、用户" class="headerlink" title="二、用户"></a>二、用户</h1><h2 id="关机-amp-重启指令"><a href="#关机-amp-重启指令" class="headerlink" title="关机&amp;重启指令"></a>关机&amp;重启指令</h2><ol>
+<li><p>shutdown </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">shutdown -h now：表示立即关机 <br>shutdown -h 1：表示一分钟后关机 <br>shutdown -r now： 表示立即重启 <br></code></pre></td></tr></table></figure>
+</li>
+<li><p>halt </p>
+<p>直接使用，效果等价于关机 </p>
+</li>
+<li><p>reboot </p>
+<p>就是重启系统 </p>
+</li>
+<li><p>sync </p>
+<p>把内存的数据同步到磁盘上 </p>
+<p><strong>注意</strong> </p>
+<p>当我们关机或重启时，都应该先执行一下sync指令，把内存的数据写入磁盘，防止数据丢失。</p>
+</li>
+</ol>
+<h2 id="用户的登录和注销"><a href="#用户的登录和注销" class="headerlink" title="用户的登录和注销"></a>用户的登录和注销</h2><h3 id="注销用户：logout"><a href="#注销用户：logout" class="headerlink" title="注销用户：logout"></a>注销用户：logout</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404044234.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><p>logout在图形界面是无效的 </p>
+<h2 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h2><h3 id="基本介绍-1"><a href="#基本介绍-1" class="headerlink" title="基本介绍"></a>基本介绍</h3><p>Linux系统是一个多用户多任务操作系统，任何一个要使用资源的用户，都必须首先向系统管理员申请一个账号，然后以这个账号的身份进入系统。 </p>
+<h3 id="1-添加用户"><a href="#1-添加用户" class="headerlink" title="1 添加用户"></a>1 添加用户</h3><p>基本语法 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">useradd [选项] 用户名 <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404044414.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h4 id="注意-1"><a href="#注意-1" class="headerlink" title="注意"></a>注意</h4><ol>
+<li>当用户创建成功后，会自动创建和用户同名的家目录 </li>
+<li>也可以通过useradd -d 指定目录 用户名 创建用户</li>
+</ol>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404045035.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>更改密码 </p>
+<p>passwd 用户名 </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404045056.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h3 id="2-删除用户"><a href="#2-删除用户" class="headerlink" title="2 删除用户"></a>2 删除用户</h3><p>基本语法 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">userdel [选项] 用户名 <br></code></pre></td></tr></table></figure>
+
+<h4 id="应用案例"><a href="#应用案例" class="headerlink" title="应用案例"></a>应用案例</h4><ol>
+<li><p>删除小明，但是保留家目录</p>
+<p>方法：不带参数，直接删除</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406105833.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+</li>
+<li><p>删除小明，同时删除家目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">userdel -r xh<br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406110015.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></li>
+</ol>
+<p>在删除用户时，一般不会删除家目录</p>
+<h3 id="3-用户查询"><a href="#3-用户查询" class="headerlink" title="3 用户查询"></a>3 用户查询</h3><h4 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">id 用户名 <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406110219.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+ 
+
+<h3 id="4-切换用户"><a href="#4-切换用户" class="headerlink" title="4 切换用户"></a>4 切换用户</h3><p>在linux中，如果当前用户权限不够，可以通过su -用户名的方式切换用户 </p>
+<h4 id="基本语法-1"><a href="#基本语法-1" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">su - 切换用户名 <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406110259.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h4 id="注意-2"><a href="#注意-2" class="headerlink" title="注意"></a>注意</h4><p>root切换到其他用户不用输密码，其他密码切换到root时需要输密码 </p>
+<h3 id="5-查看自己是什么用户"><a href="#5-查看自己是什么用户" class="headerlink" title="5 查看自己是什么用户"></a>5 查看自己是什么用户</h3><h4 id="基本语法-2"><a href="#基本语法-2" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">who am i <br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="组的管理"><a href="#组的管理" class="headerlink" title="组的管理"></a>组的管理</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>类似于角色，系统可以对<strong>有共性的</strong>多个用户进行统一的管理。 </p>
+<h3 id="1-创建组"><a href="#1-创建组" class="headerlink" title="1 创建组"></a>1 创建组</h3><h4 id="基本语法-3"><a href="#基本语法-3" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">groupadd 组名<br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406110656.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /> 
+
+<h3 id="2-删除组"><a href="#2-删除组" class="headerlink" title="2 删除组"></a>2 删除组</h3><h4 id="基本语法-4"><a href="#基本语法-4" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">groupdel 组名  <br></code></pre></td></tr></table></figure>
+
+<h3 id="3-用户组"><a href="#3-用户组" class="headerlink" title="3 用户组"></a>3 用户组</h3><p>增加用户时直接加上组 </p>
+<h4 id="基本语法-5"><a href="#基本语法-5" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">useradd -g 用户组 用户名 <br></code></pre></td></tr></table></figure>
+
+<h3 id="4-修改用户组"><a href="#4-修改用户组" class="headerlink" title="4 修改用户组"></a>4 修改用户组</h3><h4 id="基本语法-6"><a href="#基本语法-6" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">usermod -g 用户组 用户名 <br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="用户和组的相关文件"><a href="#用户和组的相关文件" class="headerlink" title="用户和组的相关文件"></a>用户和组的相关文件</h2><h3 id="x2F-etc-x2F-passwd文件"><a href="#x2F-etc-x2F-passwd文件" class="headerlink" title="&#x2F;etc&#x2F;passwd文件"></a>&#x2F;etc&#x2F;passwd文件</h3><p>用户（user）的配置文件，记录用户的各种信息</p>
+<p>每行的含义：用户名:口令:用户标识号:组标识号:注释性描述:主目录:登陆Shell</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406111550.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<h3 id="x2F-etc-x2F-shadow文件"><a href="#x2F-etc-x2F-shadow文件" class="headerlink" title="&#x2F;etc&#x2F;shadow文件"></a>&#x2F;etc&#x2F;shadow文件</h3><p>口令的配置文件</p>
+<p>每行的含义：登录名:加密口令:最后一次修改时间:最小时间间隔:最大时间间隔:警告时间:不活动时间:失效时间:标志</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406111630.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="x2F-etc-x2F-group文件"><a href="#x2F-etc-x2F-group文件" class="headerlink" title="&#x2F;etc&#x2F;group文件"></a>&#x2F;etc&#x2F;group文件</h3><p>组（group）的配置文件，记录linxu包含的组的信息</p>
+<p>每行含义：组名:口令:组标识号:组内用户列表</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406111652.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<h1 id="三、常用指令"><a href="#三、常用指令" class="headerlink" title="三、常用指令"></a>三、常用指令</h1><h2 id="1-指定运行级别"><a href="#1-指定运行级别" class="headerlink" title="1 指定运行级别"></a>1 指定运行级别</h2><h3 id="linux共有7个运行级别"><a href="#linux共有7个运行级别" class="headerlink" title="linux共有7个运行级别"></a>linux共有7个运行级别</h3><p>0：关机 </p>
+<p>1：单用户（找回丢失密码） </p>
+<p>2：多用户无网络服务 </p>
+<p>3：多用户有网络服务（用的最多） </p>
+<p>4：保留级别 </p>
+<p>5：图形界面 </p>
+<p>6：重启 </p>
+<h3 id="系统运行级别配置文件"><a href="#系统运行级别配置文件" class="headerlink" title="系统运行级别配置文件"></a>系统运行级别配置文件</h3><p>&#x2F;etc&#x2F;inittab </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406171957.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="切换到指定运行级别"><a href="#切换到指定运行级别" class="headerlink" title="切换到指定运行级别"></a>切换到指定运行级别</h3><h4 id="基本语法-7"><a href="#基本语法-7" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">init [012356] <br></code></pre></td></tr></table></figure>
+
+<h4 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h4><p>通过init来切换不同的运行级别，比如5-&gt;3，然后关机 </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406172145.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="作用：通过运行级别找回丢失的密码"><a href="#作用：通过运行级别找回丢失的密码" class="headerlink" title="作用：通过运行级别找回丢失的密码"></a>作用：通过运行级别找回丢失的密码</h3><p>如果不小心忘记了root密码如何找回？ </p>
+<h4 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h4><p>进入到单用户模式，然后修改root密码即可 </p>
+<h4 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h4><p>进入单用户模式root不需要密码就可以登录 </p>
+<h4 id="演示"><a href="#演示" class="headerlink" title="演示"></a>演示</h4><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406172310.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<p>输入e之后</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406172337.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>输入1：</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406172352.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>开机-&gt;在引导时输入回车-&gt;看到一个界面输入e-&gt;看到一个新的界面，选中第二行（编辑内核） -&gt; 再输入e -&gt; 在这行最后输入1，再回车 -&gt; 再次输入b，这时就会进入单用户模式。</p>
+<p>此时我们就到了单用户模式，使用passwd指令来修改root密码。</p>
+<h4 id="注意-3"><a href="#注意-3" class="headerlink" title="注意"></a>注意</h4><p>该命令是不能通过远程命令找回root密码的，必须直接在服务器上进行操作。此时默认这台主机是你的。 </p>
+<p>因此linux还是很安全的 </p>
+<h3 id="练习：如何让系统开机之后会自动进入命令行模式？"><a href="#练习：如何让系统开机之后会自动进入命令行模式？" class="headerlink" title="练习：如何让系统开机之后会自动进入命令行模式？"></a>练习：如何让系统开机之后会自动进入命令行模式？</h3><h4 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h4><p>将&#x2F;etc&#x2F;inittab中的默认运行级别改为3即可。 </p>
+<h2 id="2-软链接"><a href="#2-软链接" class="headerlink" title="2 软链接"></a>2 软链接</h2><h3 id="基本语法-8"><a href="#基本语法-8" class="headerlink" title="基本语法"></a>基本语法</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ln -s 目标目录 软链接名 <br></code></pre></td></tr></table></figure>
+
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406190626.png" srcset="/img/loading.gif" lazyload style="zoom: 50%;" />
+
+
+
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">rm -rf 软链接名<br></code></pre></td></tr></table></figure>
+
+<h4 id="注意-4"><a href="#注意-4" class="headerlink" title="注意"></a>注意</h4><p>不能带斜杠</p>
+<img src="/Users/coachhe/Library/Application Support/typora-user-images/image-20210406190821577.png" srcset="/img/loading.gif" lazyload alt="image-20210406190821577" style="zoom:50%;" />
+
+<h2 id="3-查找类"><a href="#3-查找类" class="headerlink" title="3 查找类"></a>3 查找类</h2><h3 id="1-find指令"><a href="#1-find指令" class="headerlink" title="1. find指令"></a>1. find指令</h3><h4 id="基本语法-9"><a href="#基本语法-9" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">find [搜索范围] [选项] <br></code></pre></td></tr></table></figure>
+
+<p>选项说明如下案例 </p>
+<h4 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h4><ol>
+<li><p>找到home目录下的某个文件</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406191330.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+</li>
+<li><p>查找home目录下属于某个用户的文件</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406191507.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+</li>
+<li><p>查找某个范围内大小大于20M的文件</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406191617.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></li>
+</ol>
+<h3 id="2-locate指令"><a href="#2-locate指令" class="headerlink" title="2. locate指令"></a>2. locate指令</h3><p>注意： </p>
+<p>第一次使用locate指令的时候，需要使用updatedb创建locate数据库 </p>
+<h1 id="四、权限"><a href="#四、权限" class="headerlink" title="四、权限"></a>四、权限</h1><h2 id="1-组管理"><a href="#1-组管理" class="headerlink" title="1. 组管理"></a>1. 组管理</h2><h3 id="linux组的基本介绍"><a href="#linux组的基本介绍" class="headerlink" title="linux组的基本介绍"></a>linux组的基本介绍</h3><p>linux的每个用户都必须属于一个组，不能独立于组外。 </p>
+<p>在linux中每个文件在所有者、所在组、其他组的概念 </p>
+<ol>
+<li>所有者：属于哪个用户 </li>
+<li>所在组：属于哪个组 </li>
+<li>其他组：除去所在组之外的所有组</li>
+</ol>
+<h4 id="所有者"><a href="#所有者" class="headerlink" title="所有者"></a>所有者</h4><p>一般来说，文件的创建者就是所有者 </p>
+<h5 id="如何查看文件的所有者"><a href="#如何查看文件的所有者" class="headerlink" title="如何查看文件的所有者"></a>如何查看文件的所有者</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ls -ahl<br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406192043.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h5 id="改变文件所有者"><a href="#改变文件所有者" class="headerlink" title="改变文件所有者"></a>改变文件所有者</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">chown 用户名 文件名<br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406192202.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h5 id="注意-5"><a href="#注意-5" class="headerlink" title="注意"></a>注意</h5><p>更改用户之后组不会改变</p>
+<h3 id="所在组"><a href="#所在组" class="headerlink" title="所在组"></a>所在组</h3><h5 id="修改文件所在组"><a href="#修改文件所在组" class="headerlink" title="修改文件所在组"></a>修改文件所在组</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">chgrp 组名 文件名<br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406192331.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h5 id="改变用户所在组"><a href="#改变用户所在组" class="headerlink" title="改变用户所在组"></a>改变用户所在组</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">usermod -g 组名 用户名<br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406192450.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h2 id="2-权限说明"><a href="#2-权限说明" class="headerlink" title="2. 权限说明"></a>2. 权限说明</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406192841.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<h3 id="文件类型"><a href="#文件类型" class="headerlink" title="文件类型"></a>文件类型</h3><p>-：普通文件 </p>
+<p>d：目录 </p>
+<p>l：软链接 </p>
+<p>c：字符设备（键盘、鼠标） </p>
+<p>b：块文件，硬盘 </p>
+<h3 id="文件权限"><a href="#文件权限" class="headerlink" title="文件权限"></a>文件权限</h3><p>r：读 </p>
+<p>w：写 </p>
+<p>x：在文件上表示可以被执行，在目录上表示可以进入 </p>
+<p>r、w、x的数字表示 </p>
+<p>r表示4，w表示2，x表示1，因此rwx&#x3D;4+2+1&#x3D;7 </p>
+<h3 id="案例-1"><a href="#案例-1" class="headerlink" title="案例"></a>案例</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">-rwxrw-r-- 1 root root 1213 Feb 2 09:39 abc <br></code></pre></td></tr></table></figure>
+
+<h4 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h4><p>-表示这是个普通文件 </p>
+<p>接下来三个rwx表示这个文件可以被所有者读写，也可以被执行 </p>
+<p>接下来三个rw-表示这个文件可以组内的用户读写，但不能执行 </p>
+<p>接下来三个r–表示可以被其他用户读，但不能写和执行 </p>
+<p>1是硬链接数 </p>
+<p>1213表示文件大小（如果是目录则为4096，目录本身占有的空间） </p>
+<h2 id="3-权限管理"><a href="#3-权限管理" class="headerlink" title="3. 权限管理"></a>3. 权限管理</h2><h3 id="修改权限"><a href="#修改权限" class="headerlink" title="修改权限"></a>修改权限</h3><p>用chmod修改文件权限 </p>
+<h4 id="方法1：用-、-、-x3D-变更权限"><a href="#方法1：用-、-、-x3D-变更权限" class="headerlink" title="方法1：用+、-、&#x3D;变更权限"></a>方法1：用+、-、&#x3D;变更权限</h4><p>u：所有者 g：所有组 o：其他人 a：所有人(u,g,o的总和） </p>
+<ol>
+<li>chmod u&#x3D;rwx,g&#x3D;rx,o&#x3D;x 文件目录名 </li>
+<li>chmod o+w 文件目录名—————-&gt;给其他人加上w权限 </li>
+<li>chmod a-x 文件目录名——————&gt;给所有人减去x权限</li>
+</ol>
+<p><strong>举例</strong></p>
+<p>新建一个abc文件，给所有者读写执行权限，给所在组读和执行的权限，给其他人读和执行的权限 </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406211202.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>去掉所有者的执行权限，给所在组加上写的权限：</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406211236.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>给文件的所有用户加上读的权限</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406211323.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h4 id="方法2：用数字方式实现"><a href="#方法2：用数字方式实现" class="headerlink" title="方法2：用数字方式实现"></a>方法2：用数字方式实现</h4><p>用数字形式让文件权限修改为rwxr–r-x </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406211436.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>4+2+1&#x3D;7 </p>
+<p>4&#x3D;4 </p>
+<p>4+1&#x3D;5 </p>
+<p>因此输入745 </p>
+<h3 id="修改文件所有者-chown"><a href="#修改文件所有者-chown" class="headerlink" title="修改文件所有者-chown"></a>修改文件所有者-chown</h3><h4 id="针对文件"><a href="#针对文件" class="headerlink" title="针对文件"></a>针对文件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">chown newowner:newgroup file <br></code></pre></td></tr></table></figure>
+
+<p>或者 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">chown newownver file <br></code></pre></td></tr></table></figure>
+
+<h4 id="针对目录"><a href="#针对目录" class="headerlink" title="针对目录"></a>针对目录</h4><p>如果是目录，则使用-R，使其下所有子文件或者目录递归生效 </p>
+<h4 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h4><p>将文件abc所有者改为coachhe </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406211623.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>其实相当于没操作 </p>
+<p>将&#x2F;home&#x2F;目录下的目录abc以及里面内容所有者都改为jy </p>
+<p>注意：要使用root用户 </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406211650.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h3 id="修改文件所在组-chgrp"><a href="#修改文件所在组-chgrp" class="headerlink" title="修改文件所在组-chgrp"></a>修改文件所在组-chgrp</h3><h4 id="针对文件-1"><a href="#针对文件-1" class="headerlink" title="针对文件"></a>针对文件</h4><p>则直接 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">chgrp newgroup file <br></code></pre></td></tr></table></figure>
+
+<p>或者 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">chgrp newgroup file <br></code></pre></td></tr></table></figure>
+
+<h4 id="针对目录-1"><a href="#针对目录-1" class="headerlink" title="针对目录"></a>针对目录</h4><p>则 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">chgro -R newgroup file <br></code></pre></td></tr></table></figure>
+
+<h4 id="案例-2"><a href="#案例-2" class="headerlink" title="案例"></a>案例</h4><p>将文件abc的组更改为coachhe组 </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406211821.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h2 id="权限实践—警察小偷游戏"><a href="#权限实践—警察小偷游戏" class="headerlink" title="权限实践—警察小偷游戏"></a>权限实践—警察小偷游戏</h2><p>有两个组：警察（police）和土匪（bandit） </p>
+<p>有两个警察：jack和jerry </p>
+<p>有两个土匪：xh和xq </p>
+<ol>
+<li><p>jack创建一个文件，自己可以读写，本组人可以读，其他组没有人有任何权限</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; <span class="hljs-built_in">touch</span> hello</span> <br><span class="hljs-meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; <span class="hljs-built_in">chmod</span> 640 hello</span> <br></code></pre></td></tr></table></figure>
+</li>
+<li><p>jack修改该文件，让其他组人可以读，本组人可以读写 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; chomd 646 hello</span> <br></code></pre></td></tr></table></figure>
+</li>
+<li><p>xh投靠警察，看看是否可以读写。 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; usermod -g police xh</span> <br><span class="hljs-meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; su - xh	<span class="hljs-comment">## 注意：如果是在xh的界面，则需要注销之后再重新进入</span></span><br><span class="hljs-meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; vim abc</span> <br></code></pre></td></tr></table></figure>
+
+<p>是可以读写的</p>
+</li>
+</ol>
+<h1 id="五、任务调度"><a href="#五、任务调度" class="headerlink" title="五、任务调度"></a>五、任务调度</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">crontab <br>-e 直接进行任务设置 <br>-l 显示所有任务 <br></code></pre></td></tr></table></figure>
+
+<h1 id="六、分区和硬盘"><a href="#六、分区和硬盘" class="headerlink" title="六、分区和硬盘"></a>六、分区和硬盘</h1><h2 id="1-分区的概念"><a href="#1-分区的概念" class="headerlink" title="1. 分区的概念"></a>1. 分区的概念</h2><h3 id="分区的方式"><a href="#分区的方式" class="headerlink" title="分区的方式"></a>分区的方式</h3><ol>
+<li>mbr分区 <ul>
+<li>最多支持四个主分区 </li>
+<li>系统只能安装在主分区 </li>
+<li>扩展分区要占一个主分区 </li>
+<li>MBR最大只支持2TB，但拥有最好的兼容性</li>
+</ul>
+</li>
+<li>gtp分区 <ul>
+<li>支持无限多个主分区（但是操作系统可能限制） </li>
+<li>最大支持18EB的大容量（1EB&#x3D;1024PB，1PB&#x3D;1024TB） </li>
+<li>windows7 64位以后支持分区</li>
+</ul>
+</li>
+</ol>
+<h2 id="2-linux分区原理示意图"><a href="#2-linux分区原理示意图" class="headerlink" title="2. linux分区原理示意图"></a>2. linux分区原理示意图</h2><ol>
+<li><p>Linux来说无论有几个分区，分给哪一个目录使用，它归根结底就只有一个根目录，一个独立且唯一的文件结构，linux中的每个分区都是用来组成整个文件系统的一部分。 </p>
+</li>
+<li><p>Linux采用了一种叫“载入”的处理方法，它的整个文件系统中包含了一整套的文件和目录，且将一个分区和一个目录联系起来。这时要载入的一个分区将使它的存储空间在同一个目录下获得。 </p>
+</li>
+<li><p>示意图</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406212421.png" srcset="/img/loading.gif" lazyload style="zoom: 50%;" /></li>
+</ol>
+<h2 id="3-硬盘说明"><a href="#3-硬盘说明" class="headerlink" title="3 硬盘说明"></a>3 硬盘说明</h2><h3 id="几大基本硬盘"><a href="#几大基本硬盘" class="headerlink" title="几大基本硬盘"></a>几大基本硬盘</h3><ol>
+<li>Linux硬盘分为IDE硬盘、virtio硬盘和SCSI硬盘，目前基本是SCSI硬盘（但是阿里云服务器的硬盘是virtio硬盘） </li>
+<li>对于IDE硬盘，驱动器标识符为“hdx<del>”，其中“hd”表明分区所在设备的类型，这里是指IDE硬盘。“x”为盘号（a为基本盘，b为基本从属盘，c为辅助主盘，d为辅助从属盘），“</del>”表示分区，前4个分区用数字1到4表示，它们是主分区或者扩展分区，从5开始就是逻辑分区。 </li>
+<li>对于SISI硬盘则表示为“sdx~”，SCSI硬盘是用“sd”来表示分区所在设备的类型的，其余则和IDE硬盘的表示方式一样。 </li>
+<li>对于virtio硬盘，驱动器标识符为“vdx!”。其中“vd”表示分区所在设备的的类型，其余则和IDE硬盘的表示方式一样。</li>
+</ol>
+<h3 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h3><p>整体上来看这三者的最大不同还是挂载磁盘的数量。根据在ovirt的上测试，一台win7的虚拟机，最多可以创建3个ide硬盘，当再次创建新的ide硬盘时候，会提示无法创建。同时，实验中最多创建了14块virtio硬盘，虽然界面允许创建更多virtio硬盘，但是超过14块，虚拟机是无法启动的。virtio-scsi可以创建足够多的硬盘，以至于协议自身并不是限制因素，而内核的限制反而成了硬盘数目的极限。 </p>
+<h3 id="查看系统分区和挂载的情况"><a href="#查看系统分区和挂载的情况" class="headerlink" title="查看系统分区和挂载的情况"></a>查看系统分区和挂载的情况</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">lsblk -f   ## 查看系统分区和挂载的情况 <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406212630.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>注意： </p>
+<p>挂载点就是文件系统 </p>
+<h3 id="查看系统分区和挂载的情况以及文件的大小情况"><a href="#查看系统分区和挂载的情况以及文件的大小情况" class="headerlink" title="查看系统分区和挂载的情况以及文件的大小情况"></a>查看系统分区和挂载的情况以及文件的大小情况</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">lsblk <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406212704.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+
+
+<h2 id="4-linux挂载经典案例"><a href="#4-linux挂载经典案例" class="headerlink" title="4 linux挂载经典案例"></a>4 linux挂载经典案例</h2><h3 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h3><p>给我们的linux系统增加一个新的硬盘，并且挂载到&#x2F;home&#x2F;newdisk </p>
+<h3 id="如何增加一块硬盘"><a href="#如何增加一块硬盘" class="headerlink" title="如何增加一块硬盘"></a>如何增加一块硬盘</h3><ol>
+<li>虚拟机添加硬盘 </li>
+<li>分区 </li>
+<li>格式化 </li>
+<li>挂载 </li>
+<li>设置可以自动挂载</li>
+</ol>
+<h3 id="我的虚拟机和硬盘"><a href="#我的虚拟机和硬盘" class="headerlink" title="我的虚拟机和硬盘"></a>我的虚拟机和硬盘</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406212855.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>sda硬盘，若加上一块新硬盘应该为sdb。 </p>
+<h3 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h3><h4 id="1-虚拟机添加硬盘"><a href="#1-虚拟机添加硬盘" class="headerlink" title="1. 虚拟机添加硬盘"></a>1. 虚拟机添加硬盘</h4><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406212937.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后选择2G的硬盘，一路确定下去就可以了。 </p>
+<p>注意：需要重启之后才能看到新的硬盘 </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213003.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h4 id="2-分区"><a href="#2-分区" class="headerlink" title="2. 分区"></a>2. 分区</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">fdisk /dev/sdb <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213045.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>得到结果 </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213113.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h4 id="3-格式化"><a href="#3-格式化" class="headerlink" title="3. 格式化"></a>3. 格式化</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">mkfs -t ext4 /dev/sdb1 <br></code></pre></td></tr></table></figure>
+
+<p>含义是用mkfs -t指令将&#x2F;dev&#x2F;sdb1硬盘格式化为ext4格式。 </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213148.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>结果 </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213207.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>出现了文件类型和uuid，格式化成功 </p>
+<h4 id="4-挂载"><a href="#4-挂载" class="headerlink" title="4. 挂载"></a>4. 挂载</h4><ol>
+<li><p>先创建一个目录 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">mkdir /home/newdisk<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>挂载mount</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">mount /dev/sdb1 /home/newdisk <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213330.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>注意：</p>
+<p>​	此时为临时挂载，重启之后就失去作用了。因此需要设置永久挂载</p>
+</li>
+</ol>
+<h4 id="5-设置可自动挂载"><a href="#5-设置可自动挂载" class="headerlink" title="5. 设置可自动挂载"></a>5. 设置可自动挂载</h4><p>修改&#x2F;etc&#x2F;fstab文件 </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213446.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后运行mount -a即可生效 </p>
+<h2 id="5-硬盘卸载"><a href="#5-硬盘卸载" class="headerlink" title="5 硬盘卸载"></a>5 硬盘卸载</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">umount 设备名 <br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213525.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="6-磁盘情况查询"><a href="#6-磁盘情况查询" class="headerlink" title="6 磁盘情况查询"></a>6 磁盘情况查询</h2><h3 id="查询系统整体磁盘使用情况"><a href="#查询系统整体磁盘使用情况" class="headerlink" title="查询系统整体磁盘使用情况"></a>查询系统整体磁盘使用情况</h3><h4 id="基本语法-10"><a href="#基本语法-10" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">df -h /目录<br></code></pre></td></tr></table></figure>
+
+<p>查询指定目录的磁盘占用情况，默认为当前目录。 </p>
+<h4 id="应用实例"><a href="#应用实例" class="headerlink" title="应用实例"></a>应用实例</h4><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210406213625.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h3 id="查询指定目录的磁盘占用情况"><a href="#查询指定目录的磁盘占用情况" class="headerlink" title="查询指定目录的磁盘占用情况"></a>查询指定目录的磁盘占用情况</h3><h4 id="基本语法-11"><a href="#基本语法-11" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">du -参数 /目录 <br></code></pre></td></tr></table></figure>
+
+<p>参数 </p>
+<p>-a 指定目录 </p>
+<p>-h 带计量单位 </p>
+<p>–max-depth&#x3D;1 子目录深度（也就是需要查到第几级） </p>
+<p>-s 指定目录占用大小汇总 </p>
+<p>-c：列出明细的同时，增加汇总值 </p>
+<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><p>查看&#x2F;opt目录占用磁盘空间的情况，深度为1 </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210406233939.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>注意： </p>
+<p>深度就是表示会显示&#x2F;opt目录下的第几级文件，如果是1那就只可能显示&#x2F;opt&#x2F;rh而不会更具体到&#x2F;opt&#x2F;rh&#x2F;xxx </p>
+<h2 id="7-常用指令"><a href="#7-常用指令" class="headerlink" title="7 常用指令"></a>7 常用指令</h2><h3 id="1-统计-x2F-home文件夹下文件的数量"><a href="#1-统计-x2F-home文件夹下文件的数量" class="headerlink" title="1. 统计&#x2F;home文件夹下文件的数量"></a>1. 统计&#x2F;home文件夹下文件的数量</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ls -l | grep &quot;^-&quot; | wc -l<br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210406234421.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h3 id="2-统计-x2F-home文件夹下目录的数量"><a href="#2-统计-x2F-home文件夹下目录的数量" class="headerlink" title="2. 统计&#x2F;home文件夹下目录的数量"></a>2. 统计&#x2F;home文件夹下目录的数量</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ls -l | grep &quot;^d&quot; | wc -l<br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210406234511.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h3 id="3-统计-x2F-home文件夹下文件的个数，包括子文件夹里面的"><a href="#3-统计-x2F-home文件夹下文件的个数，包括子文件夹里面的" class="headerlink" title="3. 统计&#x2F;home文件夹下文件的个数，包括子文件夹里面的"></a>3. 统计&#x2F;home文件夹下文件的个数，包括子文件夹里面的</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ls -lR /home | grep &quot;^-&quot; | wc -l<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-统计-x2F-home文件夹下文件夹的个数，包括子文件夹里面的"><a href="#4-统计-x2F-home文件夹下文件夹的个数，包括子文件夹里面的" class="headerlink" title="4. 统计&#x2F;home文件夹下文件夹的个数，包括子文件夹里面的"></a>4. 统计&#x2F;home文件夹下文件夹的个数，包括子文件夹里面的</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ls -lR /home | grep &quot;^d&quot; | wc -l<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-以树状形式展示整个目录"><a href="#5-以树状形式展示整个目录" class="headerlink" title="5. 以树状形式展示整个目录"></a>5. 以树状形式展示整个目录</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">tree<br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210406234737.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h1 id="七-网络配置"><a href="#七-网络配置" class="headerlink" title="七 网络配置"></a>七 网络配置</h1><h2 id="1-linux网络配置原理图"><a href="#1-linux网络配置原理图" class="headerlink" title="1 linux网络配置原理图"></a>1 linux网络配置原理图</h2><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210406235842.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="以我的电脑为例"><a href="#以我的电脑为例" class="headerlink" title="以我的电脑为例"></a>以我的电脑为例</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407000655.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407000802.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407000728.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407000745.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h2 id="2-查看网络ip和网关"><a href="#2-查看网络ip和网关" class="headerlink" title="2 查看网络ip和网关"></a>2 查看网络ip和网关</h2><h3 id="1-查看虚拟网络编辑器"><a href="#1-查看虚拟网络编辑器" class="headerlink" title="1. 查看虚拟网络编辑器"></a>1. 查看虚拟网络编辑器</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407000959.png" srcset="/img/loading.gif" lazyload  />
+
+<h3 id="2-修改ip地址"><a href="#2-修改ip地址" class="headerlink" title="2. 修改ip地址"></a>2. 修改ip地址</h3><p>点击上面的修改即可以 </p>
+<h3 id="3-查看网关"><a href="#3-查看网关" class="headerlink" title="3. 查看网关"></a>3. 查看网关</h3><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001036.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="3-linux网络环境配置"><a href="#3-linux网络环境配置" class="headerlink" title="3 linux网络环境配置"></a>3 linux网络环境配置</h2><h3 id="1-自动获取"><a href="#1-自动获取" class="headerlink" title="1. 自动获取"></a>1. 自动获取</h3><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001128.png" srcset="/img/loading.gif" lazyload></p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001140.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>点上连接即可。 </p>
+<p><strong>缺点 ：</strong></p>
+<p>每次自动获取的IP地址不相同。因此不适合做服务器，因为服务器ip是固定的。 </p>
+<h3 id="2-指定固定ip地址"><a href="#2-指定固定ip地址" class="headerlink" title="2. 指定固定ip地址"></a>2. 指定固定ip地址</h3><h4 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h4><p>直接修改配置文件来指定IP，并可以接到外网，编辑&#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-etho </p>
+<h4 id="要求"><a href="#要求" class="headerlink" title="要求"></a>要求</h4><p>将ip地址配置的是静态的 </p>
+<h4 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h4><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001251.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="4-修改主机名"><a href="#4-修改主机名" class="headerlink" title="4 修改主机名"></a>4 修改主机名</h2><h3 id="1-查看当前主机名"><a href="#1-查看当前主机名" class="headerlink" title="1. 查看当前主机名"></a>1. 查看当前主机名</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">echo $HOSTNAME <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001354.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h3 id="2-修改linux的主机映射文件"><a href="#2-修改linux的主机映射文件" class="headerlink" title="2. 修改linux的主机映射文件"></a>2. 修改linux的主机映射文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">vim /etc/sysconfig/network <br></code></pre></td></tr></table></figure>
+
+<p>中的内容 </p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs txt">NETWORKING=yes <br>NETWORKING_IPV^=no <br>HOSTNAME=xxxxx//新的主机名 <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001455.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>注意：主机名不能有“_”下划线 </p>
+<h3 id="3-修改-x2F-etc-x2F-hosts增加ip和主机之间的映射"><a href="#3-修改-x2F-etc-x2F-hosts增加ip和主机之间的映射" class="headerlink" title="3. 修改&#x2F;etc&#x2F;hosts增加ip和主机之间的映射"></a>3. 修改&#x2F;etc&#x2F;hosts增加ip和主机之间的映射</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001534.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h3 id="4-重启设备"><a href="#4-重启设备" class="headerlink" title="4. 重启设备"></a>4. 重启设备</h3><h1 id="八-进程管理"><a href="#八-进程管理" class="headerlink" title="八 进程管理"></a>八 进程管理</h1><h2 id="1-进程的基本介绍"><a href="#1-进程的基本介绍" class="headerlink" title="1 进程的基本介绍"></a>1 进程的基本介绍</h2><ol>
+<li>在Linux中，每个执行的<strong>程序（代码）</strong>都称为一个<strong>进程</strong>，每个进程都分配一个ID号 </li>
+<li>每一个进程，都会对应一个父进程，而这个父进程可以复制多个子进程，例如www服务器。 </li>
+<li>每个进程都可能以两种方式存在。前台和后台，所谓前台进程就是用户目前的屏幕上可以进行操作的。后台进程则是实际在操作，但由于屏幕上无法看到的进程，通常使用后台方式执行。 </li>
+<li>一般系统的服务都是以后台进程的方式存在，而且都会常驻在系统中，直到关机才结束。</li>
+</ol>
+<h2 id="2-显示系统执行的进程"><a href="#2-显示系统执行的进程" class="headerlink" title="2 显示系统执行的进程"></a>2 显示系统执行的进程</h2><h3 id="ps指令"><a href="#ps指令" class="headerlink" title="ps指令"></a>ps指令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ps <br></code></pre></td></tr></table></figure>
+
+<h4 id="说明-1"><a href="#说明-1" class="headerlink" title="说明"></a>说明</h4><p>查看执行的指令是ps，一般来说使用的参数是ps -aux </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">ps -a  ## 显示当前终端的所有进程信息 <br><br>ps -u  ## 以用户的格式显示进程信息 <br><br>ps -x  ## 显示后台进程进行的参数 <br></code></pre></td></tr></table></figure>
+
+<h5 id="举例-1"><a href="#举例-1" class="headerlink" title="举例"></a>举例</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ps -aux | more <br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407001859.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="显示专门的进程"><a href="#显示专门的进程" class="headerlink" title="显示专门的进程"></a>显示专门的进程</h4><p>显示专门的进程可以用grep过滤</p>
+<h5 id="举例-2"><a href="#举例-2" class="headerlink" title="举例"></a>举例</h5><p>我想看有没有关于sshd相关的进程： </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002036.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="看某个进程的父进程"><a href="#看某个进程的父进程" class="headerlink" title="看某个进程的父进程"></a>看某个进程的父进程</h4><h5 id="举例-3"><a href="#举例-3" class="headerlink" title="举例"></a>举例</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ps -ef | more <br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002141.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="3-终止进程kill和killall"><a href="#3-终止进程kill和killall" class="headerlink" title="3 终止进程kill和killall"></a>3 终止进程kill和killall</h2><h3 id="基本语法-12"><a href="#基本语法-12" class="headerlink" title="基本语法"></a>基本语法</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">kill 选项 进程号 ## 功能描述：通过进程号杀死进程<br>killall 进程名称 ## 功能描述：通过进程名杀死进程，也支持通配符，这在系统因负载过大而变得很慢时很有用 <br></code></pre></td></tr></table></figure>
+
+<h3 id="常用选项"><a href="#常用选项" class="headerlink" title="常用选项"></a>常用选项</h3><p>-9：强迫进程立即停止 </p>
+<h3 id="案例-3"><a href="#案例-3" class="headerlink" title="案例"></a>案例</h3><h4 id="1-踢掉某个非法登录的用户"><a href="#1-踢掉某个非法登录的用户" class="headerlink" title="1. 踢掉某个非法登录的用户"></a>1. 踢掉某个非法登录的用户</h4><p>这里存在某个illegal_user: </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002358.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>我想把他踢走，因为他是通过sshd远程登录，因此可以查到登录信息 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ps -aux | grep sshd <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002431.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>可以看到有illegal_user的登录信息。 </p>
+<p>kill掉这个进程即可 </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002458.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="2-终止sshd服务的操作"><a href="#2-终止sshd服务的操作" class="headerlink" title="2. 终止sshd服务的操作"></a>2. 终止sshd服务的操作</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">kill 1655 <br></code></pre></td></tr></table></figure>
+
+<p>导致的结果就是不能再使用远程进行连接了。 </p>
+<h4 id="3-终止多个gedit编辑器（通过killall）"><a href="#3-终止多个gedit编辑器（通过killall）" class="headerlink" title="3. 终止多个gedit编辑器（通过killall）"></a>3. 终止多个gedit编辑器（通过killall）</h4><p>通过多个终端打开了多个gedit编辑器 </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002609.png" srcset="/img/loading.gif" lazyload></p>
+<p>使用命令： </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">killall gedit<br></code></pre></td></tr></table></figure>
+
+<p> <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002643.png" srcset="/img/loading.gif" lazyload></p>
+<p>两个终端的gedit程序都已经同时被杀死。 </p>
+<h4 id="4-强制杀掉一个终端"><a href="#4-强制杀掉一个终端" class="headerlink" title="4. 强制杀掉一个终端"></a>4. 强制杀掉一个终端</h4><p>首先查看当前打开的所有终端（bash） </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ps -aux | grep bash<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002752.png" srcset="/img/loading.gif" lazyload></p>
+<p>在这里，左边的bash对应右边的终端 </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002810.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>首先kill：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">kill 3103<br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002904.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>结果：</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002923.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>但是此时发现右边依旧存在。 </p>
+<p>因此用-9，强制终止。 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">kill -9 3103<br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407002957.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407003014.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h2 id="4-linux服务管理（service）简介和原理"><a href="#4-linux服务管理（service）简介和原理" class="headerlink" title="4 linux服务管理（service）简介和原理"></a>4 linux服务管理（service）简介和原理</h2><h3 id="服务介绍"><a href="#服务介绍" class="headerlink" title="服务介绍"></a>服务介绍</h3><p>服务（service）本质就是进程，但是是运行在后台的，通常都会监听某个端口，等待其他程序的请求，比如mysql，sshd，防火墙等，因此我们又称为守护进程，是Linux中非常重要的知识点 </p>
+<h3 id="服务原理图"><a href="#服务原理图" class="headerlink" title="服务原理图"></a>服务原理图</h3><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407003136.png" srcset="/img/loading.gif" lazyload></p>
+<p>也就是说，服务本身就是监控某个端口的进程，用来提供ssh或者远程连接mysql等服务。</p>
+<h3 id="service管理指令"><a href="#service管理指令" class="headerlink" title="service管理指令"></a>service管理指令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">service 服务名 [start | stop | restart | reload | status] <br></code></pre></td></tr></table></figure>
+
+<h4 id="注意-6"><a href="#注意-6" class="headerlink" title="注意"></a>注意</h4><p>在Centos7.0之后不再使用service，而是用systemctl，但用法几乎相同 </p>
+<h3 id="案例-4"><a href="#案例-4" class="headerlink" title="案例"></a>案例</h3><p>查看当前防火墙的状况，关闭防火墙和重启防火墙。 </p>
+<h4 id="1-查看防火墙当前状态"><a href="#1-查看防火墙当前状态" class="headerlink" title="1. 查看防火墙当前状态"></a>1. 查看防火墙当前状态</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">service iptables status <br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407003342.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="2-关闭防火墙和重启防火墙"><a href="#2-关闭防火墙和重启防火墙" class="headerlink" title="2. 关闭防火墙和重启防火墙"></a>2. 关闭防火墙和重启防火墙</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">service iptables stop <br>service iptables start <br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407003424.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="5-telnet指令"><a href="#5-telnet指令" class="headerlink" title="5 telnet指令"></a>5 telnet指令</h2><p>通过telnet指令检查linux的某个端口是否在监听，并且可以访问 </p>
+<h3 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">telnet ip 端口 <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407003538.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>可以看到，建立起了连接，这意味着22号端口是在服务的。 </p>
+<h3 id="注意：永久生效问题"><a href="#注意：永久生效问题" class="headerlink" title="注意：永久生效问题"></a>注意：永久生效问题</h3><p>service只是用来临时生效的，重启系统之后，还是回归以前对服务的设置。 </p>
+<p>如果希望设置某个服务自启动或关闭永久生效，要使用chkconfig指令。 </p>
+<h2 id="6-chkconfig指令"><a href="#6-chkconfig指令" class="headerlink" title="6 chkconfig指令"></a>6 chkconfig指令</h2><h3 id="chkconfig指令"><a href="#chkconfig指令" class="headerlink" title="chkconfig指令"></a>chkconfig指令</h3><p>通过chkconfig命令可以给每个服务的各个运行级别设置自启动&#x2F;关闭 </p>
+<h3 id="基本语法-13"><a href="#基本语法-13" class="headerlink" title="基本语法"></a>基本语法</h3><h4 id="1-查看服务："><a href="#1-查看服务：" class="headerlink" title="1. 查看服务："></a>1. 查看服务：</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">chkconfig --list|grep xxx ## 或者 <br>chkconfig xxx --list <br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407003804.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以查看sshd指令在每个运行级别的自启动状态 </p>
+<h4 id="2-设置某个服务在某个运行级别下是否自启动"><a href="#2-设置某个服务在某个运行级别下是否自启动" class="headerlink" title="2. 设置某个服务在某个运行级别下是否自启动"></a>2. 设置某个服务在某个运行级别下是否自启动</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">chkconfig --level 级别 xxx on/off <br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407003907.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到，将sshd在运行级别为5时的自启动关闭后再重新打开了。  </p>
+<h3 id="注意-7"><a href="#注意-7" class="headerlink" title="注意"></a>注意</h3><p>chkconfig设置之后需要重启之后才能生效。 </p>
+<h1 id="九-进程监控"><a href="#九-进程监控" class="headerlink" title="九 进程监控"></a>九 进程监控</h1><h2 id="1-动态监控进程top"><a href="#1-动态监控进程top" class="headerlink" title="1 动态监控进程top"></a>1 动态监控进程top</h2><h3 id="top介绍"><a href="#top介绍" class="headerlink" title="top介绍"></a>top介绍</h3><p>top与ps很相似，它们都用来显示正在执行的进程，区别在于top会实时更新 </p>
+<h3 id="基本语法-14"><a href="#基本语法-14" class="headerlink" title="基本语法"></a>基本语法</h3><p>top [选项] </p>
+<h3 id="案例-5"><a href="#案例-5" class="headerlink" title="案例"></a>案例</h3><h4 id="1-top直接使用的案例"><a href="#1-top直接使用的案例" class="headerlink" title="1. top直接使用的案例"></a>1. top直接使用的案例</h4><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407004153.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="2-查看某个用户的案例"><a href="#2-查看某个用户的案例" class="headerlink" title="2. 查看某个用户的案例"></a>2. 查看某个用户的案例</h4><p>输入u之后出现下面这行： </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407004227.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后输入root回车即可 </p>
+<h4 id="3-杀死某个进程"><a href="#3-杀死某个进程" class="headerlink" title="3. 杀死某个进程"></a>3. 杀死某个进程</h4><p>输入k之后出现下面这行 </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407004310.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后输入进程号回车即可 </p>
+<h4 id="4-指定系统状态更新的时间"><a href="#4-指定系统状态更新的时间" class="headerlink" title="4. 指定系统状态更新的时间"></a>4. 指定系统状态更新的时间</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">top -d time <br></code></pre></td></tr></table></figure>
+
+<h4 id="5-互动指令"><a href="#5-互动指令" class="headerlink" title="5. 互动指令"></a>5. 互动指令</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">P:CPU使用率 <br>M:按内存排序 <br>N:按PID排序 <br></code></pre></td></tr></table></figure>
+
+<h2 id="2-监控网络状态netstat"><a href="#2-监控网络状态netstat" class="headerlink" title="2 监控网络状态netstat"></a>2 监控网络状态netstat</h2><h3 id="基本语法-15"><a href="#基本语法-15" class="headerlink" title="基本语法"></a>基本语法</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">netstat [选项] <br></code></pre></td></tr></table></figure>
+
+<h3 id="选项说明"><a href="#选项说明" class="headerlink" title="选项说明"></a>选项说明</h3><p>一般来说都是netstat -anp </p>
+<p>-an：按一定顺序排列输出 </p>
+<p>-p：显示哪个进程在调用 </p>
+<h3 id="应用案例-1"><a href="#应用案例-1" class="headerlink" title="应用案例"></a>应用案例</h3><h4 id="1-查看系统所有的网络服务"><a href="#1-查看系统所有的网络服务" class="headerlink" title="1. 查看系统所有的网络服务"></a>1. 查看系统所有的网络服务</h4><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407004741.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="2-查看系统的某个网络服务"><a href="#2-查看系统的某个网络服务" class="headerlink" title="2. 查看系统的某个网络服务"></a>2. 查看系统的某个网络服务</h3><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407004817.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="十-下载管理"><a href="#十-下载管理" class="headerlink" title="十 下载管理"></a>十 下载管理</h1><h2 id="1-rpm包的管理"><a href="#1-rpm包的管理" class="headerlink" title="1 rpm包的管理"></a>1 rpm包的管理</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>RPM是RedHat Package Manager（RehHat软件包管理工具）的缩写，这一文件名称虽然打上了RedHat的标志，但理念是通用的。 </p>
+<h3 id="rpm包的简单查询指令"><a href="#rpm包的简单查询指令" class="headerlink" title="rpm包的简单查询指令"></a>rpm包的简单查询指令</h3><p>查询已安装的rpm列表 </p>
+<h4 id="基本语法-16"><a href="#基本语法-16" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">rpm -qa | grep xx <br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005004.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="注意-8"><a href="#注意-8" class="headerlink" title="注意"></a>注意</h4><p>i686、i386表示32位系统，noarch表示通用 </p>
+<h3 id="rpm包其他查询指令"><a href="#rpm包其他查询指令" class="headerlink" title="rpm包其他查询指令"></a>rpm包其他查询指令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">rpm -qa <br>rpm -qa 查询所有rpm软件包 <br>rpm -qa | more 查询所有，以分页显示 <br>rpm -qa | grep xxx 查询某个 <br></code></pre></td></tr></table></figure>
+
+<h4 id="rpm-qi-xxx"><a href="#rpm-qi-xxx" class="headerlink" title="rpm -qi xxx"></a>rpm -qi xxx</h4><p>rpm -qi xxx 查询安装的rpm包软件的信息 </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005114.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="rpm-ql-xxx"><a href="#rpm-ql-xxx" class="headerlink" title="rpm -ql xxx"></a>rpm -ql xxx</h4><p>查询软件包中的文件 </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005236.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="rpm-qf-文件路径名"><a href="#rpm-qf-文件路径名" class="headerlink" title="rpm -qf 文件路径名"></a>rpm -qf 文件路径名</h4><p>查询文件所属的软件包 </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005256.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h2 id="2-rpm包的卸载和安装"><a href="#2-rpm包的卸载和安装" class="headerlink" title="2 rpm包的卸载和安装"></a>2 rpm包的卸载和安装</h2><h3 id="1-删除"><a href="#1-删除" class="headerlink" title="1. 删除"></a>1. 删除</h3><h4 id="基本语法-17"><a href="#基本语法-17" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">rpm -e RPM包的名字 <br></code></pre></td></tr></table></figure>
+
+<h4 id="注意-9"><a href="#注意-9" class="headerlink" title="注意"></a>注意</h4><p>如果删除其他软件包依赖于要卸载的软件包，卸载时则会报错： </p>
+<p>若需要强制删除（不推荐）则运行： </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">rmp -e --nodeps xxx <br></code></pre></td></tr></table></figure>
+
+<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2. 安装"></a>2. 安装</h3><h4 id="基本语法-18"><a href="#基本语法-18" class="headerlink" title="基本语法"></a>基本语法</h4><p>rpm -ivh RPM包全路径名称 </p>
+<h4 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h4><p>i&#x3D;install 安装 </p>
+<p>v&#x3D;verbose 提示 </p>
+<p>h&#x3D;hash 进度条 </p>
+<h4 id="应用实例：安装火狐浏览器"><a href="#应用实例：安装火狐浏览器" class="headerlink" title="应用实例：安装火狐浏览器"></a>应用实例：安装火狐浏览器</h4><ol>
+<li><p>找到firefox安装包，需要挂载上我们安装centos的iso文件，然后到&#x2F;media&#x2F;下去找 </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005619.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>将其复制到某个希望的文件夹后安装</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005656.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+</ol>
+<h2 id="3-yum介绍"><a href="#3-yum介绍" class="headerlink" title="3 yum介绍"></a>3 yum介绍</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>yum是一个Shell前端软件管理器。<strong>基于RPM包管理****，能够从指定的服务器自动下载RPM包并且安装，可以</strong>自动处理依赖关系**，并且一次性安装所有依赖的软件。 </p>
+<p>使用yum的前提是可以联网 </p>
+<h3 id="指令-1"><a href="#指令-1" class="headerlink" title="指令"></a>指令</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">yum list <br></code></pre></td></tr></table></figure>
+
+<p>用来看所有yum服务器上的软件 </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005821.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">yum list | grep xxx <br></code></pre></td></tr></table></figure>
+
+<p>用来看所需要的软件在yum服务器上是否存在，若存在可以直接安装，否则需要另想办法 </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005848.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">yum install xxx <br></code></pre></td></tr></table></figure>
+
+<p>直接使用 </p>
+<h3 id="用yum来安装chrome"><a href="#用yum来安装chrome" class="headerlink" title="用yum来安装chrome"></a>用yum来安装chrome</h3><h4 id="查看yum服务器是否有chrome"><a href="#查看yum服务器是否有chrome" class="headerlink" title="查看yum服务器是否有chrome"></a>查看yum服务器是否有chrome</h4><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210407005934.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="2-yum-install-chrome即可"><a href="#2-yum-install-chrome即可" class="headerlink" title="2. yum install chrome即可"></a>2. yum install chrome即可</h4>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/" class="category-chain-item">计算机</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/" class="category-chain-item">Linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/Command/" class="category-chain-item">Command</a>
+  
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Linux实操</div>
+      <div>http://example.com/2022/12/f3cb063fb17b.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/b543e55f006b.html" title="Shell学习">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Shell学习</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/4eea16d6ca37.html" title="Linux基本命令">
+                        <span class="hidden-mobile">Linux基本命令</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/f3cb063fb17b.html';
+          this.page.identifier = '/2022/12/f3cb063fb17b.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

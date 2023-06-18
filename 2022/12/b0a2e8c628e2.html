@@ -1,0 +1,854 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1 概述定义MapReduce是一个&#x3D;&#x3D;分布式运算程序的编程框架&#x3D;&#x3D;。是用户开发“基于Hadoop的数据分析应用”的核心框架。 MR核心功能MapReduce&#x3D;&#x3D;核心功能&#x3D;&#x3D;是将&#x3D;&#x3D;用户编写的业务逻辑代码&#x3D;&#x3D;和&#x3D;&#x3D;自带默认组件&#x3D;&#x3D;整合成一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MR1 基本介绍">
+<meta property="og:url" content="http://example.com/2022/12/b0a2e8c628e2.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="1 概述定义MapReduce是一个&#x3D;&#x3D;分布式运算程序的编程框架&#x3D;&#x3D;。是用户开发“基于Hadoop的数据分析应用”的核心框架。 MR核心功能MapReduce&#x3D;&#x3D;核心功能&#x3D;&#x3D;是将&#x3D;&#x3D;用户编写的业务逻辑代码&#x3D;&#x3D;和&#x3D;&#x3D;自带默认组件&#x3D;&#x3D;整合成一个">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210235945.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211002920.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003020.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003121.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003152.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003239.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003319.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003436.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003647.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003752.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003901.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003945.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211004148.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211004351.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211004425.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc785ca394ac52378b5765d.png">
+<meta property="article:published_time" content="2022-12-03T18:45:20.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210235945.png">
+  
+  
+  
+  <title>MR1 基本介绍 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MR1 基本介绍"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:45" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          59 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">MR1 基本介绍</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1 概述"></a>1 概述</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>MapReduce是一个&#x3D;&#x3D;分布式运算程序的编程框架&#x3D;&#x3D;。是用户开发“基于Hadoop的数据分析应用”的核心框架。</p>
+<h2 id="MR核心功能"><a href="#MR核心功能" class="headerlink" title="MR核心功能"></a>MR核心功能</h2><p>MapReduce&#x3D;&#x3D;核心功能&#x3D;&#x3D;是将&#x3D;&#x3D;用户编写的业务逻辑代码&#x3D;&#x3D;和&#x3D;&#x3D;自带默认组件&#x3D;&#x3D;整合成一个&#x3D;&#x3D;完整的分布式运算程序&#x3D;&#x3D;，并发运行在一个Hadoop集群上。</p>
+<h1 id="2-MR优缺点"><a href="#2-MR优缺点" class="headerlink" title="2 MR优缺点"></a>2 MR优缺点</h1><h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><h3 id="1-MR易于编程"><a href="#1-MR易于编程" class="headerlink" title="1. MR易于编程"></a>1. MR易于编程</h3><p>它简单的实现一些接口，就可以完成一个分布式程序。</p>
+<h3 id="2-良好的拓展性"><a href="#2-良好的拓展性" class="headerlink" title="2. 良好的拓展性"></a>2. 良好的拓展性</h3><p>当你的计算资源不能得到满足的时候，可以通过简单的增加机器来扩展它的计算能力。</p>
+<h3 id="3-高容错性"><a href="#3-高容错性" class="headerlink" title="3. 高容错性"></a>3. 高容错性</h3><p>若其中一台机器挂了，它可以把上面的计算任务转移到另外一个节点上运行，不至于这个任务运行失败，而且这个过程不需要人工参加，而完全是由Hadoop内部完成的。</p>
+<h3 id="4-适合PB级以上海量数据的离线计算"><a href="#4-适合PB级以上海量数据的离线计算" class="headerlink" title="4. 适合PB级以上海量数据的离线计算"></a>4. 适合PB级以上海量数据的离线计算</h3><p>可以实现上千台服务器集群并发处理，提供数据处理能力。</p>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><h3 id="1-不擅长实时计算"><a href="#1-不擅长实时计算" class="headerlink" title="1. 不擅长实时计算"></a>1. 不擅长实时计算</h3><p>MR无法像MySQL一样，在毫秒或者秒级内返回结果</p>
+<h3 id="2-不擅长流式计算。"><a href="#2-不擅长流式计算。" class="headerlink" title="2. 不擅长流式计算。"></a>2. 不擅长流式计算。</h3><p>流式计算的输入数据是动态的，而MR的输入数据集是静态的，不能动态变化。</p>
+<h3 id="3-不擅长DAG（有向图）计算"><a href="#3-不擅长DAG（有向图）计算" class="headerlink" title="3. 不擅长DAG（有向图）计算"></a>3. 不擅长DAG（有向图）计算</h3><p>也就是不能让多个应用程序存在依赖关系，后一个应用程序的输入为前一个的输出。在这种情况下，其实MR并不是不能做，而是使用后，每个MR的作业的输出结果都会写入到磁盘，会造成大量的磁盘IO，导致性能非常低下。</p>
+<h1 id="3-MR核心思想"><a href="#3-MR核心思想" class="headerlink" title="3 MR核心思想"></a>3 MR核心思想</h1><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210235945.png" srcset="/img/loading.gif" lazyload style="zoom: 25%;" />
+
+<p>1）分布式的运算程序往往需要分成至少2个阶段。<br>2）第一个阶段的MapTask并发实例，完全并行运行，互不相干。<br>3）第二个阶段的ReduceTask并发实例互不相干，但是他们的数据依赖于上一个阶段的所有MapTask并发实例的输出。<br>4）MapReduce编程模型只能包含一个Map阶段和一个Reduce阶段，如果用户的业务逻辑非常复杂，那就只能多个MapReduce程序，串行运行。 </p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>分析WordCount数据流走向深入理解MapReduce核心思想。 </p>
+<h1 id="4-MR进程"><a href="#4-MR进程" class="headerlink" title="4 MR进程"></a>4 MR进程</h1><h2 id="一个完整的MapReduce程序在分布式运行时有三类实例进程"><a href="#一个完整的MapReduce程序在分布式运行时有三类实例进程" class="headerlink" title="一个完整的MapReduce程序在分布式运行时有三类实例进程"></a>一个完整的MapReduce程序在分布式运行时有三类实例进程</h2><h3 id="1-MrAppMaster"><a href="#1-MrAppMaster" class="headerlink" title="1. MrAppMaster"></a>1. MrAppMaster</h3><p>负责整个程序的过程调度及状态协调</p>
+<h3 id="2-MapTask"><a href="#2-MapTask" class="headerlink" title="2. MapTask"></a>2. MapTask</h3><p>负责Map阶段的整个阶段处理流程</p>
+<h3 id="3-ReduceTask"><a href="#3-ReduceTask" class="headerlink" title="3. ReduceTask"></a>3. ReduceTask</h3><p>负责Reduce阶段的整个数据处理流程</p>
+<h1 id="5-官方WordCount源码"><a href="#5-官方WordCount源码" class="headerlink" title="5 官方WordCount源码"></a>5 官方WordCount源码</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-keyword">package</span> com.coachhe.hdfs; <br>  <br><span class="hljs-keyword">import</span> java.io.IOException; <br><span class="hljs-keyword">import</span> java.util.StringTokenizer; <br>  <br><span class="hljs-keyword">import</span> org.apache.hadoop.conf.Configuration; <br><span class="hljs-keyword">import</span> org.apache.hadoop.fs.Path; <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.IntWritable; <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.Text; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.Job; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.Mapper; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.Reducer; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.lib.input.FileInputFormat; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.lib.output.FileOutputFormat; <br><span class="hljs-keyword">import</span> org.apache.hadoop.util.GenericOptionsParser; <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">wordcount</span> &#123; <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TokenizerMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Mapper</span>&lt;Object, Text, Text, IntWritable&gt; &#123;   <span class="hljs-comment">//继承泛型类Mapper </span><br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> <span class="hljs-type">IntWritable</span> <span class="hljs-variable">one</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IntWritable</span>(<span class="hljs-number">1</span>);  <span class="hljs-comment">//定义hadoop数据类型IntWritable实例one，并且赋值为1 </span><br>        <span class="hljs-keyword">private</span> <span class="hljs-type">Text</span> <span class="hljs-variable">word</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Text</span>();                                    <span class="hljs-comment">//定义hadoop数据类型Text实例word </span><br>  <br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">map</span><span class="hljs-params">(Object key, Text value, Context context)</span> <span class="hljs-keyword">throws</span> IOException, InterruptedException &#123; <span class="hljs-comment">//实现map函数 </span><br>            <span class="hljs-type">StringTokenizer</span> <span class="hljs-variable">itr</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StringTokenizer</span>(value.toString());<span class="hljs-comment">//Java的字符串分解类，默认分隔符“空格”、“制表符(‘\t’)”、“换行符(‘\n’)”、“回车符(‘\r’)” </span><br>  <br>            <span class="hljs-keyword">while</span> (itr.hasMoreTokens()) &#123;  <span class="hljs-comment">//循环条件表示返回是否还有分隔符。 </span><br>                word.set(itr.nextToken());   <span class="hljs-comment">// nextToken()：返回从当前位置到下一个分隔符的字符串，word.set()：Java数据类型与hadoop数据类型转换 </span><br>                context.write(word, one);   <span class="hljs-comment">//hadoop全局类context输出函数write; </span><br>            &#125; <br>        &#125; <br>  <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">IntSumReducer</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Reducer</span>&lt;Text, IntWritable, Text, IntWritable&gt; &#123;    <span class="hljs-comment">//继承泛型类Reducer </span><br>        <span class="hljs-keyword">private</span> <span class="hljs-type">IntWritable</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IntWritable</span>();   <span class="hljs-comment">//实例化IntWritable </span><br>  <br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">reduce</span><span class="hljs-params">(Text key, Iterable&lt;IntWritable&gt; values, Context context)</span> <span class="hljs-keyword">throws</span> IOException, InterruptedException &#123;  <span class="hljs-comment">//实现reduce </span><br>            <span class="hljs-type">int</span> <span class="hljs-variable">sum</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; <br>            <span class="hljs-keyword">for</span> (IntWritable val : values)    <span class="hljs-comment">//循环values，并记录单词个数 </span><br>                sum += val.get(); <br>            result.set(sum);   <span class="hljs-comment">//Java数据类型sum，转换为hadoop数据类型result </span><br>            context.write(key, result);   <span class="hljs-comment">//输出结果到hdfs </span><br>        &#125; <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123; <br>        <span class="hljs-type">Configuration</span> <span class="hljs-variable">conf</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Configuration</span>();   <span class="hljs-comment">//实例化Configuration </span><br><span class="hljs-comment">/*********** </span><br><span class="hljs-comment">GenericOptionsParser是hadoop框架中解析命令行参数的基本类。 getRemainingArgs();返回数组 </span><br><span class="hljs-comment">【一组路径】 </span><br><span class="hljs-comment">**********/</span> <br><span class="hljs-comment">//函数实现 </span><br>        <span class="hljs-comment">/** </span><br><span class="hljs-comment">         public String[] getRemainingArgs() &#123; </span><br><span class="hljs-comment">         return (commandLine == null) ? new String[]&#123;&#125; : commandLine.getArgs(); </span><br><span class="hljs-comment">         &#125; </span><br><span class="hljs-comment">         **/</span> <br><span class="hljs-comment">//总结上面：返回数组【一组路径】 </span><br>        String[] otherArgs = <span class="hljs-keyword">new</span> <span class="hljs-title class_">GenericOptionsParser</span>(conf, args).getRemainingArgs(); <br>  <br><span class="hljs-comment">//如果只有一个路径，则输出需要有输入路径和输出路径 </span><br>        <span class="hljs-keyword">if</span> (otherArgs.length &lt; <span class="hljs-number">2</span>) &#123; <br>            System.err.println(<span class="hljs-string">&quot;Usage: wordcount &lt;in&gt; [&lt;in&gt;...] &lt;out&gt;&quot;</span>); <br>            System.exit(<span class="hljs-number">2</span>); <br>        &#125; <br>  <br>        <span class="hljs-type">Job</span> <span class="hljs-variable">job</span> <span class="hljs-operator">=</span> Job.getInstance(conf, <span class="hljs-string">&quot;word count&quot;</span>);   <span class="hljs-comment">//实例化job </span><br>        job.setJarByClass(wordcount.class);   <span class="hljs-comment">//为了能够找到wordcount这个类 </span><br>        job.setMapperClass(TokenizerMapper.class);   <span class="hljs-comment">//指定map类型 </span><br><span class="hljs-comment">/******** </span><br><span class="hljs-comment">指定CombinerClass类 </span><br><span class="hljs-comment">这里很多人对CombinerClass不理解 </span><br><span class="hljs-comment">************/</span> <br>        job.setCombinerClass(IntSumReducer.class); <br>        job.setReducerClass(IntSumReducer.class);  <span class="hljs-comment">//指定reduce类 </span><br>        job.setOutputKeyClass(Text.class); <span class="hljs-comment">//rduce输出Key的类型，是Text </span><br>        job.setOutputValueClass(IntWritable.class);  <span class="hljs-comment">// rduce输出Value的类型 </span><br>  <br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; otherArgs.length - <span class="hljs-number">1</span>; ++i) <br>            FileInputFormat.addInputPath(job, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Path</span>(String.valueOf(otherArgs)));  <span class="hljs-comment">//添加输入路径 </span><br>  <br>        FileOutputFormat.setOutputPath(job, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Path</span>(otherArgs[otherArgs.length - <span class="hljs-number">1</span>]));   <span class="hljs-comment">//添加输出路径 </span><br>        System.exit(job.waitForCompletion(<span class="hljs-literal">true</span>) ? <span class="hljs-number">0</span> : <span class="hljs-number">1</span>);  <span class="hljs-comment">//提交job </span><br>    &#125; <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<h1 id="6-常用数据序列化类型"><a href="#6-常用数据序列化类型" class="headerlink" title="6 常用数据序列化类型"></a>6 常用数据序列化类型</h1><table>
+<thead>
+<tr>
+<th>Java类型</th>
+<th>Hadoop Writable类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>boolean</td>
+<td>BooleanWritable</td>
+</tr>
+<tr>
+<td>byte</td>
+<td>ByteWritable</td>
+</tr>
+<tr>
+<td>int</td>
+<td>IntWritable</td>
+</tr>
+<tr>
+<td>float</td>
+<td>FloatWritable</td>
+</tr>
+<tr>
+<td>long</td>
+<td>LongWritable</td>
+</tr>
+<tr>
+<td>double</td>
+<td>DoubleWritable</td>
+</tr>
+<tr>
+<td>String</td>
+<td>Text</td>
+</tr>
+<tr>
+<td>map</td>
+<td>MapWritable</td>
+</tr>
+<tr>
+<td>array</td>
+<td>ArrayWritable</td>
+</tr>
+</tbody></table>
+<h1 id="7-MR编程规范"><a href="#7-MR编程规范" class="headerlink" title="7 MR编程规范"></a>7 MR编程规范</h1><h2 id="用户编写的程序分为三个部分"><a href="#用户编写的程序分为三个部分" class="headerlink" title="用户编写的程序分为三个部分"></a>用户编写的程序分为三个部分</h2><ol>
+<li>Mapper   </li>
+<li>Reducer </li>
+<li>Driver</li>
+</ol>
+<h2 id="Mapper阶段"><a href="#Mapper阶段" class="headerlink" title="Mapper阶段"></a>Mapper阶段</h2><ol>
+<li>用户自定义的Mapper要继承自己的父类 </li>
+<li>Mapper的输入数据是KV对的形式 </li>
+<li>Mapper中的业务逻辑写在map()方法里面 </li>
+<li>Mapper的输出数据是KV对的形式 </li>
+<li>map()方法（MapTask进程）对每个KV对调用一次</li>
+</ol>
+<h2 id="Reducer阶段"><a href="#Reducer阶段" class="headerlink" title="Reducer阶段"></a>Reducer阶段</h2><ol>
+<li>用户自定义的Reducer要继承自己的父类*</li>
+<li>Reducer的输入类型对应Mapper的输出类型，也是KV </li>
+<li>Reducer的业务逻辑写在reduce()方法中 </li>
+<li>ReduceTask进程对每一组相同k的&lt;k,v&gt;组调用一次reduce()方法</li>
+</ol>
+<h2 id="Driver阶段"><a href="#Driver阶段" class="headerlink" title="Driver阶段"></a>Driver阶段</h2><p>相当于YARN集群的客户端，用于提交我们整个程序到YARN集群，提交的是封装了MapReduce程序相关参数的job对象。 </p>
+<h1 id="WordCount案例实操"><a href="#WordCount案例实操" class="headerlink" title="WordCount案例实操"></a>WordCount案例实操</h1><h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h2><p>在给定的文本文件中统计输出每一个单词出现的次数。 </p>
+<h3 id="输入数据"><a href="#输入数据" class="headerlink" title="输入数据"></a>输入数据</h3><p>wc_shicao<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211002920.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" /></p>
+<h3 id="期望输出数据"><a href="#期望输出数据" class="headerlink" title="期望输出数据"></a>期望输出数据</h3><p>coachhe 4<br>hello 1<br>Hello 2<br>I 1<br>love 1<br>playing 1<br>tennis 1<br>Java 1<br>Hadoop 1<br>Thank 1<br>you 1<br>atguigu 1 </p>
+<h3 id="需求分析-1"><a href="#需求分析-1" class="headerlink" title="需求分析"></a>需求分析</h3><p>需要分别设计Mapper Reducer和Driver。 </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003020.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="创建maven工程"><a href="#创建maven工程" class="headerlink" title="创建maven工程"></a>创建maven工程</h2><h1 id="创建maven工程-1"><a href="#创建maven工程-1" class="headerlink" title="创建maven工程"></a>创建maven工程</h1> <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003121.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+其中依赖和之前的相同。 
+
+<h2 id="WordCountMapper"><a href="#WordCountMapper" class="headerlink" title="WordCountMapper"></a>WordCountMapper</h2><h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003152.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+
+<h3 id="对Mapper类的源码进行分析"><a href="#对Mapper类的源码进行分析" class="headerlink" title="对Mapper类的源码进行分析"></a>对Mapper类的源码进行分析</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003239.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003319.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+
+<h3 id="具体写WordCountMapper类"><a href="#具体写WordCountMapper类" class="headerlink" title="具体写WordCountMapper类"></a>具体写WordCountMapper类</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003436.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+
+<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// map阶段 </span><br><span class="hljs-comment">// KEYIN 第一个参数，为输入数据的key </span><br><span class="hljs-comment">// VALUEIN 第二个参数，为输入数据的value </span><br><span class="hljs-comment">// KEYOUT 第三个参数，为输出数据的key的类型， coachhe 3，在这里是coachhe，所以是Text </span><br><span class="hljs-comment">// VALUEOUT 第四个参数，为输出数据的value，根据上面，是3，所以是LongWritable </span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">WordcountMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Mapper</span>&lt;LongWritable, Text, Text, LongWritable&gt; &#123; <br>  <br>    <span class="hljs-type">Text</span> <span class="hljs-variable">k</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Text</span>(); <br>    <span class="hljs-type">LongWritable</span> <span class="hljs-variable">v</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">LongWritable</span>(); <br>  <br>  <br>    <span class="hljs-meta">@Override</span> <br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">map</span><span class="hljs-params">(LongWritable key, Text value, Context context)</span> <span class="hljs-keyword">throws</span> IOException, InterruptedException &#123; <br>        <span class="hljs-comment">// coachhe coachhe  输入数据 </span><br>  <br>        <span class="hljs-comment">// 1 获取一行 </span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">line</span> <span class="hljs-operator">=</span> value.toString(); <br>  <br>        <span class="hljs-comment">// 2 切割单词 </span><br>        String[] words = line.split(<span class="hljs-string">&quot; &quot;</span>); <br>  <br>        <span class="hljs-comment">// 3 循环写出 </span><br>        <span class="hljs-keyword">for</span> (String word : words) &#123; <br>            k.set(word); <br>            v.set(<span class="hljs-number">1</span>); <br>            context.write(k, v); <br>        &#125; <br>  <br>    &#125; <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<h2 id="WordcountReducer"><a href="#WordcountReducer" class="headerlink" title="WordcountReducer"></a>WordcountReducer</h2><h3 id="创建WordcountReducer"><a href="#创建WordcountReducer" class="headerlink" title="创建WordcountReducer"></a>创建WordcountReducer</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003647.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+
+<h3 id="对Reducer类的源码分析"><a href="#对Reducer类的源码分析" class="headerlink" title="对Reducer类的源码分析"></a>对Reducer类的源码分析</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003752.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+
+<h3 id="具体写WordcountReducer"><a href="#具体写WordcountReducer" class="headerlink" title="具体写WordcountReducer"></a>具体写WordcountReducer</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003901.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+
+<h2 id="Driver类"><a href="#Driver类" class="headerlink" title="Driver类"></a>Driver类</h2><h3 id="固定格式"><a href="#固定格式" class="headerlink" title="固定格式"></a>固定格式</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211003945.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+
+<h3 id="最终代码"><a href="#最终代码" class="headerlink" title="最终代码"></a>最终代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.wordcount; <br>  <br><span class="hljs-keyword">import</span> org.apache.hadoop.conf.Configuration; <br><span class="hljs-keyword">import</span> org.apache.hadoop.fs.Path; <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.LongWritable; <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.Text; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.Job; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.lib.input.FileInputFormat; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.lib.output.FileOutputFormat; <br>  <br><span class="hljs-keyword">import</span> java.io.IOException; <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">WordCountDriver</span> &#123; <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException, ClassNotFoundException, InterruptedException &#123; <br>  <br>        <span class="hljs-type">Configuration</span> <span class="hljs-variable">conf</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Configuration</span>(); <br>        <span class="hljs-comment">// 1 获取Job对象 </span><br>        <span class="hljs-type">Job</span> <span class="hljs-variable">job</span> <span class="hljs-operator">=</span> Job.getInstance(conf); <br>  <br>        <span class="hljs-comment">// 2 设置jar存储位置 </span><br>        job.setJarByClass(WordCountDriver.class); <br>  <br>        <span class="hljs-comment">// 3 关联Map和Reduce类 </span><br>        job.setMapperClass(WordcountMapper.class); <br>        job.setReducerClass(WordcountReducer.class); <br>  <br>        <span class="hljs-comment">// 4 设置Mapper阶段输出数据的key-value类型 </span><br>        job.setMapOutputKeyClass(Text.class); <br>        job.setMapOutputValueClass(LongWritable.class); <br>  <br>        <span class="hljs-comment">// 5 设置最终数据输出的key和value类型 </span><br>        job.setOutputKeyClass(String.class); <br>        job.setOutputValueClass(Long.class); <br>  <br>        <span class="hljs-comment">// 6 设置程序运行的输入路径和输出路径 </span><br>        FileInputFormat.setInputPaths(job, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Path</span>(args[<span class="hljs-number">0</span>])); <br>        FileOutputFormat.setOutputPath(job, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Path</span>(args[<span class="hljs-number">1</span>])); <br>  <br>        <span class="hljs-comment">// 7 提交job </span><br>        <span class="hljs-type">boolean</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> job.waitForCompletion(<span class="hljs-literal">true</span>);<span class="hljs-comment">//提交完成之后会打印信息,若设置为false则不会打印信息 </span><br>  <br>        System.exit(result ? <span class="hljs-number">0</span> : <span class="hljs-number">1</span>); <br>    &#125; <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<h2 id="IDEA参数设置"><a href="#IDEA参数设置" class="headerlink" title="IDEA参数设置"></a>IDEA参数设置</h2><p>因为我们在上面的输入路径为args[0]，输出路径为args[1]。因此需要在IDEA上设置参数： </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211004148.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+以空格分开 
+
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><h3 id="现在在我的-x2F-路径（注意：这里是集群的地址，因为我现在是完全分布式）下有一个wc-shicao文件。"><a href="#现在在我的-x2F-路径（注意：这里是集群的地址，因为我现在是完全分布式）下有一个wc-shicao文件。" class="headerlink" title="现在在我的&#x2F;路径（注意：这里是集群的地址，因为我现在是完全分布式）下有一个wc_shicao文件。"></a>现在在我的&#x2F;路径（注意：这里是集群的地址，因为我现在是完全分布式）下有一个wc_shicao文件。</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211004351.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />  
+
+<h3 id="现在我想把他进行wordcount之后结果输出到-x2F-wc-shicao-output中。"><a href="#现在我想把他进行wordcount之后结果输出到-x2F-wc-shicao-output中。" class="headerlink" title="现在我想把他进行wordcount之后结果输出到&#x2F;wc_shicao_output中。"></a>现在我想把他进行wordcount之后结果输出到&#x2F;wc_shicao_output中。</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211004425.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><img src="https://pic.downk.cc/item/5fc785ca394ac52378b5765d.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/" class="category-chain-item">大数据</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/" class="category-chain-item">Hadoop生态</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/Hadoop/" class="category-chain-item">Hadoop</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/Hadoop/3-MR%E4%BB%8B%E7%BB%8D/" class="category-chain-item">3 MR介绍</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MR1 基本介绍</div>
+      <div>http://example.com/2022/12/b0a2e8c628e2.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/a2ce6425df3b.html" title="MR2 MR序列化">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MR2 MR序列化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/445db090d192.html" title="Hive基础">
+                        <span class="hidden-mobile">Hive基础</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/b0a2e8c628e2.html';
+          this.page.identifier = '/2022/12/b0a2e8c628e2.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

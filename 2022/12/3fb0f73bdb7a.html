@@ -1,0 +1,776 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1 终端登录和网络登录终端介绍计算机&#x3D;主机+终端终端&#x3D;输入设备+输出设备 也就是说，终端其实就是向主机输入信息和输出信息的设备，可以分为输入设备和输出设备。台式机的输入通常包括键盘、鼠标、麦克风，输出设备包括显示器、扬声器等。 理解：也就是说，我们最开始买来的笔记本电脑只有一个主机，没有输入输出设备，不能使用。因此我们需要购买一些终端来进行输入输出操作，例如我们买键盘和县食品，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APUE-9-进程关系">
+<meta property="og:url" content="http://example.com/2022/12/3fb0f73bdb7a.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="1 终端登录和网络登录终端介绍计算机&#x3D;主机+终端终端&#x3D;输入设备+输出设备 也就是说，终端其实就是向主机输入信息和输出信息的设备，可以分为输入设备和输出设备。台式机的输入通常包括键盘、鼠标、麦克风，输出设备包括显示器、扬声器等。 理解：也就是说，我们最开始买来的笔记本电脑只有一个主机，没有输入输出设备，不能使用。因此我们需要购买一些终端来进行输入输出操作，例如我们买键盘和县食品，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636c3f81f7e3bd97f43a4.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636e5f81f7e3bd97f4b62.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636e5f81f7e3bd97f4b54.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636d9f81f7e3bd97f4922.jpg">
+<meta property="article:published_time" content="2022-12-03T18:38:13.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pic.downk.cc/item/5fc636c3f81f7e3bd97f43a4.jpg">
+  
+  
+  
+  <title>APUE-9-进程关系 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="APUE-9-进程关系"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:38" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          36 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">APUE-9-进程关系</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-终端登录和网络登录"><a href="#1-终端登录和网络登录" class="headerlink" title="1 终端登录和网络登录"></a>1 终端登录和网络登录</h1><h3 id="终端介绍"><a href="#终端介绍" class="headerlink" title="终端介绍"></a>终端介绍</h3><p>计算机&#x3D;主机+终端<br>终端&#x3D;输入设备+输出设备</p>
+<p>也就是说，终端其实就是向主机输入信息和输出信息的设备，可以分为输入设备和输出设备。台式机的输入通常包括键盘、鼠标、麦克风，输出设备包括显示器、扬声器等。</p>
+<h4 id="理解："><a href="#理解：" class="headerlink" title="理解："></a>理解：</h4><p>也就是说，我们最开始买来的笔记本电脑只有一个主机，没有输入输出设备，不能使用。因此我们需要购买一些终端来进行输入输出操作，例如我们买键盘和县食品，那么我们就可以通过输入终端（键盘）进行输入操作，通过输出终端（显示屏）来进行输出操作，显示我们的输入经过主机运算之后得到的内容。</p>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><p>终端本身没有任何计算等功能，只有输入和输出的功能，只有经过主机的计算才能有作用，否则就是废铁</p>
+<h4 id="终端服务器"><a href="#终端服务器" class="headerlink" title="终端服务器"></a>终端服务器</h4><p>若一个机构有多台主机，那么要让每个终端都能连接到任意一个主机，就需要一个终端服务器，让终端和终端服务器之间连接，然后用户启动时选择要登录得主机，类似于今天的路由器。</p>
+<h4 id="控制台（Console）"><a href="#控制台（Console）" class="headerlink" title="控制台（Console）"></a>控制台（Console）</h4><p>大部分终端（例如鼠标键盘）都是通过线路连接。但是有个终端与众不同，它是与主机一体的，不需要连线，这个特殊的终端就是console。中文名为控制台。Console是用来管理主机的，只能给系统管理员使用，而且一个主机只能有一个console。</p>
+<h4 id="控制台和普通终端的区别"><a href="#控制台和普通终端的区别" class="headerlink" title="控制台和普通终端的区别"></a>控制台和普通终端的区别</h4><p>Console与一般终端在外表上没什么区别，但是在功能上却大不相同，有些事情只能在console上完成，而不能在终端完成。例如当系统启动出错时，错误信息会显示在Console的显示器屏幕上，而不会显示在一般的终端上。在单用户模式下，只有console才能连接到主机，其他终端没有权限访问主机。</p>
+<h4 id="终端模拟程序"><a href="#终端模拟程序" class="headerlink" title="终端模拟程序"></a>终端模拟程序</h4><p>终端属于硬件。从前用户坐在真实的终端前面输入命令，现在输入命令时不能使用真正的终端。因为现在真实的终端是图形界面的终端。现在，用户要输入命令必须使用终端模拟程序(Terminal Emulation Program)。终端模拟程序就是我们平常在Linux桌面环境中打开的终端窗口(Terminal Window)，它是个虚拟终端，但主机会认为它就是真正的终端。终端模拟程序也可以叫做终端模拟器(Terminal Emulator)。</p>
+<h3 id="虚拟控制台"><a href="#虚拟控制台" class="headerlink" title="虚拟控制台"></a>虚拟控制台</h3><p>终端模拟程序有两种：</p>
+<ol>
+<li>终端窗口</li>
+<li>虚拟控制台</li>
+</ol>
+<p>Unix允许用户在自己电脑上使用多个终端，其中一个是图形终端，其他六个是字符终端。这七个终端使用同一个显示器和键盘。</p>
+<p>参考文献：<br><a target="_blank" rel="noopener" href="https://www.linuxdashen.com/%E4%BD%A0%E7%9C%9F%E7%9A%84%E7%9F%A5%E9%81%93%E4%BB%80%E4%B9%88%E6%98%AF%E7%BB%88%E7%AB%AF%E5%90%97%EF%BC%9F">https://www.linuxdashen.com/%E4%BD%A0%E7%9C%9F%E7%9A%84%E7%9F%A5%E9%81%93%E4%BB%80%E4%B9%88%E6%98%AF%E7%BB%88%E7%AB%AF%E5%90%97%EF%BC%9F</a></p>
+<h2 id="控制终端"><a href="#控制终端" class="headerlink" title="控制终端"></a>控制终端</h2><p>终端有两种类型：</p>
+<ol>
+<li>常规终端设备</li>
+<li>伪终端设备<br>常规终端设备是一种本机终端设备，可以键入该终端设备并将输入发送到系统，例如我们输入Ctrl+Alt+F1进入TTY1，可以注意到除了终端，没有图形，这就是常规终端设备。<br>伪终端是我们使用额终端，它们使用shell终端窗口模拟终端，并用PTS表示。</li>
+</ol>
+<p>通常将进程绑定到控制终端。</p>
+<h1 id="2-进程组和会话"><a href="#2-进程组和会话" class="headerlink" title="2 进程组和会话"></a>2 进程组和会话</h1><h2 id="进程组"><a href="#进程组" class="headerlink" title="进程组"></a>进程组</h2><p>每个进程除了有一进程ID之外，还属于一个进程组。</p>
+<h3 id="进程组定义"><a href="#进程组定义" class="headerlink" title="进程组定义"></a>进程组定义</h3><p>进程组是一个或多个进程的集合，通常，它们是在同一作业中结合起来的。</p>
+<h3 id="进程组函数"><a href="#进程组函数" class="headerlink" title="进程组函数"></a>进程组函数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-type">pid_t</span> <span class="hljs-title function_">getpgrp</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>;<br></code></pre></td></tr></table></figure>
+<p>返回值时<strong>调用进程</strong>的进程组的ID。<br>注意：<br>这里只能是调用进程的进程组ID，不能查看别的进程对应的进程组ID。如是要查看别的组的进程组ID，可以用getpgid</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-type">pid_t</span> <span class="hljs-title function_">getpgid</span><span class="hljs-params">(<span class="hljs-type">pid_t</span> pid)</span>;<br></code></pre></td></tr></table></figure>
+<p>若pid是0，则返回调用进程的组ID，出错则返回-1.</p>
+<h3 id="组长ID"><a href="#组长ID" class="headerlink" title="组长ID"></a>组长ID</h3><p>每个进程组有一个组长进程。<br>组长进程特定：<br><em>组长进程的进程组ID等于其进程ID。</em><br>也就是说，若是需要查看一个进程的进程组的组长ID，只需要查看进程的进程组ID就行了，这两者是相等的。</p>
+<h4 id="进程和进程组ID举例"><a href="#进程和进程组ID举例" class="headerlink" title="进程和进程组ID举例"></a>进程和进程组ID举例</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br><br>  <span class="hljs-type">pid_t</span> pid;    <span class="hljs-comment">//进程ID</span><br>  <span class="hljs-type">pid_t</span> pgid;   <span class="hljs-comment">//进程组ID</span><br><br>  pgid = getpgid(<span class="hljs-number">0</span>);<br>  pid = getpid();<br><br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;进程号为：%d\n&quot;</span>, pid);<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;进程组号为：%d\n&quot;</span>, pgid);<br><br><br>  <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>输出：</p>
+<p><img src="https://pic.downk.cc/item/5fc636c3f81f7e3bd97f43a4.jpg" srcset="/img/loading.gif" lazyload>)</p>
+<p>解释：</p>
+<p>在这里，该进程ID就是该进程组ID，也就是说，这个进程的进程组的组长进程就是该进程。</p>
+<h2 id="进程组加入或创建"><a href="#进程组加入或创建" class="headerlink" title="进程组加入或创建"></a>进程组加入或创建</h2><p>进程调用setpgid可以加入一个现有的进程组或者创建一个新进程组。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">setpgid</span><span class="hljs-params">(<span class="hljs-type">pid_t</span> pid, <span class="hljs-type">pid_t</span> pgid)</span>;<br></code></pre></td></tr></table></figure>
+<p>作用：<br>将进程pid的进程组ID设置为pgid。若pid&#x3D;pgid，则有pid指定的进程变成进程组组长。<br>情况：</p>
+<ol>
+<li>如果两个参数相等，就将pid指定的进程变成进程组组长 </li>
+<li>如果pid是0，则使用调用者的进程ID。</li>
+<li>如果pgid是0，则由pid指定的进程ID用作进程组ID。</li>
+</ol>
+<p>举例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br>  <span class="hljs-type">pid_t</span> pid;<br>  <span class="hljs-type">pid_t</span> pgid;<br>  <span class="hljs-type">int</span> status;<br>  <span class="hljs-type">int</span> id;<br><br>  pid = getpid();<br>  pgid = getpgid(<span class="hljs-number">0</span>);<br><br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;父进程id=%d\n&quot;</span>, pid);<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;父进程组id=%d\n&quot;</span>, pgid);<br><br>  id = fork();<br>  <span class="hljs-keyword">if</span> (id == <span class="hljs-number">0</span>)&#123;<br>    <span class="hljs-type">pid_t</span> tmp_parentid = pid;<br>    pid = getpid();<br>    <span class="hljs-type">int</span> tmp=setpgid(tmp_parentid, pid);<br>    <span class="hljs-keyword">if</span> (tmp == <span class="hljs-number">-1</span>)&#123;<br>      <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;error&quot;</span>);<br>    &#125;<br>    <span class="hljs-comment">// setpgid(pid, pid);</span><br>    pgid = getpgid(<span class="hljs-number">0</span>);<br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;子进程id=%d\n&quot;</span>, pid);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;子进程组id=%d\n&quot;</span>, pgid);<br><br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>  &#125;<br>  wait(&amp;status);<br>  pid = getpid();<br>  pgid = getpgid(<span class="hljs-number">0</span>);<br><br><br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;父进程id=%d\n&quot;</span>, pid);<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;父进程组id=%d\n&quot;</span>, pgid);<br><br><span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br><br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="输出："><a href="#输出：" class="headerlink" title="输出："></a>输出：</h4><p><img src="https://pic.downk.cc/item/5fc636e5f81f7e3bd97f4b62.jpg" srcset="/img/loading.gif" lazyload></p>
+<h1 id="3-会话"><a href="#3-会话" class="headerlink" title="3 会话"></a>3 会话</h1><p>会话(session)是一个或者多个进程组的集合<br>说白了，会话其实就是多个进程组之间的联系，例如后台进程组和前台进程组之间。</p>
+<h2 id="举例：一个含有3个进程组的会话"><a href="#举例：一个含有3个进程组的会话" class="headerlink" title="举例：一个含有3个进程组的会话"></a>举例：一个含有3个进程组的会话</h2><p><img src="https://pic.downk.cc/item/5fc636e5f81f7e3bd97f4b54.jpg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="调用setsid函数建立一个新的会话"><a href="#调用setsid函数建立一个新的会话" class="headerlink" title="调用setsid函数建立一个新的会话"></a>调用setsid函数建立一个新的会话</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-type">pid_t</span> <span class="hljs-title function_">setsid</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>;<br></code></pre></td></tr></table></figure>
+<p>若成功返回进程组ID，若失败返回-1.<br>如果调用函数的进程不是一个进程组的组长，则该函数会创建一个新会话。具体发生以下三件事：</p>
+<ol>
+<li>该进程会变成新会话的<strong>会话首进程</strong>（session leader，也就是创建该会话的进程）。此时该进程是新会话中的唯一进程</li>
+<li>该进程称为一个新进程组的组长进程。新进程组ID是调用该进程的进程ID</li>
+<li>该进程没有控制终端。如果在调用setsid之前该进程有一个控制终端，那么这种联系也会被切断。</li>
+</ol>
+<h2 id="返回错误的情况"><a href="#返回错误的情况" class="headerlink" title="返回错误的情况"></a>返回错误的情况</h2><p>若调用该进程已经是进程组的组长，则此函数返回出错。</p>
+<h2 id="如何设置"><a href="#如何设置" class="headerlink" title="如何设置"></a>如何设置</h2><p>通常先调用fork，然后使其父进程终止，而子进程继续，因为子进程继承了父进程的进程组ID，而且其进程ID是重新分配的，两者不可能相等，这就保证了子进程不是一个进程组的组长。</p>
+<h2 id="调用getsid函数返回会话首进程的进程组ID"><a href="#调用getsid函数返回会话首进程的进程组ID" class="headerlink" title="调用getsid函数返回会话首进程的进程组ID"></a>调用getsid函数返回会话首进程的进程组ID</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-type">pid_t</span> <span class="hljs-title function_">getsid</span><span class="hljs-params">(<span class="hljs-type">pid_t</span> pid)</span>;<br></code></pre></td></tr></table></figure>
+<p>若成功返回会话首进程的进程组ID，出错返回-1.</p>
+<h2 id="setsid和getsid实例"><a href="#setsid和getsid实例" class="headerlink" title="setsid和getsid实例"></a>setsid和getsid实例</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br>  <span class="hljs-type">pid_t</span> pid;<br>  <span class="hljs-type">pid_t</span> pgid;<br>  <span class="hljs-type">pid_t</span> sid;<br>  <span class="hljs-type">int</span> status;<br><br>  pid = getpid();<br>  pgid = getpgid(<span class="hljs-number">0</span>);<br>  sid = getsid(pid);<br><br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;父进程id为%d\n&quot;</span>,pid);<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;父进程组id为%d\n&quot;</span>,pgid);<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;父进程sid为%d\n&quot;</span>,sid);<br><br>  <span class="hljs-type">int</span> tmpid;<br>  tmpid = fork();<br>  <span class="hljs-keyword">if</span>(tmpid == <span class="hljs-number">0</span>)&#123;<br>    pid = getpid();<br>    sid = getsid(pid);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;子进程目前的sid为%d\n&quot;</span>,sid);<br>    pgid = setsid();<br>    sid = getsid(pid);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;子进程id为%d\n&quot;</span>,pid);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;子进程新组id为%d\n&quot;</span>,pgid);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;子进程新sid为%d\n&quot;</span>,sid);<br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>  &#125;<br>  wait(&amp;status);<br>  pid = getpid();<br>  sid = getsid(pid);<br>  pgid = getpgid(<span class="hljs-number">0</span>);<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;父进程新id为%d\n&quot;</span>,pid);<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;父进程新组id为%d\n&quot;</span>,pgid);<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;父进程新sid为%d\n&quot;</span>,sid);<br>  <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="输出：-1"><a href="#输出：-1" class="headerlink" title="输出："></a>输出：</h4><p><img src="https://pic.downk.cc/item/5fc636d9f81f7e3bd97f4922.jpg" srcset="/img/loading.gif" lazyload></p>
+<h4 id="分析："><a href="#分析：" class="headerlink" title="分析："></a>分析：</h4><p>先是得到了父进程的进程id为1717，此时父进程的组id就是父进程的id，会话ID是831。然后父进程fork了一个子进程，子进程的id为1857，并且当前的会话ID和父进程的相同，也为831.经过setsid之后将当前的ID设置成了会话ID，但是并不影响父进程的ID、组ID和会话ID。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/" class="category-chain-item">计算机</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/" class="category-chain-item">Linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/APUE/" class="category-chain-item">APUE</a>
+  
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>APUE-9-进程关系</div>
+      <div>http://example.com/2022/12/3fb0f73bdb7a.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/ee502027f0af.html" title="APUE-10-信号">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">APUE-10-信号</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/c3378c1b5cdb.html" title="APUE-8-进程控制">
+                        <span class="hidden-mobile">APUE-8-进程控制</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/3fb0f73bdb7a.html';
+          this.page.identifier = '/2022/12/3fb0f73bdb7a.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

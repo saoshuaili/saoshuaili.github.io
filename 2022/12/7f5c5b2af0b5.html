@@ -1,0 +1,807 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Class 文件的编译过程中不包含传统语言编译的连接步骤，一切方法调用在 Class 文件里面存储的都只是符号引用，而不是方法在实际运行时内存布局中的入口地址（也就是直接引用）。 而在类加载的解析阶段（具体阶段可以看 [[7.3 类加载的过程]]），会将其中的一部分符号引用转化为直接引用。 这种解析能够成立的前提是：方法在程序真正运行之前就有一个可确定的调用版本，并且这个方法的调用版本在运行期间是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="8.3.1 解析">
+<meta property="og:url" content="http://example.com/2022/12/7f5c5b2af0b5.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="Class 文件的编译过程中不包含传统语言编译的连接步骤，一切方法调用在 Class 文件里面存储的都只是符号引用，而不是方法在实际运行时内存布局中的入口地址（也就是直接引用）。 而在类加载的解析阶段（具体阶段可以看 [[7.3 类加载的过程]]），会将其中的一部分符号引用转化为直接引用。 这种解析能够成立的前提是：方法在程序真正运行之前就有一个可确定的调用版本，并且这个方法的调用版本在运行期间是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221212132030.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221212131955.png">
+<meta property="article:published_time" content="2022-12-18T09:35:29.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221212132030.png">
+  
+  
+  
+  <title>8.3.1 解析 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="8.3.1 解析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-18 17:35" pubdate>
+          2022年12月18日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          38 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">8.3.1 解析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Class 文件的编译过程中不包含传统语言编译的连接步骤，一切方法调用在 Class 文件里面存储的都<strong>只是符号引用</strong>，而不是方法在实际运行时内存布局中的入口地址（也就是直接引用）。</p>
+<p>而在类加载的<strong>解析阶段</strong>（具体阶段可以看 [[7.3 类加载的过程]]），会将其中的一部分符号引用转化为直接引用。</p>
+<p>这种解析能够成立的前提是：<br>方法在程序真正运行之前就有一个可确定的调用版本，并且这个方法的调用版本在运行期间是不可改变的。换句话说，调用目标在程序代码写好、编译器进行编译那一刻就已经确定下来，这类方法的调用被称为解析。(来自《深入理解 Java 虚拟机》)</p>
+<p>注意：<br>在这里是有一点歧义的，如果是我理解错了希望可以指出，这里说&#x3D;&#x3D;这类方法的调用被称为解析&#x3D;&#x3D;，也就是说 <code>解析=调用可确定并且在运行期间不可改变的方法版本</code>，但是在前面的学习中我们知道，解析阶段是虚拟机将常量池内的符号引用替换为直接引用的过程，不单单是这一类方法，还包括很多用 invokedynamic 指令修饰的，在运行期间版本会改变的方法。所以这两个地方对解析的解释是否有歧义呢？</p>
+<p>回答：<br>解析分为两种，一种是类加载阶段的解析，这里能成立的前提就是方法在程序真正运行之前就能有一个可确定的调用版本，并且这个方法的调用版本在运行期间是不可改变的。还有一种是运行到 <code>invodynamic</code> 指令的解析，这类不是类加载阶段的解析</p>
+<p>在 Java 语言中，符合&#x3D;&#x3D;编译器可知，运行期不可变&#x3D;&#x3D;这个要求的方法，主要有&#x3D;&#x3D;静态方法&#x3D;&#x3D;和&#x3D;&#x3D;私有方法&#x3D;&#x3D;两大类。</p>
+<ul>
+<li>静态方法<br>与类型直接关联</li>
+<li>私有方法<br>在外部不可被访问</li>
+</ul>
+<p>这两种方法各自特点决定了它们不可能通过集成或者别的方式重写出其他版本，因此它们都很适合在类加载阶段进行解析。</p>
+<h2 id="调用字节码指令的方法"><a href="#调用字节码指令的方法" class="headerlink" title="调用字节码指令的方法"></a>调用字节码指令的方法</h2><p>调用不同类型的方法，字节码指令集里设计了不同的指令。在 JVM 中支持以下 5 中方法调用字节码指令：</p>
+<ul>
+<li>invokestatic：用于调用静态方法</li>
+<li>invokespecial：用于调用实例构造器 <code>&lt;init&gt;()</code> 方法、私有方法和父类中的方法</li>
+<li>invokevirtual：用于调用所有虚方法</li>
+<li>invokeinterface：用于调用接口方法，会在运行时再确定一个实现接口的对象</li>
+<li>invokedynamic：现在运行时动态解析出调用点限定符所引用的方法，然后再执行该方法。</li>
+</ul>
+<p>前两条指令和虚方法绑定，后三条指令（除了被 final 修饰的）都是非虚方法</p>
+<p>前面四条调用指令，分派逻辑都固化在 JVM 内部，而 invokedynamic 指令的分派逻辑是用户设定的引导方法来决定的。</p>
+<h2 id="非虚方法和虚方法"><a href="#非虚方法和虚方法" class="headerlink" title="非虚方法和虚方法"></a>非虚方法和虚方法</h2><p>只要能被 invokestatic 和 invokespecial，都可以在解析阶段中确定唯一的调用版本。也就是非虚方法，共有以下 5 种</p>
+<ol>
+<li>静态方法</li>
+<li>私有方法</li>
+<li>实例构造器</li>
+<li>父类方法</li>
+<li>被 final 修饰的方法（虽然它被 invokevirtual 指令调用）<br>对于 final 方法，由于历史原因，它是被 invokevirtual 指令调用的，但是因为它也无法被覆盖，没有其他版本的可能，所以它就是一种非虚方法。</li>
+</ol>
+<p>以上 5 种方法会在类加载的时候（也就是类加载的第 1 个阶段，详见 [[7.3 类加载的过程]]）就可以把符号引用解析为该方法的直接引用。</p>
+<p>其他方法被称为虚方法。</p>
+<p>代码：方法静态解析演示</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.Chapter3_方法调用;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 方法静态解析演示</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> coachhe</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">StaticResolution</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">sayHello</span><span class="hljs-params">()</span>&#123;<br>        System.out.println(<span class="hljs-string">&quot;Hello World&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        StaticResolution.sayHello();<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>使用 javap 命令查看这段程序对应的字节码：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221212132030.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，的确是通过 invokestatic 命令来调用 <code>sayHello()</code> 方法，而且其调用的方法版本已经在编译时明确以常量池项的形式固化在字节码指令的参数之中（常量池 <code>#5</code> 号）：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221212131955.png" srcset="/img/loading.gif" lazyload width = "80%" />
+
+<p>可以看到，和 String 进行了绑定。</p>
+<p>更加具体的，我们来看下面这段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/20 00:50</span><br><span class="hljs-comment"> **/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Son</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Father</span>&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Son</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-built_in">super</span>();<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Son</span><span class="hljs-params">(<span class="hljs-type">int</span> age)</span> &#123;<br>        <span class="hljs-built_in">this</span>();<br>    &#125;<br><br>    <span class="hljs-comment">// 不是重写父类方法，因为静态方法不能被重写</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">showStatic</span><span class="hljs-params">(String str)</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;son &quot;</span> + str);<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">showPrivate</span><span class="hljs-params">(String str)</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;son private&quot;</span> + str);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">show</span><span class="hljs-params">()</span>&#123;<br>        showStatic(<span class="hljs-string">&quot;coachhe.github.io&quot;</span>); <span class="hljs-comment">// 自身的showStatic</span><br>        <span class="hljs-built_in">super</span>.showStatic(<span class="hljs-string">&quot;good&quot;</span>); <span class="hljs-comment">// 父类的showStatic</span><br>        showPrivate(<span class="hljs-string">&quot;hello&quot;</span>); <span class="hljs-comment">// 自身的private方法</span><br>        <span class="hljs-built_in">super</span>.showCommon(); <span class="hljs-comment">// 父类的Common方法</span><br>        showFinal();<br><br>        showCommon();<br>        info();<br><br>        <span class="hljs-type">MethodInterface</span> <span class="hljs-variable">in</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>        in.methodA();<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">info</span><span class="hljs-params">()</span>&#123;&#125;<br>&#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Father</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Father</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;father的构造器&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">showStatic</span><span class="hljs-params">(String str)</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;father &quot;</span> + str);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">showFinal</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;father show final&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">showCommon</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;father 普通方法&quot;</span>);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">MethodInterface</span>&#123;<br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">methodA</span><span class="hljs-params">()</span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>可以先看看子类的 <code>show()</code> 方法中的前五个</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">showStatic(<span class="hljs-string">&quot;coachhe.github.io&quot;</span>); <span class="hljs-comment">// 自身的showStatic</span><br><span class="hljs-built_in">super</span>.showStatic(<span class="hljs-string">&quot;good&quot;</span>); <span class="hljs-comment">// 父类的showStatic</span><br>showPrivate(<span class="hljs-string">&quot;hello&quot;</span>); <span class="hljs-comment">// 自身的private方法</span><br><span class="hljs-built_in">super</span>.showCommon(); <span class="hljs-comment">// 父类的Common方法</span><br>showFinal();<br></code></pre></td></tr></table></figure>
+
+<p>看看对应的字节码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"> <span class="hljs-number">0</span> ldc #<span class="hljs-number">11</span> &lt;coachhe.github.io&gt;<br> <span class="hljs-number">2</span> invokestatic #<span class="hljs-number">12</span> &lt;com/coachhe/section3_方法调用/虚方法和非虚方法/Son.showStatic : (Ljava/lang/String;)V&gt;<br> <span class="hljs-number">5</span> ldc #<span class="hljs-number">13</span> &lt;good&gt;<br> <span class="hljs-number">7</span> invokestatic #<span class="hljs-number">14</span> &lt;com/coachhe/section3_方法调用/虚方法和非虚方法/Father.showStatic : (Ljava/lang/String;)V&gt;<br><span class="hljs-number">10</span> aload_0<br><span class="hljs-number">11</span> ldc #<span class="hljs-number">15</span> &lt;hello&gt;<br><span class="hljs-number">13</span> invokespecial #<span class="hljs-number">16</span> &lt;com/coachhe/section3_方法调用/虚方法和非虚方法/Son.showPrivate : (Ljava/lang/String;)V&gt;<br><span class="hljs-number">16</span> aload_0<br><span class="hljs-number">17</span> invokespecial #<span class="hljs-number">17</span> &lt;com/coachhe/section3_方法调用/虚方法和非虚方法/Father.showCommon : ()V&gt;<br><span class="hljs-number">20</span> aload_0<br><span class="hljs-number">21</span> invokevirtual #<span class="hljs-number">18</span> &lt;com/coachhe/section3_方法调用/虚方法和非虚方法/Son.showFinal : ()V&gt;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，这里除了调用被 final 修饰的方法，都采用的是非虚方法的字节码。</p>
+<p>final 方法被 <code>invokevirtual</code> 调用，但是也是非虚方法</p>
+<p>那么几个特殊的我们可以看下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-built_in">super</span>.showCommon();<br>showCommon();<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，这里一个是调用了父类的 <code>showCommon</code> 方法，因为方法是确认的（也就是编译器可以明确你到底是调用了哪个方法），因此这里是 <code>invokespecial</code>。</p>
+<p>但是对于 <code>showCommon()</code>，因为随时有可能被子类重写，因此无法确认调用的具体是哪个，因此是采用了 <code>invokevirtual</code> 。</p>
+<p>我们来验证一下，看字节码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-number">17</span> invokespecial #<span class="hljs-number">17</span> &lt;com/coachhe/section3_方法调用/虚方法和非虚方法/Father.showCommon : ()V&gt;<br><span class="hljs-number">20</span> aload_0<br><span class="hljs-number">25</span> invokevirtual #<span class="hljs-number">19</span> &lt;com/coachhe/section3_方法调用/虚方法和非虚方法/Son.showCommon : ()V&gt;<br><span class="hljs-number">28</span> aload_0<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，和我们推断是相同的。</p>
+<p>再看看:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">MethodInterface</span> <span class="hljs-variable">in</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>in.methodA();<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，采用了 <code>invokeinterface</code> ，因为接口是必须要重写的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-number">35</span> invokeinterface #<span class="hljs-number">21</span> &lt;com/coachhe/section3_方法调用/虚方法和非虚方法/MethodInterface.methodA : ()V&gt; count <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" class="category-chain-item">编程语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" class="category-chain-item">Java</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/" class="category-chain-item">Java语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/JVM/" class="category-chain-item">JVM</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/JVM/%E7%AC%AC8%E7%AB%A0-%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%97%E8%8A%82%E7%A0%81%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E/" class="category-chain-item">第8章 虚拟机字节码执行引擎</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/JVM/%E7%AC%AC8%E7%AB%A0-%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%97%E8%8A%82%E7%A0%81%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E/8-3-%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8/" class="category-chain-item">8.3 方法调用</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>8.3.1 解析</div>
+      <div>http://example.com/2022/12/7f5c5b2af0b5.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/0961fc28b4b1.html" title="类加载的时机">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">类加载的时机</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/0bc2f40fc4de.html" title="2. 必须创建所有对象">
+                        <span class="hidden-mobile">2. 必须创建所有对象</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/7f5c5b2af0b5.html';
+          this.page.identifier = '/2022/12/7f5c5b2af0b5.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

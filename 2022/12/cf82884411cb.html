@@ -1,0 +1,738 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="12345678910111213curl &amp;#x27;http:&#x2F;&#x2F;9.135.11.161:60780&#x2F;api&#x2F;v1&#x2F;work-order&#x2F;create&amp;#x27; \  -H &amp;#x27;Accept: application&#x2F;json, text&#x2F;plain, *&#x2F;*&amp;#x27; \  -H &amp;#x27;Accept-Language: zh-CN,zh;q&#x3D;0.9,en;q&#x3D;0.8,en">
+<meta property="og:type" content="article">
+<meta property="og:title" content="上传文件">
+<meta property="og:url" content="http://example.com/2022/12/cf82884411cb.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="12345678910111213curl &amp;#x27;http:&#x2F;&#x2F;9.135.11.161:60780&#x2F;api&#x2F;v1&#x2F;work-order&#x2F;create&amp;#x27; \  -H &amp;#x27;Accept: application&#x2F;json, text&#x2F;plain, *&#x2F;*&amp;#x27; \  -H &amp;#x27;Accept-Language: zh-CN,zh;q&#x3D;0.9,en;q&#x3D;0.8,en">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-12-03T18:30:46.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>上传文件 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="上传文件"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:30" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          78 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">上传文件</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell">curl &#x27;http://9.135.11.161:60780/api/v1/work-order/create&#x27; \<br>  -H &#x27;Accept: application/json, text/plain, */*&#x27; \<br>  -H &#x27;Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6&#x27; \<br>  -H &#x27;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTU4MDEwMDIsImlkZW50aXR5IjoxLCJuaWNlIjoiYWRtaW4iLCJvcmlnX2lhdCI6MTY1NTcxNDYwMiwicm9sZWlkIjoxLCJyb2xla2V5IjoiYWRtaW4iLCJyb2xlbmFtZSI6Iuezu-e7n-euoeeQhuWRmCJ9.lqVCNsllHlJxfn3v6gC6TeYM8I54cHfR3d83RS6imRE&#x27; \<br>  -H &#x27;Connection: keep-alive&#x27; \<br>  -H &#x27;Content-Type: application/json&#x27; \<br>  -H &#x27;Cookie: Hm_lvt_1d2d61263f13e4b288c8da19ad3ff56d=1654327189,1654506358,1655168971,1655714600; Hm_lpvt_1d2d61263f13e4b288c8da19ad3ff56d=1655714600; Admin-Token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTU4MDEwMDIsImlkZW50aXR5IjoxLCJuaWNlIjoiYWRtaW4iLCJvcmlnX2lhdCI6MTY1NTcxNDYwMiwicm9sZWlkIjoxLCJyb2xla2V5IjoiYWRtaW4iLCJyb2xlbmFtZSI6Iuezu-e7n-euoeeQhuWRmCJ9.lqVCNsllHlJxfn3v6gC6TeYM8I54cHfR3d83RS6imRE&#x27; \<br>  -H &#x27;Origin: http://9.135.11.161:60780&#x27; \<br>  -H &#x27;Referer: http://9.135.11.161:60780/&#x27; \<br>  -H &#x27;User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.124 Safari/537.36 Edg/102.0.1245.44&#x27; \<br>  --data-raw &#x27;&#123;&quot;title&quot;:&quot;fffff&quot;,&quot;priority&quot;:1,&quot;process&quot;:1,&quot;classify&quot;:2,&quot;state&quot;:[&#123;&quot;id&quot;:&quot;receiveTask1651725819812&quot;,&quot;process_method&quot;:&quot;person&quot;,&quot;processor&quot;:[5],&quot;label&quot;:&quot;处理节点&quot;&#125;],&quot;source&quot;:&quot;start1651725870775&quot;,&quot;source_state&quot;:&quot;22&quot;,&quot;process_method&quot;:&quot;&quot;,&quot;tpls&quot;:&#123;&quot;form_structure&quot;:[&#123;&quot;list&quot;:[&#123;&quot;key&quot;:&quot;1652843023000_87184&quot;,&quot;icon&quot;:&quot;icon-input&quot;,&quot;name&quot;:&quot;单行文本&quot;,&quot;type&quot;:&quot;input&quot;,&quot;model&quot;:&quot;input_1651725342000_58443&quot;,&quot;rules&quot;:[&#123;&quot;type&quot;:&quot;string&quot;,&quot;message&quot;:&quot;单行文本格式不正确&quot;&#125;],&quot;options&quot;:&#123;&quot;width&quot;:&quot;100%&quot;,&quot;pattern&quot;:&quot;&quot;,&quot;dataType&quot;:&quot;string&quot;,&quot;disabled&quot;:false,&quot;required&quot;:false,&quot;labelWidth&quot;:100,&quot;remoteFunc&quot;:&quot;func_1651725342000_58443&quot;,&quot;placeholder&quot;:&quot;&quot;,&quot;defaultValue&quot;:&quot;&quot;,&quot;showPassword&quot;:false,&quot;displayVerifiy&quot;:&#123;&quot;list&quot;:[&#123;&quot;model&quot;:&quot;字段标识&quot;,&quot;value&quot;:&quot;字段值&quot;&#125;],&quot;type&quot;:&quot;hide&quot;&#125;,&quot;labelWidthStatus&quot;:true,&quot;labelWidthDisabled&quot;:false&#125;&#125;,&#123;&quot;key&quot;:&quot;1651725342000_58443&quot;,&quot;icon&quot;:&quot;icon-input&quot;,&quot;name&quot;:&quot;单行文本&quot;,&quot;type&quot;:&quot;input&quot;,&quot;model&quot;:&quot;input_1651725342000_58443&quot;,&quot;rules&quot;:[&#123;&quot;type&quot;:&quot;string&quot;,&quot;message&quot;:&quot;单行文本格式不正确&quot;&#125;],&quot;options&quot;:&#123;&quot;width&quot;:&quot;100%&quot;,&quot;pattern&quot;:&quot;&quot;,&quot;dataType&quot;:&quot;string&quot;,&quot;disabled&quot;:false,&quot;required&quot;:false,&quot;labelWidth&quot;:100,&quot;remoteFunc&quot;:&quot;func_1651725342000_58443&quot;,&quot;placeholder&quot;:&quot;&quot;,&quot;defaultValue&quot;:&quot;&quot;,&quot;showPassword&quot;:false,&quot;displayVerifiy&quot;:&#123;&quot;list&quot;:[&#123;&quot;model&quot;:&quot;字段标识&quot;,&quot;value&quot;:&quot;字段值&quot;&#125;],&quot;type&quot;:&quot;hide&quot;&#125;,&quot;labelWidthStatus&quot;:true,&quot;labelWidthDisabled&quot;:false&#125;&#125;,&#123;&quot;key&quot;:&quot;1652843028000_70959&quot;,&quot;icon&quot;:&quot;icon-wenjianshangchuan&quot;,&quot;name&quot;:&quot;文件&quot;,&quot;type&quot;:&quot;file&quot;,&quot;model&quot;:&quot;file_1652843028000_70959&quot;,&quot;rules&quot;:[],&quot;options&quot;:&#123;&quot;tip&quot;:&quot;&quot;,&quot;token&quot;:&quot;&quot;,&quot;width&quot;:&quot;&quot;,&quot;action&quot;:&quot;http://ipaddress:port/api/v1/public/uploadFile&quot;,&quot;domain&quot;:&quot;http://pfp81ptt6.bkt.clouddn.com/&quot;,&quot;length&quot;:9,&quot;headers&quot;:&#123;&#125;,&quot;disabled&quot;:false,&quot;tokenFunc&quot;:&quot;funcGetToken&quot;,&quot;labelWidth&quot;:100,&quot;remoteFunc&quot;:&quot;func_1652843028000_70959&quot;,&quot;defaultValue&quot;:[],&quot;displayVerifiy&quot;:&#123;&quot;list&quot;:[&#123;&quot;model&quot;:&quot;字段标识&quot;,&quot;value&quot;:&quot;字段值&quot;&#125;],&quot;type&quot;:&quot;hide&quot;&#125;,&quot;labelWidthStatus&quot;:true,&quot;labelWidthDisabled&quot;:false&#125;&#125;,&#123;&quot;key&quot;:&quot;1652843032000_79963&quot;,&quot;icon&quot;:&quot;icon-tupian&quot;,&quot;name&quot;:&quot;图片&quot;,&quot;type&quot;:&quot;imgupload&quot;,&quot;model&quot;:&quot;imgupload_1652843032000_79963&quot;,&quot;rules&quot;:[],&quot;options&quot;:&#123;&quot;min&quot;:0,&quot;size&quot;:&#123;&quot;width&quot;:100,&quot;height&quot;:100&#125;,&quot;token&quot;:&quot;&quot;,&quot;width&quot;:&quot;&quot;,&quot;action&quot;:&quot;https://jsonplaceholder.typicode.com/photos/&quot;,&quot;domain&quot;:&quot;http://pfp81ptt6.bkt.clouddn.com/&quot;,&quot;isEdit&quot;:false,&quot;length&quot;:8,&quot;isQiniu&quot;:false,&quot;disabled&quot;:false,&quot;isDelete&quot;:false,&quot;multiple&quot;:false,&quot;tokenFunc&quot;:&quot;funcGetToken&quot;,&quot;labelWidth&quot;:100,&quot;remoteFunc&quot;:&quot;func_1652843032000_79963&quot;,&quot;defaultValue&quot;:[],&quot;displayVerifiy&quot;:&#123;&quot;list&quot;:[&#123;&quot;model&quot;:&quot;字段标识&quot;,&quot;value&quot;:&quot;字段值&quot;&#125;],&quot;type&quot;:&quot;hide&quot;&#125;,&quot;labelWidthStatus&quot;:true,&quot;labelWidthDisabled&quot;:false&#125;&#125;,&#123;&quot;key&quot;:&quot;1652843040000_1662&quot;,&quot;icon&quot;:&quot;icon-input&quot;,&quot;name&quot;:&quot;分割线&quot;,&quot;type&quot;:&quot;divider&quot;,&quot;model&quot;:&quot;divider_1652843040000_1662&quot;,&quot;rules&quot;:[],&quot;options&quot;:&#123;&quot;direction&quot;:&quot;horizontal&quot;,&quot;font_size&quot;:&quot;15px&quot;,&quot;font_color&quot;:&quot;#606266&quot;,&quot;remoteFunc&quot;:&quot;func_1652843040000_1662&quot;,&quot;font_family&quot;:&quot;&quot;,&quot;font_weight&quot;:&quot;500&quot;,&quot;defaultValue&quot;:&quot;分割线&quot;,&quot;displayVerifiy&quot;:&#123;&quot;list&quot;:[&#123;&quot;model&quot;:&quot;字段标识&quot;,&quot;value&quot;:&quot;字段值&quot;&#125;],&quot;type&quot;:&quot;hide&quot;&#125;,&quot;content_position&quot;:&quot;center&quot;&#125;&#125;,&#123;&quot;key&quot;:&quot;1652843043000_29667&quot;,&quot;icon&quot;:&quot;icon-table&quot;,&quot;name&quot;:&quot;子表单&quot;,&quot;type&quot;:&quot;subform&quot;,&quot;model&quot;:&quot;subform_1652843043000_29667&quot;,&quot;rules&quot;:[],&quot;columns&quot;:[&#123;&quot;list&quot;:[],&quot;span&quot;:12&#125;,&#123;&quot;list&quot;:[],&quot;span&quot;:12&#125;],&quot;options&quot;:&#123;&quot;align&quot;:&quot;top&quot;,&quot;gutter&quot;:0,&quot;justify&quot;:&quot;start&quot;,&quot;labelWidth&quot;:100,&quot;remoteFunc&quot;:&quot;func_1652843043000_29667&quot;,&quot;displayVerifiy&quot;:&#123;&quot;list&quot;:[&#123;&quot;model&quot;:&quot;字段标识&quot;,&quot;value&quot;:&quot;字段值&quot;&#125;],&quot;type&quot;:&quot;hide&quot;&#125;,&quot;labelWidthStatus&quot;:true,&quot;labelWidthDisabled&quot;:false&#125;&#125;],&quot;config&quot;:&#123;&quot;size&quot;:&quot;small&quot;,&quot;labelWidth&quot;:100,&quot;customClass&quot;:&quot;&quot;,&quot;labelPosition&quot;:&quot;right&quot;&#125;,&quot;id&quot;:1&#125;],&quot;form_data&quot;:[&#123;&quot;input_1651725342000_58443&quot;:&quot;bbb&quot;,&quot;file_1652843028000_70959&quot;:[],&quot;imgupload_1652843032000_79963&quot;:[],&quot;divider_1652843040000_1662&quot;:&quot;分割线&quot;,&quot;subform_1652843043000_29667&quot;:[]&#125;]&#125;,&quot;tasks&quot;:[&quot;echo_test-4171bc7f4a05-admin.sh&quot;]&#125;&#x27; \<br>  --compressed \<br>  --insecure ;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+<p>curl ‘<a target="_blank" rel="noopener" href="http://9.135.11.161:60780/api/v1/work-order/create&#39;">http://9.135.11.161:60780/api/v1/work-order/create&#39;</a> <br>  -H ‘Accept: application&#x2F;json, text&#x2F;plain, <em>&#x2F;</em>‘ <br>  -H ‘Accept-Language: zh-CN,zh;q&#x3D;0.9,en;q&#x3D;0.8,en-GB;q&#x3D;0.7,en-US;q&#x3D;0.6’ <br>  -H ‘Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTU4MDEwMDIsImlkZW50aXR5IjoxLCJuaWNlIjoiYWRtaW4iLCJvcmlnX2lhdCI6MTY1NTcxNDYwMiwicm9sZWlkIjoxLCJyb2xla2V5IjoiYWRtaW4iLCJyb2xlbmFtZSI6Iuezu-e7n-euoeeQhuWRmCJ9.lqVCNsllHlJxfn3v6gC6TeYM8I54cHfR3d83RS6imRE’ <br>  -H ‘Connection: keep-alive’ <br>  -H ‘Content-Type: application&#x2F;json’ <br>  -H ‘Cookie: Hm_lvt_1d2d61263f13e4b288c8da19ad3ff56d&#x3D;1654327189,1654506358,1655168971,1655714600; Hm_lpvt_1d2d61263f13e4b288c8da19ad3ff56d&#x3D;1655714600; Admin-Token&#x3D;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTU4MDEwMDIsImlkZW50aXR5IjoxLCJuaWNlIjoiYWRtaW4iLCJvcmlnX2lhdCI6MTY1NTcxNDYwMiwicm9sZWlkIjoxLCJyb2xla2V5IjoiYWRtaW4iLCJyb2xlbmFtZSI6Iuezu-e7n-euoeeQhuWRmCJ9.lqVCNsllHlJxfn3v6gC6TeYM8I54cHfR3d83RS6imRE’ <br>  -H ‘Origin: <a href="http://9.135.11.161:60780&#39;">http://9.135.11.161:60780&#39;</a> <br>  -H ‘Referer: <a target="_blank" rel="noopener" href="http://9.135.11.161:60780/&#39;">http://9.135.11.161:60780/&#39;</a> <br>  -H ‘User-Agent: Mozilla&#x2F;5.0 (Windows NT 10.0; Win64; x64) AppleWebKit&#x2F;537.36 (KHTML, like Gecko) Chrome&#x2F;102.0.5005.124 Safari&#x2F;537.36 Edg&#x2F;102.0.1245.44’ <br>  –data-raw ‘’ <br>  –compressed <br>  –insecure</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" class="category-chain-item">编程语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Go/" class="category-chain-item">Go</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Go/Go%E9%A1%B9%E7%9B%AE/" class="category-chain-item">Go项目</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Go/Go%E9%A1%B9%E7%9B%AE/%E5%B7%A5%E5%8D%95%E7%B3%BB%E7%BB%9F/" class="category-chain-item">工单系统</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Go/Go%E9%A1%B9%E7%9B%AE/%E5%B7%A5%E5%8D%95%E7%B3%BB%E7%BB%9F/coachhe%E5%B7%A5%E5%8D%95%E7%B3%BB%E7%BB%9F/" class="category-chain-item">coachhe工单系统</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>上传文件</div>
+      <div>http://example.com/2022/12/cf82884411cb.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/bde2ae1b7b2b.html" title="上传文件">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">上传文件</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/833890aed7fd.html" title="上传图片">
+                        <span class="hidden-mobile">上传图片</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/cf82884411cb.html';
+          this.page.identifier = '/2022/12/cf82884411cb.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

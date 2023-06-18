@@ -1,0 +1,901 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="系统架构Flink是一个用于状态化流处理的分布式系统。它的搭建射击多个进程，这些进程通常会分布在多台机器上。 分布式系统需要应对的常见挑战Flink并没有依靠自身实现所有分布式系统需要解决的问题，而是在已有集群基础设施和服务之上专注于它的核心功能。  分配和管理集群计算资源 Flink自身可以实现  进程协调 Flink自身可以实现  持久且高可用的数据存储以及故障恢复等  Flink没有提供分布">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4.Apache Flink架构">
+<meta property="og:url" content="http://example.com/2022/12/538ed9c427ef.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="系统架构Flink是一个用于状态化流处理的分布式系统。它的搭建射击多个进程，这些进程通常会分布在多台机器上。 分布式系统需要应对的常见挑战Flink并没有依靠自身实现所有分布式系统需要解决的问题，而是在已有集群基础设施和服务之上专注于它的核心功能。  分配和管理集群计算资源 Flink自身可以实现  进程协调 Flink自身可以实现  持久且高可用的数据存储以及故障恢复等  Flink没有提供分布">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221121005414.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201214152703.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221121011451.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221121011647.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221121012006.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201214170015.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210222085003.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210222091736.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221124005223.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210222165915.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210222161633.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210222170745.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210222174727.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210223021122.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210223021239.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210223022633.png">
+<meta property="article:published_time" content="2022-12-03T18:12:43.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221121005414.png">
+  
+  
+  
+  <title>4.Apache Flink架构 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="4.Apache Flink架构"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:12" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          38 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">4.Apache Flink架构</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h1><p>Flink是一个用于<strong>状态化流处理的分布式系统</strong>。它的搭建射击多个进程，这些进程通常会分布在多台机器上。</p>
+<h2 id="分布式系统需要应对的常见挑战"><a href="#分布式系统需要应对的常见挑战" class="headerlink" title="分布式系统需要应对的常见挑战"></a>分布式系统需要应对的常见挑战</h2><p>Flink并没有依靠自身实现所有分布式系统需要解决的问题，而是在已有集群基础设施和服务之上专注于它的核心功能。</p>
+<ol>
+<li><p>分配和管理集群计算资源</p>
+<p>Flink自身可以实现</p>
+</li>
+<li><p>进程协调</p>
+<p>Flink自身可以实现</p>
+</li>
+<li><p>持久且<strong>高可用</strong>的<strong>数据存储</strong>以及<strong>故障恢复</strong>等</p>
+<ol>
+<li>Flink没有提供分布式持久化存储，而是利用了现有的分布式文件系统（如HDFS）或对象存储（如S3）。</li>
+<li>它依赖Apache Zookeeper来完成高可用设置中的领导选举工作。</li>
+</ol>
+</li>
+</ol>
+<h1 id="搭建Flink所需组件"><a href="#搭建Flink所需组件" class="headerlink" title="搭建Flink所需组件"></a>搭建Flink所需组件</h1><p>Flink搭建需要四个不同组件。</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/程序员/工具/git/20221121005414.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<h2 id="作业管理器（JobManager）"><a href="#作业管理器（JobManager）" class="headerlink" title="作业管理器（JobManager）"></a>作业管理器（JobManager）</h2><ul>
+<li>控制一个应用程序执行的主进程，也就是说，每个应用程序都会被一个不同的 JobManager 所控制执行</li>
+<li>JobManager 会先接收到要执行的应用程序，这个应用程序会包括：作业图 （JobGraph），即逻辑Dataflow图和打包了所有的类、 库和其它资源的JAR包。</li>
+<li>JobManager 会把JobGraph转换成一个物理层面的数据流图，这个图被叫做“执行图”（ExecutionGraph），包含了所有可以并发执行的任务。</li>
+<li>JobManager 会向资源管理器（ResourceManager）请求执行任务必要的资源， 也就是任务管理器（TaskManager）上的插槽（slot）。一旦它获取到了足够的资源，就会将执行图分发到真正运行它们的TaskManager上。而在运行过程中， JobManager会负责所有需要中央协调的操作，比如说检查点（checkpoints）的协调。</li>
+</ul>
+<h3 id="JobManager-最重要的三个组件"><a href="#JobManager-最重要的三个组件" class="headerlink" title="JobManager 最重要的三个组件"></a>JobManager 最重要的三个组件</h3><h4 id="1-JobMaster"><a href="#1-JobMaster" class="headerlink" title="1. JobMaster"></a>1. JobMaster</h4><ul>
+<li><p><code>JobMaster</code> 是 <code>JobManager</code> 中最核心的组件，负责处理单独的作业。</p>
+</li>
+<li><p>在作业提交时， <code>JobManager</code> 会最先接收到要执行的应用，一般是由客户端提交来的，包括：<code>Jar</code> 包，数据流图（<code>dataflow graph</code>）和作业图（<code>JobGraph</code>）。</p>
+</li>
+<li><p><code>JobMaster</code> 会把 <code>JobGraph</code> 转换成一个物理层面的数据流图，这个图被称为执行图（<code>ExecutionGraph</code>），它包含所有并发执行的任务。<code>JobMaster</code> 会向资源管理器（<code>Resource Manager</code>）发出请求，申请执行任务的必要资源。一旦它获取到了足够资源，就会将执行图分发到真正运行它们的 <code>TaskManager</code> 上。</p>
+</li>
+<li><p>在运行过程中，<code>JobMaster</code> 会负责所有需要中央协调的操作，比如检查点（<code>checkpoints</code>）的协调。</p>
+</li>
+</ul>
+<h4 id="2-资源管理器（ResourceManager）"><a href="#2-资源管理器（ResourceManager）" class="headerlink" title="2. 资源管理器（ResourceManager）"></a>2. 资源管理器（ResourceManager）</h4><ul>
+<li><p>主要负责管理任务管理器（<code>TaskManager</code>）的插槽（<code>slot</code>），<code>TaskManger</code> 插槽是 <code>Flink</code> 中定义的处理资源单元。</p>
+</li>
+<li><p>Flink为不同的环境和资源管理工具提供了不同资源管理器，比如<code>YARN</code>、<code>Mesos</code>、<code>K8s</code>，以及<code>standalone</code>部署。</p>
+</li>
+<li><p>当 <code>JobManager</code> 申请插槽资源时，<code>ResourceManager</code> 会将有空闲插槽的 <code>TaskManager</code> 分配给 <code>JobManager</code> 。如果 <code>ResourceManager</code> 没有足够的插槽来满足 <code>JobManager</code> 的请求，它还可以向资源提供平台发起会话，以提供启动<br> <code>TaskManager</code> 进程的容器。</p>
+</li>
+</ul>
+<h4 id="3-分发器（Dispatcher）"><a href="#3-分发器（Dispatcher）" class="headerlink" title="3. 分发器（Dispatcher）"></a>3. 分发器（Dispatcher）</h4><ul>
+<li><p>可以跨作业运行，它为应用提交提供了REST接口。</p>
+</li>
+<li><p>当一个应用被提交执行时，分发器就会启动并将应用移交给一个<code>JobManager</code>。</p>
+</li>
+<li><p><code>Dispatcher</code>也会启动一个<code>Web UI</code>，用来方便地展示和监控作业执行的信息。</p>
+</li>
+<li><p><code>Dispatcher</code>在架构中可能并不是必需的，这取决于应用提交运行的方式。</p>
+</li>
+</ul>
+<h2 id="任务管理器（TaskManager）"><a href="#任务管理器（TaskManager）" class="headerlink" title="任务管理器（TaskManager）"></a>任务管理器（TaskManager）</h2><ul>
+<li><p><code>Flink</code>中的工作进程。通常在Flink中会有多个 <code>TaskManager</code> 运行，每一个 <code>TaskManager</code> 都包含了一定数量的插槽（<code>slots</code>）。插槽的数量限制了 <code>TaskManager</code> 能够执行的任务数量。</p>
+<p><strong>注意：<code>TaskManager</code> 数量与插槽总数的乘积就是集群静态的并行计算的能力。</strong></p>
+</li>
+<li><p>启动之后， <code>TaskManager</code> 会向资源管理器注册它的插槽；收到资源管理器的指令后， <code>TaskManager</code> 就会将一个或者多个插槽提供给J <code>JobManager</code> 调用。Jo <code>JobManager</code> 就可以向插槽分配任务（<code>tasks</code>）来执行了。</p>
+</li>
+<li><p>在执行过程中，一个 <code>TaskManager</code> 可以跟其它运行同一应用程序的 <code>TaskManager</code> 交换数据。</p>
+</li>
+</ul>
+<h1 id="应用提交执行过程中Flink各组件之间的交互过程"><a href="#应用提交执行过程中Flink各组件之间的交互过程" class="headerlink" title="应用提交执行过程中Flink各组件之间的交互过程"></a>应用提交执行过程中Flink各组件之间的交互过程</h1><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201214152703.png" srcset="/img/loading.gif" lazyload style="zoom: 67%;" />
+
+<h3 id="Standalone模式下作业提交流程"><a href="#Standalone模式下作业提交流程" class="headerlink" title="Standalone模式下作业提交流程"></a>Standalone模式下作业提交流程</h3><img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/程序员/工具/git/20221121011451.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<h3 id="在YARN模式下应用提交流程"><a href="#在YARN模式下应用提交流程" class="headerlink" title="在YARN模式下应用提交流程"></a>在YARN模式下应用提交流程</h3><h4 id="session-mode"><a href="#session-mode" class="headerlink" title="session mode"></a>session mode</h4><img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/程序员/工具/git/20221121011647.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>一开始只有 <code>JobManager</code></p>
+<h4 id="单作业模式"><a href="#单作业模式" class="headerlink" title="单作业模式"></a>单作业模式</h4><img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/程序员/工具/git/20221121012006.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+
+
+
+
+
+
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201214170015.png" srcset="/img/loading.gif" lazyload style="zoom: 67%;" />
+
+
+
+<h1 id="任务调度原理"><a href="#任务调度原理" class="headerlink" title="任务调度原理"></a>任务调度原理</h1><h2 id="任务的概念"><a href="#任务的概念" class="headerlink" title="任务的概念"></a>任务的概念</h2><p>任务是最小单位，任务数量$&#x3D;$算子$\times$ 并行度，当算子并行度为1时，任务数量就是算子数量。</p>
+<p>任务是构成slot的部分。</p>
+<p>任务提交的主要工作就是将任务给到JobManager，JobManager需要进行进一步的处理，这个就是任务调度。</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210222085003.png" srcset="/img/loading.gif" lazyload></p>
+<p>上图介绍了从code（程序）到最后的Task的过程。 </p>
+<h2 id="并行度"><a href="#并行度" class="headerlink" title="并行度"></a>并行度</h2><p><strong>定义</strong>：一个特定算子的子任务（subtask）的个数被称之为其并行度。一般情况下，一个stream的并行度，可以认为就是其所有算子中最大的并行度。</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210222091736.png" srcset="/img/loading.gif" lazyload></p>
+<p>以source为例，设置并行度为2，代表Souce会有两个并行的子任务，Sink的并行度为1，因为只有一个子任务，所有按照最大的并行子任务来计算，Stream的并行度为2。</p>
+<p>最后可以合并：(参照下面的任务链接)</p>
+<p><img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221124005223.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="并行度设置"><a href="#并行度设置" class="headerlink" title="并行度设置"></a>并行度设置</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">.setParallelism(<span class="hljs-number">2</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="TaskManager和Slots"><a href="#TaskManager和Slots" class="headerlink" title="TaskManager和Slots"></a>TaskManager和Slots</h2><p><code>Slot</code> 是指 <code>TaskManager</code> 具有的并行执行程序</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210222165915.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>Flink中每一个TaskManager都是一个JVM进程，它可能会在独立的线程上执行一个或多个任务</li>
+<li>为了控制一个TaskManager能接收多少个task，TaskManager通过task slot来进行控制（一个TaskManager至少有一个slot）</li>
+<li>简单来说，线程所占据的资源就是slot</li>
+</ul>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210222161633.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>默认情况下，Flink允许子任务共享slot，即使它们是不同任务的子任务。这样的结果是，一个slot可以保存作业的整个管道。</p>
+<p>也就是说，一个slot代表一个作业的一类操作，整个作业的管道就在这里保存。</p>
+<p><strong>注意</strong>：管道就是整个处理流程的每一步操作（一整套计算流程）</p>
+</li>
+<li><p>Task Slot是静态的概念，是指TaskManager具有的并发执行能力。</p>
+</li>
+</ul>
+<h3 id="任务共享Slot"><a href="#任务共享Slot" class="headerlink" title="任务共享Slot"></a>任务共享Slot</h3><ul>
+<li>默认情况下，<code>Flink</code> 允许子任务共享 <code>slot</code> 。这样的结果是，一个 <code>slot</code> 可以保存作业的整个管道</li>
+<li>当我们讲资源密集型和非密集型的任务同时放到一个 <code>slot</code> 中，它们就可以自行分配对资源占用的比例，从而保证最重的活平均分配给所有的 <code>TaskManager</code>。</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>一个JobGraph可以转换为多个TaskManager，每个TaskManager由不同的slot构成，一个slot对应一个任务。</p>
+<h2 id="并行子任务的分配"><a href="#并行子任务的分配" class="headerlink" title="并行子任务的分配"></a>并行子任务的分配</h2><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210222170745.png" srcset="/img/loading.gif" lazyload></p>
+<p>原则是尽量保证每个slot任务均衡</p>
+<h2 id="高可用性设置"><a href="#高可用性设置" class="headerlink" title="高可用性设置"></a>高可用性设置</h2><p>高可用性分为两部分，分别是TaskManager故障和JobManager故障</p>
+<ol>
+<li><p>TaskManager故障</p>
+<p>如果TaskManager出现故常，则可用的slot数量减少，此时JobManager就会向ResourceManager申请更多的slot，如果无法完成，JobManager将无法重启应用，直至有足够数量的可用slot。</p>
+</li>
+<li><p>JobManager故障</p>
+<p>JobManager在高可用模式下工作时，会将JobGraph以及全部所需的元数据（例如所写的JAR文件）写入一个远程持久化存储系统（例如HDFS）中。此外，JobManager还会将存储位置的路径地址写入ZooKeeper的数据存储。</p>
+<p>如图所示：</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210222174727.png" srcset="/img/loading.gif" lazyload style="zoom: 25%;" />
+
+<p>当JobManager发生故障时，其下应用的所有任务都会自动取消，新接手的JobManager会执行以下步骤：</p>
+<ol>
+<li>向ZooKeeper请求存储位置，以获取JobGraph、JAR文件以及应用最新检查点在远程存储的状态句柄</li>
+<li>向ResourceManager申请处理槽来继续执行应用</li>
+<li>重启应用并利用最近一次检查点充值任务状态</li>
+</ol>
+</li>
+</ol>
+<h2 id="Flink中的数据传输"><a href="#Flink中的数据传输" class="headerlink" title="Flink中的数据传输"></a>Flink中的数据传输</h2><h3 id="数据传输形式"><a href="#数据传输形式" class="headerlink" title="数据传输形式"></a>数据传输形式</h3><ol>
+<li><code>one-to-one</code>： 这意味着map算子的子任务看到的元素的个数以及顺序跟 source 算子的子任务生产的元素的个数、顺序相同。<code>map</code>, <code>filter</code>, <code>flatMap</code> 等算子都是 <code>one-to-one</code> 的对应关系。</li>
+<li><code>Redistributing</code>： stream 的分区会发生改变。每个算子的子任务依赖所选择的 transformation 发送数据到不同的目标任务。 例如，keyBy基于 hashCode 重分区、而broadcast 和 rebalance 会随机重新分区，这些算子都会引起 <code>redistribute</code> 过程，而 <code>redistribute</code> 过程就类似于 <code>Spark</code> 中的 <code>shuffle</code> 过程</li>
+</ol>
+<p>在运行过程中，应用的任务会持续进行数据交换。TaskManager负责将数据从发送任务传输至接收任务。它的网络模块在记录传输前会先将它们收集到缓冲区中。</p>
+<p>换言之，<strong>记录并非逐个发送的，而是在缓冲区中以批次形式发送</strong>。</p>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><p>将记录放入缓冲区并不意味着Flink的处理模型是基于微批次的。</p>
+<h4 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h4><p>通过网络连接逐条发送记录不但低效，还会导致很多额外开销。若想充分利用网络连接带宽，就需要对数据进行缓冲。在流处理环境下，缓冲的一个明显缺点是会增加延迟，因为记录首先要收集到缓冲区中而不会立即发送。</p>
+<h3 id="基于信用值的流量控制"><a href="#基于信用值的流量控制" class="headerlink" title="基于信用值的流量控制"></a>基于信用值的流量控制</h3><h4 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h4><p>接收任务会给发送任务授予一定的信用值，其实就是保留一些用来接收它数据的网络缓冲。一旦发送端收到信用通知，就会在信用值所限定的范围内尽可能多地传输缓冲数据，并会附带上积压量（已经填满准备传输的网络缓冲数目）大小。<br>接收端使用保留的缓冲来处理收到的数据，同时依据各发送端的积压量信息来计算所有相连的发送端在下一轮的信用优先级。</p>
+<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><p>发送端可以在接收端有足够资源时立即传输数据，所以基于信用值的流量控制可以有效降低延迟。此外，信用值的授予是根据各发送端的数据积压量来完成的，因此该机制还能在出现数据倾斜（data skew）时有效地分配网络资源。</p>
+<h3 id="任务链接（算子链）"><a href="#任务链接（算子链）" class="headerlink" title="任务链接（算子链）"></a>任务链接（算子链）</h3><p>Flink采用一种名为<strong>任务链接</strong>的优化技术来降低某些情况下的本地通信开销。</p>
+<h4 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h4><p>多个算子必须有<strong>相同的并行度</strong>且通过<strong>本地转发通道</strong>（local forward channel）相连。</p>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210223021122.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<p>可以看到，图中所有算子的并行度相同并且通过本地转发通道相连，因此可以将三个算子进行“融合”，在单线程中进行执行，并且通过方法调用进行数据传输。也就是说，不同函数之间直接可以调用也避免了tcp连接。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210223021239.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<p>虽然任务链接可以有效地降低本地任务之间的通信开销，但有的流水线应用反而不希望应用到它。例如有时候我们需要对过长任务连接进行切分或者将两个计算量大的函数分配到不同处理槽中。</p>
+<h4 id="分配到不同处理槽的方法"><a href="#分配到不同处理槽的方法" class="headerlink" title="分配到不同处理槽的方法"></a>分配到不同处理槽的方法</h4><p>disableChaining()方法</p>
+<p>结果就是每个函数都交由单独的任务、在特定线程内处理。</p>
+<p>也可以用startNewChain()方法开始新的任务链</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210223022633.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+
+
+
+
+
+
+
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/" class="category-chain-item">大数据</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/" class="category-chain-item">实时计算</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/Flink/" class="category-chain-item">Flink</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/Flink/%E5%9F%BA%E4%BA%8EApache-Flink%E7%9A%84%E6%B5%81%E5%A4%84%E7%90%86/" class="category-chain-item">基于Apache Flink的流处理</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>4.Apache Flink架构</div>
+      <div>http://example.com/2022/12/538ed9c427ef.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/5f45f2f08dc6.html" title="5.DataStream API（1.7版本）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">5.DataStream API（1.7版本）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/8191018bc38c.html" title="3.Flink安装部署">
+                        <span class="hidden-mobile">3.Flink安装部署</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/538ed9c427ef.html';
+          this.page.identifier = '/2022/12/538ed9c427ef.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

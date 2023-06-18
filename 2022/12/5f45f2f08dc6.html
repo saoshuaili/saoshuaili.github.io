@@ -1,0 +1,1074 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="构建一个典型的 Flink 流式应用的步骤 设置执行环境 从数据源读取一条或多条流 通过一系列流式转换来实现应用逻辑 选择性地将结果输出到一个或多个数据汇中 执行程序   这是一个 flink 程序的基本流程。 一、 Environment getExecutionEnvironment 创建一个执行环境，表示当前执行程序的上下文。 如果程序是独立调用的，则此方法返回本地执行环境； 如果从命令行客">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5.DataStream API（1.7版本）">
+<meta property="og:url" content="http://example.com/2022/12/5f45f2f08dc6.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="构建一个典型的 Flink 流式应用的步骤 设置执行环境 从数据源读取一条或多条流 通过一系列流式转换来实现应用逻辑 选择性地将结果输出到一个或多个数据汇中 执行程序   这是一个 flink 程序的基本流程。 一、 Environment getExecutionEnvironment 创建一个执行环境，表示当前执行程序的上下文。 如果程序是独立调用的，则此方法返回本地执行环境； 如果从命令行客">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210223201933.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210223233317.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210223233439.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224103647.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224103931.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224160034.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224161505.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224161649.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224181644.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224191817.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224191934.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224223544.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224223711.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224225326.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/image-20221127174529343.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/image-20221127180736451.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/image-20221127181100218.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/image-20221127181356193.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/image-20221127181540244.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224233225.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224233344.png">
+<meta property="article:published_time" content="2022-12-03T18:13:10.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210223201933.png">
+  
+  
+  
+  <title>5.DataStream API（1.7版本） - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="5.DataStream API（1.7版本）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:13" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          23k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          191 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">5.DataStream API（1.7版本）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="构建一个典型的-Flink-流式应用的步骤"><a href="#构建一个典型的-Flink-流式应用的步骤" class="headerlink" title="构建一个典型的 Flink 流式应用的步骤"></a>构建一个典型的 Flink 流式应用的步骤</h1><ol>
+<li>设置执行环境</li>
+<li>从数据源读取一条或多条流</li>
+<li>通过一系列流式转换来实现应用逻辑</li>
+<li>选择性地将结果输出到一个或多个数据汇中</li>
+<li>执行程序</li>
+</ol>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210223201933.png" srcset="/img/loading.gif" lazyload></p>
+<p>这是一个 flink 程序的基本流程。</p>
+<h1 id="一、-Environment"><a href="#一、-Environment" class="headerlink" title="一、 Environment"></a>一、 Environment</h1><ol>
+<li><p>getExecutionEnvironment</p>
+<p>创建一个执行环境，表示当前执行程序的上下文。</p>
+<p>如果程序是<strong>独立调用</strong>的，则此方法返回本地执行环境；</p>
+<p>如果从<strong>命令行客户端调用程序以提交到集群</strong>，则此方法返回此集群的执行环境</p>
+<p>也就是说: getExecutionEnvironment 会根据查询运行的方式决定返回什么样的运行环境，是最常用的一种创建执行环境的方式。</p>
+</li>
+<li><p>createLocalEnvironment</p>
+<p>返回集群执行环境， 将 Jar 提交到远程服务器。 需要在调用时指定 JobManager 的 IP 和端口号， 并指定要在集群中运行的 Jar 包。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">val</span> <span class="hljs-variable">env</span> <span class="hljs-operator">=</span> StreamExecutionEnvironment.createLocalEnvironment(<span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>createRemoteEnvironment</p>
+<p>返回集群执行环境， 将 Jar 提交到远程服务器。 需要在调用时指定 JobManager 的 IP 和端口号， 并指定要在集群中运行的 Jar 包。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> env = <span class="hljs-type">ExecutionEnvironment</span>.createRemoteEnvironment(<span class="hljs-string">&quot;jobmanage-hostname&quot;</span>, <span class="hljs-number">6123</span>,<span class="hljs-string">&quot;YOURPATH//wordcount.jar&quot;</span>)<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="二、Source"><a href="#二、Source" class="headerlink" title="二、Source"></a>二、Source</h1><h3 id="读取数据的方式"><a href="#读取数据的方式" class="headerlink" title="读取数据的方式"></a>读取数据的方式</h3><p>共有四种</p>
+<ol>
+<li>从集合中读取数据</li>
+<li>从文本文件中读取数据</li>
+<li>从消息队列（kafka）中读取数据</li>
+<li>自定义 Source</li>
+</ol>
+<h3 id="1-从集合中读取数据"><a href="#1-从集合中读取数据" class="headerlink" title="1. 从集合中读取数据"></a>1. 从集合中读取数据</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> dataList = <span class="hljs-type">List</span>(<br>    <span class="hljs-type">SensorReading</span>(<span class="hljs-string">&quot;sensor_1&quot;</span>, <span class="hljs-number">1547718199</span>, <span class="hljs-number">35.8</span>),<br>    <span class="hljs-type">SensorReading</span>(<span class="hljs-string">&quot;sensor_6&quot;</span>, <span class="hljs-number">1547718201</span>, <span class="hljs-number">15.4</span>),<br>    <span class="hljs-type">SensorReading</span>(<span class="hljs-string">&quot;sensor_7&quot;</span>, <span class="hljs-number">1547718202</span>, <span class="hljs-number">6.7</span>),<br>    <span class="hljs-type">SensorReading</span>(<span class="hljs-string">&quot;sensor_10&quot;</span>, <span class="hljs-number">1547718205</span>, <span class="hljs-number">38.1</span>)<br>)<br><span class="hljs-keyword">val</span> stream1 = env.fromCollection(dataList)<br>stream1.print()<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-从文本文件中读取数据"><a href="#2-从文本文件中读取数据" class="headerlink" title="2. 从文本文件中读取数据"></a>2. 从文本文件中读取数据</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> inputPath = <span class="hljs-string">&quot;/Users/heyizhi/Nutstore Files/我的坚果云/程序员/学习/大数据/10 flink/1st flink project/flinkTutorial/src/main/resources/sensor.txt&quot;</span><br><span class="hljs-keyword">val</span> stream2 = env.readTextFile(inputPath)<br>stream2.print()<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-从-Kafka-中读取数据"><a href="#3-从-Kafka-中读取数据" class="headerlink" title="3. 从 Kafka 中读取数据"></a>3. 从 Kafka 中读取数据</h3><p>① 启动 kafka</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210223233317.png" srcset="/img/loading.gif" lazyload></p>
+<p>② 创建 topic</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210223233439.png" srcset="/img/loading.gif" lazyload></p>
+<p>③ 读取数据</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> properties = <span class="hljs-keyword">new</span> <span class="hljs-type">Properties</span>()<br>properties.setProperty(<span class="hljs-string">&quot;bootstrap.servers&quot;</span>, <span class="hljs-string">&quot;localhost:9092&quot;</span>)<br>properties.setProperty(<span class="hljs-string">&quot;group.id&quot;</span>, <span class="hljs-string">&quot;consumer-group&quot;</span>)<br><span class="hljs-keyword">val</span> stream3 = env.addSource(<span class="hljs-keyword">new</span> <span class="hljs-type">FlinkKafkaConsumer011</span>[<span class="hljs-type">String</span>](<span class="hljs-string">&quot;sensor&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-type">SimpleStringSchema</span>(), properties))<br>stream3.print()<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-自定义-Source"><a href="#4-自定义-Source" class="headerlink" title="4. 自定义 Source"></a>4. 自定义 Source</h3><p>需要自定义 SourceFunction[SensorReading]</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224103647.png" srcset="/img/loading.gif" lazyload></p>
+<p>Source 类</p>
+<p>需要继承 SourceFunction</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224103931.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="三、-Transform"><a href="#三、-Transform" class="headerlink" title="三、 Transform"></a>三、 Transform</h1><p>流式转换以一个或多个数据流为输入，并将它们转换成一个或多个输出流。</p>
+<h2 id="DataStream-API-程序的本质"><a href="#DataStream-API-程序的本质" class="headerlink" title="DataStream API 程序的本质"></a>DataStream API 程序的本质</h2><p>通过组合不同的转换来创建一个满足应用逻辑的 Dataflow 图。</p>
+<h2 id="DataStream-API-算子种类"><a href="#DataStream-API-算子种类" class="headerlink" title="DataStream API 算子种类"></a>DataStream API 算子种类</h2><p>这里的算子主要分为四类</p>
+<ol>
+<li>作用于单个事件的基本转换（例如 map）</li>
+<li>针对相同键值事件的 KeyedStream 转换</li>
+<li>将多条数据流合并为一条或将一条数据流拆分成多条流的转换</li>
+<li>对流中的事件进行重新组织的分发转换</li>
+</ol>
+<h2 id="简单转换算子"><a href="#简单转换算子" class="headerlink" title="简单转换算子"></a>简单转换算子</h2><p>map、flatMap 和 Filter 称为简单转换算子</p>
+<h3 id="1-map"><a href="#1-map" class="headerlink" title="1. map"></a>1. map</h3><p>一对一转换</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224160034.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h4 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> streamMap = stream.map&#123;x =&gt; x * <span class="hljs-number">2</span>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-flatMap"><a href="#2-flatMap" class="headerlink" title="2. flatMap"></a>2. flatMap</h3><p>相当于是把集合类型的元素打散，从一个集合（例如二元数组）转换后再将结果拼接成一个打散的集合（例如一元数组）</p>
+<p>flatMap 的<strong>函数签名</strong>：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">flatMap</span></span>[<span class="hljs-type">A</span>,<span class="hljs-type">B</span>](as: <span class="hljs-type">List</span>[<span class="hljs-type">A</span>])(f: <span class="hljs-type">A</span> = <span class="hljs-type">List</span>[<span class="hljs-type">B</span>]):<span class="hljs-type">List</span>[<span class="hljs-type">B</span>]<br></code></pre></td></tr></table></figure>
+
+<p>例如:</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala">flatMap(<span class="hljs-type">List</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>))(i ⇒ <span class="hljs-type">List</span>(i,i))<br></code></pre></td></tr></table></figure>
+
+<p>结果是 <code>List(1,1,2,2,3,3)</code>,</p>
+<p>而</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-type">List</span>(<span class="hljs-string">&quot; a b&quot;</span> , <span class="hljs-string">&quot;c d&quot;</span> ).flatMap(line ⇒ line.split(<span class="hljs-string">&quot; &quot;</span>))<br></code></pre></td></tr></table></figure>
+
+<p>结果是 <code>List(a, b, c, d)</code>。</p>
+<h4 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> streamFlatMap = stream.flatMap&#123;<br>  x =&gt; x.split(<span class="hljs-string">&quot; &quot;</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-Filter"><a href="#3-Filter" class="headerlink" title="3. Filter"></a>3. Filter</h3><p>过滤，对每个元素进行判断</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224161505.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h4 id="语法-2"><a href="#语法-2" class="headerlink" title="语法"></a>语法</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> streamFilter = stream.filter&#123;<br>  x =&gt; x == <span class="hljs-number">1</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="键控流转换算子（基于-KeyedStream-的转换）"><a href="#键控流转换算子（基于-KeyedStream-的转换）" class="headerlink" title="键控流转换算子（基于 KeyedStream 的转换）"></a>键控流转换算子（基于 KeyedStream 的转换）</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224161649.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<p>DataStream $\rightarrow$ KeyedStream，逻辑地将一个流拆分成不想交的分区，每个分区包含具有相同 key 的元素，在内部以 hash 的形式实现。</p>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><p>在这里 KeyedStream 继承了 DataStream，所以其本质上还是一个 DataStream。</p>
+<h3 id="滚动聚合算子"><a href="#滚动聚合算子" class="headerlink" title="滚动聚合算子"></a>滚动聚合算子</h3><p>这些算子可以针对 KeyedStream 的每一个支流做聚合</p>
+<ul>
+<li><p><code>sum()</code></p>
+<p>滚动计算输入流中指定字段的和</p>
+</li>
+<li><p><code>min()</code></p>
+<p>滚动计算输入流中指定字段的最小值</p>
+</li>
+<li><p><code>max()</code></p>
+<p>滚动计算输入流中指定字段的最大值</p>
+</li>
+<li><p><code>minBy()</code></p>
+<p>滚动计算输入流中迄今为止最小值，返回该值所在事件</p>
+</li>
+<li><p><code>maxBy()</code></p>
+<p>滚动计算输入流中迄今为止最大值，返回该值所在事件</p>
+</li>
+</ul>
+<h4 id="注意-1"><a href="#注意-1" class="headerlink" title="注意"></a>注意</h4><p>无法将多个滚动聚合方法组合使用，每次只能计算一个</p>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><p>传感器示例中以 id 分区，求当前温度最小值</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.apitest<br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">TransformTest</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-keyword">val</span> env = <span class="hljs-type">StreamExecutionEnvironment</span>.getExecutionEnvironment<br><br>    <span class="hljs-comment">// 读取数据</span><br>    <span class="hljs-keyword">val</span> inputPath = <span class="hljs-string">&quot;/Users/heyizhi/Nutstore Files/我的坚果云/程序员/学习/大数据/10 flink/1st flink project/flinkTutorial/src/main/resources/sensor.txt&quot;</span><br>    <span class="hljs-keyword">val</span> inputStream = env.readTextFile(inputPath)<br><br>    <span class="hljs-comment">// 转换成样例类</span><br>    <span class="hljs-keyword">val</span> dataStream = inputStream<br>      .map(data =&gt; &#123;<br>        <span class="hljs-keyword">val</span> arr = data.split(<span class="hljs-string">&quot;,&quot;</span>)<br>        <span class="hljs-type">SensorReading</span>(arr(<span class="hljs-number">0</span>), arr(<span class="hljs-number">1</span>).toLong, arr(<span class="hljs-number">2</span>).toDouble)<br>      &#125;)<br><br>    <span class="hljs-comment">// 分组聚合，输出每个传感器当前温度最小值</span><br>    <span class="hljs-keyword">val</span> aggStream = dataStream<br>      .keyBy(<span class="hljs-number">0</span>)<br>      .min(<span class="hljs-string">&quot;temperature&quot;</span>)<br>    aggStream.print()<br><br>    env.execute(<span class="hljs-string">&quot;transform test&quot;</span>)<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Reduce"><a href="#Reduce" class="headerlink" title="Reduce"></a>Reduce</h3><p><code>reduce</code> 转换是滚动聚合转换的<strong>泛化</strong>。</p>
+<p>它将 <code>ReduceFunction</code> 应用在一个 <code>KeyedStream</code> 上，每个到来时间都会和 <code>reduce</code> 结果进行一次组合，从而产生一个新的<code>DataStream</code>。<code>reduce</code> 转换不会改变数据类型，因此输出流的类型会永远和输入流保持一致。</p>
+<h4 id="reduce-方法源码"><a href="#reduce-方法源码" class="headerlink" title="reduce 方法源码"></a>reduce 方法源码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@FunctionalInterface</span><br><span class="hljs-meta">@Public</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">ReduceFunction</span>&lt;T&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Function</span>, Serializable &#123;<br>    T <span class="hljs-title function_">reduce</span><span class="hljs-params">(T var1, T var2)</span> <span class="hljs-keyword">throws</span> Exception;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，这里的 <code>reduce</code> 方法的输入参数是 两个 <code>T</code> 类型的变量，最终输出也是一个 <code>T</code> 类型的变量，然后这个输出的变量会和下一个参数继续进行 <code>reduce</code> 操作，直到最后执行完成，输出最后一次 <code>reduce</code> 的结果。</p>
+<h4 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h4><ol>
+<li>传感器示例中以 id 分区，求当前温度最小值，要求时间戳为当前时间戳</li>
+</ol>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-comment">// 需要输出当前最小的温度值，以及最近的时间戳，要用reduce</span><br><span class="hljs-keyword">val</span> resultStream = dataStream<br>  .keyBy(<span class="hljs-string">&quot;id&quot;</span>)<br>  .reduce((curState, newData) =&gt;<br>    <span class="hljs-type">SensorReading</span>(curState.id, newData.timestamp, curState.temperature.min(newData.temperature))<br>  )<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>获取每个用户的访问频次</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java">DataStreamSource&lt;Event&gt; stream = env.fromElements(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Mary&quot;</span>, <span class="hljs-string">&quot;./home&quot;</span>, <span class="hljs-number">1000L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./cart&quot;</span>, <span class="hljs-number">2000L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;./prod?id=100&quot;</span>, <span class="hljs-number">3000L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=1&quot;</span>, <span class="hljs-number">3300L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;./prod?id=200&quot;</span>, <span class="hljs-number">3200L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./home&quot;</span>, <span class="hljs-number">3500L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=2&quot;</span>, <span class="hljs-number">3800L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=3&quot;</span>, <span class="hljs-number">4200L</span>)<br>);<br><br><span class="hljs-comment">// 1.统计每个用户的访问频次</span><br>SingleOutputStreamOperator&lt;Tuple2&lt;String, Long&gt;&gt; clickByUser = stream<br>        <span class="hljs-comment">// 首先使用map方法将stream中的event挨个转换成Tuple2&lt;String, Long&gt;的形式,其中第一个元素是user，第二个元素固定是1L</span><br>        .map((MapFunction&lt;Event, Tuple2&lt;String, Long&gt;&gt;) event -&gt; Tuple2.of(event.user, <span class="hljs-number">1L</span>))<br>        <span class="hljs-comment">// 然后将Tuple2&lt;String, Long&gt;类型的所有data根据其f0元素（也就是Tuple2的第一个元素event.user）分组，获得一个KeyedStream</span><br>        .keyBy(data -&gt; data.f0)<br>        <span class="hljs-comment">// 最后将keyStream进行reduce操作，对每两个元素(Tuple2&lt;String, Long&gt;类型)执行函数，最终获得Tuple2类型的一个结果,第一个元素是user，第二个元素是1L之和，其实就是有多少个点击次数</span><br>        .reduce((ReduceFunction&lt;Tuple2&lt;String, Long&gt;&gt;) (value1, value2) -&gt; Tuple2.of(value1.f0, value1.f1 + value2.f1)<br>        );<br><br><span class="hljs-comment">// 2. 获取当前最活跃的用户</span><br>SingleOutputStreamOperator&lt;Tuple2&lt;String, Long&gt;&gt; result = clickByUser<br>        <span class="hljs-comment">// 首先根据对应的key（也就是用户）进行分组</span><br>        .keyBy(data -&gt; <span class="hljs-string">&quot;key&quot;</span>)<br>        <span class="hljs-comment">// 然后比较每个值的f1，也就是点击量之和，最终输出最大值</span><br>        .reduce((ReduceFunction&lt;Tuple2&lt;String, Long&gt;&gt;) (value1, value2) -&gt; value1.f1 &gt; value2.f1 ? value1 : value2);<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="用户自定义函数（UDF）"><a href="#用户自定义函数（UDF）" class="headerlink" title="用户自定义函数（UDF）"></a>用户自定义函数（UDF）</h3><h4 id="函数类"><a href="#函数类" class="headerlink" title="函数类"></a>函数类</h4><h5 id="Java-实现"><a href="#Java-实现" class="headerlink" title="Java 实现"></a>Java 实现</h5><p>Flink 中所有用户自定义函数(如 MapFunction, FilterFunction 及 ProcessFunction)的接口都是以接口或抽象类的形式对外暴露。</p>
+<p>我们可以通过实现接口或继承抽象类的方式实现函数。下面的例子实现了一个 FilterFunction,用来过滤出所有包含“flink”― 词的字符串。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FlinkFilter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">FilterFunction</span>&lt;Event&gt; &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">filter</span><span class="hljs-params">(Event value)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-keyword">return</span> value.url.contains(<span class="hljs-string">&quot;home&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>然后可以直接将函数类的实例作为参数传递给 filter 转换：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 1. 传入实现FilterFunction接口的自定义函数类</span><br>DataStream&lt;Event&gt; stream1 = clicks.filter(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FlinkFilter</span>());<br></code></pre></td></tr></table></figure>
+
+<p>还可以通过匿名类来实现函数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 2. 传入匿名类</span><br>DataStream&lt;Event&gt; stream3 = clicks.filter(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FilterFunction</span>&lt;Event&gt;() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">filter</span><span class="hljs-params">(Event value)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-keyword">return</span> value.url.contains(<span class="hljs-string">&quot;home&quot;</span>);<br>    &#125;<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，传入了一个匿名类，内部实现了 filter 方法。</p>
+<h5 id="scala-实现"><a href="#scala-实现" class="headerlink" title="scala 实现"></a>scala 实现</h5><p>Flink 暴露了所有 udf 函数的接口（实现方式为接口或者抽象类）。例如 MapFunction，FilterFunction 和 ProcessFunction 等。</p>
+<p>几乎所有的算子都有对应的 udf 函数类，也就是可以定制。</p>
+<p>例如定义一个 filter，如下如梭</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-comment">// 自定义一个函数类</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyFilter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">FilterFunction</span>[<span class="hljs-type">SensorReading</span>] </span>&#123;<br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">filter</span></span>(t: <span class="hljs-type">SensorReading</span>): <span class="hljs-type">Boolean</span> =<br>    t.id.startsWith(<span class="hljs-string">&quot;sensor1&quot;</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在继承一个 FilterFunction 之后继承了 filter 方法，然后可以直接使用。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> <span class="hljs-type">MyFilterStream</span> = stream.filter(<span class="hljs-keyword">new</span> <span class="hljs-type">MyFilter</span>)<br></code></pre></td></tr></table></figure>
+
+<p>注意，这里我们定义的 Filter 和原来的流的类型一定要相同。</p>
+<p>也可以通过匿名类来实现函数</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> <span class="hljs-type">MyFilterStream2</span> = stream.filter(<br>	<span class="hljs-keyword">new</span> <span class="hljs-type">RichFilterFunction</span>[<span class="hljs-type">String</span>]&#123;<br>    <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">filter</span></span>(value: <span class="hljs-type">String</span>): <span class="hljs-type">Boolean</span> = &#123;<br>      value.contains(<span class="hljs-string">&quot;flink&quot;</span>)<br>    &#125;<br>  &#125;<br>)<br></code></pre></td></tr></table></figure>
+
+<p>此外，函数可以通过其构造函数接收参数。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> tweets: <span class="hljs-type">DataStream</span>[<span class="hljs-type">String</span>] = ???<br><span class="hljs-keyword">val</span> flinkTweets = tweets.filter(<span class="hljs-keyword">new</span> <span class="hljs-type">KeywordFilter</span>(<span class="hljs-string">&quot;flink&quot;</span>))<br><br><span class="hljs-comment">// 自定义一个函数类</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyFilter</span>(<span class="hljs-params">keyWord: <span class="hljs-type">String</span></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">FilterFunction</span>[<span class="hljs-type">SensorReading</span>] </span>&#123;<br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">filter</span></span>(t: <span class="hljs-type">SensorReading</span>): <span class="hljs-type">Boolean</span> =<br>    t.id.contains(keyWord)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在例子中，我们通过构造函数传入了“flink”参数，可以作为参数使用</p>
+<h4 id="Lambda-函数"><a href="#Lambda-函数" class="headerlink" title="Lambda 函数"></a>Lambda 函数</h4><h5 id="scala-实现-1"><a href="#scala-实现-1" class="headerlink" title="scala 实现"></a>scala 实现</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 3. 传入Lambda表达式</span><br>SingleOutputStreamOperator&lt;Event&gt; stream4 = clicks.filter(data -&gt; data.url.contains(<span class="hljs-string">&quot;home&quot;</span>));<br></code></pre></td></tr></table></figure>
+
+<h5 id="java-实现"><a href="#java-实现" class="headerlink" title="java 实现"></a>java 实现</h5><h4 id="富函数"><a href="#富函数" class="headerlink" title="富函数"></a>富函数</h4><p>很多时候，我们需要在函数处理第一条记录之前进行一些初始化工作或是取得函数执行相关的上下文信息。Datastream API 提供了一类富函数，它和我们之前见到的普通函数相比可对外提供更多功能。</p>
+<p>DataStream API 中所有的转换函数都有对应的富函数。富函数的使用位置和普通函数以及 Lambda 函数相同。它们可以像普通函数类一样接收参数。 富函数的命名规则是以 Rich 开头，后面跟着普通转换函数的名字，例如： RichMapFunction、 RichFlatMapFunction 等。</p>
+<p>在使用富函数时，可以对应函数的生命周期实现两个额外的方法：</p>
+<ul>
+<li>open()方法是富函数中的初始化方法。它在每个任务首次调用转换方法（如 filter 或 map）前调用一次。 open()通常用于那些只需进行一次的设置工作。</li>
+<li>close()作为函数的终止方法，会在每个任务最后一次调用转换方法后调用一次。它通常用于清理和释放资源</li>
+</ul>
+<p>此外，可以利用 getRuntimeContext()方法访问函数的 RuntimeContext。从 RuntimeContext 中能获取到一些信息，例如函数的并行度，函数所在子任务的编号以及执行函数的任务名称。同时，它还提供访问分区状态的方法。</p>
+<p>注意：<br>富函数不能使用 lambda 表达式，因为这里不是只有一个抽象方法。所以只能用函数类</p>
+<h5 id="java-实现-1"><a href="#java-实现-1" class="headerlink" title="java 实现"></a>java 实现</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 将点击事件转换成长整型的时间戳输出</span><br>clicks.map(<span class="hljs-keyword">new</span> <span class="hljs-title class_">RichMapFunction</span>&lt;Event, Long&gt;() &#123;<br>    		<span class="hljs-comment">// 这里替换了父类的open()方法，会在map方法执行前被执行一次</span><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">open</span><span class="hljs-params">(Configuration parameters)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>                <span class="hljs-built_in">super</span>.open(parameters);<br>                System.out.println(<span class="hljs-string">&quot;索引为 &quot;</span> + getRuntimeContext().getIndexOfThisSubtask() + <span class="hljs-string">&quot; 的任务开始&quot;</span>);<br>            &#125;<br><br>    		<span class="hljs-comment">// 必须实现的一个方法</span><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> Long <span class="hljs-title function_">map</span><span class="hljs-params">(Event value)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>                <span class="hljs-keyword">return</span> value.timestamp;<br>            &#125;<br><br>    		<span class="hljs-comment">// 这里替换了父类的close()方法，会在所有map方法执行后被执行一次</span><br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">close</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>                <span class="hljs-built_in">super</span>.close();<br>                System.out.println(<span class="hljs-string">&quot;索引为 &quot;</span> + getRuntimeContext().getIndexOfThisSubtask() + <span class="hljs-string">&quot; 的任务结束&quot;</span>);<br>            &#125;<br>        &#125;)<br>        .print();<br><br></code></pre></td></tr></table></figure>
+
+<h5 id="scala-实现-2"><a href="#scala-实现-2" class="headerlink" title="scala 实现"></a>scala 实现</h5><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-comment">// 富函数</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyRichFilter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">RichFilterFunction</span>[<span class="hljs-type">SensorReading</span>] </span>&#123;<br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">filter</span></span>(t: <span class="hljs-type">SensorReading</span>): <span class="hljs-type">Boolean</span> = ???<br><br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">open</span></span>(parameters: <span class="hljs-type">Configuration</span>): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-comment">//做一些初始化操作，比如数据库的连接</span><br>  &#125;<br><br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">close</span></span>(): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-comment">// 一般做收尾工作，比如关闭连接，或者清空状态</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="分流操作（split-和-select）"><a href="#分流操作（split-和-select）" class="headerlink" title="分流操作（split 和 select）"></a>分流操作（split 和 select）</h2><p>split 转换是 union 转换的逆操作。它将输入流分割成两条或多条类型和输入流相同的输出流。每一个到来的事件都可以被发往零个、一个或多个输出流。<br>因此，split 也可以用来过滤或复制事件。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224181644.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+上图中，split算子将所有白色事件和其他事件分开，发往不同的数据流
+
+<p>具体来说</p>
+<h3 id="split"><a href="#split" class="headerlink" title="split"></a>split</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224191817.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<p>DataStream → SplitStream：根据某些特征把一个 DataStream 拆分成两个或者多个 DataStream。</p>
+<h3 id="select"><a href="#select" class="headerlink" title="select"></a>select</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224191934.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<p>split 和 select 总是一起出现，<strong>select()方法会在每个输入时间到来时被调用，并随机返回一个对象。类似 KeyBy()方法之后总是跟着一个滚动聚合算子</strong>。split 函数就会根据这个 select 方法确认应该将上游的数据分发到哪些输出流。</p>
+<h3 id="示例-2"><a href="#示例-2" class="headerlink" title="示例"></a>示例</h3><p>将传感器数据通过温度分开，以 30 度为界</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-comment">// 4.分流操作</span><br><span class="hljs-keyword">val</span> splitStream = dataStream<br>  .split(<br>    data =&gt; &#123;<br>      <span class="hljs-keyword">if</span> (data.temperature &gt; <span class="hljs-number">30.0</span>) <span class="hljs-type">Seq</span>(<span class="hljs-string">&quot;high&quot;</span>) <span class="hljs-keyword">else</span> <span class="hljs-type">Seq</span>(<span class="hljs-string">&quot;low&quot;</span>)<br>    &#125;<br>  )<br><span class="hljs-keyword">val</span> highTempStream: <span class="hljs-type">DataStream</span>[<span class="hljs-type">SensorReading</span>] = splitStream.select(<span class="hljs-string">&quot;high&quot;</span>)<br><span class="hljs-keyword">val</span> lowTempStream: <span class="hljs-type">DataStream</span>[<span class="hljs-type">SensorReading</span>] = splitStream.select(<span class="hljs-string">&quot;low&quot;</span>)<br><span class="hljs-keyword">val</span> allTempStream: <span class="hljs-type">DataStream</span>[<span class="hljs-type">SensorReading</span>] = splitStream.select(<span class="hljs-string">&quot;high&quot;</span>, <span class="hljs-string">&quot;low&quot;</span>)<br><br>highTempStream.print(<span class="hljs-string">&quot;high&quot;</span>)<br>lowTempStream.print(<span class="hljs-string">&quot;low&quot;</span>)<br>allTempStream.print(<span class="hljs-string">&quot;all&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="合流操作"><a href="#合流操作" class="headerlink" title="合流操作"></a>合流操作</h2><h3 id="connect"><a href="#connect" class="headerlink" title="connect"></a>connect</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224223544.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<p>DataStream,DataStream → ConnectedStreams：连接两个保持他们类型的数据流， 两个数据流被 Connect 之后， 只是被放在了一个同一个流中， 内部依然保持各自的数据和形式不发生任何变化， 两个流相互独立。</p>
+<h3 id="CoMap-CoFlatMap"><a href="#CoMap-CoFlatMap" class="headerlink" title="CoMap,CoFlatMap"></a>CoMap,CoFlatMap</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224223711.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<p>ConnectedStreams → DataStream：作用于 ConnectedStreams 上， 功能与 map 和 flatMap 一样， 对 ConnectedStreams 中的每一个 Stream 分别进行 map 和 flatMap 处理。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-comment">// 4.2 合流操作</span><br><span class="hljs-keyword">val</span> warningStream = highTempStream<br>  .map(data =&gt; (data.id, data.temperature))<br><br><span class="hljs-keyword">val</span>  connectedStreams = warningStream.connect(lowTempStream)<br><br><span class="hljs-comment">// 用coMap对数据进行分别处理</span><br><span class="hljs-keyword">val</span> coMapResultStream = connectedStreams<br>  .map(<br>    warningData =&gt; (warningData._1, warningData._2, <span class="hljs-string">&quot;warning&quot;</span>),<br>    lowTempData =&gt; (lowTempData.id, <span class="hljs-string">&quot;healthy&quot;</span>)<br>  )<br><br>coMapResultStream.print(<span class="hljs-string">&quot;coMap&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="Union"><a href="#Union" class="headerlink" title="Union"></a>Union</h3><p>DataStream.union()方法可以合并两条或多条<strong>类型相同</strong>的 DataStream，生成一个<strong>新的类型相同</strong>的 DataStream。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224225326.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h2 id="分发转换"><a href="#分发转换" class="headerlink" title="分发转换"></a>分发转换</h2><p>分发转换操作定义了如何将事件分配给不同任务。某些时候，我们有必要或希望能够在应用级别控制这些分区策略，或者自定义分区器。例如，如果我们知道 DataStream 的并行分区存在数据倾斜，那么可能就希望通过重新平衡数据来均匀分配后续算子的负载。</p>
+<p>注意：<br>keyBy()和分发转换是不同的，keyBy()会生成一个 KeyedStream，是一个逻辑分区，分区后的数据并没有真正承载到不同的 slot 上，但分发转换生成的是 DataStream，是真正承载在不同 Slot 上的。</p>
+<h3 id="随机"><a href="#随机" class="headerlink" title="随机"></a>随机</h3><p>可以利用 DataStream.shuffle()方法实现随机数据交换策略。该方法会依照均匀分布随机地将记录发往后继算子的并行任务。</p>
+<h3 id="轮流"><a href="#轮流" class="headerlink" title="轮流"></a>轮流</h3><p>rebalance()方法会将输入流中的事件以轮流方式均匀分配给后继任务。</p>
+<h3 id="重调"><a href="#重调" class="headerlink" title="重调"></a>重调</h3><p>rescale()也会以轮流方式对事件进行分发，但分发目标仅限于部分后继任务。</p>
+<p>用法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java">DataStreamSource&lt;Event&gt; stream = env.fromElements(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Mary&quot;</span>, <span class="hljs-string">&quot;./home&quot;</span>, <span class="hljs-number">1000L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./cart&quot;</span>, <span class="hljs-number">2000L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;./prod?id=100&quot;</span>, <span class="hljs-number">3000L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;./prod?id=200&quot;</span>, <span class="hljs-number">3500L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=2&quot;</span>, <span class="hljs-number">2500L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;./prod?id=300&quot;</span>, <span class="hljs-number">3600L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./home&quot;</span>, <span class="hljs-number">3000L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=1&quot;</span>, <span class="hljs-number">2300L</span>),<br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=3&quot;</span>, <span class="hljs-number">3300L</span>));<br><br><span class="hljs-comment">// 1. 随机分区</span><br>stream.shuffle().print().setParallelism(<span class="hljs-number">4</span>);<br><br><span class="hljs-comment">// 2. 轮询分区</span><br>stream.rebalance().print().setParallelism(<span class="hljs-number">4</span>);<br><br><span class="hljs-comment">// 3. rescale 重缩放分区</span><br>stream.rescale().print().setParallelism(<span class="hljs-number">4</span>);<br></code></pre></td></tr></table></figure>
+
+<p><strong>轮流和重调的区别</strong>：</p>
+<p>rebalance()和 rescale()的本质不同体现在生成任务连接的方式。rebalance()会在所有发送任务和接收任务之间建立通信通道（例如 2 个上游任务和 10 个下游任务，那么这两个上游任务会分别和下游的这 10 个任务建立连接，一共会有 20 个连接生成）；</p>
+<p>而 rescale()中每个发送任务只会和下游算子的部分任务建立通道（例如 2 个上游任务和 10 个下游任务，那么第 1 个上游任务会和前 5 个下游任务建立连接，第 2 个上游任务会和后 5 个下游任务建立连接，那么一共只有 10 个连接，若刚好这 10 个下游任务就分布在 2 个 TaskManager 上，那么第 1 个上游任务对应第 1 个 TaskManager，第 2 个上游任务对应第 2 个 TaskManager，就完全避免了网络上的开销）</p>
+<p>当上游任务越多时，节省的资源则越明显。</p>
+<p>因此 rescale 可以看做是在一些情况下对 rebalance 的一种优化</p>
+<p><strong>区别演示</strong>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 演示rebalance和rescale的区别</span><br>env.addSource(<span class="hljs-keyword">new</span> <span class="hljs-title class_">RichParallelSourceFunction</span>&lt;Integer&gt;() &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">(SourceContext&lt;Integer&gt; sourceContext)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">8</span>; i++) &#123;<br>            <span class="hljs-comment">// 将偶数和基数分开，将奇偶数分别发送到0号和1号并行分区</span><br>            <span class="hljs-keyword">if</span> (i % <span class="hljs-number">2</span> == getRuntimeContext().getIndexOfThisSubtask()) &#123;<br>                sourceContext.collect(i);<br>            &#125;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">cancel</span><span class="hljs-params">()</span> &#123;<br><br>    &#125;<br>&#125;).setParallelism(<span class="hljs-number">2</span>)<br>        .rescale()<br>        .print()<br>        .setParallelism(<span class="hljs-number">4</span>);<br><br>env.execute();<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，这里定义了一个并行度为 2 的 Source Function，其作用是将奇数分配给 1 号分区，偶数分配给 0 号分区。如果直接打印输出，那么结果一定是无序的：</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/image-20221127174529343.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>因为上游任务会随机将数据流发送给下游的输出算子进行打印。</p>
+<p>如果用 rebalance 方式进行打印，那么结果也会是无序的，因为 rebalance 方式会将处理过的数据随机分配给下游 sink 输出。</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/image-20221127180736451.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>如果用 rescale 方式进行打印，那么结果就会是有序的，因为一共有 4 个 sink 算子，rescale 方式会将偶数分配到前两个算子，奇数分配到后两个算子</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/image-20221127181100218.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，和我们预期是相同的。</p>
+<h3 id="广播"><a href="#广播" class="headerlink" title="广播"></a>广播</h3><p>broadcast()方法会将输入流中的事件复制并发往所有下游算子的并行任务。那么就是每个数据在下游算子全部会输出一遍。</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/image-20221127181356193.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，数据源 1 在 1-4 的 sink 都输出了一遍，数据源 3 在 1-4 的数据源也都输出了一遍。</p>
+<h3 id="全局"><a href="#全局" class="headerlink" title="全局"></a>全局</h3><p>global()方法会将输入流中的所有事件发往下游算子的第一个并行任务。</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/image-20221127181540244.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，虽然输出的并行度设置为 4，但是全局分区会将所有的时间都发往第一个 sink 输出。</p>
+<h3 id="自定义"><a href="#自定义" class="headerlink" title="自定义"></a>自定义</h3><p>可以利用 partitionCustom()方法自己定义分区策略</p>
+<h2 id="设置并行度"><a href="#设置并行度" class="headerlink" title="设置并行度"></a>设置并行度</h2><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>算子并行化任务的数目称为该算子的并行度。它决定了算子处理的并行化程度以及能够处理的数据规模</p>
+<h4 id="默认并行度"><a href="#默认并行度" class="headerlink" title="默认并行度"></a>默认并行度</h4><p>算子的并行度可以在执行环境级别或单个算子级别进行控制。默认情况下，应用内所有算子的并行度都会被设置为应用执行环境的并行度。而环境的并行度（即所有算子的默认并行度）则会根据应用启动时所处的上下文自动初始化。</p>
+<p>如果应用是在一个本地执行环境中运行，并行度会设置为 CPU 的线程数目。如果应用是提交到 Flink 集群运行，那么除非提交客户端明确指定，否则环境并行度将设置为集群默认并行度。</p>
+<h4 id="获取环境默认并行度方法"><a href="#获取环境默认并行度方法" class="headerlink" title="获取环境默认并行度方法"></a>获取环境默认并行度方法</h4><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224233225.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="覆盖环境默认并行度方法"><a href="#覆盖环境默认并行度方法" class="headerlink" title="覆盖环境默认并行度方法"></a>覆盖环境默认并行度方法</h4><p>注意，一旦如此，将无法通过提交客户端控制应用并行度</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210224233344.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="四、类型"><a href="#四、类型" class="headerlink" title="四、类型"></a>四、类型</h1><p>Flink DataStream 应用所处理的事件会以数据对象的形式存在。函数在调用时会传入数据对象，同时它也可以发出数据对象。因此 Flink 在内部需要对这些数据对象进行一些处理，即出于网络传输，读写状态、检查点和保存点等目的，需要对它们进行序列化和反序列化。为了提高上述过程的效率，Flink 有必要详细了解应用处理的数据类型。Flink 利用类型信息的概念来表示数据类型，并且对于每种类型，都会为其生成特定的序列化器、反序列化器以及比较器。</p>
+<p>此外，Flink 中还有一个类型提取系统，它可以通过分析函数的输入、输出类型来自动获取类型信息，继而得到相应的序列化器和反序列化器。但在某些情况下，例如使用了 Lambda 函数或泛型类型，则必须显式指定类型信息才能启动应用或提高其性能。</p>
+<h2 id="支持的数据类型"><a href="#支持的数据类型" class="headerlink" title="支持的数据类型"></a>支持的数据类型</h2><p>Flink 支持 Java 和 Scala 中所有常用数据类型。例如：</p>
+<ul>
+<li>原始类型</li>
+<li>Java 和 Scala 元祖</li>
+<li>Scala 样例类</li>
+<li>POJO</li>
+<li>一些特殊类型</li>
+</ul>
+<p>那些无法特别处理的类型会被当做泛型类型交给 Kryo 序列化框架进行序列化</p>
+<h3 id="原始类型"><a href="#原始类型" class="headerlink" title="原始类型"></a>原始类型</h3><p>Flink 支持所有 Java 和 Scala 的原始类型，例如 Int、String 和 Double。</p>
+<h4 id="Java-原始类型"><a href="#Java-原始类型" class="headerlink" title="Java 原始类型"></a>Java 原始类型</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java">DataStreamSource&lt;Long&gt; stream = env.fromElements(<span class="hljs-number">1L</span>, <span class="hljs-number">2L</span>, <span class="hljs-number">3L</span>, <span class="hljs-number">4L</span>);  <br>stream.map(n -&gt; n + <span class="hljs-number">1</span>).print();<br></code></pre></td></tr></table></figure>
+
+<h4 id="Scala-原始数据"><a href="#Scala-原始数据" class="headerlink" title="Scala 原始数据"></a>Scala 原始数据</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> numbers: <span class="hljs-type">DataStream</span>[<span class="hljs-type">Long</span>] = env.fromElements(<span class="hljs-number">1</span>L, <span class="hljs-number">2</span>L, <span class="hljs-number">3</span>L, <span class="hljs-number">4</span>L)<br>numbers.map(n =&gt; n + <span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
+
+<p>在这里是一个 Long 类型的 DataStream，其中的元素分别为 1L，2L，3L 和 4L，对其进行 map 操作</p>
+<h3 id="Java-和-Scala-元祖"><a href="#Java-和-Scala-元祖" class="headerlink" title="Java 和 Scala 元祖"></a>Java 和 Scala 元祖</h3><p>元祖是由固定数量的强类型字段所组成的复合数据类型。</p>
+<h4 id="Scala-元祖"><a href="#Scala-元祖" class="headerlink" title="Scala 元祖"></a>Scala 元祖</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> persons: <span class="hljs-type">DataStream</span>[(<span class="hljs-type">String</span>, <span class="hljs-type">Int</span>)] = env.fromElements(<br>  (<span class="hljs-string">&quot;Adam&quot;</span>, <span class="hljs-number">17</span>),<br>  (<span class="hljs-string">&quot;Sarah&quot;</span>, <span class="hljs-number">23</span>)<br>)<br>persons.filter(p =&gt; p._2 &gt; <span class="hljs-number">18</span>)<br>persons.print()<br>env.execute(<span class="hljs-string">&quot;Tuple&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="Java-元祖"><a href="#Java-元祖" class="headerlink" title="Java 元祖"></a>Java 元祖</h4><p>和 <code>Scala</code> 不同的是，<code>Java</code> 元组是可变的，因此可以为其字段重新赋值。函数中可以对 <code>Java</code> 元组进行重用，以减轻垃圾回收器的压力。下面的例子展示了如何对 <code>Java</code> 元组的字段进行使用和更新：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// Java元祖的使用  </span><br>Tuple2&lt;String, Integer&gt; personTuple = Tuple2.of(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-number">42</span>);  <span class="hljs-comment">// 创建一个Tuple2类型的Java元祖</span><br><span class="hljs-type">Integer</span> <span class="hljs-variable">age</span> <span class="hljs-operator">=</span> personTuple.getField(<span class="hljs-number">1</span>); <span class="hljs-comment">// 获取第2个元素，也就是age=42  </span><br>personTuple.f1 = <span class="hljs-number">43</span>; <span class="hljs-comment">// 将第二个字段设为42  </span><br>personTuple.setField(<span class="hljs-number">42</span>, <span class="hljs-number">1</span>); <span class="hljs-comment">// 将第二个字段设为42</span><br></code></pre></td></tr></table></figure>
+
+<p>学会使用 <code>Java</code> 元祖之后，就可以使用其来创建数据流了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 2. Java和Scala元祖  </span><br>DataStreamSource&lt;Tuple2&lt;String, Integer&gt;&gt; personStream = env.fromElements(  <br>        Tuple2.of(<span class="hljs-string">&quot;Adam&quot;</span>, <span class="hljs-number">17</span>),  <br>        Tuple2.of(<span class="hljs-string">&quot;Sarah&quot;</span>, <span class="hljs-number">23</span>)  <br>);  <br><span class="hljs-comment">// 过滤出那些年龄大于18的人  </span><br>personStream.filter(p -&gt; p.f1 &gt; <span class="hljs-number">18</span>);<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，<code>Java</code> 中需要使用 <code>Tuple2.of()</code> 的方式生成元祖，<code>Scala</code> 可以直接使用 <code>()</code>，Flink 提供了 Java 元组的高效实现，它最多可包含 25 个字段，每个字段长度都对应一个单独的实现类— <code>Tuplel</code>, <code>Tuple2</code>, 直到 <code>Tuple25</code> 这些元组类都是强类型的。</p>
+<h3 id="Scala-样例类"><a href="#Scala-样例类" class="headerlink" title="Scala 样例类"></a>Scala 样例类</h3><p>在这里定义一个样例类 Person，有两个字段：name 和 age。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span>(<span class="hljs-params">name: <span class="hljs-type">String</span>, age: <span class="hljs-type">Int</span></span>)</span><br><span class="hljs-comment">// Scala样例类</span><br><span class="hljs-keyword">val</span> personsss: <span class="hljs-type">DataStream</span>[<span class="hljs-type">Person</span>] = env.fromElements(<br>  <span class="hljs-type">Person</span>(<span class="hljs-string">&quot;Adam&quot;</span>, <span class="hljs-number">17</span>),<br>  <span class="hljs-type">Person</span>(<span class="hljs-string">&quot;Sarah&quot;</span>, <span class="hljs-number">23</span>)<br>)<br><span class="hljs-comment">// 过滤出那些年龄大于18的人</span><br>personsss.filter( p =&gt; p.age &gt; <span class="hljs-number">18</span>)<br>personsss.print()<br>env.execute(<span class="hljs-string">&quot;Scala case class&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="POJO"><a href="#POJO" class="headerlink" title="POJO"></a>POJO</h3><p>Flink 会分析那些不属于任何一类的数据类型并尝试将它们作为 POJO 类型进行处理。如果一个类满足以下条件，Flink 就会将它看做 POJO：</p>
+<ul>
+<li>是一个公有类</li>
+<li>有一个共有的无参默认构造函数</li>
+<li>所有字段都是公有的或提供了相应的 getter 和 setter 方法。</li>
+<li>所有字段类型都必须是 Flink 所支持的</li>
+</ul>
+<p>例如这样的一个类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Person_POJO</span> &#123;<br>    <span class="hljs-keyword">public</span> String name;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> age;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Person_POJO</span><span class="hljs-params">()</span>&#123;&#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Person_POJO</span><span class="hljs-params">(String name, <span class="hljs-type">int</span> age)</span> &#123;<br>        <span class="hljs-built_in">this</span>.name = name;<br>        <span class="hljs-built_in">this</span>.age = age;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这样的类 Flink 就可以进行处理：</p>
+<h4 id="Scala-处理"><a href="#Scala-处理" class="headerlink" title="Scala 处理"></a>Scala 处理</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-comment">// POJO</span><br><span class="hljs-keyword">val</span> personssss: <span class="hljs-type">DataStream</span>[<span class="hljs-type">Person_POJO</span>] = env.fromElements(<br>  <span class="hljs-keyword">new</span> <span class="hljs-type">Person_POJO</span>(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-number">42</span>),<br>  <span class="hljs-keyword">new</span> <span class="hljs-type">Person_POJO</span>(<span class="hljs-string">&quot;Wendy&quot;</span>, <span class="hljs-number">23</span>)<br>)<br>personssss.filter( p =&gt; p.age &gt; <span class="hljs-number">18</span>)<br>personsss.print()<br>env.execute(<span class="hljs-string">&quot;POJO&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="Java-处理"><a href="#Java-处理" class="headerlink" title="Java 处理"></a>Java 处理</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 3. POJO  </span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> &#123;  <br>    <span class="hljs-comment">// 两个字段都是公有字段  </span><br>    <span class="hljs-keyword">public</span> String name;  <br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> age;  <br>  <br>    <span class="hljs-comment">// 提供了默认构造函数  </span><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Person</span><span class="hljs-params">()</span>&#123;&#125;  <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">Person</span><span class="hljs-params">(String name, <span class="hljs-type">int</span> age)</span> &#123;  <br>        <span class="hljs-built_in">this</span>.name = name;  <br>        <span class="hljs-built_in">this</span>.age = age;  <br>    &#125;  <br>&#125;  <br>  <br>env.fromElements(  <br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Person</span>(<span class="hljs-string">&quot;Alex&quot;</span>, <span class="hljs-number">42</span>),  <br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Person</span>(<span class="hljs-string">&quot;Wendy&quot;</span>, <span class="hljs-number">23</span>)  <br>);<br></code></pre></td></tr></table></figure>
+
+<h2 id="为数据类型创建类型信息"><a href="#为数据类型创建类型信息" class="headerlink" title="为数据类型创建类型信息"></a>为数据类型创建类型信息</h2><p><code>Flink</code> 类型系统的核心类是 <code>TypeInformation</code>，它为系统生成序列化器和比较器提供了必要信息。</p>
+<p>例如：如果需要通过某个键值进行 <code>Join</code> 或者分组，<code>TypeInformation</code> 允许 <code>Flink</code> 对能否使用某字段作为键值进行语义检测。</p>
+<p>需要使用 <code>TypeInformation</code> 的情况：<br>在类型提取器失灵的时候可能需要定义自己的类型并告知 <code>Flink</code> 如何高效地处理它们。这种情况下就需要为特定数据类型生成 <code>TypeInformation</code>。</p>
+<p><code>Flink</code> 为 <code>Java</code> 和 <code>Scala</code> 提供了两个辅助类，其中的静态方法可以用来生成 <code>Typeinformation</code>。</p>
+<h3 id="生成-TypeInformation"><a href="#生成-TypeInformation" class="headerlink" title="生成 TypeInformation"></a>生成 TypeInformation</h3><h4 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h4><p><code>Java</code> 中的这个辅助类是 <code>org.apache.flink.api.common.typeinfo.Type</code>，具体使用方式如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// TypeInformation</span><br><span class="hljs-comment">// 原始类型的TypeInformation</span><br>TypeInformation&lt;Integer&gt; intType = Types.INT;<br><span class="hljs-comment">// Java元祖的TypeInformation</span><br>TypeInformation&lt;Tuple2&lt;Long,String&gt;&gt; tupleType = Types.TUPLE(Types.LONG, Types.STRING);<br><span class="hljs-comment">// POJO的TypeInformation</span><br>TypeInformation&lt;Person_POJO&gt; personType = Types.POJO(Person_POJO.class);<br></code></pre></td></tr></table></figure>
+
+<h4 id="Scala"><a href="#Scala" class="headerlink" title="Scala"></a>Scala</h4><p><code>Scala</code> <code>API</code> 中有关 <code>Typeinformation</code> 的辅助类是 <code>org.apache.flink.api.scala.typeutils.Types</code>, 它的用法如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-comment">// TypeInformation</span><br><span class="hljs-comment">// 1. 原始类型的TypeInformation</span><br><span class="hljs-keyword">val</span> stringType: <span class="hljs-type">TypeInformation</span>[<span class="hljs-type">String</span>] = <span class="hljs-type">Types</span>.<span class="hljs-type">STRING</span><br><span class="hljs-comment">// 2. Scala元祖的TypeInformation</span><br><span class="hljs-keyword">val</span> tupleType: <span class="hljs-type">TypeInformation</span>[(<span class="hljs-type">Int</span>, <span class="hljs-type">Long</span>)] = <span class="hljs-type">Types</span>.<span class="hljs-type">TUPLE</span>[(<span class="hljs-type">Int</span>, <span class="hljs-type">Long</span>)]<br><span class="hljs-comment">// 3. 样例类的TypeInformation</span><br><span class="hljs-keyword">val</span> caseClassType: <span class="hljs-type">TypeInformation</span>[<span class="hljs-type">Person</span>] = <span class="hljs-type">Types</span>.<span class="hljs-type">CASE_CLASS</span>[<span class="hljs-type">Person</span>]<br></code></pre></td></tr></table></figure>
+
+<h2 id="显式提供类型信息"><a href="#显式提供类型信息" class="headerlink" title="显式提供类型信息"></a>显式提供类型信息</h2><p>在 <code>Flink</code> 无法自动推断类型时需要向 <code>Flink</code> 显式提供 <code>TypeInformation</code> 对象。<br>上面创建的类型信息就是为了给返回值显式明确类型信息。</p>
+<p>使用方式如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReturnTypeTest</span> &#123;  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;  <br>        <span class="hljs-type">StreamExecutionEnvironment</span> <span class="hljs-variable">env</span> <span class="hljs-operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();  <br>        env.setParallelism(<span class="hljs-number">1</span>);  <br>  <br>        DataStreamSource&lt;Event&gt; clicks = env.fromElements(  <br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Mary&quot;</span>, <span class="hljs-string">&quot;./home&quot;</span>, <span class="hljs-number">1000L</span>),  <br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./cart&quot;</span>, <span class="hljs-number">2000L</span>)  <br>        );  <br>  <br>        <span class="hljs-comment">// 想要转换成二元组类型，需要进行以下处理  </span><br>        <span class="hljs-comment">// 1) 使用显式的 &quot;.returns(...)&quot;        DataStream&lt;Tuple2&lt;String, Long&gt;&gt; stream3 = clicks  </span><br>                .map( event -&gt; Tuple2.of(event.user, <span class="hljs-number">1L</span>) )  <br>                .returns(Types.TUPLE(Types.STRING, Types.LONG));  <br>        stream3.print();  <br>  <br>  <br>        <span class="hljs-comment">// 2) 使用类来替代Lambda表达式  </span><br>        clicks.map(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyTuple2Mapper</span>())  <br>                .print();  <br>  <br>        <span class="hljs-comment">// 3) 使用匿名类来代替Lambda表达式  </span><br>        clicks.map(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MapFunction</span>&lt;Event, Tuple2&lt;String, Long&gt;&gt;() &#123;  <br>            <span class="hljs-meta">@Override</span>  <br>            <span class="hljs-keyword">public</span> Tuple2&lt;String, Long&gt; <span class="hljs-title function_">map</span><span class="hljs-params">(Event value)</span> <span class="hljs-keyword">throws</span> Exception &#123;  <br>                <span class="hljs-keyword">return</span> Tuple2.of(value.user, <span class="hljs-number">1L</span>);  <br>            &#125;  <br>        &#125;).print();  <br>  <br>        env.execute();  <br>    &#125;  <br>  <br>    <span class="hljs-comment">// 自定义MapFunction的实现类  </span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyTuple2Mapper</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">MapFunction</span>&lt;Event, Tuple2&lt;String, Long&gt;&gt;&#123;  <br>        <span class="hljs-meta">@Override</span>  <br>        <span class="hljs-keyword">public</span> Tuple2&lt;String, Long&gt; <span class="hljs-title function_">map</span><span class="hljs-params">(Event value)</span> <span class="hljs-keyword">throws</span> Exception &#123;  <br>            <span class="hljs-keyword">return</span> Tuple2.of(value.user, <span class="hljs-number">1L</span>);  <br>        &#125;  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="五、定义键值和引用字段"><a href="#五、定义键值和引用字段" class="headerlink" title="五、定义键值和引用字段"></a>五、定义键值和引用字段</h1><h2 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h2><p>Flink 不是在输入类型中提前定义好键值，而是将键值定义为<strong>输入数据上的函数</strong>。</p>
+<p>因此，没有必要为键和值再单独定义数据类型，这样可以省去大量样板代码。</p>
+<h2 id="字段位置"><a href="#字段位置" class="headerlink" title="字段位置"></a>字段位置</h2><p>针对元祖数据类型，可以简单地使用元祖相应元素的字段位置来定义键值。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.apitest<br><br><span class="hljs-keyword">import</span> org.apache.flink.api.java.tuple.<span class="hljs-type">Tuple</span><br><span class="hljs-keyword">import</span> org.apache.flink.api.scala.createTypeInformation<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.scala.&#123;<span class="hljs-type">DataStream</span>, <span class="hljs-type">KeyedStream</span>, <span class="hljs-type">StreamExecutionEnvironment</span>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">KeyValueTest</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-keyword">val</span> env: <span class="hljs-type">StreamExecutionEnvironment</span> = <span class="hljs-type">StreamExecutionEnvironment</span>.getExecutionEnvironment<br>    <span class="hljs-keyword">val</span> input: <span class="hljs-type">DataStream</span>[(<span class="hljs-type">Int</span>, <span class="hljs-type">String</span>, <span class="hljs-type">Double</span>)] = env.fromElements((<span class="hljs-number">1</span>, <span class="hljs-string">&quot;Hello&quot;</span>, <span class="hljs-number">1.1</span>))<br>    <span class="hljs-keyword">val</span> keyed: <span class="hljs-type">KeyedStream</span>[(<span class="hljs-type">Int</span>, <span class="hljs-type">String</span>, <span class="hljs-type">Double</span>), <span class="hljs-type">Tuple</span>] = input.keyBy(<span class="hljs-number">1</span>)<br>    keyed.print()<br>    env.execute(<span class="hljs-string">&quot;tuple_key&quot;</span>)<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在这里，input.keyBy(1)表示根据第 1 个元素来进行分组，也就是 String 类型的元素。</p>
+<p>此外，还可以通过多个元祖字段定义符合键值，只需将所有位置以列表形式逐一提供即可。</p>
+<p>例如</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> keyed: <span class="hljs-type">KeyedStream</span>[(<span class="hljs-type">Int</span>, <span class="hljs-type">String</span>, <span class="hljs-type">Double</span>), <span class="hljs-type">Tuple</span>] = input.keyBy(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="字段表达式"><a href="#字段表达式" class="headerlink" title="字段表达式"></a>字段表达式</h2><p>另一种定义键值和选择字段的方法是使用基于字符串的字段表达式。</p>
+<p>它可用于元祖、POJO 以及样例类，同时还支持选择嵌套的字段。</p>
+<h3 id="样例类"><a href="#样例类" class="headerlink" title="样例类"></a>样例类</h3><p>现在有样例类 SensorReading</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SensorReading</span>(<span class="hljs-params">id:<span class="hljs-type">String</span>, timestamp:<span class="hljs-type">Long</span>, temperature:<span class="hljs-type">Double</span></span>)</span><br></code></pre></td></tr></table></figure>
+
+<p>为了将传感器 ID 设为数据流的键值，我们可以把字段名称 id 传给 keyBy()函数</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> sensorStream: <span class="hljs-type">DataStream</span>[<span class="hljs-type">SensorReading</span>] = env.fromElements(<span class="hljs-type">SensorReading</span>(<span class="hljs-string">&quot;1&quot;</span>, <span class="hljs-number">20200225</span>, <span class="hljs-number">20.0</span>), <span class="hljs-type">SensorReading</span>(<span class="hljs-string">&quot;2&quot;</span>, <span class="hljs-number">20200226</span>, <span class="hljs-number">21.0</span>))<br><span class="hljs-keyword">val</span> keyedSensors: <span class="hljs-type">KeyedStream</span>[<span class="hljs-type">SensorReading</span>, <span class="hljs-type">Tuple</span>] = sensorStream.keyBy(<span class="hljs-string">&quot;id&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="注意-2"><a href="#注意-2" class="headerlink" title="注意"></a>注意</h4><p>这里就不能用位置了，只有元祖可以用位置。</p>
+<h3 id="POJO-1"><a href="#POJO-1" class="headerlink" title="POJO"></a>POJO</h3><p>现在有 POJO：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.apitest;<br><br><span class="hljs-keyword">import</span> org.apache.flink.api.common.typeinfo.<span class="hljs-type">TypeInformation</span>;<br><span class="hljs-keyword">import</span> org.apache.flink.api.common.typeinfo.<span class="hljs-type">Types</span>;<br><span class="hljs-keyword">import</span> scala.<span class="hljs-type">Tuple2</span>;<br><br>public <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person_POJO</span> </span>&#123;<br>    public <span class="hljs-type">String</span> name;<br>    public int age;<br><br>    public <span class="hljs-type">Person_POJO</span>()&#123;&#125;<br><br>    public <span class="hljs-type">Person_POJO</span>(<span class="hljs-type">String</span> name, int age) &#123;<br>        <span class="hljs-keyword">this</span>.name = name;<br>        <span class="hljs-keyword">this</span>.age = age;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>同样可以像样例类那样采用字段名称进行选择。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> <span class="hljs-type">POJOStream</span>: <span class="hljs-type">DataStream</span>[<span class="hljs-type">Person_POJO</span>] = env.fromElements(<span class="hljs-keyword">new</span> <span class="hljs-type">Person_POJO</span>(<span class="hljs-string">&quot;zhangsan&quot;</span>, <span class="hljs-number">1</span>), <span class="hljs-keyword">new</span> <span class="hljs-type">Person_POJO</span>(<span class="hljs-string">&quot;lisi&quot;</span>, <span class="hljs-number">2</span>))<br><span class="hljs-keyword">val</span> <span class="hljs-type">POJOSensors</span>: <span class="hljs-type">KeyedStream</span>[<span class="hljs-type">Person_POJO</span>, <span class="hljs-type">Tuple</span>] = <span class="hljs-type">POJOStream</span>.keyBy(<span class="hljs-string">&quot;age&quot;</span>)<br><span class="hljs-type">POJOSensors</span>.print()<br>env.execute(<span class="hljs-string">&quot;POJO&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="注意-3"><a href="#注意-3" class="headerlink" title="注意"></a>注意</h4><p>元祖字段的引用既可以使用字段名称，也可以使用从 0 开始的字段索引。不过 Scala 元祖编号从 1 开始，Java 元祖编号从 0 开始。</p>
+<h2 id="嵌套字段"><a href="#嵌套字段" class="headerlink" title="嵌套字段"></a>嵌套字段</h2><p>如需选择 POJO 和元祖中嵌套字段，可以利用”.“来区分嵌套级别。假设有以下样例类：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Address</span>(<span class="hljs-params"></span></span><br><span class="hljs-params"><span class="hljs-class">                  address: <span class="hljs-type">String</span>,</span></span><br><span class="hljs-params"><span class="hljs-class">                  zip: <span class="hljs-type">String</span>,</span></span><br><span class="hljs-params"><span class="hljs-class">                  country: <span class="hljs-type">String</span></span></span><br><span class="hljs-params"><span class="hljs-class">                  </span>)</span><br><span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span>(<span class="hljs-params"></span></span><br><span class="hljs-params"><span class="hljs-class">                 name: <span class="hljs-type">String</span>,</span></span><br><span class="hljs-params"><span class="hljs-class">                 birthday: (<span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span></span>), <span class="hljs-comment">//年月日</span></span><br>                 address: <span class="hljs-type">Address</span><br>                 )<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，Person 的 address 是 Address 类型，有三种属性，我们需要通过 zip 来进行区分时可以采用下面方式：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.apitest<br><span class="hljs-keyword">import</span> org.apache.flink.api.java.tuple.<span class="hljs-type">Tuple</span><br><span class="hljs-keyword">import</span> org.apache.flink.api.scala.createTypeInformation<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.scala.&#123;<span class="hljs-type">DataStream</span>, <span class="hljs-type">KeyedStream</span>, <span class="hljs-type">StreamExecutionEnvironment</span>&#125;<br><br><span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Address</span>(<span class="hljs-params"></span></span><br><span class="hljs-params"><span class="hljs-class">                  address: <span class="hljs-type">String</span>,</span></span><br><span class="hljs-params"><span class="hljs-class">                  zip: <span class="hljs-type">String</span>,</span></span><br><span class="hljs-params"><span class="hljs-class">                  country: <span class="hljs-type">String</span></span></span><br><span class="hljs-params"><span class="hljs-class">                  </span>)</span><br><span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span>(<span class="hljs-params"></span></span><br><span class="hljs-params"><span class="hljs-class">                 name: <span class="hljs-type">String</span>,</span></span><br><span class="hljs-params"><span class="hljs-class">                 birthday: (<span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span></span>), <span class="hljs-comment">//年月日</span></span><br>                 address: <span class="hljs-type">Address</span><br>                 )<br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">KeyValueTest</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-keyword">val</span> env: <span class="hljs-type">StreamExecutionEnvironment</span> = <span class="hljs-type">StreamExecutionEnvironment</span>.getExecutionEnvironment<br>    <span class="hljs-keyword">val</span> person: <span class="hljs-type">DataStream</span>[<span class="hljs-type">Person</span>] = env.fromElements(<span class="hljs-keyword">new</span> <span class="hljs-type">Person</span>(<span class="hljs-string">&quot;zhangsan&quot;</span>, (<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>), <span class="hljs-keyword">new</span> <span class="hljs-type">Address</span>(<span class="hljs-string">&quot;a&quot;</span>,<span class="hljs-string">&quot;b&quot;</span>,<span class="hljs-string">&quot;c&quot;</span>)))<br>    <span class="hljs-keyword">val</span> persons: <span class="hljs-type">DataStream</span>[<span class="hljs-type">Person</span>] = person.keyBy(<span class="hljs-string">&quot;address.zip&quot;</span>)<br>    persons.print()<br>    env.execute(<span class="hljs-string">&quot;.&quot;</span>)<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="混合类型上的嵌套表达式"><a href="#混合类型上的嵌套表达式" class="headerlink" title="混合类型上的嵌套表达式"></a>混合类型上的嵌套表达式</h3><p>若需要访问嵌套在 POJO 中某一元祖的字段：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala">persons.keyBy(<span class="hljs-string">&quot;birthday._1&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>可以使用通配符字段表达式”_“选择全部字段</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala">persons.keyBy(<span class="hljs-string">&quot;birthday._&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="键值选择器"><a href="#键值选择器" class="headerlink" title="键值选择器"></a>键值选择器</h2><p>第三种指定键值的方法是使用 KeySelector 函数，它可以从输入事件中提取键值</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.apitest<br><br><span class="hljs-keyword">import</span> org.apache.flink.api.java.tuple.<span class="hljs-type">Tuple</span><br><span class="hljs-keyword">import</span> org.apache.flink.api.scala.createTypeInformation<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.scala.&#123;<span class="hljs-type">DataStream</span>, <span class="hljs-type">KeyedStream</span>, <span class="hljs-type">StreamExecutionEnvironment</span>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">KeyValueTest</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-keyword">val</span> env: <span class="hljs-type">StreamExecutionEnvironment</span> = <span class="hljs-type">StreamExecutionEnvironment</span>.getExecutionEnvironment<br><br>    <span class="hljs-keyword">val</span> sensorStream: <span class="hljs-type">DataStream</span>[<span class="hljs-type">SensorReading</span>] = env.fromElements(<span class="hljs-type">SensorReading</span>(<span class="hljs-string">&quot;1&quot;</span>, <span class="hljs-number">20200225</span>, <span class="hljs-number">20.0</span>), <span class="hljs-type">SensorReading</span>(<span class="hljs-string">&quot;2&quot;</span>, <span class="hljs-number">20200226</span>, <span class="hljs-number">21.0</span>))<br>    <span class="hljs-comment">// 键值选择器</span><br>    <span class="hljs-keyword">val</span> byId: <span class="hljs-type">KeyedStream</span>[<span class="hljs-type">SensorReading</span>, <span class="hljs-type">String</span>] = sensorStream<br>      .keyBy(r =&gt; r.id)<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>KeySelector 函数接收一个输入项，返回一个键值。会根据返回的键值进行分组。</p>
+<p>这个实例中，KeySelector 函数会返回元祖中最大的字段作为键值</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.apitest<br><br><span class="hljs-keyword">import</span> org.apache.flink.api.java.tuple.<span class="hljs-type">Tuple</span><br><span class="hljs-keyword">import</span> org.apache.flink.api.scala.createTypeInformation<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.scala.&#123;<span class="hljs-type">DataStream</span>, <span class="hljs-type">KeyedStream</span>, <span class="hljs-type">StreamExecutionEnvironment</span>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">KeyValueTest</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-keyword">val</span> env: <span class="hljs-type">StreamExecutionEnvironment</span> = <span class="hljs-type">StreamExecutionEnvironment</span>.getExecutionEnvironment<br><br>    <span class="hljs-comment">// 键值选择器2</span><br>    <span class="hljs-keyword">val</span> key_input: <span class="hljs-type">DataStream</span>[(<span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>)] = env.fromElements((<span class="hljs-number">1</span>, <span class="hljs-number">1</span>), (<span class="hljs-number">2</span>, <span class="hljs-number">3</span>))<br>    <span class="hljs-keyword">val</span> keyedStream = key_input.keyBy(value =&gt; math.max(value._1, value._2))<br>    keyedStream.print()<br>    env.execute(<span class="hljs-string">&quot;key_selector&quot;</span>)<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/" class="category-chain-item">大数据</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/" class="category-chain-item">实时计算</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/Flink/" class="category-chain-item">Flink</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/Flink/%E5%9F%BA%E4%BA%8EApache-Flink%E7%9A%84%E6%B5%81%E5%A4%84%E7%90%86/" class="category-chain-item">基于Apache Flink的流处理</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>5.DataStream API（1.7版本）</div>
+      <div>http://example.com/2022/12/5f45f2f08dc6.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/0dbee4ce3eb3.html" title="6.1 基于窗口的算子">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">6.1 基于窗口的算子</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/538ed9c427ef.html" title="4.Apache Flink架构">
+                        <span class="hidden-mobile">4.Apache Flink架构</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/5f45f2f08dc6.html';
+          this.page.identifier = '/2022/12/5f45f2f08dc6.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,964 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="在这里做一个小总结。  一个 Java 程序对应一个进程 一个进程对应一个 jvm 实例 一个 jvm 实例中只有一个运行时数据区 一个运行时数据区只有一个方法区和堆 一个进程中的多个线程需要共享同一个方法区，堆空间 每一个线程拥有独立的一套程序计数器，本地方法栈和虚拟机栈  核心概述 Java 堆区在 JVM 启动的时候即被创建，其空间大小也就确定了。是 JVM 管理的最大一块内存。 此内存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2.3.3 Java堆">
+<meta property="og:url" content="http://example.com/2022/12/d5227f72cbcf.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="在这里做一个小总结。  一个 Java 程序对应一个进程 一个进程对应一个 jvm 实例 一个 jvm 实例中只有一个运行时数据区 一个运行时数据区只有一个方法区和堆 一个进程中的多个线程需要共享同一个方法区，堆空间 每一个线程拥有独立的一套程序计数器，本地方法栈和虚拟机栈  核心概述 Java 堆区在 JVM 启动的时候即被创建，其空间大小也就确定了。是 JVM 管理的最大一块内存。 此内存">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221229204642.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221230011817.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221230011959.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221230014806.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221230021720.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221230110245.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221230131314.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231141144.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231141333.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231141741.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231143409.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231145250.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231145401.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231145547.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231145656.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231145720.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231154534.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20230102005535.png">
+<meta property="article:published_time" content="2022-12-29T07:53:35.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221229204642.png">
+  
+  
+  
+  <title>2.3.3 Java堆 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2.3.3 Java堆"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-29 15:53" pubdate>
+          2022年12月29日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          67 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">2.3.3 Java堆</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221229204642.png" srcset="/img/loading.gif" lazyload width = "60%" />
+
+<p>在这里做一个小总结。</p>
+<ul>
+<li>一个 Java 程序对应一个进程</li>
+<li>一个进程对应一个 jvm 实例</li>
+<li>一个 jvm 实例中只有一个运行时数据区</li>
+<li>一个运行时数据区只有一个方法区和堆</li>
+<li>一个进程中的多个线程需要共享同一个方法区，堆空间</li>
+<li>每一个线程拥有独立的一套程序计数器，本地方法栈和虚拟机栈</li>
+</ul>
+<h1 id="核心概述"><a href="#核心概述" class="headerlink" title="核心概述"></a>核心概述</h1><ul>
+<li>Java 堆区在 <strong>JVM 启动的时候</strong>即被创建，其空间大小也就确定了。是 JVM 管理的最大一块内存。</li>
+<li>此内存区域的<strong>唯一目的</strong>就是存放对象实例了，Java 世界里<strong>几乎</strong>所有对象实例都在这里分配内存。注意: 这里的几乎是因为随着编译技术的进步，尤其是逃逸分析技术的日渐强大，栈上分配、标量替换优化手段已经导致一些微妙的变化悄然发生，所以说 Java 对象实例都分配在堆上也渐渐变得不是那么绝对了。</li>
+<li>堆内存的大小是可以调节的</li>
+<li>堆可以处于<strong>物理上不连续</strong>的内存空间中，但在<strong>逻辑上</strong>它应该被视为<strong>连续</strong>的。</li>
+<li>所有的线程共享 Java 堆，在这里还可以划分线程私有的缓冲区（TLAB）。注意：因此，堆空间并不是完全共享的（目的是解决堆的并发性太低的问题）</li>
+<li>在方法结束后，堆中的对象不会马上被移除，仅仅在<strong>垃圾收集的时候才会被移除</strong>。</li>
+<li>堆，是 GC 执行垃圾回收的重点区域</li>
+</ul>
+<p>这里我们来证明一下堆空间大小参数设置的效果以及堆空间与线程的统一性，也就是说，堆空间是和线程绑定的，每个 JVM 线程对应一个堆空间</p>
+<p>首先我们写两个程序，里面内容是相同的，但是 VM 参数不同</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/30 00:45</span><br><span class="hljs-comment"> * VM 参数：-Xms10m -Xmx10m</span><br><span class="hljs-comment"> **/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HeapDemo</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;start...&quot;</span>);<br>        <span class="hljs-keyword">try</span> &#123;<br>            Thread.sleep(<span class="hljs-number">1000000</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>        System.out.println(<span class="hljs-string">&quot;end...&quot;</span>);<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/30 00:45</span><br><span class="hljs-comment"> * VM 参数：-Xms20m -Xmx20m</span><br><span class="hljs-comment"> **/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HeapDemo1</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;start...&quot;</span>);<br>        <span class="hljs-keyword">try</span> &#123;<br>            Thread.sleep(<span class="hljs-number">1000000</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>        System.out.println(<span class="hljs-string">&quot;end...&quot;</span>);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>这里 <code>Thread.sleep(1000000)</code> 是为了让程序不马上结束，我们能查看到具体细节，并且这里 VM 参数是不同的，一个设置为了 10M 堆空间，一个设置为了 20M 堆空间。</p>
+<p>运行起来之后我们打开程序 VisualVM，来看下效果：</p>
+<p>首先是 HeapDemo，这里我们设置的是 10M 堆空间，可以看到 Eden Space + Survivor 0 区 + Survivor 1 区 + Old Gen 的空间之和就是 10M。</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221230011817.png" srcset="/img/loading.gif" lazyload width = "80%" />
+
+<p>注意，这里是没有包括方法区的，关于方法区的具体解释可以看下一章 [[2.3.4 方法区]]</p>
+<p>HeapDemo1 同理，这里是 20M：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221230011959.png" srcset="/img/loading.gif" lazyload width = "80%" />
+
+<p>并且这两个进程是完全独立的，也证明了两个进程的堆空间是完全独立的。</p>
+<h1 id="堆的内存细分"><a href="#堆的内存细分" class="headerlink" title="堆的内存细分"></a>堆的内存细分</h1><p>现代垃圾收集器大部分都基于<strong>分代收集理论</strong>设计，堆空间细分为：</p>
+<h2 id="JDK7-及之前的堆内存"><a href="#JDK7-及之前的堆内存" class="headerlink" title="JDK7 及之前的堆内存"></a>JDK7 及之前的堆内存</h2><p><strong>逻辑上</strong>主要分为三部分：新生区+养老区+永久区</p>
+<ul>
+<li>Young Generation Space 新生区&#x2F;新生代&#x2F;年轻代 Young&#x2F;New<br>  其中新生区又被分为 Eden 区和 Survivor 区</li>
+<li>Tenure Generation Space 养老区&#x2F;老年区&#x2F;老年代 Old&#x2F;Tenure</li>
+<li>Permanent Space 永久区&#x2F;永久代 Perm</li>
+</ul>
+<h2 id="JDK8-及之后的堆内存"><a href="#JDK8-及之后的堆内存" class="headerlink" title="JDK8 及之后的堆内存"></a>JDK8 及之后的堆内存</h2><p><strong>逻辑上</strong>分为三部分：新生区+养老区+元空间</p>
+<ul>
+<li>Young Generation Space 新生区&#x2F;新生代&#x2F;年轻代 Young&#x2F;New<br>  其中新生区又被分为 Eden 区和 Survivor 区</li>
+<li>Tenure Generation Space 养老区&#x2F;老年区&#x2F;老年代 Old&#x2F;Tenure</li>
+<li>Meta Space 元空间 Meta</li>
+</ul>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221230014806.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<h2 id="分代的原因"><a href="#分代的原因" class="headerlink" title="分代的原因"></a>分代的原因</h2><p>经研究，不同对象的生命周期不同，70%-99%的对象是临时对象。</p>
+<p>因此通过新生代和老年代的区分，在不同区域采用不同的垃圾回收算法，能很大程度提升程序运行效率。</p>
+<h2 id="分代说明"><a href="#分代说明" class="headerlink" title="分代说明"></a>分代说明</h2><p>我们来看一个程序：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/30 01:52</span><br><span class="hljs-comment"> * VM 参数：</span><br><span class="hljs-comment"> * -Xms10m -Xmx10m -XX:+PrintGCDetails</span><br><span class="hljs-comment"> * 目的是为了查看堆内存的结构，运行之后查看输出</span><br><span class="hljs-comment"> **/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SimpleHeap</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> id;<span class="hljs-comment">//属性，成员变量</span><br><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">SimpleHeap</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> &#123;<br>        <span class="hljs-built_in">this</span>.id = id;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">show</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;My ID is &quot;</span> + id);<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">SimpleHeap</span> <span class="hljs-variable">s1</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleHeap</span>(<span class="hljs-number">1</span>);<br>        <span class="hljs-type">SimpleHeap</span> <span class="hljs-variable">s2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleHeap</span>(<span class="hljs-number">2</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>它的 VM 参数是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">-Xms10m -Xmx10m -XX:+PrintGCDetails<br></code></pre></td></tr></table></figure>
+
+<p>这个程序的目的是为了查看堆内存的结果，将其运行，输出为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java">Heap<br> PSYoungGen      total 2560K, used 1521K [<span class="hljs-number">0x00000007ffd00000</span>, <span class="hljs-number">0x0000000800000000</span>, <span class="hljs-number">0x0000000800000000</span>)<br>  eden space 2048K, <span class="hljs-number">74</span>% used [<span class="hljs-number">0x00000007ffd00000</span>,<span class="hljs-number">0x00000007ffe7c7a0</span>,<span class="hljs-number">0x00000007fff00000</span>)<br>  from space 512K, <span class="hljs-number">0</span>% used [<span class="hljs-number">0x00000007fff80000</span>,<span class="hljs-number">0x00000007fff80000</span>,<span class="hljs-number">0x0000000800000000</span>)<br>  to   space 512K, <span class="hljs-number">0</span>% used [<span class="hljs-number">0x00000007fff00000</span>,<span class="hljs-number">0x00000007fff00000</span>,<span class="hljs-number">0x00000007fff80000</span>)<br> ParOldGen       total 7168K, used 0K [<span class="hljs-number">0x00000007ff600000</span>, <span class="hljs-number">0x00000007ffd00000</span>, <span class="hljs-number">0x00000007ffd00000</span>)<br>  object space 7168K, <span class="hljs-number">0</span>% used [<span class="hljs-number">0x00000007ff600000</span>,<span class="hljs-number">0x00000007ff600000</span>,<span class="hljs-number">0x00000007ffd00000</span>)<br> Metaspace       used 3132K, capacity 4496K, committed 4864K, reserved 1056768K<br>  <span class="hljs-keyword">class</span> <span class="hljs-title class_">space</span>    used 333K, capacity 388K, committed 512K, reserved 1048576K<br></code></pre></td></tr></table></figure>
+
+<p>注意，这里用 jdk8 比较有效果，用 jdk11 输出的看没啥用</p>
+<p>可以看到，堆空间分为新生代，老年代和元空间，其中新生代+老年代就是 10M，等于堆空间的大小。并且这里方法区为元空间。</p>
+<p>注意，如果将 jdk 版本改为 jdk7 或之前，这里的元空间会变成 PermSpace，也就是永久代。</p>
+<h1 id="堆空间大小设置"><a href="#堆空间大小设置" class="headerlink" title="堆空间大小设置"></a>堆空间大小设置</h1><p>设置堆空间大小一共有两个参数：</p>
+<ul>
+<li><code>-Xms10M</code> 设置堆空间起始内存为 10M，等价于 <code>-XX:InitialHeapSize</code></li>
+<li><code>-Xmx10M</code> 设置堆空间最大为 10M，等价于 <code>-XX:MaxHeapSize</code></li>
+</ul>
+<h3 id="默认内存大小"><a href="#默认内存大小" class="headerlink" title="默认内存大小"></a>默认内存大小</h3><p>默认情况下</p>
+<ul>
+<li>初始内存大小 &#x3D; 物理电脑内存大小 &#x2F; 64</li>
+<li>最大内存大小 &#x3D; 物理电脑内存大小 &#x2F; 4</li>
+</ul>
+<h2 id="默认内存大小查看"><a href="#默认内存大小查看" class="headerlink" title="默认内存大小查看"></a>默认内存大小查看</h2><p>我们写一段程序来查看电脑默认内存大小：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/30 02:11</span><br><span class="hljs-comment"> * 查看堆内存的初始大小以及堆内存大小设置</span><br><span class="hljs-comment"> * 设置堆空间大小一共有两个参数：</span><br><span class="hljs-comment"> * - `-Xms10M` 设置堆空间起始内存为 10M，等价于 `-XX:InitialHeapSize`</span><br><span class="hljs-comment"> * - `-Xmx10M` 设置堆空间最大为 10M，等价于 `-XX:MaxHeapSize`</span><br><span class="hljs-comment"> * 默认内存大小:</span><br><span class="hljs-comment"> * - 初始内存大小 = 物理电脑内存大小 / 64</span><br><span class="hljs-comment"> * - 最大内存大小 = 物理电脑内存大小 / 4</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> **/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HeapSpaceInitial</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-comment">// 返回Java虚拟机中堆内存总量</span><br>        <span class="hljs-type">long</span> <span class="hljs-variable">initialMemory</span> <span class="hljs-operator">=</span> Runtime.getRuntime().totalMemory() / <span class="hljs-number">1024</span> / <span class="hljs-number">1024</span>;<br>        <span class="hljs-comment">// 返回Java虚拟机视图使用的最大堆内存量</span><br>        <span class="hljs-type">long</span> <span class="hljs-variable">maxMemory</span> <span class="hljs-operator">=</span> Runtime.getRuntime().maxMemory() / <span class="hljs-number">1024</span> / <span class="hljs-number">1024</span>;<br><br>        System.out.println(<span class="hljs-string">&quot;-Xms : &quot;</span> + initialMemory + <span class="hljs-string">&quot;M&quot;</span>);<br>        System.out.println(<span class="hljs-string">&quot;-Xmx : &quot;</span> + maxMemory + <span class="hljs-string">&quot;M&quot;</span>);<br><br>        System.out.println(<span class="hljs-string">&quot;系统内存大小为： &quot;</span> + initialMemory * <span class="hljs-number">64.0</span> / <span class="hljs-number">1024</span> + <span class="hljs-string">&quot;G&quot;</span>);<br>        System.out.println(<span class="hljs-string">&quot;系统内存大小为： &quot;</span> + maxMemory * <span class="hljs-number">4.0</span> / <span class="hljs-number">1024</span> + <span class="hljs-string">&quot;G&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Macos-系统执行"><a href="#Macos-系统执行" class="headerlink" title="Macos 系统执行"></a>Macos 系统执行</h3><p>第一次我们不填写任务参数进行运行，看下输出：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs txt">-Xms : 256M<br>-Xmx : 4096M<br>系统内存大小为： 16.0G<br>系统内存大小为： 16.0G<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，和我电脑主机情况是完全相同的。</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221230021720.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>第二次我们填写参数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">-Xms600M -Xmx600M<br></code></pre></td></tr></table></figure>
+
+<p>此时我们会看到以下输出：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs txt">-Xms : 600M<br>-Xmx : 600M<br>系统内存大小为： 37.5G<br>系统内存大小为： 2.34375G<br></code></pre></td></tr></table></figure>
+
+<p>这个显然是和我们系统不相匹配的，因为这里是我们手动设置的。</p>
+<p>有一个需要注意的：<br><strong>在开发中建议将初始堆内存和最大堆内存设置成相同值</strong>，原因是避免堆空间不断扩容，一开始直接设置堆空间大小可以避免在程序运行过程中堆空间不足而不断进行的扩容操作。</p>
+<h3 id="Windows-系统执行"><a href="#Windows-系统执行" class="headerlink" title="Windows 系统执行"></a>Windows 系统执行</h3><p>第一次我们不填写任何 VM 参数，看输出：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs txt">-Xms : 489M<br>-Xmx : 7246M<br>系统内存大小为： 30.5625G<br>系统内存大小为： 28.3046875G<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，和我的 windows 电脑情况也是相同的：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221230110245.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>第二次我们填写入 VM 参数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">-Xms600M -Xmx600M<br></code></pre></td></tr></table></figure>
+
+<p>来看输出：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs txt">-Xms : 575M<br>-Xmx : 575M<br>系统内存大小为： 35.9375G<br>系统内存大小为： 2.24609375G<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，在有参数输入的情况下，我们可以看到无论是 MACOS 系统还是 WINDOWS 系统都有相同的输出。</p>
+<h2 id="年轻代和老年代"><a href="#年轻代和老年代" class="headerlink" title="年轻代和老年代"></a>年轻代和老年代</h2><p>存储在 JVM 中的 Java 对象可以分为两类</p>
+<ul>
+<li>生命周期较短的瞬时对象，这类对象的创建和消亡都非常迅速</li>
+<li>生命周期非常长，在某些极端情况下能够与 JVM 的生命周期保持一致</li>
+</ul>
+<p>因此，生命周期短的放在年轻代，可以经常进行 GC，生命周期长的放在老年代，较为稳定。</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221230131314.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<h3 id="调整年轻代和老年代的大小"><a href="#调整年轻代和老年代的大小" class="headerlink" title="调整年轻代和老年代的大小"></a>调整年轻代和老年代的大小</h3><ul>
+<li>默认 <code>-XX:NewRatio=2</code>，表示新生代占 1，老年代占 2</li>
+<li>可以修改 <code>-XX:NewRatio=4</code>，表示新生代占 1，老年代占 4</li>
+</ul>
+<p>在 HotSpot 中，Eden 空间和另外两个 Survivor 空间缺省所占比例是 <code>8:1:1</code>。</p>
+<p>开发人员可以通过 <code>-XX:SurvivorRatio</code> 调整这个空间比例。</p>
+<p>注意，绝大部分的 Java 对象的销毁都在新生代进行（80%）</p>
+<p>可以使用 <code>-Xmn</code> 设置新生代的空间大小（一般不设置）</p>
+<h1 id="图解对象分配"><a href="#图解对象分配" class="headerlink" title="图解对象分配"></a>图解对象分配</h1><h2 id="对象分配的一般过程"><a href="#对象分配的一般过程" class="headerlink" title="对象分配的一般过程"></a>对象分配的一般过程</h2><p>主要分为三种形式：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231141144.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<p>这是第一种情况，当 S0 和 S1 区都是空的时候，若 Eden 区已满，则会进行一次 Young GC，将 Eden 区中的垃圾清理，存活的对象移动到 S0 或者 S1 区，并且垃圾的引用计数器会加 1。</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231141333.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<p>这是第二种情况，当 S0 或 S1 不为空时（这两个不可能同时不为空，我们称不空的为 From 区，为空的为 To 区），若 Eden 区已满，则会进行一个 Young GC，将 Eden 中的垃圾清理，存活的对象和 From 区中的对象一起移动到 To 区。</p>
+<p>需要注意的是，进行 Young GC 时，From 区中的对象也会进行检查，为空的也会被清理。</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231141741.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<p>这是第三种情况，当 From 区中有元素的计数器达到 15 时，证明 15 次都没有将该对象进行回收，JVM 会将这个对象移动至老年代，其余对象还是移动到 To 区。</p>
+<p>注意，这个数字 15 可以通过 <code>-XX:MaxTenuringThreshold=&lt;N&gt;</code> 进行设置。</p>
+<p>总结：</p>
+<ul>
+<li>针对幸存者 S0，S1 区的总结：复制之后有交换，谁空谁是 To</li>
+<li>关于垃圾回收：频繁在新生区手机，很少在养老区手机，几乎不在永久区&#x2F;元空间收集</li>
+</ul>
+<h2 id="对象分配的特殊规则"><a href="#对象分配的特殊规则" class="headerlink" title="对象分配的特殊规则"></a>对象分配的特殊规则</h2><img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231143409.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<p>这里全面介绍了对象分配的策略。右边的框代表了 Young GC 的具体过程。</p>
+<h2 id="对象分配过程区域变化"><a href="#对象分配过程区域变化" class="headerlink" title="对象分配过程区域变化"></a>对象分配过程区域变化</h2><p>来看一段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/31 14:40</span><br><span class="hljs-comment"> * 利用该程序查看堆空间各个区域随着对象创建的变化情况</span><br><span class="hljs-comment"> * 以及Young GC情况下各个区域（S0,S1,Eden,老年代)区域的变化情况</span><br><span class="hljs-comment"> **/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HeapInstance</span> &#123;<br>    <span class="hljs-type">byte</span>[] buffer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[<span class="hljs-keyword">new</span> <span class="hljs-title class_">Random</span>().nextInt(<span class="hljs-number">1024</span> * <span class="hljs-number">200</span>)];<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        ArrayList&lt;HeapInstance&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br>        <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123;<br>            list.add(<span class="hljs-keyword">new</span> <span class="hljs-title class_">HeapInstance</span>());<br>            <span class="hljs-keyword">try</span> &#123;<br>                Thread.sleep(<span class="hljs-number">10</span>);<br>            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>                e.printStackTrace();<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，程序很简单，就是有一个程序不断创建对象，jdk 版本为 1.8，VM 参数为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">-Xms600m -Xmx600m<br></code></pre></td></tr></table></figure>
+
+<p>我们让程序运行，打开 VisualVM，可以看到，一开始是这样的：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231145250.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<p>此时对象创建在 Eden 中，S0，S1 和 Old 区都是空的。</p>
+<p>然后等 Eden 满了后，按照上面我们的学习，会进行 Young GC，此时是这样的：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231145401.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<p>可以看到，此时 Eden 区的对象理论上应该全部进入 S1 区中，但是因为 Eden 中的对象并没有被回收掉（程序里保留着引用，放在数组里），并且 Eden 和 S0、S1 的比例是 8:1: 1，因此放不下的对象被直接放入老年代中。然后随着第二次 Eden 区满了，会再次进行 Young GC，我们可以看到：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231145547.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<p>S1 的对象全部进入了 S0 区，并且按照上面的分析，S0 区也放不下，因此还是会有很多对象进入 Old 区。</p>
+<p>一直重复，直到 Old 区也满了：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231145656.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<p>可以看到，Old 区满了，然后程序终止，直接报错：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231145720.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<p>报错 OOM，和我们的预期也是相符合的。</p>
+<h1 id="GC-概述"><a href="#GC-概述" class="headerlink" title="GC 概述"></a>GC 概述</h1><p>JVM 在进行 GC 时，并非每次都对上面三个内存（新生代、老年代；方法区）区域一起回收的，大部分时候回收的都是指新生代。</p>
+<p>针对 HotSpot VM 的时间，它里面的 GC 按照回收区域又分为两大类型：</p>
+<ul>
+<li>部分收集（Partial GC）</li>
+<li>整堆收集（Full GC）</li>
+</ul>
+<h2 id="部分收集"><a href="#部分收集" class="headerlink" title="部分收集"></a>部分收集</h2><h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>部分收集：不是完整收集整个 Java 堆的垃圾收集。其中又分为：</p>
+<ul>
+<li>新生代收集（Minor GC &#x2F; Young GC）：只是新生代的垃圾收集</li>
+<li>老年代收集（Major GC &#x2F; Old GC）：只是老年代的垃圾收集<ul>
+<li>目前只有 CMS GC 会有单独收集老年代的行为</li>
+<li>注意，很多时候 Major GC 会和 Full GC 混淆使用，需要具体分辨是老年代回收还是整堆回收</li>
+</ul>
+</li>
+<li>混合收集（Mixed GC）：收集整个新生代以及部分老年代的垃圾收集。<ul>
+<li>目前，只有 G1 GC 会有这种行为</li>
+</ul>
+</li>
+</ul>
+<h2 id="整堆收集"><a href="#整堆收集" class="headerlink" title="整堆收集"></a>整堆收集</h2><p>Full GC，收集整个 Java 堆和方法区的垃圾收集。</p>
+<h2 id="Minor-GC-触发机制"><a href="#Minor-GC-触发机制" class="headerlink" title="Minor GC 触发机制"></a>Minor GC 触发机制</h2><p>当年轻代空间不足时，就会触发 Minor GC，这里的年轻代指的是 <strong>Eden 代满</strong>，Survivor 满不会引发 GC。</p>
+<p>因为 Java 对象大多数都具备<strong>朝生夕死</strong>的特性，所以 Minor GC 非常频繁，一般回收速度也比较快。</p>
+<p>Minor GC 会引发 STW，暂停其他用户的线程，等垃圾回收结束，用户线程才恢复运行。</p>
+<h2 id="Major-GC-触发机制"><a href="#Major-GC-触发机制" class="headerlink" title="Major GC 触发机制"></a>Major GC 触发机制</h2><p>指发生在老年代的 GC，对象从老年代消失时，我们说 Major GC 或者 Full GC 发生了。</p>
+<p>出现了 Major GC，经常会伴随至少一次的 Minor GC，也就是在老年代空间不足时，会先尝试触发 Minor GC，如果之后空间还不足，则触发 Major GC。</p>
+<p>Major GC 的速度一般会比 Minor GC 慢 10 倍以上，STW 的时间更长。</p>
+<p>如果 Major GC 后，内存还不足，就报 OOM 了。</p>
+<h1 id="TLAB"><a href="#TLAB" class="headerlink" title="TLAB"></a>TLAB</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>从分配内存的角度看，所有线程共享的 Java 堆中可以划分出多个线程私有的分配缓冲区（Thread Local Allocation Buffer, TLAB）, 以提升对象分配时的效率。</p>
+<ul>
+<li>从内存模型而不是垃圾收集的角度，对 Eden 区域继续进行划分，JVM 为每个线程分配了一个私有缓存区域，它包含在 Eden 空间中</li>
+<li>多线程同时分配内存时，使用 TLAB 可以变一系列非线程安全问题，同时还能提升内存分配的吞吐量，因此我们将这种内存分配方式称为<strong>快速分配策略</strong></li>
+<li>所有 OpenJDK 衍生出来的 JVM 都提供了 TLAB 设计</li>
+</ul>
+<h2 id="为什么有-TLAB"><a href="#为什么有-TLAB" class="headerlink" title="为什么有 TLAB"></a>为什么有 TLAB</h2><ul>
+<li>堆区是线程共享区域，任何线程都可以访问到堆区中的共享数据</li>
+<li>由于对象实例的创建在 JVM 中非常频繁，因此在并发环境下从堆中划分内存是线程不安全的</li>
+<li>为避免多个线程操作同一地址，需要使用加锁等机制，进而影响分配速度</li>
+</ul>
+<h2 id="图示-TLAB"><a href="#图示-TLAB" class="headerlink" title="图示 TLAB"></a>图示 TLAB</h2><img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221231154534.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<p>如图所示，每个线程都拥有一部分自己私有的 TLAB，是在 <strong>Eden 区</strong>中。</p>
+<h2 id="TLAB-再说明"><a href="#TLAB-再说明" class="headerlink" title="TLAB 再说明"></a>TLAB 再说明</h2><ul>
+<li>尽管不是所有的对象实例都可以在 TLAB 中成功分配内存（因为这部分区域相对较小），但 <strong>JVM 确实是将 TLAB 作为内存分配的首选</strong></li>
+<li>在程序中，开发人员可以通过选项 <code>-XX:UseTLAB</code> 设置是否开启 TLAB 空间</li>
+<li>默认情况下，TLAB 空间的内存非常小，**仅占有整个 Eden 空间的 1%**，当然我们可以通过选项 <code>-XX:TLABWasteTargetPercent</code> 设置 TLAB 空间所占用 Eden 空间的百分比大小</li>
+<li>一旦对象在 TLAB 空间分配内存失败，JVM 就会尝试<strong>通过加锁机制</strong>确保数据操作的原子性，从而直接在 Eden 空间中分配内存</li>
+</ul>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20230102005535.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<h1 id="堆是分配对象存储的唯一选择吗？"><a href="#堆是分配对象存储的唯一选择吗？" class="headerlink" title="堆是分配对象存储的唯一选择吗？"></a>堆是分配对象存储的唯一选择吗？</h1><p>这块其实是编译器优化技术方面的内容，具体可以参考[[11.4.3 逃逸分析]]</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" class="category-chain-item">编程语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" class="category-chain-item">Java</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/" class="category-chain-item">Java语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/JVM/" class="category-chain-item">JVM</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/JVM/%E7%AC%AC2%E7%AB%A0-Java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8/" class="category-chain-item">第2章 Java内存区域与内存溢出异常</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/JVM/%E7%AC%AC2%E7%AB%A0-Java%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E4%B8%8E%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8/2-3-%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA%E5%9F%9F/" class="category-chain-item">2.3 运行时数据区域</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2.3.3 Java堆</div>
+      <div>http://example.com/2022/12/d5227f72cbcf.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/a04cd4300ac5.html" title="2.3.5 运行时常量池">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2.3.5 运行时常量池</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/0ccb3788e564.html" title="2.3.4 方法区">
+                        <span class="hidden-mobile">2.3.4 方法区</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/d5227f72cbcf.html';
+          this.page.identifier = '/2022/12/d5227f72cbcf.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

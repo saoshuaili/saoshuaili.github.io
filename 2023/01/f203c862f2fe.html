@@ -1,0 +1,829 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="注解的背景和概述注解（也被称为元数据）为我们在代码中添加信息提供了一种形式化的方式，使我们可以在稍后的某个时刻更容易的使用这些数据。 注解在一定程度上是&#x3D;&#x3D;把元数据和源代码文件结合在一起&#x3D;&#x3D;的趋势所激发的，而不是保存在外部文档。这同样是对像 C# 语言对于 Java 语言特性压力的一种回应。 注解是 Java 5 所引入的众多语言变化之一。它们提供了 Jav">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1. 概述">
+<meta property="og:url" content="http://example.com/2023/01/f203c862f2fe.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="注解的背景和概述注解（也被称为元数据）为我们在代码中添加信息提供了一种形式化的方式，使我们可以在稍后的某个时刻更容易的使用这些数据。 注解在一定程度上是&#x3D;&#x3D;把元数据和源代码文件结合在一起&#x3D;&#x3D;的趋势所激发的，而不是保存在外部文档。这同样是对像 C# 语言对于 Java 语言特性压力的一种回应。 注解是 Java 5 所引入的众多语言变化之一。它们提供了 Jav">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230126140152.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230127131057.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230127131409.png">
+<meta property="article:published_time" content="2023-01-26T05:01:16.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230126140152.png">
+  
+  
+  
+  <title>1. 概述 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="1. 概述"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-01-26 13:01" pubdate>
+          2023年1月26日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">1. 概述</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="注解的背景和概述"><a href="#注解的背景和概述" class="headerlink" title="注解的背景和概述"></a>注解的背景和概述</h1><p>注解（也被称为元数据）为我们在代码中添加信息提供了一种形式化的方式，使我们可以在稍后的某个时刻更容易的使用这些数据。</p>
+<p>注解在一定程度上是&#x3D;&#x3D;把元数据和源代码文件结合在一起&#x3D;&#x3D;的趋势所激发的，而不是保存在外部文档。这同样是对像 C# 语言对于 Java 语言特性压力的一种回应。</p>
+<p>注解是 Java 5 所引入的众多语言变化之一。它们提供了 Java 无法表达的但是你需要完整表述程序所需的信息。因此，注解使得我们可以以编译器验证的格式存储程序的额外信息。注解可以生成描述符文件，甚至是新的类定义，并且有助于减轻编写 “样板” 代码的负担。通过使用注解，你可以将元数据保存在 Java 源代码中。并拥有如下优势： 简单易读的代码，编译器类型检查，使用 annotation API 为自己的注解构造处理工具。即使 Java 定义了一些类型的元数据，但是一般来说注解类型的添加和如何使用完全取决于你。</p>
+<p>每当创建涉及重复工作的类或接口时，你通常可以使用注解来自动化和简化流程。例如在 Enterprise JavaBean（EJB）中的许多额外工作就是通过注解来消除的。</p>
+<h1 id="注解的语法"><a href="#注解的语法" class="headerlink" title="注解的语法"></a>注解的语法</h1><p>注解的语法十分简单，主要是在现有语法中添加 @ 符号，还可以添加一些参数值。</p>
+<h1 id="注解的作用"><a href="#注解的作用" class="headerlink" title="注解的作用"></a>注解的作用</h1><ul>
+<li>注解不是程序本身，可以做程序做出解释（这点和注释的作用相同）</li>
+<li>可以被其他程序（比如编译器等）读取</li>
+</ul>
+<p>注解的出现可以替代一些现有的系统，例如 XDoclet，它是一种独立的文档化工具，专门设计用来生成注解风格的文档。与之相比，注解是真正语言层级的概念，以前构造出来就享有编译器的类型检查保护。注解在源代码级别保存所有信息而不是通过注释文字，这使得代码更加整洁和便于维护。通过使用拓展的 annotation API 或稍后在本章节可以看到的外部的字节码工具类库，你会拥有对源代码及字节码强大的检查与操作能力。</p>
+<h1 id="注解的使用"><a href="#注解的使用" class="headerlink" title="注解的使用"></a>注解的使用</h1><p>注解可以附加在 package, class, method, field 等上面，相当于给他们添加了额外的辅助信息。我们可以通过反射机制变成实现对这些元数据的访问。</p>
+<h1 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span>: CoachHe  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span>: 2023/1/26 13:58  </span><br><span class="hljs-comment"> * 注解简介  </span><br><span class="hljs-comment"> */</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Testable</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Object</span>&#123;  <br>	<span class="hljs-comment">// @Override 重写的注解</span><br>    <span class="hljs-meta">@Override</span>  <br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">toString</span><span class="hljs-params">()</span> &#123;  <br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;testable&quot;</span>;  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，这就是一个最基础的注解使用，重写了继承自 Object 类的方法，如果不存在该方法，则编译器会直接报错：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230126140152.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，我们写了个 <code>toString1()</code> 方法，并且用 <code>@Override</code> 做注解，发现这里直接编译不通过。因为父类中没有这个方法，无法重写。</p>
+<h1 id="标准注解和元注解"><a href="#标准注解和元注解" class="headerlink" title="标准注解和元注解"></a>标准注解和元注解</h1><h2 id="标准注解"><a href="#标准注解" class="headerlink" title="标准注解"></a>标准注解</h2><p>Java 5 引入了前三种定义在 <code>java.lang</code> 包中的标准注解</p>
+<ul>
+<li><code>@Override</code> ：表示当前的方法定义将覆盖基类的方法。如果你不小心拼写错误，或者方法签名被错误拼写的时候，编译器就会发出错误提示。</li>
+<li><code>@Deprecated</code> ：如果使用该注解的元素被调用，编译器就会发出警告信息。</li>
+<li><code>@SuppressWarnings</code> ：关闭不当的编译器警告信息。</li>
+</ul>
+<p>Java 7 之后引入了后两种标准注释：</p>
+<ul>
+<li><code>@SafeVarargs</code> ：在 Java 7 中加入用于禁止对具有泛型 varargs 参数的方法或构造函数的调用方发出警告。</li>
+<li><code>@FunctionalInterface</code> ：Java 8 中加入用于表示类型声明为函数式接口。</li>
+</ul>
+<h2 id="元注解"><a href="#元注解" class="headerlink" title="元注解"></a>元注解</h2><p>元注解的作用就是负责注解其他注解，Java 定义了 4 个标准的 meta-annotation 类型，他们被用来提供对其他注解类型作说明。</p>
+<p>这些类型和他们所支持的类在 <code>java.lang.annotation</code> 包中可以找到（<code>@Target</code>, <code>@Retetion</code>, <code>@Documented</code>, <code>@Inherited</code>）</p>
+<ul>
+<li><code>@Target</code> ：用于描述注解的使用方位（即：被描述的注解可以用在什么地方）</li>
+<li><code>@Retention</code> ：表示需要在什么级别保存该注解信息，用于描述注解的生命周期<ul>
+<li>SOURCE &lt; CLASS &lt; RUNTIME</li>
+</ul>
+</li>
+<li><code>@Document</code> ：说明该注解将被包含在 <code>javadoc</code> 中</li>
+<li><code>@Inherited</code> ：说明子类可以继承父类中的该注解</li>
+<li><code>@Repeatable</code> ：允许一个注解可以被使用一次或者多次</li>
+</ul>
+<h3 id="元注解的使用"><a href="#元注解的使用" class="headerlink" title="元注解的使用"></a>元注解的使用</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span>: CoachHe  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span>: 2023/1/27 13:02  </span><br><span class="hljs-comment"> * 定义一个注解  </span><br><span class="hljs-comment"> */</span>  <br><span class="hljs-meta">@Target(ElementType.METHOD)</span>  <br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> DefineAnnotation &#123;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在这里定义了一个注解，里面的 </p>
+<ul>
+<li><code>@Target(ElementType.METHOD)</code> </li>
+<li><code>@Retention (RetentionPolicy. RUNTIME)</code><br>就是元注解</li>
+</ul>
+<p>我们可以看到，这里的 <code>@Target</code> 表明元注解使用的范围，这里是 <code>ElementType.METHOD</code>，表明我们自己定义的这个元注解应该使用在方法上，我们可以看下：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230127131057.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，这个注解只有在 <code>testMethod()</code> 方法上没有报错，其余地方编译器直接报错了。</p>
+<p>若需要该注解同时在多个方位生效，那么可以使用大括号：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230127131409.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，在字段和方法上使用该注解都不会报错，只有在类上使用该方法会报错。</p>
+<h1 id="自定义注解"><a href="#自定义注解" class="headerlink" title="自定义注解"></a>自定义注解</h1><p>使用 <code>@interface</code> 自定义注解时，自动继承了 <code>java.lang.annotation.Annotation</code> 接口</p>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>我们首先来定义一个用例注解：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Author</span>: CoachHe  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@Date</span>: 2023/1/class27 13:44  </span><br><span class="hljs-comment"> * on java8 中的示例  </span><br><span class="hljs-comment"> * 可以用来追踪项目中的用例。  </span><br><span class="hljs-comment"> * 程序员可以使用该注解来标注满足特定用例的一个方法或者一组方法  </span><br><span class="hljs-comment"> * 项目经理可以通过统计已经实现的用例来掌控项目的进展  </span><br><span class="hljs-comment"> * 而开发者可以在维护项目时轻松找到该用例用于更新或调试  </span><br><span class="hljs-comment"> *  </span><br><span class="hljs-comment"> */</span><span class="hljs-meta">@Target(ElementType.METHOD)</span>  <br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> UseCase &#123;  <br>    <span class="hljs-type">int</span> <span class="hljs-title function_">id</span><span class="hljs-params">()</span>;  <br>    String <span class="hljs-title function_">description</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-string">&quot;no description&quot;</span>;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在这里我们可以看到，我们定义了一个用例注解 <code>@UseCase</code>，里面有两个方法 <code>id()</code> 和 <code>name()</code>，</p>
+<p>我们来对应着注解的特性来进行分析：</p>
+<ul>
+<li><code>@interface</code> 用来声明一个注解，格式：<code>public @interface 注解名 &#123;定义内容&#125;</code><ul>
+<li>在这里就是 <code>public @interface UserCase</code></li>
+</ul>
+</li>
+<li>其中的每一个方法实际是声明了一个配置参数<ul>
+<li>分别是 <code>id()</code> 和 <code>description()</code></li>
+</ul>
+</li>
+<li>方法的名称就是参数的名称<ul>
+<li>方法 <code>id()</code> 对应的参数名就是 id，方法 <code>description()</code> 对应的参数名就是 description</li>
+</ul>
+</li>
+<li>返回值类型就是参数的类型<ul>
+<li>方法 <code>id()</code> 对应的参数类型就是 int，方法 <code>description()</code> 对应的参数类型就是 String</li>
+</ul>
+</li>
+<li>可以通过 default 来声明参数的默认值<ul>
+<li>例如这里，如果不强制给 <code>description</code> 赋值，那就有默认值 <code>no description</code></li>
+<li>但是 id 必须显式赋值，形式为 <code>@UseCase(id=xxx)</code></li>
+</ul>
+</li>
+<li>如果只有一个参数成员，一般参数名为 value<ul>
+<li>并且在这种情况下，可以不显式给 value 赋值，直接使用类似 <code>@SuppressWarning(&quot;all&quot;)</code> 的方式使用</li>
+</ul>
+</li>
+<li>注解元素必须要有值，我们定义注解元素时，经常使用空字符串，0 作为默认值<ul>
+<li>也就是说，没有 default 值的参数 id 必须显式赋值，形式为 <code>@UseCase(id=xxx)</code></li>
+</ul>
+</li>
+<li>不包含任何元素的注解称为标记注解</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" class="category-chain-item">编程语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" class="category-chain-item">Java</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/" class="category-chain-item">Java语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/Java%E8%AF%AD%E6%B3%95/" class="category-chain-item">Java语法</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/Java%E8%AF%AD%E6%B3%95/Java%E6%B3%A8%E8%A7%A3/" class="category-chain-item">Java注解</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/Java%E8%AF%AD%E6%B3%95/Java%E6%B3%A8%E8%A7%A3/onjava8/" class="category-chain-item">onjava8</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>1. 概述</div>
+      <div>http://example.com/2023/01/f203c862f2fe.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年1月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/01/1c5659caa93c.html" title="补充：Class 实例是在堆中还是方法区中？">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">补充：Class 实例是在堆中还是方法区中？</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/bfbb7d9f6bff.html" title="6. thymeleaf">
+                        <span class="hidden-mobile">6. thymeleaf</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2023/01/f203c862f2fe.html';
+          this.page.identifier = '/2023/01/f203c862f2fe.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

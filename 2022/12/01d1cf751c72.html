@@ -1,0 +1,1054 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、Scala 简介Spark1.6 使用的是 Scala2.10，Spark2.0 版本以上使用的是 Scala2.11 Scala 6 大特性 Java 和 scala 可以混编 可以在 Java 中调用 Scala 的包和类，也可以在 Scala 中调用 Java 的包和类 类型推测 (自动推测类型) 不需要指定 int 或 double 等，会自动进行类型的推断。 注意： Scala 不是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Scala基础">
+<meta property="og:url" content="http://example.com/2022/12/01d1cf751c72.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="一、Scala 简介Spark1.6 使用的是 Scala2.10，Spark2.0 版本以上使用的是 Scala2.11 Scala 6 大特性 Java 和 scala 可以混编 可以在 Java 中调用 Scala 的包和类，也可以在 Scala 中调用 Java 的包和类 类型推测 (自动推测类型) 不需要指定 int 或 double 等，会自动进行类型的推断。 注意： Scala 不是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201215144723.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201215145005.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201215145512.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201215150943.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201215151450.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201215151644.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201216192436.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201216173041.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201216173655.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201216174029.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201216191447.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210112204951.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210112205018.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210112205056.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210108185937.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210108194250.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210108205604.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210108210353.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210108213019.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210108213236.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210110165346.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210110170624.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210110203813.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210110204934.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210110205039.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210112201902.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210112202913.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210113011604.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210115014248.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210115014225.png">
+<meta property="og:image" content="http://example.com/Users/heyizhi/Library/Application%20Support/typora-user-images/image-20210115014602817.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210115014355.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210115020456.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210115022015.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210116024713.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210116024414.png">
+<meta property="article:published_time" content="2022-12-03T18:25:02.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201215144723.png">
+  
+  
+  
+  <title>Scala基础 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Scala基础"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:25" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          14k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          120 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Scala基础</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="一、Scala-简介"><a href="#一、Scala-简介" class="headerlink" title="一、Scala 简介"></a>一、Scala 简介</h1><p>Spark1.6 使用的是 Scala2.10，Spark2.0 版本以上使用的是 Scala2.11</p>
+<h2 id="Scala-6-大特性"><a href="#Scala-6-大特性" class="headerlink" title="Scala 6 大特性"></a>Scala 6 大特性</h2><ul>
+<li>Java 和 scala 可以混编<br> 可以在 Java 中调用 Scala 的包和类，也可以在 Scala 中调用 Java 的包和类</li>
+<li>类型推测 (自动推测类型)<br> 不需要指定 int 或 double 等，会自动进行类型的推断。<br> <strong>注意：</strong><br> Scala 不是一种弱语言类型，只是类型会自动进行推断。</li>
+<li>并发和分布式（Actor）<br> 在 Scala 编程中不需要考虑锁。</li>
+<li>特质，特征 (类似 java 中 interfaces 和 abstract 结合)<br>  trait（特质）类似 interfaces 和 abstract 进行整合。</li>
+<li>模式匹配（类似 java switch）<br> java 中的 switch 中只能匹配值，例如 1，2 等，或者’a’，’b’，而不能匹配 String，例如”aba”是不能放在 switch 中的 case 中的，而 Scala 可以。</li>
+<li><strong>高阶函数</strong><br> <strong>至关重要</strong>，在方法中传递方法。</li>
+</ul>
+<h2 id="Scala-安装使用（MAC-版）"><a href="#Scala-安装使用（MAC-版）" class="headerlink" title="Scala 安装使用（MAC 版）"></a>Scala 安装使用（MAC 版）</h2><ol>
+<li><p>下载 scala 安装包</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201215144723.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>将解压之后的文件移动到&#x2F;usr&#x2F;local&#x2F;share 中</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201215145005.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></li>
+<li><p>将 Scala 的 bin 目录加到~&#x2F;. bash_profile 的最后一行<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201215145512.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>别忘了 source 一下</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201215150943.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></li>
+<li><p>最后运行一下 scala，证明已经成功安装。<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201215151450.png" srcset="/img/loading.gif" lazyload></p>
+<p>注意：<br>最好还是在 linux 上安装和运行 scala，自己的 mac 也太折腾了…</p>
+</li>
+</ol>
+<h2 id="IDE-和插件"><a href="#IDE-和插件" class="headerlink" title="IDE 和插件"></a>IDE 和插件</h2><p>IDE 选择 IDEA。<br>插件选择 Scala。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201215151644.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h1 id="二、Scala-基础"><a href="#二、Scala-基础" class="headerlink" title="二、Scala 基础"></a>二、Scala 基础</h1><h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><table>
+<thead>
+<tr>
+<th><strong>数据类型</strong></th>
+<th align="left"><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Byte</td>
+<td align="left">8位有符号补码整数。数值区间为 -128 到 127</td>
+</tr>
+<tr>
+<td>Short</td>
+<td align="left">16位有符号补码整数。数值区间为 -32768 到 32767</td>
+</tr>
+<tr>
+<td>Int</td>
+<td align="left">32位有符号补码整数。数值区间为 -2147483648 到 2147483647</td>
+</tr>
+<tr>
+<td>Long</td>
+<td align="left">64位有符号补码整数。数值区间为 -9223372036854775808 到 9223372036854775807</td>
+</tr>
+<tr>
+<td>Float</td>
+<td align="left">32 位, IEEE 754 标准的单精度浮点数</td>
+</tr>
+<tr>
+<td>Double</td>
+<td align="left">64 位 IEEE 754 标准的双精度浮点数</td>
+</tr>
+<tr>
+<td>Char</td>
+<td align="left">16位无符号Unicode字符, 区间值为 U+0000 到 U+FFFF</td>
+</tr>
+<tr>
+<td>String</td>
+<td align="left">字符序列</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td align="left">true或false</td>
+</tr>
+<tr>
+<td>Unit</td>
+<td align="left">表示无值，和其他语言中void等同。用作不返回任何结果的方法的结果类型。Unit只有一个实例值，写成()。</td>
+</tr>
+<tr>
+<td>Null</td>
+<td align="left">null 或空引用</td>
+</tr>
+<tr>
+<td>Nothing</td>
+<td align="left">Nothing类型在Scala的类层级的最底端；它是任何其他类型的子类型。</td>
+</tr>
+<tr>
+<td>Any</td>
+<td align="left">Any是所有其他类的超类</td>
+</tr>
+<tr>
+<td>AnyRef</td>
+<td align="left">AnyRef类是Scala里所有引用类(reference class)的基类</td>
+</tr>
+</tbody></table>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><ul>
+<li>Byte，Short，Int，Long，Float，Double，Char，String 和 Boolean 和 Java 都一样，只是首字母大写了。</li>
+<li>Unit &#x3D; void</li>
+<li>Null &#x3D; null</li>
+<li>Nothing 是所有类型的子类型，处于 Scala 的类层级的最低端。<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201216192436.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />	</li>
+<li>Any 是所有类型的超类，任何实例都属于 Any 类型，类似 Java 中的 Object</li>
+<li>AnyRef 是所有引用类型的超类</li>
+<li>AnyVal 是所有值类型的超类，例如 Int 类</li>
+</ul>
+<h3 id="几个容易混淆的概念"><a href="#几个容易混淆的概念" class="headerlink" title="几个容易混淆的概念"></a>几个容易混淆的概念</h3><table>
+<thead>
+<tr>
+<th align="left">类型</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Null</td>
+<td>Trait，其唯一实例是 null，是 AnyRef 的子类，不是 AnyVal 的子类</td>
+</tr>
+<tr>
+<td align="left">Nothing</td>
+<td>Trait，所有类型的子类，没有实例</td>
+</tr>
+<tr>
+<td align="left">Unit</td>
+<td>无返回值的函数类型，也就是 void</td>
+</tr>
+<tr>
+<td align="left">Nil</td>
+<td>长度为 0 的 List</td>
+</tr>
+<tr>
+<td align="left"><strong>None</strong></td>
+<td><strong>Option 的两个子类之一，另一个是 Some，用于安全的函数返回值</strong></td>
+</tr>
+</tbody></table>
+<p>None 相当于 Java 中的 Map get 一个值但是不存在时的返回值。</p>
+<h2 id="Scala-使用"><a href="#Scala-使用" class="headerlink" title="Scala 使用"></a>Scala 使用</h2><h3 id="1-新建一个项目"><a href="#1-新建一个项目" class="headerlink" title="1 新建一个项目"></a>1 新建一个项目</h3><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201216173041.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201216173655.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201216174029.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="Scala-类和对象"><a href="#Scala-类和对象" class="headerlink" title="Scala 类和对象"></a>Scala 类和对象</h2><ul>
+<li>Scala object 相当于 Java 中的单例，object 中定义的全是静态的</li>
+<li>Scala 中定义变量使用 var，定义常量使用 val，变量可变常量不可变，变量和常量类型可以省略，会自动推断</li>
+<li>Scala 中每行后面都会有分号自动推断机制，不用显式写出”;”</li>
+<li>建议在 Scala 中命名使用驼峰命名法</li>
+<li>Scala 类中可以传参，传参一定要指定类型，有了参数就有了默认构造，但是 object 不能传参，若需要传参则需要定义 apply 方法</li>
+<li>类中重写构造，构造第一行必须先调用默认的构造</li>
+<li>Scala 中当 new class 时，类中除了方法不执行（除了构造方法），其他的都执行</li>
+<li>Object 一定会被加载，而 class 只有 new 了之后才会被加载</li>
+<li>在同一个文件中 Object 和 class 的名称可以一样，一样时 class 叫做 object 的伴生类，object 叫做 class 的伴生对象，可以互相访问私有变量</li>
+</ul>
+<h2 id="解释代码"><a href="#解释代码" class="headerlink" title="解释代码"></a>解释代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.scala<br><br>object ClassAndObject &#123;<br>  <span class="hljs-type">val</span> <span class="hljs-variable">price</span> <span class="hljs-operator">=</span> <span class="hljs-number">100</span><br>  println(price)<br><br>  <span class="hljs-comment">//若object需要传参则需要定义这个方法</span><br>  def <span class="hljs-title function_">apply</span><span class="hljs-params">(i:Int)</span>=&#123;<br>    println(<span class="hljs-string">&quot;Score is&quot;</span> + i)<br>  &#125;<br><br>  def <span class="hljs-title function_">main</span><span class="hljs-params">(args: Array[String])</span>: Unit = &#123;<br>    <span class="hljs-type">val</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;coachhe&quot;</span><br>    println(name)<br>    <span class="hljs-type">val</span> <span class="hljs-variable">p</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Person</span>(<span class="hljs-string">&quot;zhangsan&quot;</span>, <span class="hljs-number">20</span>, <span class="hljs-string">&#x27;F&#x27;</span>)<br>    println(p.age)<br>    println(p.name)<br>    println(p.gender)<br><br>  &#125;<br><br>&#125;<br><br><span class="hljs-comment">// Java的类没有括号，不能传参，Scala可以</span><br><span class="hljs-comment">// 传递的参数xname和sage是Person私有的东西，不可见</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span>(xname :String, xage :Int)&#123;<br>  <span class="hljs-type">val</span> <span class="hljs-variable">name</span> <span class="hljs-operator">=</span> xname<br>  <span class="hljs-type">val</span> <span class="hljs-variable">age</span> <span class="hljs-operator">=</span> xage<br>  <span class="hljs-type">var</span> <span class="hljs-variable">gender</span> <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;M&#x27;</span><br><br>  def <span class="hljs-title function_">sayName</span><span class="hljs-params">()</span>=&#123;<br>    println(<span class="hljs-string">&quot;Hello World_&quot;</span> + ClassAndObject.price)<br>  &#125;<br><br>  def <span class="hljs-title function_">this</span><span class="hljs-params">(yname :String, yage :Int, ygender: Char)</span>&#123;<br>    <span class="hljs-built_in">this</span>(yname, yage)<br>    <span class="hljs-built_in">this</span>.gender = gender<br>  &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="if-else-语句"><a href="#if-else-语句" class="headerlink" title="if else 语句"></a>if else 语句</h2><p>和Java 一模一样。</p>
+<h2 id="for-循环"><a href="#for-循环" class="headerlink" title="for 循环"></a>for 循环</h2><ul>
+<li>1 to 10 就是 Range (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)</li>
+<li>1 until 10 就是 Range (1, 2, 3, 4, 5, 6, 7, 8, 9)</li>
+<li>1 to (10, 2) 就是 Range (1, 3, 5, 7, 9)</li>
+</ul>
+<h2 id="while-语法"><a href="#while-语法" class="headerlink" title="while 语法"></a>while 语法</h2><p>和 java 完全相同</p>
+<h2 id="具体应用"><a href="#具体应用" class="headerlink" title="具体应用"></a>具体应用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs java"><br>object Grammer &#123;<br>  def <span class="hljs-title function_">main</span> <span class="hljs-params">(args: Array[String])</span>: Unit = &#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * if else</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-type">val</span> <span class="hljs-variable">age</span> <span class="hljs-operator">=</span> <span class="hljs-number">20</span>;<br>    <span class="hljs-keyword">if</span> (age &lt; <span class="hljs-number">20</span>) &#123;<br>      println (<span class="hljs-string">&quot;age &lt; 20&quot;</span>)<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (age == <span class="hljs-number">20</span> )&#123;<br>      println (<span class="hljs-string">&quot;age = 20&quot;</span>)<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>      println (<span class="hljs-string">&quot;age &gt; 20&quot;</span>)<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * for循环</span><br><span class="hljs-comment">     * 注意：在这里</span><br><span class="hljs-comment">     * 1 to 10 就是Range(1,2,3,4,5,6,7,8,9,10)</span><br><span class="hljs-comment">     * 1 until 10 就是Range(1,2,3,4,5,6,7,8,9)</span><br><span class="hljs-comment">     * 1 to (10,2) 就是Range(1,3,5,7,9)</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">for</span> (i &lt;- <span class="hljs-number">1</span> to <span class="hljs-number">10</span>) &#123;<br>      print(i + <span class="hljs-string">&quot; &quot;</span>)<br>    &#125;<br>    println()<br>    <span class="hljs-keyword">for</span> (i &lt;- <span class="hljs-number">1</span> to (<span class="hljs-number">10</span>,<span class="hljs-number">2</span>)) &#123;<br>      print(i + <span class="hljs-string">&quot; &quot;</span>)<br>    &#125;<br>    println()<br>    <span class="hljs-keyword">for</span> (i &lt;- <span class="hljs-number">1</span> to <span class="hljs-number">3</span>; j &lt;- <span class="hljs-number">1</span> to <span class="hljs-number">3</span>) &#123;<br>      <span class="hljs-comment">//在字符串之前加上s可以不用进行拼接</span><br>      println(s<span class="hljs-string">&quot;i =  $i  j = $j&quot;</span>)<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * while语法</span><br><span class="hljs-comment">     * 和java完全相同</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-type">var</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">while</span> (i &lt; <span class="hljs-number">3</span>) &#123;<br>      println(s<span class="hljs-string">&quot;hello $i&quot;</span>)<br>      i += <span class="hljs-number">1</span><br>    &#125;<br><br><br>  &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20201216191447.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+
+<h1 id="三、Scala方法与函数"><a href="#三、Scala方法与函数" class="headerlink" title="三、Scala方法与函数"></a>三、Scala方法与函数</h1><h2 id="方法定义"><a href="#方法定义" class="headerlink" title="方法定义"></a>方法定义</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210112204951.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><ul>
+<li>方法体中最后返回值可以使用 return，如果使用 return，那么方法体的返回值类型一定要指定。</li>
+<li>方法体返回值可以省略，默认将方法体中最后一行计算结果当做返回值返回</li>
+<li>定义方法传入的参数一定要指定类型</li>
+<li>方法体中内容如果一行可以写完，那么方法体的括号可以省略</li>
+<li>如果定义方法时，省略了方法名称和方法体之间的”&#x3D;”，那么无论方法体最后一行计算的结果是什么，都会被丢弃，返回 Unit</li>
+</ul>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210112205018.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h3 id="输出-1"><a href="#输出-1" class="headerlink" title="输出"></a>输出</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210112205056.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h2 id="注意-1"><a href="#注意-1" class="headerlink" title="注意"></a>注意</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210108185937.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h2 id="递归方法"><a href="#递归方法" class="headerlink" title="递归方法"></a>递归方法</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210108194250.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h3 id="注意-2"><a href="#注意-2" class="headerlink" title="注意"></a>注意</h3><p>递归时需要显式指定返回类型。</p>
+<h2 id="参数有默认值的方法"><a href="#参数有默认值的方法" class="headerlink" title="参数有默认值的方法"></a>参数有默认值的方法</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210108205604.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h2 id="可变长参数的方法"><a href="#可变长参数的方法" class="headerlink" title="可变长参数的方法"></a>可变长参数的方法</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210108210353.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h2 id="匿名函数（匿名方法）"><a href="#匿名函数（匿名方法）" class="headerlink" title="匿名函数（匿名方法）"></a>匿名函数（匿名方法）</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210108213019.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h2 id="嵌套方法"><a href="#嵌套方法" class="headerlink" title="嵌套方法"></a>嵌套方法</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210108213236.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<h2 id="偏应用函数"><a href="#偏应用函数" class="headerlink" title="偏应用函数"></a>偏应用函数</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210110165346.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+
+
+<h2 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210110170624.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h3 id="1-方法的参数是函数"><a href="#1-方法的参数是函数" class="headerlink" title="1. 方法的参数是函数"></a>1. 方法的参数是函数</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210110203813.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h3 id="2-方法的返回是函数"><a href="#2-方法的返回是函数" class="headerlink" title="2. 方法的返回是函数"></a>2. 方法的返回是函数</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210110204934.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h4 id="调用方法"><a href="#调用方法" class="headerlink" title="调用方法"></a>调用方法</h4><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210110205039.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+
+
+<h3 id="3-方法的参数和返回值都是函数"><a href="#3-方法的参数和返回值都是函数" class="headerlink" title="3. 方法的参数和返回值都是函数"></a>3. 方法的参数和返回值都是函数</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210112201902.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h2 id="柯里化函数（高阶函数）"><a href="#柯里化函数（高阶函数）" class="headerlink" title="柯里化函数（高阶函数）"></a>柯里化函数（高阶函数）</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210112202913.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+
+<h1 id="4、Scala-collection"><a href="#4、Scala-collection" class="headerlink" title="4、Scala collection"></a>4、Scala collection</h1><h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><p>字符串采用的就是 <code>java.lang.String</code>, 用法和 java 基本相同</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs Scala"><span class="hljs-keyword">package</span> com.coachhe.scala<br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">StringAndArray</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 字符串</span><br><span class="hljs-comment">     * 采用的就是java.lang.String</span><br><span class="hljs-comment">     * 用法和java基本相同</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">val</span> s = <span class="hljs-string">&quot;Hello&quot;</span><br>    <span class="hljs-keyword">val</span> s1 = <span class="hljs-string">&quot;hello&quot;</span><br><br>    println(s)<br>    println(s1)<br>    println(s.equals(s1))<br>    println(s.equalsIgnoreCase(s1))<br>    println(s.indexOf(&#x27;<span class="hljs-type">H</span>&#x27;))<br><br>  &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h2><p>集合分为可变集合和不可变集合</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.scala<br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">StringAndArray</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 集合</span><br><span class="hljs-comment">     */</span><br>      <span class="hljs-comment">//定义方法1</span><br>    <span class="hljs-keyword">val</span> arr = <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>](<span class="hljs-string">&quot;a&quot;</span>,<span class="hljs-string">&quot;b&quot;</span>,<span class="hljs-string">&quot;c&quot;</span>,<span class="hljs-string">&quot;d&quot;</span>);<br>    <span class="hljs-comment">//遍历方法1</span><br>    arr.foreach(println)<br>    <span class="hljs-comment">//遍历方法2</span><br>    <span class="hljs-keyword">for</span>(elem &lt;- arr) &#123;<br>      println(elem)<br>    &#125;<br>    <span class="hljs-comment">//定义方法2  默认的定义方式都是不可变的</span><br>    <span class="hljs-keyword">val</span> arr1 = <span class="hljs-keyword">new</span> <span class="hljs-type">Array</span>[<span class="hljs-type">Int</span>](<span class="hljs-number">3</span>)<br>    <span class="hljs-comment">//赋值方法</span><br>    arr1(<span class="hljs-number">0</span>) = <span class="hljs-number">1</span><br>    arr1(<span class="hljs-number">1</span>) = <span class="hljs-number">1</span><br>    arr1(<span class="hljs-number">2</span>) = <span class="hljs-number">2</span><br>    <span class="hljs-comment">// 定义2维数组</span><br>    <span class="hljs-keyword">val</span> arr2 = <span class="hljs-keyword">new</span> <span class="hljs-type">Array</span>[<span class="hljs-type">Array</span>[<span class="hljs-type">Int</span>]](<span class="hljs-number">2</span>)<br>    arr2(<span class="hljs-number">0</span>) = <span class="hljs-type">Array</span>[<span class="hljs-type">Int</span>](<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>)<br>    arr2(<span class="hljs-number">1</span>) = <span class="hljs-type">Array</span>[<span class="hljs-type">Int</span>](<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>)<br>    <span class="hljs-comment">//打印2维数组</span><br>    <span class="hljs-keyword">for</span> (arr &lt;- arr2) &#123;<br>      <span class="hljs-keyword">for</span> (elem &lt;- arr) &#123;<br>        println(elem)<br>      &#125;<br>    &#125;<br>    <span class="hljs-comment">//第2种方式打印2维数组</span><br>    <span class="hljs-keyword">for</span> (arr &lt;- arr2; elem &lt;- arr) &#123;<br>      println(elem)<br>    &#125;<br>    <span class="hljs-comment">//第3种方式打印2维数组</span><br>    arr2.foreach(arr=&gt;&#123;arr.foreach(println)&#125;)<br><br>    <span class="hljs-comment">//数组的合并</span><br>    <span class="hljs-keyword">val</span> arrays = <span class="hljs-type">Array</span>.concat(arr1, arr2)<br>    <span class="hljs-comment">//arrays.foreach(println)</span><br><br>    <span class="hljs-type">Array</span>.fill(<span class="hljs-number">5</span>)(<span class="hljs-string">&quot;Hello&quot;</span>)<br>    <br>    <span class="hljs-comment">//可变数组</span><br>    <span class="hljs-keyword">import</span> scala.collection.mutable.<span class="hljs-type">ArrayBuffer</span><br>    <span class="hljs-keyword">val</span> arr_mut = <span class="hljs-type">ArrayBuffer</span>[<span class="hljs-type">Int</span>](<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>)<br>    arr_mut.+=(<span class="hljs-number">4</span>) <span class="hljs-comment">//往后追加</span><br>    arr_mut.+=:(<span class="hljs-number">100</span>)  <span class="hljs-comment">//往前追加</span><br>    arr_mut.append(<span class="hljs-number">7</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>) <span class="hljs-comment">//往后追加</span><br><br>  &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="List"><a href="#List" class="headerlink" title="List"></a>List</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.scala<br><br><span class="hljs-keyword">import</span> scala.collection.mutable.<span class="hljs-type">ListBuffer</span><br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Lesson_List</span> </span>&#123;<br>  <span class="hljs-comment">/**</span><br><span class="hljs-comment">   * List</span><br><span class="hljs-comment">   */</span><br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-keyword">val</span> list = <span class="hljs-type">List</span>[<span class="hljs-type">Int</span>](<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>)<br>    <span class="hljs-comment">//遍历的两种方法</span><br>    list.foreach(println)<br>    <span class="hljs-keyword">for</span> (elem &lt;- list) &#123;<br>      println(elem)<br>    &#125;<br>    <span class="hljs-keyword">val</span> list2 = <span class="hljs-type">List</span>[<span class="hljs-type">String</span>](<span class="hljs-string">&quot;hello scala&quot;</span>, <span class="hljs-string">&quot;hello java&quot;</span>)<br>    <span class="hljs-comment">//map和flatmap</span><br>    <span class="hljs-keyword">val</span> result: <span class="hljs-type">List</span>[<span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]] = list2.map(s =&gt; &#123;<br>      s.split(<span class="hljs-string">&quot; &quot;</span>)<br>    &#125;)<br>    result.foreach(arr =&gt; &#123;<br>      arr.foreach(println)<br>    &#125;)<br>    <span class="hljs-keyword">val</span> result2: <span class="hljs-type">List</span>[<span class="hljs-type">String</span>] = list2.flatMap(s =&gt; &#123;<br>      s.split(<span class="hljs-string">&quot; &quot;</span>)<br>    &#125;)<br>    result2.foreach(println)<br>    <span class="hljs-comment">//filter 过滤掉不符合条件的内容</span><br>    <span class="hljs-keyword">val</span> result3: <span class="hljs-type">List</span>[<span class="hljs-type">String</span>] = list2.filter(s =&gt; <span class="hljs-string">&quot;hello scala&quot;</span>.equals(s))<br>    result3.foreach(println)<br>    <span class="hljs-comment">//count 计算符合条件的数量</span><br>    <span class="hljs-keyword">val</span> result4: <span class="hljs-type">Int</span> = list2.count(s =&gt; &#123;<br>      s.length &lt; <span class="hljs-number">4</span><br>    &#125;)<br>    println(result4)<br><br>    <span class="hljs-comment">//可变的list</span><br>    <span class="hljs-keyword">val</span> list3 = <span class="hljs-type">ListBuffer</span>[<span class="hljs-type">Int</span>](<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)<br>    list3.append(<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>)<br>    list3.+=:(<span class="hljs-number">100</span>)<br>    list3.foreach(println)<br>    <br><br>  &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="map-方法和-flatmap-方法的区别"><a href="#map-方法和-flatmap-方法的区别" class="headerlink" title="map 方法和 flatmap 方法的区别"></a>map 方法和 flatmap 方法的区别</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210113011604.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+
+
+<h2 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h2><p>用法和List很像</p>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p><code>intersect</code></p>
+<p><code>diff</code></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.scala<br><br><span class="hljs-keyword">import</span> scala.collection.immutable<br><span class="hljs-keyword">import</span> scala.collection.mutable<br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Lession_Set</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-keyword">val</span> set = <span class="hljs-type">Set</span>[<span class="hljs-type">Int</span>](<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>)<br>    println(<span class="hljs-string">&quot;----&quot;</span>)<br>    set.foreach(println)<br><br>    <span class="hljs-keyword">val</span> set1 = <span class="hljs-type">Set</span>[<span class="hljs-type">Int</span>](<span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>)<br>    <span class="hljs-keyword">val</span> result: <span class="hljs-type">Set</span>[<span class="hljs-type">Int</span>] = set1.intersect(set)  <span class="hljs-comment">// 合并</span><br>    <span class="hljs-keyword">val</span> result2: <span class="hljs-type">Set</span>[<span class="hljs-type">Int</span>] = set1.diff(set)      <span class="hljs-comment">// 检查set1和set的不同之处(相当于是set1去掉set)</span><br>    <span class="hljs-keyword">val</span> result3 = set1 &amp; set1                   <span class="hljs-comment">// 交集</span><br>    println(<span class="hljs-string">&quot;----&quot;</span>)<br>    result.foreach(println)<br>    println(<span class="hljs-string">&quot;----&quot;</span>)<br>    result2.foreach(println)<br>    println(<span class="hljs-string">&quot;----&quot;</span>)<br>    result3.foreach(println)<br>    <span class="hljs-comment">// 此外，filter等方法和List一样使用</span><br><br>    <span class="hljs-comment">//可变的Set</span><br>    <span class="hljs-keyword">val</span> set2 = mutable.<span class="hljs-type">Set</span>[<span class="hljs-type">Int</span>](<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)<br>    <span class="hljs-keyword">val</span> result4: set2.<span class="hljs-keyword">type</span> = set2.+=(<span class="hljs-number">100</span>)     <span class="hljs-comment">//此时返回的是新的集合</span><br>    println(<span class="hljs-string">&quot;----&quot;</span>)<br>    set2.foreach(println)<br>    set2.+=(<span class="hljs-number">100</span>)                              <span class="hljs-comment">//此时是往set2里新增元素</span><br>    println(<span class="hljs-string">&quot;----&quot;</span>)<br>    result4.foreach(println)<br>    <span class="hljs-comment">//重新定义一个不可变的Set</span><br>    <span class="hljs-keyword">val</span> set3 = immutable.<span class="hljs-type">Set</span>[<span class="hljs-type">String</span>](<span class="hljs-string">&quot;a&quot;</span>,<span class="hljs-string">&quot;b&quot;</span>,<span class="hljs-string">&quot;c&quot;</span>)<br>  &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.scala<br><br><span class="hljs-keyword">import</span> scala.collection.mutable<br><span class="hljs-keyword">import</span> scala.collection.immutable<br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Lession_Map</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-comment">//可以是&quot;a&quot; -&gt; 100，也可以是(&quot;c&quot;,300)</span><br>    <span class="hljs-keyword">val</span> map = <span class="hljs-type">Map</span>[<span class="hljs-type">String</span>, <span class="hljs-type">Int</span>](<span class="hljs-string">&quot;a&quot;</span> -&gt; <span class="hljs-number">100</span>, <span class="hljs-string">&quot;b&quot;</span> -&gt; <span class="hljs-number">200</span>, (<span class="hljs-string">&quot;c&quot;</span>,<span class="hljs-number">300</span>))<br>    map.foreach(println)<br>    <span class="hljs-keyword">val</span> result1: <span class="hljs-type">Option</span>[<span class="hljs-type">Int</span>] = map.get(<span class="hljs-string">&quot;a&quot;</span>)<br>    <span class="hljs-keyword">val</span> result2: <span class="hljs-type">Int</span> = result1.get<br>    println(result2)<br>    println(result2)<br>    <span class="hljs-comment">// getOrElse方法</span><br>    <span class="hljs-keyword">val</span> result3: <span class="hljs-type">Any</span> = map.get(<span class="hljs-string">&quot;aa&quot;</span>).getOrElse(<span class="hljs-string">&quot;no value&quot;</span>)<br>        <span class="hljs-comment">// 另一种方法</span><br>    <span class="hljs-keyword">val</span> result4: <span class="hljs-type">Any</span> = map.getOrElse(<span class="hljs-string">&quot;aa&quot;</span>, <span class="hljs-string">&quot;no value&quot;</span>)<br>    println(result3)<br>    println(result4)<br>    <span class="hljs-comment">// 获取所有的key</span><br>    <span class="hljs-keyword">val</span> keys: <span class="hljs-type">Iterable</span>[<span class="hljs-type">String</span>] = map.keys<br>    <span class="hljs-comment">// 获取所有value</span><br>      <span class="hljs-comment">// 原理是遍历所有key时去get对应map的value</span><br>    println(<span class="hljs-string">&quot;---遍历---&quot;</span>)<br>    keys.foreach(key =&gt; &#123;<br>      println(<span class="hljs-string">s&quot;key = <span class="hljs-subst">$key</span>, value = <span class="hljs-subst">$&#123;map.get(key)&#125;</span>&quot;</span>)<br>    &#125;)<br>    println(<span class="hljs-string">&quot;---遍历方法2---&quot;</span>)<br>    <span class="hljs-keyword">val</span> values: <span class="hljs-type">Iterable</span>[<span class="hljs-type">Int</span>] = map.values<br>    values.foreach(println)<br><br>    <span class="hljs-comment">// Map之间的操作</span><br>    <span class="hljs-keyword">val</span> map1 = <span class="hljs-type">Map</span>[<span class="hljs-type">String</span>, <span class="hljs-type">Int</span>](<span class="hljs-string">&quot;a&quot;</span> -&gt; <span class="hljs-number">1</span>, <span class="hljs-string">&quot;b&quot;</span> -&gt; <span class="hljs-number">200</span>)<br>    <span class="hljs-keyword">val</span> map2 = <span class="hljs-type">Map</span>[<span class="hljs-type">String</span>, <span class="hljs-type">Int</span>](<span class="hljs-string">&quot;a&quot;</span> -&gt; <span class="hljs-number">100</span>, <span class="hljs-string">&quot;c&quot;</span> -&gt; <span class="hljs-number">300</span> )<br>      <span class="hljs-comment">//map的合并1</span><br>    <span class="hljs-keyword">val</span> result5: <span class="hljs-type">Map</span>[<span class="hljs-type">String</span>, <span class="hljs-type">Int</span>] = map1.++(map2)  <span class="hljs-comment">//map1和map2合并，并且用map2中的值替换map1的值</span><br>      <span class="hljs-comment">//map的合并2</span><br>      <span class="hljs-keyword">val</span> result6: <span class="hljs-type">Map</span>[<span class="hljs-type">String</span>, <span class="hljs-type">Int</span>] = map1.++:(map2)  <span class="hljs-comment">//map1和map2合并，并且用map1中的值替换map2的值</span><br>    println(<span class="hljs-string">&quot;---map1.++map2---&quot;</span>)<br>    result5.foreach(println)   <span class="hljs-comment">//此时a的value为100</span><br>    println(<span class="hljs-string">&quot;---map1.++:map2---&quot;</span>)<br>    result6.foreach(println)   <span class="hljs-comment">//此时a的value为100</span><br><br>    <span class="hljs-comment">//可变map</span><br>    <span class="hljs-keyword">val</span> map3 = mutable.<span class="hljs-type">Map</span>[<span class="hljs-type">String</span>, <span class="hljs-type">Int</span>]()<br>    map3.put(<span class="hljs-string">&quot;a&quot;</span>,<span class="hljs-number">1</span>)<br>    map3.put(<span class="hljs-string">&quot;b&quot;</span>,<span class="hljs-number">2</span>)<br>    map3.put(<span class="hljs-string">&quot;c&quot;</span>,<span class="hljs-number">3</span>)<br>    println(<span class="hljs-string">&quot;--打印map3--&quot;</span>)<br>    map3.foreach(println)<br>    <span class="hljs-comment">// filter方法</span><br>    println(<span class="hljs-string">&quot;--filter--&quot;</span>)<br>    <span class="hljs-keyword">val</span> result7: mutable.<span class="hljs-type">Map</span>[<span class="hljs-type">String</span>, <span class="hljs-type">Int</span>] = map3.filter(tp =&gt; &#123;<br>      <span class="hljs-keyword">val</span> key = tp._1<br>      <span class="hljs-keyword">val</span> value = tp._2<br>      value == <span class="hljs-number">200</span><br>    &#125;)<br>    result7.foreach(println)<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="元祖（Tuple）"><a href="#元祖（Tuple）" class="headerlink" title="元祖（Tuple）"></a>元祖（Tuple）</h2><ol>
+<li>元祖可以new也可以不new</li>
+<li>元祖最多支持22个元素</li>
+<li>Tuple不能for和foreach</li>
+<li>取值用”_5”</li>
+</ol>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.scala<br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Lession_Tuple</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-comment">// 一堆元素放在一个括号里就是元祖</span><br>    <span class="hljs-comment">// 和列表很像，只是放入了不同类型的元素</span><br>    <span class="hljs-keyword">val</span> tuple1: <span class="hljs-type">Tuple1</span>[<span class="hljs-type">String</span>] = <span class="hljs-keyword">new</span> <span class="hljs-type">Tuple1</span>(<span class="hljs-string">&quot;Hello&quot;</span>)<br>    <span class="hljs-keyword">val</span> tuple2: (<span class="hljs-type">String</span>, <span class="hljs-type">Int</span>) = <span class="hljs-keyword">new</span> <span class="hljs-type">Tuple2</span>(<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-number">100</span>)<br>    <span class="hljs-keyword">val</span> tuple3: (<span class="hljs-type">Int</span>, <span class="hljs-type">Boolean</span>, <span class="hljs-type">Char</span>) = <span class="hljs-keyword">new</span> <span class="hljs-type">Tuple3</span>(<span class="hljs-number">1</span>, <span class="hljs-literal">true</span>, &#x27;<span class="hljs-type">C</span>&#x27;)<br>      <span class="hljs-comment">//也可以不用new</span><br>    <span class="hljs-keyword">val</span> tuple4: (<span class="hljs-type">Int</span>, <span class="hljs-type">Double</span>, <span class="hljs-type">String</span>, <span class="hljs-type">Boolean</span>) = <span class="hljs-type">Tuple4</span>(<span class="hljs-number">1</span>, <span class="hljs-number">3.4</span>, <span class="hljs-string">&quot;abc&quot;</span>, <span class="hljs-literal">false</span>)<br>      <span class="hljs-comment">//甚至可以不用Tuple</span><br>    <span class="hljs-keyword">val</span> tuple5: (<span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>) = (<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>)<br>      <span class="hljs-comment">//Tuple最多可以写到22个，23个时已经不是元祖了</span><br>    <span class="hljs-keyword">val</span> tuple22: (<span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>, <span class="hljs-type">Int</span>) = (<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">12</span>, <span class="hljs-number">13</span>, <span class="hljs-number">14</span>, <span class="hljs-number">15</span>, <span class="hljs-number">16</span>, <span class="hljs-number">17</span>, <span class="hljs-number">18</span>, <span class="hljs-number">19</span>, <span class="hljs-number">20</span>, <span class="hljs-number">21</span>, <span class="hljs-number">22</span>)<br>    <span class="hljs-comment">//数量为23时不能识别元素类型了，运行时会报错</span><br>    <span class="hljs-comment">//val tuple23 = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23)</span><br><br>    <span class="hljs-comment">// 取元素</span><br>    println(tuple1._1)<br>    println(tuple2._2)<br>    println(tuple22._21)<br>    <span class="hljs-comment">//遍历,元祖没有for和foreach</span><br>    println(<span class="hljs-string">&quot;--循环遍历1--&quot;</span>)<br>    <span class="hljs-keyword">val</span> iterator: <span class="hljs-type">Iterator</span>[<span class="hljs-type">Any</span>] = tuple5.productIterator<br>    iterator.foreach(println)<br>    println(<span class="hljs-string">&quot;--循环遍历2--&quot;</span>)<br>    <span class="hljs-keyword">val</span> iterator2: <span class="hljs-type">Iterator</span>[<span class="hljs-type">Any</span>] = tuple5.productIterator<br>    <span class="hljs-keyword">while</span> (iterator2.hasNext) &#123;<br>      println(iterator2.next())<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h1 id="五、Scala-Trait、Match-Case-Class-和偏函数"><a href="#五、Scala-Trait、Match-Case-Class-和偏函数" class="headerlink" title="五、Scala Trait、Match Case Class 和偏函数"></a>五、Scala Trait、Match Case Class 和偏函数</h1><h2 id="Trait"><a href="#Trait" class="headerlink" title="Trait"></a>Trait</h2><ol>
+<li><p>Trait 无法传参，没有括号</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210115014248.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+</li>
+<li><p>当继承多个 Trait 时第一个关键字用 extends，后面全都是 with</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210115014225.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+</li>
+<li><p>当类继承 Trait 时需要实现没有实现的方法</p>
+<img src="/Users/heyizhi/Library/Application Support/typora-user-images/image-20210115014602817.png" srcset="/img/loading.gif" lazyload alt="image-20210115014602817" style="zoom:33%;" />
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210115014355.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" /></li>
+</ol>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.scala<br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Lession_Trait</span> </span>&#123;<br>  <span class="hljs-comment">// 相当于接口和抽象类的整合</span><br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br><br>    <span class="hljs-keyword">val</span> human = <span class="hljs-keyword">new</span> <span class="hljs-type">Human</span>()<br>    human.read(<span class="hljs-string">&quot;Zhang San&quot;</span>)<br><br>    <span class="hljs-keyword">val</span> point1 = <span class="hljs-keyword">new</span> <span class="hljs-type">Point</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>)<br>    <span class="hljs-keyword">val</span> point2 = <span class="hljs-keyword">new</span> <span class="hljs-type">Point</span>(<span class="hljs-number">1</span>, <span class="hljs-number">3</span>)<br>    println(point1.isEqu(point2))<br>  &#125;<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">Read</span> </span>&#123;<br>  <span class="hljs-comment">// trait无法传参，也就是没有括号</span><br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">read</span></span>(name:<span class="hljs-type">String</span>) = &#123;<br>    println(<span class="hljs-string">s&quot;<span class="hljs-subst">$name</span> is reading...&quot;</span>)<br>  &#125;<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">Listen</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">listen</span></span>(name:<span class="hljs-type">String</span>) = &#123;<br>    println(<span class="hljs-string">s&quot;<span class="hljs-subst">$name</span> is listening...&quot;</span>)<br>  &#125;<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Human</span>(<span class="hljs-params"></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">Read</span> <span class="hljs-keyword">with</span> <span class="hljs-title">Listen</span> </span>&#123;<br>  <span class="hljs-comment">// 继承多个trait时第一个关键字用extends,后面全都是with</span><br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">trait</span> <span class="hljs-title">IsEqual</span></span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">isEqu</span></span>(o:<span class="hljs-type">Any</span>):<span class="hljs-type">Boolean</span><br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">isNotEqu</span></span>(o:<span class="hljs-type">Any</span>):<span class="hljs-type">Boolean</span> = &#123;<br>    !isEqu(o)<br>  &#125;<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Point</span>(<span class="hljs-params">x:<span class="hljs-type">Int</span>, y:<span class="hljs-type">Int</span></span>) <span class="hljs-keyword">extends</span> <span class="hljs-title">IsEqual</span> </span>&#123;<br>  <span class="hljs-keyword">val</span> xx = x<br>  <span class="hljs-keyword">val</span> yy = y<br><br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">isEqu</span></span>(o: <span class="hljs-type">Any</span>): <span class="hljs-type">Boolean</span> = &#123;<br>    o.isInstanceOf[<span class="hljs-type">Point</span>] &amp;&amp; o.asInstanceOf[<span class="hljs-type">Point</span>].xx == <span class="hljs-keyword">this</span>.xx<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="Match"><a href="#Match" class="headerlink" title="Match"></a>Match</h2><ol>
+<li>case _ 什么默认匹配，放在最后一个</li>
+<li>match 可以匹配值还可以匹配类型</li>
+<li>从上往下匹配，匹配上之后就不会往下匹配了</li>
+<li>匹配过程中会有数值的转换，例如Double转换为Int</li>
+<li>模式匹配中外部的”{}”可以省略</li>
+</ol>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.scala<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Match 模式匹配</span><br><span class="hljs-comment"> * 1. case _ 表示默认匹配，放在最后一个</span><br><span class="hljs-comment"> * 2. match 可以匹配值还可以匹配类型</span><br><span class="hljs-comment"> * 3. 从上往下匹配，匹配上之后就不会往下匹配了</span><br><span class="hljs-comment"> * 4. 匹配过程中会有数值的转换，例如Double转换为Int</span><br><span class="hljs-comment"> * 5. 模式匹配中外部的&quot;&#123;&#125;&quot;可以省略</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Lession_Match</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-keyword">val</span> tp = (<span class="hljs-number">1</span>,<span class="hljs-number">1.0</span>,<span class="hljs-string">&quot;abc&quot;</span>,&#x27;a&#x27;, <span class="hljs-literal">true</span>)<br>    <span class="hljs-keyword">val</span> iterator: <span class="hljs-type">Iterator</span>[<span class="hljs-type">Any</span>] = tp.productIterator<br>    iterator.foreach(<span class="hljs-type">MathTest</span>)<br>  &#125;<br><br><br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">MathTest</span></span>(o:<span class="hljs-type">Any</span>): <span class="hljs-type">Unit</span> = &#123;<br>    o <span class="hljs-keyword">match</span> &#123;<br>      <span class="hljs-keyword">case</span> i:<span class="hljs-type">Int</span>=&gt;println(<span class="hljs-string">s&quot;type is Int, value = <span class="hljs-subst">$i</span>&quot;</span>) <span class="hljs-comment">//类型匹配，查看是否符合Int类型</span><br>      <span class="hljs-keyword">case</span> d:<span class="hljs-type">Double</span>=&gt;println(<span class="hljs-string">s&quot;type is Double, value = <span class="hljs-subst">$d</span>&quot;</span>) <span class="hljs-comment">//类型匹配，查看是否符合Double类型</span><br>      <span class="hljs-keyword">case</span> s:<span class="hljs-type">String</span>=&gt;println(<span class="hljs-string">s&quot;type is String, value = <span class="hljs-subst">$s</span>&quot;</span>) <span class="hljs-comment">//类型匹配，查看是否符合String类型</span><br>      <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>=&gt; println(<span class="hljs-string">&quot;value is 1&quot;</span>) <span class="hljs-comment">//值匹配,查看值是否为1</span><br>      <span class="hljs-keyword">case</span> &#x27;a&#x27;=&gt; println(<span class="hljs-string">&quot;value is a&quot;</span>)<br>      <span class="hljs-keyword">case</span> _=&gt; println(<span class="hljs-string">&quot;no match&quot;</span>) <span class="hljs-comment">//相当于default，必须放在最后一个</span><br>    &#125;<br>  &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="输出-2"><a href="#输出-2" class="headerlink" title="输出"></a>输出</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210115020456.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h3 id="偏函数"><a href="#偏函数" class="headerlink" title="偏函数"></a>偏函数</h3><p>如果一个方法没有match只有case，这个函数就可以定义成PartialFunction偏函数。</p>
+<p>偏函数定义时，不能使用括号传参，默认定义PartialFunction中传入一个值，匹配上了对应的case，返回一个值</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.scala<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * PartitionFunction 偏函数</span><br><span class="hljs-comment"> * 只能匹配一个值，匹配上了返回某个值</span><br><span class="hljs-comment"> * PartitionFunction[A,B]，A是匹配的类型，B是匹配上返回的类型</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Lession_Match</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-keyword">val</span> result: <span class="hljs-type">Int</span> = <span class="hljs-type">PartialFunctionTest</span>(<span class="hljs-string">&quot;abc&quot;</span>)<br>    println(result)<br>  &#125;<br><br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">PartialFunctionTest</span> </span>: <span class="hljs-type">PartialFunction</span>[<span class="hljs-type">String</span>, <span class="hljs-type">Int</span>] = &#123;  <span class="hljs-comment">//进来只能是String，出去是Int</span><br>    <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;abc&quot;</span> =&gt; <span class="hljs-number">2</span><br>    <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;a&quot;</span> =&gt; <span class="hljs-number">1</span><br>    <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;100&quot;</span> =&gt; <span class="hljs-number">200</span><br>    <span class="hljs-keyword">case</span> _=&gt; <span class="hljs-number">0</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="样例类"><a href="#样例类" class="headerlink" title="样例类"></a>样例类</h2><p>用case关键字定义的类就是样例类，样例类是种特殊的类，实现了类构造参数的getter方法（构造参数默认被声明为val），当构造参数是声明为var类型时，它将帮你实现setter和getter方法。</p>
+<ul>
+<li><p>样例类帮你实现了toString，equals，copy和hashCode等方法</p>
+</li>
+<li><p>样例类可以new，也可以不new</p>
+</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.scala<br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Lession_CaseClass</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-keyword">val</span> p1 = <span class="hljs-keyword">new</span> <span class="hljs-type">Persion11</span>(<span class="hljs-string">&quot;zhangsan&quot;</span>, <span class="hljs-number">10</span>)<br>    <span class="hljs-keyword">val</span> p2 = <span class="hljs-keyword">new</span> <span class="hljs-type">Persion11</span>(<span class="hljs-string">&quot;zhangsan&quot;</span>, <span class="hljs-number">10</span>)<br>    println(p1.equals(p2))<br>    println(p1.hashCode())<br>    println(p1.toString)<br>  &#125;<br>&#125;<br><span class="hljs-comment">// 用case修饰的就是样例类</span><br><span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Persion11</span>(<span class="hljs-params">var name:<span class="hljs-type">String</span>, age:<span class="hljs-type">Int</span></span>)</span>&#123;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="输出-3"><a href="#输出-3" class="headerlink" title="输出"></a>输出</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210115022015.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h1 id="六、Scala隐式转换"><a href="#六、Scala隐式转换" class="headerlink" title="六、Scala隐式转换"></a>六、Scala隐式转换</h1><h2 id="隐式转换定义"><a href="#隐式转换定义" class="headerlink" title="隐式转换定义"></a>隐式转换定义</h2><p>隐式转换是在 Scala 编译器进行类型匹配时，如果找不到合适的类型，那么隐式转换会让编译器在作用范围内自动推导出来合适的类型。</p>
+<h2 id="1-隐式值与隐式函数"><a href="#1-隐式值与隐式函数" class="headerlink" title="1. 隐式值与隐式函数"></a>1. 隐式值与隐式函数</h2><p>隐式值是指在定义参数时前面加上 implicit，隐式函数是指在定义方法时，方法中的部分参数是由 implicit 修饰。</p>
+<h4 id="隐式转换作用"><a href="#隐式转换作用" class="headerlink" title="隐式转换作用"></a>隐式转换作用</h4><p>当调用方法时，不必手动传入方法中隐式参数，Scala 会自动在作用域范围内寻找隐式值自动传入</p>
+<h4 id="注意-3"><a href="#注意-3" class="headerlink" title="注意"></a>注意</h4><ol>
+<li>如果在定义隐式函数时部分参数需要隐式指定，那么需要使用柯里化函数形式<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">sayName2</span></span>(age:<span class="hljs-type">Int</span>)(<span class="hljs-keyword">implicit</span> name:<span class="hljs-type">String</span>) = &#123;<br>  println(<span class="hljs-string">s&quot;name is <span class="hljs-subst">$name</span>, age is <span class="hljs-subst">$age</span>&quot;</span>)<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li>同类型的参数的隐式值只能在作用域内出现一次，同一个作用域内不能定义多个类型一样的隐式值</li>
+<li>implicit 关键字必须放在隐式参数定义的开头</li>
+<li>一个方法只能有一个参数是隐式转换时，直接定义 implicit 关键字修饰的参数，调用时直接创建类型不传入参数即可<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210116024713.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></li>
+</ol>
+<h3 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h3><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210116024414.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="2-隐式转换函数"><a href="#2-隐式转换函数" class="headerlink" title="2. 隐式转换函数"></a>2. 隐式转换函数</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>隐式转换函数是使用关键字implicit修饰的方法。当Scala运行时，假设如果A类型变量调用了method()这个方法，发现A类型的变量没有method()方法，而B类型有次method()方法，会在作用域中寻找有没有隐式转换将A类型转换成B类型，如果有隐式转换函数，那么A类型就可以调用method这个方法</p>
+<h3 id="注意-4"><a href="#注意-4" class="headerlink" title="注意"></a>注意</h3><p>隐式转换函数只与函数的参数类型和返回类型有关，与函数名称无关，所以作用于内不能有相同的参数类型和返回类型的不同名称隐式转换函数</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.scala<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Animal</span>(<span class="hljs-params">name:<span class="hljs-type">String</span></span>)</span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">canFly</span></span>()=&#123;<br>    println(<span class="hljs-string">s&quot;<span class="hljs-subst">$name</span> can fly&quot;</span>)<br>  &#125;<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Rabbit</span>(<span class="hljs-params">xname:<span class="hljs-type">String</span></span>)</span>&#123;<br>  <span class="hljs-keyword">val</span> name = xname<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">Lesson_ImplicitTrans2</span> </span>&#123;<br>  <br>  <span class="hljs-comment">// 隐式转换</span><br>  <span class="hljs-keyword">implicit</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">RabbitToAnimal</span></span>(r:<span class="hljs-type">Rabbit</span>): <span class="hljs-type">Animal</span> = &#123;<br>    <span class="hljs-comment">// 分析：传进来一个Rabbit出去一个Animal</span><br>    <span class="hljs-keyword">new</span> <span class="hljs-type">Animal</span>(r.name)<br>  &#125;<br>  <br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-keyword">val</span> rabbit = <span class="hljs-keyword">new</span> <span class="hljs-type">Rabbit</span>(<span class="hljs-string">&quot;rabbit&quot;</span>)    <br>    <span class="hljs-comment">//此时就能调用rabbit没有的canFly方法了</span><br>    rabbit.canFly()<br>    <br>  &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" class="category-chain-item">编程语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Scala/" class="category-chain-item">Scala</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Scala基础</div>
+      <div>http://example.com/2022/12/01d1cf751c72.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/484f7efa4e9f.html" title="1、IOC容器启动创建bean">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">1、IOC容器启动创建bean</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/9a7904652227.html" title="1、简介">
+                        <span class="hidden-mobile">1、简介</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/01d1cf751c72.html';
+          this.page.identifier = '/2022/12/01d1cf751c72.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

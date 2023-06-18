@@ -1,0 +1,876 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="MapReduce工作原理1 Map阶段工作大纲 2 Reduce阶段工作大纲 Shuffle机制1 Shuffle机制简介上面的流程是整个MapReduce最全工作流程，但是Shuffle过程只是从第7步开始到第16步结束，具体Shuffle过程详解，如下：   MapTask 收集我们的 map()方法输出的 kv 对，放到内存缓冲区中  从内存缓冲区不断溢出本地磁盘文件，可能会溢出多个文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MR4 MapReduce框架原理2_MapReduce工作流程+Shuffle机制">
+<meta property="og:url" content="http://example.com/2022/12/6665ff78348f.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="MapReduce工作原理1 Map阶段工作大纲 2 Reduce阶段工作大纲 Shuffle机制1 Shuffle机制简介上面的流程是整个MapReduce最全工作流程，但是Shuffle过程只是从第7步开始到第16步结束，具体Shuffle过程详解，如下：   MapTask 收集我们的 map()方法输出的 kv 对，放到内存缓冲区中  从内存缓冲区不断溢出本地磁盘文件，可能会溢出多个文件">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211014540.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211014624.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211015313.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211015357.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211015505.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211015425.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211015524.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211015617.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211021156.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211021241.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211021500.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211021549.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211021620.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211021855.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211021921.png">
+<meta property="article:published_time" content="2022-12-03T18:45:36.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211014540.png">
+  
+  
+  
+  <title>MR4 MapReduce框架原理2_MapReduce工作流程+Shuffle机制 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MR4 MapReduce框架原理2_MapReduce工作流程+Shuffle机制"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:45" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          13k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          112 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">MR4 MapReduce框架原理2_MapReduce工作流程+Shuffle机制</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="MapReduce工作原理"><a href="#MapReduce工作原理" class="headerlink" title="MapReduce工作原理"></a>MapReduce工作原理</h1><h2 id="1-Map阶段工作大纲"><a href="#1-Map阶段工作大纲" class="headerlink" title="1 Map阶段工作大纲"></a>1 Map阶段工作大纲</h2><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211014540.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="2-Reduce阶段工作大纲"><a href="#2-Reduce阶段工作大纲" class="headerlink" title="2 Reduce阶段工作大纲"></a>2 Reduce阶段工作大纲</h2><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211014624.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="Shuffle机制"><a href="#Shuffle机制" class="headerlink" title="Shuffle机制"></a>Shuffle机制</h1><h2 id="1-Shuffle机制简介"><a href="#1-Shuffle机制简介" class="headerlink" title="1 Shuffle机制简介"></a>1 Shuffle机制简介</h2><p>上面的流程是整个MapReduce最全工作流程，但是Shuffle过程只是从第7步开始到第16步结束，具体Shuffle过程详解，如下： </p>
+<ol>
+<li>MapTask 收集我们的 map()方法输出的 kv 对，放到内存缓冲区中 </li>
+<li>从内存缓冲区不断溢出本地磁盘文件，可能会溢出多个文件 </li>
+<li>多个溢出文件会被合并成大的溢出文件 </li>
+<li>在溢出过程及合并的过程中，都要调用Partitioner进行分区和针对key进行排序 </li>
+<li>ReduceTask根据自己的分区号，去各个MapTask机器上取相应的结果分区数据 </li>
+<li>ReduceTask会取到同一个分区的来自不同MapTask的结果文件，ReduceTask会将这些文件再进行合并（归并排序） </li>
+<li>合并成大文件后，Shuffle的过程也就结束了，后面进入ReduceTask的逻辑运算过程（从文件中取出一个一个的键值对Group，调用用户自定义的reduce()方法）</li>
+</ol>
+<h2 id="2-Partition分区"><a href="#2-Partition分区" class="headerlink" title="2 Partition分区"></a>2 Partition分区</h2><h3 id="①-简介和默认分区方法"><a href="#①-简介和默认分区方法" class="headerlink" title="① 简介和默认分区方法"></a>① 简介和默认分区方法</h3><h4 id="问题引出"><a href="#问题引出" class="headerlink" title="问题引出"></a>问题引出</h4><p>要求将统计结果按照条件输出到不同文件中（分区）。<br>比如：<br>统计京东9月10号某商品top10排行<br>统计京东9月11号某商品top10排行<br>因此需要根据时间来进行分区，有几个文件就有几个区。（简单来说，就是有多少reduce就有多少分区） </p>
+<h3 id="默认Partitioner分区是HashPartitioner"><a href="#默认Partitioner分区是HashPartitioner" class="headerlink" title="默认Partitioner分区是HashPartitioner"></a>默认Partitioner分区是HashPartitioner</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">Public <span class="hljs-keyword">class</span> <span class="hljs-title class_">HashPartitioner</span>&lt;K, V&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Partitioner</span>&lt;K,V&gt;&#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getPartition</span><span class="hljs-params">(K key, V value, <span class="hljs-type">int</span> numReduceTasks)</span>&#123; <br>        <span class="hljs-keyword">return</span> (key.hashCode() &amp; Integer.MAX_VALUE) % numReduceTasks; <br>    &#125;<br>&#125; <br></code></pre></td></tr></table></figure>
+
+<p>默认分区方式下，根据key的hashCode对ReduceTasks个数取模得到，用户没法控制哪个key在哪个分区。 </p>
+<p>这个就是分区数量，也就是输出文件的数量。默认为1，因为默认的输出文件数量就为1 </p>
+<h3 id="②-源码查看"><a href="#②-源码查看" class="headerlink" title="② 源码查看"></a>② 源码查看</h3><p>使用的程序案例是wordcount。<br>首先在map中的context.write(k,v);打上断点，然后进行调试，可以看到，程序会<strong>首先进入map中</strong>。<br> <img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211015313.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" /><br>进入之后可以看到：<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211015357.png" srcset="/img/loading.gif" lazyload><br>在这里key是coachhe，value是1<br>再进入会进入收集器中：<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211015505.png" srcset="/img/loading.gif" lazyload><br>参数为key，value和partition的值。<br>这个收集器会循环将文件输出到环形缓冲区中，然后缓冲区满了80%之后就会往外写数据到不同的文件中（根据分区）。<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211015425.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" /><br>进入getPartition中可以看到：<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211015524.png" srcset="/img/loading.gif" lazyload></p>
+<p>通过当前key的hashCode和numReduceTasks进行求余可以得到分区号（因为若我们设置的numReduceTasks为n那么求余的可能性就只有n种，所以可以将其区分开）。 </p>
+<p>得到分区号之后进入collect： </p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211015617.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="3-WritableComparable排序"><a href="#3-WritableComparable排序" class="headerlink" title="3 WritableComparable排序"></a>3 WritableComparable排序</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>排序是MapReduce框架中<strong>最重要的操作</strong>之一。</p>
+<p>MapTask和ReduceTask均会对数据<strong>按照key</strong>进行排序，该操作属于Hadoop的默认行为。任何应用中的数据均会被排序，而不管逻辑上是否需要。</p>
+<p>默认排序是按照<strong>字典顺序排序</strong>，且实现该排序的方法是<strong>快速排序</strong>。</p>
+<p>对于MapTask，它会将处理的结果暂时放到环形缓冲区中，<strong>当环形缓冲区使用率达到一定阈值后，再对缓冲区中的数据进行一次快速排序</strong>，并将这些有序数据溢写到磁盘上，而当数据处理完毕后，它会<strong>对磁盘上所有文件进行归并排序</strong>。</p>
+<p>对于ReduceTask，它从每个MapTask上远程拷贝相应的数据文件，如果文件大小超过一定阈值，则溢写到磁盘上，否则存储在内存中。如果磁盘上文件数目达到一定阈值，则进行一次归并排序以生成一个更大文件；如果内存中文件带下或者数目超过一定阈值，则进行一次合并后将数据溢写到磁盘上。当所有数据拷贝完毕后，<strong>ReduceTask统一对内存和磁盘上所有的数据进行一次归并排序</strong>。</p>
+<h3 id="排序的分类"><a href="#排序的分类" class="headerlink" title="排序的分类"></a>排序的分类</h3><ol>
+<li><p>部分排序</p>
+<p>MapReduce根据输入记录的键对数据集排序。保证输出的<strong>每个文件都有序</strong>。</p>
+</li>
+<li><p>全排序</p>
+<p>最终输出结果只有一个文件，且文件内部有序。实现方式是只设置一个ReduceTask。但该方法在处理大型文件时效率极低，因为一台机器处理所有文件，完全丧失了MapReduce所提供的并行架构。</p>
+</li>
+<li><p>辅助排序（GroupingComparable分组）</p>
+<p>在Reduce端对key进行分组。</p>
+<p>应用于：在接收的key为bean对象时，想让一个或几个字段相同（全部字段比较不相同）的key进入到同一个reduce方法时，可以使用分组排序。</p>
+</li>
+<li><p>二次排序</p>
+<p>在自定义排序过程中，如果compareTo中的判断条件为两个即为二次排序</p>
+</li>
+</ol>
+<h3 id="WritableComparable排序案例"><a href="#WritableComparable排序案例" class="headerlink" title="WritableComparable排序案例"></a>WritableComparable排序案例</h3><h4 id="全排序案例"><a href="#全排序案例" class="headerlink" title="全排序案例"></a>全排序案例</h4><h5 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h5><p>根据序列化案例实操产生的结果进行流量的倒叙排序 </p>
+<h5 id="输入数据"><a href="#输入数据" class="headerlink" title="输入数据"></a>输入数据</h5><p>&#x2F;Users&#x2F;heyizhi&#x2F;BigData&#x2F;hadoop&#x2F;my_project&#x2F;WritableComparable自定义排序&#x2F;phone_data<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211021156.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" /></p>
+<h5 id="期望输出数据"><a href="#期望输出数据" class="headerlink" title="期望输出数据"></a>期望输出数据</h5><p>135XXXX 1234 1234 555 </p>
+<p>135XXXX 1234 1234 554 </p>
+<p>135XXXX 1234 1234 553 </p>
+<p>135XXXX 1234 1234 552 </p>
+<h5 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h5><p>因为MapTask一定会对key进行排序，因此不能像之前那样用手机号作为key，而是一定要用流量作为key。 </p>
+<h5 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h5><p>FlowBean实现WritableComparable接口重写compareTo方法。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span> <br><span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">compareTo</span><span class="hljs-params">(FlowBean o)</span>&#123; <br>    <span class="hljs-comment">//倒叙排列，按照总流量从大到小 </span><br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.sumFlow &gt; o.getSumFlow() ? -<span class="hljs-number">1</span> : <span class="hljs-number">1</span>; <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<h5 id="具体分析"><a href="#具体分析" class="headerlink" title="具体分析"></a>具体分析</h5><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211021241.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+
+<h3 id="全排序代码实现"><a href="#全排序代码实现" class="headerlink" title="全排序代码实现"></a>全排序代码实现</h3><h5 id="FlowBean"><a href="#FlowBean" class="headerlink" title="FlowBean"></a>FlowBean</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.WritableComparable; <br>  <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.WritableComparable; <br>  <br><span class="hljs-keyword">import</span> java.io.DataInput; <br><span class="hljs-keyword">import</span> java.io.DataOutput; <br><span class="hljs-keyword">import</span> java.io.IOException; <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FlowBean</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">WritableComparable</span>&lt;FlowBean&gt; &#123; <br>  <br>    <span class="hljs-keyword">private</span> <span class="hljs-type">long</span> upFlow; <span class="hljs-comment">//上行流量 </span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">long</span> downFlow; <span class="hljs-comment">//下行流量 </span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">long</span> sumFlow; <span class="hljs-comment">//总流量 </span><br>  <br>    <span class="hljs-comment">//空参构造，为了后续反射用 </span><br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">FlowBean</span><span class="hljs-params">()</span>&#123; <br>        <span class="hljs-built_in">super</span>(); <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">FlowBean</span><span class="hljs-params">(<span class="hljs-type">long</span> upFlow, <span class="hljs-type">long</span> downFlow)</span> &#123; <br>        <span class="hljs-built_in">super</span>(); <br>        <span class="hljs-built_in">this</span>.upFlow = upFlow; <br>        <span class="hljs-built_in">this</span>.downFlow = downFlow; <br>        <span class="hljs-built_in">this</span>.sumFlow = upFlow + downFlow; <br>    &#125; <br>  <br>    <span class="hljs-comment">//序列化方法 </span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">write</span><span class="hljs-params">(DataOutput dataOutput)</span> <span class="hljs-keyword">throws</span> IOException &#123; <br>        dataOutput.writeLong(upFlow); <br>        dataOutput.writeLong(downFlow); <br>        dataOutput.writeLong(sumFlow); <br>    &#125; <br>  <br>    <span class="hljs-comment">//反序列化方法,顺序跟序列化方法顺序必须一致 </span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">readFields</span><span class="hljs-params">(DataInput dataInput)</span> <span class="hljs-keyword">throws</span> IOException &#123; <br>        upFlow = dataInput.readLong(); <br>        downFlow = dataInput.readLong(); <br>        sumFlow = dataInput.readLong(); <br>    &#125; <br>  <br>    <span class="hljs-meta">@Override</span> <br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">toString</span><span class="hljs-params">()</span> &#123; <br>        <span class="hljs-keyword">return</span>  upFlow + <span class="hljs-string">&quot;\t&quot;</span> + downFlow + <span class="hljs-string">&quot;\t&quot;</span> + sumFlow; <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-type">long</span> <span class="hljs-title function_">getUpFlow</span><span class="hljs-params">()</span> &#123; <br>        <span class="hljs-keyword">return</span> upFlow; <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setUpFlow</span><span class="hljs-params">(<span class="hljs-type">long</span> upFlow)</span> &#123; <br>        <span class="hljs-built_in">this</span>.upFlow = upFlow; <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-type">long</span> <span class="hljs-title function_">getDownFlow</span><span class="hljs-params">()</span> &#123; <br>        <span class="hljs-keyword">return</span> downFlow; <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setDownFlow</span><span class="hljs-params">(<span class="hljs-type">long</span> downFlow)</span> &#123; <br>        <span class="hljs-built_in">this</span>.downFlow = downFlow; <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-type">long</span> <span class="hljs-title function_">getSumFlow</span><span class="hljs-params">()</span> &#123; <br>        <span class="hljs-keyword">return</span> sumFlow; <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setSumFlow</span><span class="hljs-params">(<span class="hljs-type">long</span> sumFlow)</span> &#123; <br>        <span class="hljs-built_in">this</span>.sumFlow = sumFlow; <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">compareTo</span><span class="hljs-params">(FlowBean bean)</span> &#123; <br>        <span class="hljs-comment">//核心比较条件判断 </span><br>        <span class="hljs-keyword">if</span> (sumFlow == bean.getSumFlow()) &#123; <br>            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>; <br>        &#125; <br>        <span class="hljs-keyword">return</span> sumFlow &gt; bean.getSumFlow() ? -<span class="hljs-number">1</span> : <span class="hljs-number">1</span>; <br>    &#125; <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h5 id="map"><a href="#map" class="headerlink" title="map"></a>map</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.WritableComparable; <br><br> <br><br><span class="hljs-keyword">import</span> org.apache.hadoop.io.LongWritable; <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.Text; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.Mapper; <br><br> <br><br><span class="hljs-keyword">import</span> java.io.IOException; <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FlowCountMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Mapper</span>&lt;LongWritable, Text, FlowBean, Text&gt; &#123; <br>  <br>    <span class="hljs-type">FlowBean</span> <span class="hljs-variable">k</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FlowBean</span>(); <br>    <span class="hljs-type">Text</span> <span class="hljs-variable">v</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Text</span>(); <br><br>    <span class="hljs-meta">@Override</span> <br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">map</span><span class="hljs-params">(LongWritable key, Text value, Context context)</span> <span class="hljs-keyword">throws</span> IOException, InterruptedException &#123; <br>        String[] line = value.toString().split(<span class="hljs-string">&quot;\t&quot;</span>); <br>  <br>        <span class="hljs-type">long</span> <span class="hljs-variable">upFlow</span> <span class="hljs-operator">=</span> Long.parseLong(line[<span class="hljs-number">1</span>]); <br>        <span class="hljs-type">long</span> <span class="hljs-variable">downFlow</span> <span class="hljs-operator">=</span> Long.parseLong(line[<span class="hljs-number">2</span>]); <br>        <span class="hljs-type">long</span> <span class="hljs-variable">sumFlow</span> <span class="hljs-operator">=</span> upFlow + downFlow; <br>        k.setUpFlow(upFlow); <br>        k.setDownFlow(downFlow); <br>        k.setSumFlow(sumFlow); <br>        v.set(line[<span class="hljs-number">0</span>]); <br>        <span class="hljs-comment">// 4写出 </span><br>        context.write(k, v); <br>    &#125; <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<h5 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.WritableComparable; <br>  <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.Text; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.Reducer; <br>  <br><span class="hljs-keyword">import</span> java.io.IOException; <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FlowCountReducer</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Reducer</span>&lt;FlowBean, Text, Text, FlowBean&gt; &#123; <br>  <br>    <span class="hljs-meta">@Override</span> <br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">reduce</span><span class="hljs-params">(FlowBean key, Iterable&lt;Text&gt; values, Context context)</span> <span class="hljs-keyword">throws</span> IOException, InterruptedException &#123; <br>        <span class="hljs-comment">// bean 138XXXX </span><br>        <span class="hljs-keyword">for</span> (Text phone_num : values) &#123; <br>            context.write(phone_num, key); <br>        &#125; <br>    &#125; <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<h5 id="driver"><a href="#driver" class="headerlink" title="driver"></a>driver</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.WritableComparable; <br>  <br><span class="hljs-keyword">import</span> org.apache.hadoop.conf.Configuration; <br><span class="hljs-keyword">import</span> org.apache.hadoop.fs.Path; <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.Text; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.Job; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.lib.input.FileInputFormat; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.lib.output.FileOutputFormat; <br>  <br><span class="hljs-keyword">import</span> java.io.IOException; <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FlowCountDriver</span> &#123; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException, ClassNotFoundException, InterruptedException &#123; <br>        <span class="hljs-keyword">if</span> (args.length == <span class="hljs-number">0</span>) &#123; <br>            args = <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[]&#123;<span class="hljs-string">&quot;/Users/heyizhi/BigData/hadoop/my_project/WritableComparable自定义排序/phone_data&quot;</span>, <br>            <span class="hljs-string">&quot;/Users/heyizhi/BigData/hadoop/my_project/WritableComparable自定义排序/Output&quot;</span>&#125;; <br>        &#125; <br>        <span class="hljs-type">Configuration</span> <span class="hljs-variable">conf</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Configuration</span>(); <br>        <span class="hljs-comment">// 1 获取job对象 </span><br>        <span class="hljs-type">Job</span> <span class="hljs-variable">job</span> <span class="hljs-operator">=</span> Job.getInstance(conf); <br>  <br>        <span class="hljs-comment">// 2 设置jar路径 </span><br>        job.setJarByClass(FlowCountDriver.class); <br>  <br>        <span class="hljs-comment">// 3 关联mapper和reducer </span><br>        job.setMapperClass(FlowCountMapper.class); <br>        job.setReducerClass(FlowCountReducer.class); <br>  <br>        <span class="hljs-comment">// 4 设置mapper输出的key和value类型 </span><br>        job.setMapOutputKeyClass(FlowBean.class); <br>        job.setMapOutputValueClass(Text.class); <br>  <br>        <span class="hljs-comment">// 5 设置最终输出的key和value类型 </span><br>        job.setOutputKeyClass(Text.class); <br>        job.setOutputValueClass(FlowBean.class); <br>  <br>        <span class="hljs-comment">// 6 设置输入输出路径 </span><br>        FileInputFormat.setInputPaths(job, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Path</span>(args[<span class="hljs-number">0</span>])); <br>        FileOutputFormat.setOutputPath(job, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Path</span>(args[<span class="hljs-number">1</span>])); <br> <br>        <span class="hljs-comment">// 7 提交job </span><br>        <span class="hljs-type">boolean</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> job.waitForCompletion(<span class="hljs-literal">true</span>); <br>  <br>        System.exit(result ? <span class="hljs-number">0</span> : <span class="hljs-number">1</span>); <br>  <br>    &#125; <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<h5 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h5><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211021500.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+
+<h3 id="分区内排序案例"><a href="#分区内排序案例" class="headerlink" title="分区内排序案例"></a>分区内排序案例</h3><h5 id="需求-1"><a href="#需求-1" class="headerlink" title="需求"></a>需求</h5><p>将每个号码前三位相同的进行分区，然后每个分区按照降序进行排序。 </p>
+<h5 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析"></a>需求分析</h5><p>基于前一个需求，增加自定义分区类，分区按照省份手机号设置。 </p>
+<h5 id="输入输出"><a href="#输入输出" class="headerlink" title="输入输出"></a>输入输出</h5><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211021549.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211021620.png" srcset="/img/loading.gif" lazyload></p>
+<p>在驱动里面加上这个</p>
+<h3 id="FlowBean-1"><a href="#FlowBean-1" class="headerlink" title="FlowBean"></a>FlowBean</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.WritableComparable.分区排序; <br>  <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.Text; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.Partitioner; <br>  <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ProvincePartitioner</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Partitioner</span>&lt;FlowBean, Text&gt; &#123; <br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getPartition</span><span class="hljs-params">(FlowBean flowBean, Text text, <span class="hljs-type">int</span> i)</span> &#123; <br>  <br>        <span class="hljs-comment">//按照手机号前三位分区 </span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">prePhoneNum</span> <span class="hljs-operator">=</span> text.toString().substring(<span class="hljs-number">0</span>, <span class="hljs-number">3</span>); <br>   <br>        <span class="hljs-type">int</span> <span class="hljs-variable">partition</span> <span class="hljs-operator">=</span> <span class="hljs-number">4</span>; <br>        <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;136&quot;</span>.equals(prePhoneNum)) &#123; <br>            partition = <span class="hljs-number">0</span>; <br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;137&quot;</span>.equals(prePhoneNum)) &#123; <br>            partition = <span class="hljs-number">1</span>; <br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;138&quot;</span>.equals(prePhoneNum)) &#123; <br>            partition = <span class="hljs-number">2</span>; <br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;139&quot;</span>.equals(prePhoneNum)) &#123; <br>            partition = <span class="hljs-number">3</span>; <br>        &#125; <br>  <br>        <span class="hljs-keyword">return</span> partition; <br>    &#125; <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<h2 id="GroupingComparator分组"><a href="#GroupingComparator分组" class="headerlink" title="GroupingComparator分组"></a>GroupingComparator分组</h2><h4 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h4><p>对Reduce阶段的数据根据某一个或几个字段进行分组。 </p>
+<h4 id="分组排序步骤："><a href="#分组排序步骤：" class="headerlink" title="分组排序步骤："></a>分组排序步骤：</h4><p>（1）自定义类继承WritableComparator<br>（2）重写compare()方法 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span> <br><span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">compare</span><span class="hljs-params">(WritableComparable a, WritableComparable b)</span> &#123; <br>        <span class="hljs-comment">// 比较的业务逻辑 </span><br>        <span class="hljs-keyword">return</span> result; <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<p>（3）创建一个构造将比较对象的类传给父类 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> <span class="hljs-title function_">OrderGroupingComparator</span><span class="hljs-params">()</span> &#123; <br>        <span class="hljs-built_in">super</span>(OrderBean.class, <span class="hljs-literal">true</span>); <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<h3 id="GroupingComparator分组案例"><a href="#GroupingComparator分组案例" class="headerlink" title="GroupingComparator分组案例"></a>GroupingComparator分组案例</h3><h5 id="需求-2"><a href="#需求-2" class="headerlink" title="需求"></a>需求</h5><p>有如下订单数据 </p>
+<h5 id="订单"><a href="#订单" class="headerlink" title="订单"></a>订单</h5><table>
+<thead>
+<tr>
+<th>订单id</th>
+<th>商品id</th>
+<th>成交金额</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0000001</td>
+<td>Pdt_01</td>
+<td>222.8</td>
+</tr>
+<tr>
+<td></td>
+<td>Pdt_02</td>
+<td>33.8</td>
+</tr>
+<tr>
+<td>0000002</td>
+<td>Pdt_03</td>
+<td>522.8</td>
+</tr>
+<tr>
+<td></td>
+<td>Pdt_04</td>
+<td>122.4</td>
+</tr>
+<tr>
+<td></td>
+<td>Pdt_05</td>
+<td>722.8</td>
+</tr>
+<tr>
+<td>0000003</td>
+<td>Pdt_06</td>
+<td>232.8</td>
+</tr>
+<tr>
+<td></td>
+<td>Pdt_07</td>
+<td>33.8</td>
+</tr>
+</tbody></table>
+<p>现在需要求出每一个订单中最贵的商品。 </p>
+<h5 id="输入数据-1"><a href="#输入数据-1" class="headerlink" title="输入数据"></a>输入数据</h5><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211021855.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+
+<h5 id="期望输出数据-1"><a href="#期望输出数据-1" class="headerlink" title="期望输出数据"></a>期望输出数据</h5><p>1 222.8<br>2 722.4<br>3 232.8 </p>
+<h5 id="需求分析-1"><a href="#需求分析-1" class="headerlink" title="需求分析"></a>需求分析</h5><p>（1）利用“订单id和成交金额”作为key，可以将Map阶段读取到的所有订单数据按照id升序排序，如果id相同再按照金额降序排序，发送到Reduce。<br>（2）在Reduce端利用groupingComparator将订单id相同的kv聚合成组，然后取第一个即是该订单中最贵商品<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201211021921.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" /></p>
+<h4 id="分组原因"><a href="#分组原因" class="headerlink" title="分组原因"></a>分组原因</h4><p>对上面的需求进行分析，因为只有key相同才会进入同一个reduce中，但是前面定义的key是OrderBean，比较的是OrderBean里面的价格和id，因此不同的价格和id就会对应不同的OrderBean，因此所有的结果都会进行输出，因此我们需要进行分组排序，目的是让id相同的key就能进入同一个reduce中，那我们就不循环直接输出即可得到价格最大的那个订单！ </p>
+<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><p>根据简介中的方法，我们可以得到GroupingComparator的代码为</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.order; <br>  <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.WritableComparable; <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.WritableComparator; <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OrderGroupingComparator</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">WritableComparator</span> &#123; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">OrderGroupingComparator</span><span class="hljs-params">()</span> &#123; <br>        <span class="hljs-built_in">super</span>(OrderBean.class, <span class="hljs-literal">true</span>); <br>    &#125; <br>  <br>    <span class="hljs-meta">@Override</span> <br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">compare</span><span class="hljs-params">(WritableComparable a, WritableComparable b)</span> &#123; <br>        <span class="hljs-comment">//要求只要id相同，就认为是相同的key </span><br>  <br>        <span class="hljs-type">OrderBean</span> <span class="hljs-variable">aBean</span> <span class="hljs-operator">=</span> (OrderBean) a; <br>        <span class="hljs-type">OrderBean</span> <span class="hljs-variable">bBean</span> <span class="hljs-operator">=</span> (OrderBean) b; <br>        <span class="hljs-type">int</span> result; <br>        <span class="hljs-keyword">if</span> (aBean.getOrder_id() &gt; bBean.getOrder_id()) &#123; <br>            result = <span class="hljs-number">1</span>; <br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (aBean.getOrder_id() &lt; bBean.getOrder_id()) &#123; <br>            result = -<span class="hljs-number">1</span>; <br>        &#125; <span class="hljs-keyword">else</span> &#123; <br>            result = <span class="hljs-number">0</span>; <br>        &#125; <br>  <br>        <span class="hljs-keyword">return</span> result; <br>        <span class="hljs-comment">// 在这里，如果是0则表示为同一个key </span><br>    &#125; <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<h5 id="map-1"><a href="#map-1" class="headerlink" title="map"></a>map</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.order; <br>  <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.LongWritable; <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.NullWritable; <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.Text; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.Mapper; <br>  <br><span class="hljs-keyword">import</span> java.io.IOException; <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OrderMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Mapper</span>&lt;LongWritable, Text, OrderBean, NullWritable&gt; &#123; <br>  <br>    <span class="hljs-type">OrderBean</span> <span class="hljs-variable">k</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">OrderBean</span>(); <br>  <br>    <span class="hljs-meta">@Override</span> <br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">map</span><span class="hljs-params">(LongWritable key, Text value, Context context)</span> <span class="hljs-keyword">throws</span> IOException, InterruptedException &#123; <br>        <span class="hljs-comment">// 0000001 Pdt_01 222.8 输入数据 </span><br>        <span class="hljs-comment">// 将0000001和222.8封装到bean对象之后输出就行了，不需要value </span><br>        String[] line = value.toString().split(<span class="hljs-string">&quot; &quot;</span>); <br>        k.setOrder_id(Integer.parseInt(line[<span class="hljs-number">0</span>])); <br>        k.setPrice(Double.parseDouble(line[<span class="hljs-number">2</span>])); <br>        context.write(k, NullWritable.get()); <br>    &#125; <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<h5 id="reduce-1"><a href="#reduce-1" class="headerlink" title="reduce"></a>reduce</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.order; <br>  <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.LongWritable; <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.NullWritable; <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.Text; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.Mapper; <br>  <br><span class="hljs-keyword">import</span> java.io.IOException; <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OrderMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Mapper</span>&lt;LongWritable, Text, OrderBean, NullWritable&gt; &#123; <br>  <br>    <span class="hljs-type">OrderBean</span> <span class="hljs-variable">k</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">OrderBean</span>(); <br>  <br>    <span class="hljs-meta">@Override</span> <br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">map</span><span class="hljs-params">(LongWritable key, Text value, Context context)</span> <span class="hljs-keyword">throws</span> IOException, InterruptedException &#123; <br>        <span class="hljs-comment">// 0000001 Pdt_01 222.8 输入数据 </span><br>        <span class="hljs-comment">// 将0000001和222.8封装到bean对象之后输出就行了，不需要value </span><br>        String[] line = value.toString().split(<span class="hljs-string">&quot; &quot;</span>); <br>        k.setOrder_id(Integer.parseInt(line[<span class="hljs-number">0</span>])); <br>        k.setPrice(Double.parseDouble(line[<span class="hljs-number">2</span>])); <br>        context.write(k, NullWritable.get()); <br>    &#125; <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<h5 id="bean"><a href="#bean" class="headerlink" title="bean"></a>bean</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.order; <br>  <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.WritableComparable; <br>  <br><span class="hljs-keyword">import</span> java.io.DataInput; <br><span class="hljs-keyword">import</span> java.io.DataOutput; <br><span class="hljs-keyword">import</span> java.io.IOException; <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OrderBean</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">WritableComparable</span>&lt;OrderBean&gt; &#123; <br>  <br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> order_id;       <span class="hljs-comment">//订单ID </span><br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getOrder_id</span><span class="hljs-params">()</span> &#123; <br>        <span class="hljs-keyword">return</span> order_id; <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setOrder_id</span><span class="hljs-params">(<span class="hljs-type">int</span> order_id)</span> &#123; <br>        <span class="hljs-built_in">this</span>.order_id = order_id; <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-type">double</span> <span class="hljs-title function_">getPrice</span><span class="hljs-params">()</span> &#123; <br>        <span class="hljs-keyword">return</span> price; <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setPrice</span><span class="hljs-params">(<span class="hljs-type">double</span> price)</span> &#123; <br>        <span class="hljs-built_in">this</span>.price = price; <br>    &#125; <br>  <br>    <span class="hljs-keyword">private</span> <span class="hljs-type">double</span> price;       <span class="hljs-comment">//订单价格 </span><br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">OrderBean</span><span class="hljs-params">()</span>&#123; <br>        <span class="hljs-built_in">super</span>(); <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">OrderBean</span><span class="hljs-params">(<span class="hljs-type">int</span> order_id, <span class="hljs-type">double</span> price)</span> &#123; <br>        <span class="hljs-built_in">super</span>(); <br>        <span class="hljs-built_in">this</span>.order_id = order_id; <br>        <span class="hljs-built_in">this</span>.price = price; <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">compareTo</span><span class="hljs-params">(OrderBean o)</span> &#123; <br>        <span class="hljs-comment">// 先按照订单id进行排序，如果相同按照价格降序排序 </span><br>        <span class="hljs-type">int</span> <span class="hljs-variable">res</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; <br>        <span class="hljs-keyword">if</span> (order_id &gt; o.getOrder_id()) &#123; <br>            res = <span class="hljs-number">1</span>; <br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (order_id &lt; o.getOrder_id()) &#123; <br>            res = -<span class="hljs-number">1</span>; <br>        &#125; <span class="hljs-keyword">else</span> &#123; <br>            <span class="hljs-keyword">if</span> (price &gt; o.getPrice()) &#123; <br>                res = -<span class="hljs-number">1</span>; <br>            &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (price &lt; o.getPrice()) &#123; <br>                res = <span class="hljs-number">1</span>; <br>            &#125; <span class="hljs-keyword">else</span> &#123; <br>                res = <span class="hljs-number">0</span>; <br>            &#125; <br>        &#125; <br>        <span class="hljs-keyword">return</span> res; <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">write</span><span class="hljs-params">(DataOutput dataOutput)</span> <span class="hljs-keyword">throws</span> IOException &#123; <br>        dataOutput.writeInt(order_id); <br>        dataOutput.writeDouble(price); <br>    &#125; <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">readFields</span><span class="hljs-params">(DataInput dataInput)</span> <span class="hljs-keyword">throws</span> IOException &#123; <br>        order_id = dataInput.readInt(); <br>        price = dataInput.readDouble(); <br>    &#125; <br>  <br>    <span class="hljs-meta">@Override</span> <br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">toString</span><span class="hljs-params">()</span> &#123; <br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;order_id=&quot;</span> + order_id + <span class="hljs-string">&quot;\t&quot;</span> + <span class="hljs-string">&quot;price=&quot;</span> + price; <br>    &#125; <br>&#125; <br></code></pre></td></tr></table></figure>
+
+<h5 id="Driver"><a href="#Driver" class="headerlink" title="Driver"></a>Driver</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.order; <br>  <br><span class="hljs-keyword">import</span> org.apache.hadoop.conf.Configuration; <br><span class="hljs-keyword">import</span> org.apache.hadoop.fs.Path; <br><span class="hljs-keyword">import</span> org.apache.hadoop.io.NullWritable; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.Job; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.lib.input.FileInputFormat; <br><span class="hljs-keyword">import</span> org.apache.hadoop.mapreduce.lib.output.FileOutputFormat; <br>  <br><span class="hljs-keyword">import</span> java.io.IOException; <br>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OrderDriver</span> &#123; <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> IOException, ClassNotFoundException, InterruptedException &#123; <br>        <span class="hljs-keyword">if</span> (args.length == <span class="hljs-number">0</span>) &#123; <br>            args = <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[]&#123; <br>                    <span class="hljs-string">&quot;/Users/heyizhi/BigData/hadoop/my_project/GroupingComparator分组操作/GroupingData&quot;</span>, <br>                    <span class="hljs-string">&quot;/Users/heyizhi/BigData/hadoop/my_project/GroupingComparator分组操作/Output_Grouping&quot;</span>&#125;; <br>        &#125; <br>        <span class="hljs-type">Configuration</span> <span class="hljs-variable">conf</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Configuration</span>(); <br>        <span class="hljs-comment">// 1 获取job对象 </span><br>        <span class="hljs-type">Job</span> <span class="hljs-variable">job</span> <span class="hljs-operator">=</span> Job.getInstance(conf); <br>  <br>        <span class="hljs-comment">// 2 设置jar路径 </span><br>        job.setJarByClass(OrderDriver.class); <br>  <br>        <span class="hljs-comment">// 3 关联mapper和reducer </span><br>        job.setMapperClass(OrderMapper.class); <br>        job.setReducerClass(OrderReducer.class); <br>  <br>        <span class="hljs-comment">// 4 设置mapper输出的key和value类型 </span><br>        job.setMapOutputKeyClass(OrderBean.class); <br>        job.setMapOutputValueClass(NullWritable.class); <br>  <br>        <span class="hljs-comment">// 5 设置最终输出的key和value类型 </span><br>        job.setOutputKeyClass(OrderBean.class); <br>        job.setOutputValueClass(NullWritable.class); <br>  <br>        <span class="hljs-comment">// 6 设置输入输出路径 </span><br>        FileInputFormat.setInputPaths(job, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Path</span>(args[<span class="hljs-number">0</span>])); <br>        FileOutputFormat.setOutputPath(job, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Path</span>(args[<span class="hljs-number">1</span>])); <br>  <br>        job.setGroupingComparatorClass(OrderGroupingComparator.class); <br>  <br>        <span class="hljs-comment">// 7 提交job </span><br>        <span class="hljs-type">boolean</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> job.waitForCompletion(<span class="hljs-literal">true</span>); <br>  <br>        System.exit(result ? <span class="hljs-number">0</span> : <span class="hljs-number">1</span>); <br>    &#125; <br>&#125; <br></code></pre></td></tr></table></figure>
+
+
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/" class="category-chain-item">大数据</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/" class="category-chain-item">Hadoop生态</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/Hadoop/" class="category-chain-item">Hadoop</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/Hadoop/3-MR%E4%BB%8B%E7%BB%8D/" class="category-chain-item">3 MR介绍</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MR4 MapReduce框架原理2_MapReduce工作流程+Shuffle机制</div>
+      <div>http://example.com/2022/12/6665ff78348f.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/d42f0d1137e8.html" title="MR5 MapReduce框架原理3_MapReduce工作机制">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MR5 MapReduce框架原理3_MapReduce工作机制</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/f969e9b9f1c9.html" title="MR3 MapReduce框架原理1_InputFormat数据输入">
+                        <span class="hidden-mobile">MR3 MapReduce框架原理1_InputFormat数据输入</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/6665ff78348f.html';
+          this.page.identifier = '/2022/12/6665ff78348f.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

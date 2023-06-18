@@ -1,0 +1,868 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一 Kafka概述定义Kafka 是一个分布式的基于发布&#x2F;订阅模式的消息队列（Message Queue），主要应用于大数据实时处理领域。  消息队列（MQ）同步处理和异步处理 使用消息队列的好处 解耦  允许你独立的扩展或修改两边的处理过程，只要确保它们遵守同样的接口约束。   可恢复性  系统的一部分组件失效时，不会影响到整个系统。消息队列降低了进程间的耦合度，所以即使一个处理消息的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1 Kafka介绍">
+<meta property="og:url" content="http://example.com/2022/12/a2c4fbec756d.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="一 Kafka概述定义Kafka 是一个分布式的基于发布&#x2F;订阅模式的消息队列（Message Queue），主要应用于大数据实时处理领域。  消息队列（MQ）同步处理和异步处理 使用消息队列的好处 解耦  允许你独立的扩展或修改两边的处理过程，只要确保它们遵守同样的接口约束。   可恢复性  系统的一部分组件失效时，不会影响到整个系统。消息队列降低了进程间的耦合度，所以即使一个处理消息的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409101746.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409102037.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409102049.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409102147.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409112216.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409112414.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409112631.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409112800.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409112852.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409112930.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409112957.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409113043.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409113314.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409113508.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409113616.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409113651.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409114822.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409114920.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409115146.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409115331.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409120237.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409120302.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409120325.png">
+<meta property="article:published_time" content="2022-12-03T18:42:50.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409101746.png">
+  
+  
+  
+  <title>1 Kafka介绍 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="1 Kafka介绍"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:42" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          22 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">1 Kafka介绍</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="一-Kafka概述"><a href="#一-Kafka概述" class="headerlink" title="一 Kafka概述"></a>一 Kafka概述</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>Kafka 是一个<strong>分布式</strong>的基于<strong>发布&#x2F;订阅模式</strong>的<strong>消息队列</strong>（Message Queue），主要应用于大数据实时处理领域。 </p>
+<h2 id="消息队列（MQ）"><a href="#消息队列（MQ）" class="headerlink" title="消息队列（MQ）"></a>消息队列（MQ）</h2><h3 id="同步处理和异步处理"><a href="#同步处理和异步处理" class="headerlink" title="同步处理和异步处理"></a>同步处理和异步处理</h3><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409101746.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="使用消息队列的好处"><a href="#使用消息队列的好处" class="headerlink" title="使用消息队列的好处"></a>使用消息队列的好处</h3><ol>
+<li><p>解耦 </p>
+<p>允许你独立的扩展或修改两边的处理过程，只要确保它们遵守同样的接口约束。 </p>
+</li>
+<li><p>可恢复性 </p>
+<p>系统的一部分组件失效时，不会影响到整个系统。消息队列降低了进程间的耦合度，所以即使一个处理消息的进程挂掉，加入队列中的消息仍然可以在系统恢复后被处理。 </p>
+</li>
+<li><p>缓冲 </p>
+<p>有助于控制和优化数据流经过系统的速度，解决生产消息和费的处理速度不一致的情况。 </p>
+</li>
+<li><p>灵活性&amp;峰值处理能力 </p>
+<p>在访问量剧增的情况下，应用仍然需要继续发挥作用，但是这样的突发流量并不常见。如果为以能处理这类峰值访问为标准来投入资源随时待命无疑是巨大的浪费。使用消息队列能够使关键组件顶住突发的访问压力，而不会因为突发的超负荷的请求而完全崩溃。 </p>
+</li>
+<li><p>异步通信 </p>
+<p>很多时候，用户不想也不需要立即处理消息。消息队列提供了异步处理机制，允许用户把一个消息放入队列，但并不立即处理它。想向队列中放入多少消息就放多少，然后在需要的时候再去处理它们。</p>
+</li>
+</ol>
+<h3 id="消息队列的两种模型"><a href="#消息队列的两种模型" class="headerlink" title="消息队列的两种模型"></a>消息队列的两种模型</h3><h4 id="1-点对点模式"><a href="#1-点对点模式" class="headerlink" title="1. 点对点模式"></a>1. 点对点模式</h4><p>一对一，消费者主动拉取数据，消息收到后消息清除</p>
+<p>消息生产者生产消息发送到Queue中，然后消息消费者从Queue中取出并且消费消息。 </p>
+<p>消息被消费以后，queue中不再有存储，所以消息消费者不可能消费到已经被消费的消息。Queue支持存在多个消费者，但是对一个消息而言，只会有一个消费者可以消费。 </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409102037.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h4 id="2-发布-x2F-订阅模式"><a href="#2-发布-x2F-订阅模式" class="headerlink" title="2. 发布&#x2F;订阅模式"></a>2. 发布&#x2F;订阅模式</h4><p>一对多，消费者消费数据之后不会清除消息</p>
+<p>消息生产者（发布）将消息发布到topic中，同时有多个消息消费者（订阅）消费该消息。和点对点方式不同，发布到topic的消息会被所有订阅者消费。 </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409102049.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><p>发布&#x2F;订阅模式有两种 </p>
+<p>一种是消息队列主动推送数据模式（消息队列确定推送速度）。 </p>
+<ul>
+<li>坏处：消费者可能扛不住</li>
+<li>好处：消费者可以随时获取最新的消息</li>
+</ul>
+<p>一种是消费者主动拉取数据模式（消费者确定拉取速度）。 </p>
+<ul>
+<li>坏处：需要耗费大量资源去轮询获取最新的消息</li>
+<li>好处：能根据消费者的需要去动态获取数据</li>
+</ul>
+<h3 id="Kafka基本架构"><a href="#Kafka基本架构" class="headerlink" title="Kafka基本架构"></a>Kafka基本架构</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409102147.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p><strong>1）Producer</strong> ：消息生产者，就是向kafka broker 发消息的客户端； </p>
+<p><strong>2）Consumer</strong> ：消息消费者，向kafka broker 取消息的客户端； </p>
+<p><strong>3）Consumer Group</strong> （<strong>CG</strong>）：消费者组，由多个consumer 组成。消费者组内每个消费者负责消费不同分区的数据，一个分区只能由一个组内消费者消费；消费者组之间互不影响。所有的消费者都属于某个消费者组，即消费者组是逻辑上的一个订阅者。 </p>
+<p><strong>4）Broker</strong> ：一台kafka 服务器就是一个broker。一个集群由多个broker 组成。一个broker 可以容纳多个topic。 </p>
+<p><strong>5）Topic</strong> ：可以理解为一个队列，生产者和消费者面向的都是一个<strong>topic</strong>； </p>
+<p><strong>6）Partition</strong>：为了实现扩展性，一个非常大的topic 可以分布到多个broker（即服务器）上，一个<strong>topic</strong> 可以分为多个<strong>partition</strong>，<strong>每个partition 是一个有序的队列</strong>； </p>
+<p><strong>7）Replica</strong>：副本，为保证集群中的某个节点发生故障时，该节点上的partition 数据不丢失， </p>
+<h1 id="二-Kafka入门"><a href="#二-Kafka入门" class="headerlink" title="二 Kafka入门"></a>二 Kafka入门</h1><h2 id="1-Kafka安装"><a href="#1-Kafka安装" class="headerlink" title="1. Kafka安装"></a>1. Kafka安装</h2><h3 id="文件的解压"><a href="#文件的解压" class="headerlink" title="文件的解压"></a>文件的解压</h3><ol>
+<li><p>将<code>kafka_2.11-0.11.0.0.tgz</code>文件解压到<code>/opt/module</code>中</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409112216.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">[root@3e54fd72a673 software]# tar xvfz kafka_2.11-0.11.0.0.tgz -C /opt/module/<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>文件改名</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409112414.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">[root@3e54fd72a673 module]# mv kafka_2.11-0.11.0.0/ kafka<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="配置信息"><a href="#配置信息" class="headerlink" title="配置信息"></a>配置信息</h3><h4 id="修改server-properties"><a href="#修改server-properties" class="headerlink" title="修改server.properties"></a>修改server.properties</h4><ol>
+<li><p>首先使得每个broker.id唯一</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409112631.png" srcset="/img/loading.gif" lazyload style="zoom: 50%;" />
+</li>
+<li><p>zookeeper连接端口</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409112800.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>更改之后：</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409112852.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+</li>
+<li><p>更改暂存文件目录</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409112930.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>修改之后：</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409112957.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+</li>
+<li><p>打开使能删除功能</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409113043.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></li>
+</ol>
+<h4 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h4><ol>
+<li><p>在<code>/etc/profile</code>中增加<code>KAFKA_HOME</code></p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409113314.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">[root@3e54fd72a673 config]# source /etc/profile<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="集群配置"><a href="#集群配置" class="headerlink" title="集群配置"></a>集群配置</h3><p>将kafka复制到其他服务器上，然后修改每个服务器的broker id即可（保证broker id）唯一 </p>
+<ol>
+<li>chadoop1</li>
+</ol>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409113508.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<ol start="2">
+<li>chadoop2</li>
+</ol>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409113616.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<ol start="3">
+<li>chadoop3</li>
+</ol>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409113651.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h2 id="2-Kfaka启动"><a href="#2-Kfaka启动" class="headerlink" title="2. Kfaka启动"></a>2. Kfaka启动</h2><h3 id="启动命令"><a href="#启动命令" class="headerlink" title="启动命令"></a>启动命令</h3><p>需要保证zk启动</p>
+<h4 id="启动的两种方式"><a href="#启动的两种方式" class="headerlink" title="启动的两种方式"></a>启动的两种方式</h4><ol>
+<li><p>启动阻塞进程</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">kafka-server-start.sh config/server.properties<br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409114822.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+</li>
+<li><p>启动守护进程</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">kafka-server-start.sh -daemon config/server.properties<br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409114920.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></li>
+</ol>
+<h3 id="群起Kafka"><a href="#群起Kafka" class="headerlink" title="群起Kafka"></a>群起Kafka</h3><p>kafka没有群起脚本，我们可以自己制作一个。 </p>
+<h4 id="群起脚本代码"><a href="#群起脚本代码" class="headerlink" title="群起脚本代码"></a>群起脚本代码</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span> <br> <br>case $1 in <br>  &quot;start&quot;)&#123; <br> <br>    for i in chadoop1 chadoop2 chadoop3<br>    do <br>        echo &quot;************$i************&quot; <br>        ssh $i &quot;/opt/module/kafka/bin/kafka-server-start.sh -daemon /opt/module/kafka/config/server.properties&quot; <br>    done <br>&#125;;; <br> <br>  &quot;stop&quot;)&#123; <br> <br>    for i in chadoop1 chadoop2 chadoop3 <br>    do <br>        echo &quot;************$i************&quot; <br>        ssh $i &quot;/opt/module/kafka/bin/kafka-server-stop.sh /opt/module/kafka/config/server.properties&quot; <br>    done <br>&#125;;; <br> <br>esac<br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409115146.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h4 id="注意-1"><a href="#注意-1" class="headerlink" title="注意"></a>注意</h4><p>ssh时经常无法识别JAVA_HOME，因此经常找不到jps指令和JAVA指令，也就无法启动Kafka，因此我们需要在脚本kafka-server-start.sh中指定JAVA_HOME。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409115331.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h4 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">kakfa.sh start<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li><p>chadoop1</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409120237.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+</li>
+<li><p>chadoop2</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409120302.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+</li>
+<li><p>chadoop3</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210409120325.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/" class="category-chain-item">大数据</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/MQ/" class="category-chain-item">MQ</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/MQ/KafKa/" class="category-chain-item">KafKa</a>
+  
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>1 Kafka介绍</div>
+      <div>http://example.com/2022/12/a2c4fbec756d.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/e0ce9fbcee48.html" title="2 Kafka常见命令">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2 Kafka常见命令</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/93639f953cee.html" title="2 Perjob Mode">
+                        <span class="hidden-mobile">2 Perjob Mode</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/a2c4fbec756d.html';
+          this.page.identifier = '/2022/12/a2c4fbec756d.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

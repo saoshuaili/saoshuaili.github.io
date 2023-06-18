@@ -1,0 +1,780 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="标准I&#x2F;O介绍1 引言本章讲述标准I&#x2F;O库。不仅是UNIX，很多其他操作系统都实现了标准I&#x2F;O库，所以这个库由ISO C标准说明。标准I&#x2F;O库处理很多细节，如缓冲区分配，以优化的块长度执行I&#x2F;O等。这些处理使用户不必担心如何选择使用正确的块长度。 注意FILE类型贯穿始终，FILE是一个结构体，随着学习深入会逐渐了解。 FILE的产生FILE类型通">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APUE-5-标准IO库">
+<meta property="og:url" content="http://example.com/2022/12/99d058d12e53.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="标准I&#x2F;O介绍1 引言本章讲述标准I&#x2F;O库。不仅是UNIX，很多其他操作系统都实现了标准I&#x2F;O库，所以这个库由ISO C标准说明。标准I&#x2F;O库处理很多细节，如缓冲区分配，以优化的块长度执行I&#x2F;O等。这些处理使用户不必担心如何选择使用正确的块长度。 注意FILE类型贯穿始终，FILE是一个结构体，随着学习深入会逐渐了解。 FILE的产生FILE类型通">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63722f81f7e3bd97f588e.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6361ff81f7e3bd97eda26.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636a7f81f7e3bd97f3e42.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63722f81f7e3bd97f5887.jpg">
+<meta property="article:published_time" content="2022-12-03T18:37:44.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pic.downk.cc/item/5fc63722f81f7e3bd97f588e.jpg">
+  
+  
+  
+  <title>APUE-5-标准IO库 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="APUE-5-标准IO库"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:37" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          38 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">APUE-5-标准IO库</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="标准I-x2F-O介绍"><a href="#标准I-x2F-O介绍" class="headerlink" title="标准I&#x2F;O介绍"></a>标准I&#x2F;O介绍</h1><h2 id="1-引言"><a href="#1-引言" class="headerlink" title="1 引言"></a>1 引言</h2><p>本章讲述标准I&#x2F;O库。不仅是UNIX，很多其他操作系统都实现了标准I&#x2F;O库，所以这个库由ISO C标准说明。<br>标准I&#x2F;O库处理很多细节，如缓冲区分配，以优化的块长度执行I&#x2F;O等。这些处理使用户不必担心如何选择使用正确的块长度。</p>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>FILE类型贯穿始终，FILE是一个结构体，随着学习深入会逐渐了解。</p>
+<h3 id="FILE的产生"><a href="#FILE的产生" class="headerlink" title="FILE的产生"></a>FILE的产生</h3><p>FILE类型通过fopen来产生。</p>
+<h2 id="2-流和FILE对象"><a href="#2-流和FILE对象" class="headerlink" title="2 流和FILE对象"></a>2 流和FILE对象</h2><h3 id="系统调用I-x2F-O和标准I-x2F-O的区别"><a href="#系统调用I-x2F-O和标准I-x2F-O的区别" class="headerlink" title="系统调用I&#x2F;O和标准I&#x2F;O的区别"></a>系统调用I&#x2F;O和标准I&#x2F;O的区别</h3><h4 id="系统调用I-x2F-O："><a href="#系统调用I-x2F-O：" class="headerlink" title="系统调用I&#x2F;O："></a>系统调用I&#x2F;O：</h4><p>对于系统调用I&#x2F;O函数，都是围绕<strong>文件描述符</strong>展开的。当打开一个文件时，返回一个文件描述符，然后该文件描述符就用于后续的I&#x2F;O操作。</p>
+<h4 id="标准I-x2F-O："><a href="#标准I-x2F-O：" class="headerlink" title="标准I&#x2F;O："></a>标准I&#x2F;O：</h4><p>而对于标准I&#x2F;O库，它们的操作是围绕<strong>流</strong>进行的，当标准I&#x2F;O库打开或创建一个文件时，我们已使一个流与一个文件相关联。</p>
+<h3 id="文件和流的区别和联系"><a href="#文件和流的区别和联系" class="headerlink" title="文件和流的区别和联系"></a>文件和流的区别和联系</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>文件是计算机管理数据的基本单位，同时也是应用程序保存和读取数据的一个重要场所。<br>流是字节序列的抽象概念，例如文件、输入&#x2F;输出设备、内部进程通信管道等。流提供一种向后备存储器写入字节和从后备存储器读取字节的方式。</p>
+<h4 id="存储介质"><a href="#存储介质" class="headerlink" title="存储介质"></a>存储介质</h4><p>文件是指在各种存储介质上（如硬盘、可移动磁盘、CD等）永久存储的数据的有序集合，它是进行数据读写操作的基本对象。<br>除了和磁盘文件直接相关的文件流以外，流还有多种类型。流可以分布在网络中、内存中或者是磁带中。</p>
+<h3 id="流的定向"><a href="#流的定向" class="headerlink" title="流的定向"></a>流的定向</h3><p>我们已经知道，流是字节序列的抽象概念。<br>对于<strong>ASCII字符集</strong>，一个字符用<strong>一个</strong>字节表示：称为单字节字符集<br>对于<strong>国际字符集</strong>，一个字符用<strong>多个</strong>字节表示：称为多字节（宽）字符集</p>
+<h4 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h4><p><strong>流的定向</strong>决定了所读、写的字符是单字节还是多字节。<br>解释：<br>也就是说流的定向决定了所读写的字符是ASCII字符集还是国际字符集</p>
+<h4 id="fwide函数"><a href="#fwide函数" class="headerlink" title="fwide函数"></a>fwide函数</h4><p>fwide函数可用于设置流的定向</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;wchar.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">fwide</span><span class="hljs-params">(FILE *fp, <span class="hljs-type">int</span> mode)</span>;<br></code></pre></td></tr></table></figure>
+<p>参数：<br>参数mode的不同值fwide执行不同的工作：</p>
+<ol>
+<li>若mode为负，则fwide将试图使指定的流是字节定向的（ASCII字符集）</li>
+<li>若mode为正，则fwide将试图使指定的流是宽定向的（国际字符集）</li>
+<li>若mode为0，则fwide将不试图设置流的定向，但返回标识该流定向的值。</li>
+</ol>
+<h3 id="标准输入、标准输出和标准错误"><a href="#标准输入、标准输出和标准错误" class="headerlink" title="标准输入、标准输出和标准错误"></a>标准输入、标准输出和标准错误</h3><p>标准输入、标准输出和标准错误是进程预定义的3个流，并且这3个流可以自动被进程使用，<br>这3个标准I&#x2F;O流通过预定义文件指针stdin、stdout和stderr加以引用。这3个文件指针定义在头文件&lt;stdio.h&gt;</p>
+<h3 id="缓冲"><a href="#缓冲" class="headerlink" title="缓冲"></a>缓冲</h3><h4 id="缓冲目的"><a href="#缓冲目的" class="headerlink" title="缓冲目的"></a>缓冲目的</h4><p>标准I&#x2F;O库提供缓冲的目的是尽可能减少使用read和write调用的次数。它也对每个I&#x2F;O流自动进行缓冲管理。</p>
+<h3 id="3种类型的缓冲"><a href="#3种类型的缓冲" class="headerlink" title="3种类型的缓冲"></a>3种类型的缓冲</h3><h4 id="1-全缓冲"><a href="#1-全缓冲" class="headerlink" title="1. 全缓冲"></a>1. 全缓冲</h4><p>在这种情况下，在填满标准I&#x2F;O缓冲区后才进行实际的I&#x2F;O操作。</p>
+<h5 id="冲洗（flush）"><a href="#冲洗（flush）" class="headerlink" title="冲洗（flush）"></a>冲洗（<code>flush</code>）</h5><p>术语冲洗（<code>flush</code>）说明标准I&#x2F;O缓冲区的写操作。值得注意的是，UNIX环境中，flush有两种意思。在标准I&#x2F;O库方面，flush意味着将缓冲区中的内容写到磁盘上（此时该缓冲区的内容可能没有填满）。在终端驱动程序方面，flush表示丢弃已存储在缓冲区中的数据</p>
+<h4 id="2-行缓冲"><a href="#2-行缓冲" class="headerlink" title="2. 行缓冲"></a>2. 行缓冲</h4><p>顾名思义，行缓冲的意思是遇到换行符之后才进行I&#x2F;O操作。这允许我们一次输出一个字符（用标准I&#x2F;O函数fputc），但只有在写了一行之后才进行实际I&#x2F;O操作。</p>
+<h5 id="对于行缓冲有两个限制"><a href="#对于行缓冲有两个限制" class="headerlink" title="对于行缓冲有两个限制"></a>对于行缓冲有两个限制</h5><ol>
+<li>因为标准I&#x2F;O库用来收集每一行的缓冲区的长度是固定的，所以只要填满缓冲区，那么及时还没有写一个换行符，也进行I&#x2F;O操作。</li>
+<li>任何时候只要通过I&#x2F;O库要求<br>（a）一个不带缓冲的流<br>（b）一个行缓冲的流得到输入数据，那么就会冲洗所有行缓冲输出流。</li>
+</ol>
+<h4 id="3-不带缓冲：标准I-x2F-O库不对字符进行缓冲存储。"><a href="#3-不带缓冲：标准I-x2F-O库不对字符进行缓冲存储。" class="headerlink" title="3. 不带缓冲：标准I&#x2F;O库不对字符进行缓冲存储。"></a>3. 不带缓冲：标准I&#x2F;O库不对字符进行缓冲存储。</h4><h3 id="缓冲设置"><a href="#缓冲设置" class="headerlink" title="缓冲设置"></a>缓冲设置</h3><p>对任何一个给定的流，如果我们并不喜欢这些系统默认，则可调用下列两个函数中的一个更改缓冲类型。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-type">void</span> <span class="hljs-title function_">setbuf</span><span class="hljs-params">(FILE *<span class="hljs-keyword">restrict</span> fp, <span class="hljs-type">char</span> *<span class="hljs-keyword">restrict</span> buf)</span>;<br><span class="hljs-type">void</span> <span class="hljs-title function_">setvbuf</span><span class="hljs-params">(FILE *<span class="hljs-keyword">restrict</span> fp, <span class="hljs-type">char</span> *<span class="hljs-keyword">restrict</span> buf, <span class="hljs-type">int</span> mode, <span class="hljs-type">size_t</span> size)</span>;<br></code></pre></td></tr></table></figure>
+<p>使用setvbuf,我们可以精确地说明所需的缓冲类型。这是用mode参数实现的：<br>_IOFBF 全缓冲<br>_IOLBF 行缓冲<br>_IONBF 不带缓冲<br>如果指定一个不带缓冲的流，则忽略buf和size参数。如果指定全缓冲或行缓冲，则buf和size可选择地指定一个缓冲区及其长度。如果该流是带缓冲的，而buf是NULL，则标准I&#x2F;O库将自动地为该刘分配适当长度的缓冲区。适当的长度指的是由常量BUFSIZE指定的值。<br>任何时候，我们都可强制冲洗一个流。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">fflush</span><span class="hljs-params">(FILE *fp)</span>;<br></code></pre></td></tr></table></figure>
+<p>此函数使所有未写的数据都被传送至内核。作为一种特殊情形，如若fp是NULL，此函数将导致所有输出流被冲洗。</p>
+<h1 id="fopen系列函数"><a href="#fopen系列函数" class="headerlink" title="fopen系列函数"></a>fopen系列函数</h1><p>下列3个函数打开一个标准I&#x2F;O流。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br>FILE *<span class="hljs-title function_">fopen</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *<span class="hljs-keyword">restrict</span> pathname, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *<span class="hljs-keyword">restrict</span> type)</span>;<br>FILE *<span class="hljs-title function_">freopen</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *<span class="hljs-keyword">restrict</span> pathname, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *<span class="hljs-keyword">restrict</span> type, FILE *<span class="hljs-keyword">restrict</span> fp)</span>;<br>FILE *<span class="hljs-title function_">fdopen</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *type)</span>;<br></code></pre></td></tr></table></figure>
+<h2 id="函数区别如下"><a href="#函数区别如下" class="headerlink" title="函数区别如下"></a>函数区别如下</h2><h3 id="fopen"><a href="#fopen" class="headerlink" title="fopen"></a>fopen</h3><p>fopen 函数打开路径名为pathname的一个指定的文件。</p>
+<h3 id="freopen"><a href="#freopen" class="headerlink" title="freopen"></a>freopen</h3><p>freopen 函数在一个制定的流上打开一个指定的文件，如若该流已经打开，则先关闭该流。若该流已经定向，则使用freopen清除该定向。此函数一般用于将一个指定的文件打开为一个预定义的流：标准输入，标准输出或标准错误。</p>
+<h3 id="fdopen"><a href="#fdopen" class="headerlink" title="fdopen"></a>fdopen</h3><p>fdopen函数取一个已有的文件描述符（我们可能从open、dup、dup2、fcntl、pip、socket、socketpair或accept函数得到此文件描述符），并使一个标准的I&#x2F;O流与该描述符相结合。此函数常用与创建管道和网络通信通道函数返回的描述符。因为这些特殊类型的文件不能用标准I&#x2F;O函数fopen打开，所以我们必须先调用设备专用函数以获得一个文件描述符，然后用fdopen使一个标准I&#x2F;O流与该描述符相结合。</p>
+<h2 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h2><h3 id="1-pathname"><a href="#1-pathname" class="headerlink" title="1.pathname"></a>1.pathname</h3><p>路径名，const修饰表明不会对传输的参数做任何修改。</p>
+<h3 id="2-type"><a href="#2-type" class="headerlink" title="2.type"></a>2.type</h3><p>权限<br><img src="https://pic.downk.cc/item/5fc63722f81f7e3bd97f588e.jpg" srcset="/img/loading.gif" lazyload></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ol>
+<li>r代表只读，若文件不存在则报错。</li>
+<li>w代表只写，并且文件若存在则将其清空，若不存在则创建</li>
+<li>a代表追加，并且文件若存在则继续写，若不存在则创建</li>
+<li>a+模式则较为特殊，若是读操作则放开头，写操作则放在结尾。</li>
+</ol>
+<h4 id="注意-1"><a href="#注意-1" class="headerlink" title="注意"></a>注意</h4><p>在UNIX中，b这个字符无关紧要，也就是说r和rb含义相同。</p>
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p>返回值是一个指向FILE结构体的指针，FILE结构体在上一节中给出了介绍，那么这个指针的指向位置是在哪呢？<br>答案：<br>堆上。<br>解释：<br>存放位置有三个可能性：栈、静态区和堆<br>而函数的形式如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c">FILE *<span class="hljs-title function_">fopen</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *<span class="hljs-keyword">restrict</span> pathname, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *<span class="hljs-keyword">restrict</span> type)</span>&#123;<br>   <br>   <span class="hljs-keyword">return</span> ;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>可以看到，若是栈，那么意味着是局部变量，在函数调用结束之后就被销毁了，因此不可能是栈。<br>那么若是静态区，则需要在函数体中</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> FILE tmp;<br><span class="hljs-keyword">return</span> &amp;tmp;<br></code></pre></td></tr></table></figure>
+<p>但是对于static修饰的变量只能声明一次，也就是说，以后再调用fopen函数时不会重新static定义一个变量了，只会返回相同的变量。<br>因此只能在堆上。<br>也就是需要在定义时就先分配一定空间，如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">FILE *tmp = null;<br>tmp = <span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(FILE)); <span class="hljs-comment">//至关重要，将其分配在了堆上</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="fclose函数"><a href="#fclose函数" class="headerlink" title="fclose函数"></a>fclose函数</h1><p>fclose函数作用于fopen相反</p>
+<h2 id="注意-2"><a href="#注意-2" class="headerlink" title="注意"></a>注意</h2><p>fopen里有malloc函数，因为在fclose里面需要free。这是成对出现的</p>
+<h2 id="函数形式"><a href="#函数形式" class="headerlink" title="函数形式"></a>函数形式</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">fclose</span><span class="hljs-params">(FILE *fp)</span>;<br></code></pre></td></tr></table></figure>
+<h3 id="返回值-1"><a href="#返回值-1" class="headerlink" title="返回值"></a>返回值</h3><p>若成功返回0，若失败返回EOF（一般是-1，但是为了严谨需要使用EOF）</p>
+<h3 id="动作"><a href="#动作" class="headerlink" title="动作"></a>动作</h3><p>在该文件被关闭之前，冲洗缓冲区中的输出数据。缓冲区中的任何输入数据被丢弃。如果标准I&#x2F;O库已经为该流自动分配了一个缓冲区，则释放此缓冲区<br>当一个进程正常终止时，则所有带未写缓冲数据的标准I&#x2F;O流都被冲洗，所有打开的标准I&#x2F;O流都被关闭。</p>
+<h2 id="fopen和fclose举例"><a href="#fopen和fclose举例" class="headerlink" title="fopen和fclose举例"></a>fopen和fclose举例</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs c"><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;errno.h&gt;</span></span><br><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    FILE *fp;<br>    fp = fopen(<span class="hljs-string">&quot;tmp&quot;</span>,<span class="hljs-string">&quot;w&quot;</span>);<br>    <span class="hljs-keyword">if</span>(fp == <span class="hljs-literal">NULL</span>)&#123;<br>        <span class="hljs-built_in">fprintf</span>(<span class="hljs-built_in">stderr</span>, <span class="hljs-string">&quot;fopen():%s\n&quot;</span>,strerror(errno));<br>        <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125;<br><br>    <span class="hljs-built_in">puts</span>(<span class="hljs-string">&quot;OK!&quot;</span>);<br><br>    fclose(fp);<br><br><br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<p>解释：在这里以写的形式打开一个叫tmp的文件，因为文件不存在，因此创建了该文件，并且输出OK，最终调用dclose关闭流</p>
+<p>输出：<br><img src="https://pic.downk.cc/item/5fc6361ff81f7e3bd97eda26.jpg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="打开文件的数量上限"><a href="#打开文件的数量上限" class="headerlink" title="打开文件的数量上限"></a>打开文件的数量上限</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    FILE *fp;<br>    <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)&#123;<br>        fp = fopen(<span class="hljs-string">&quot;tmp&quot;</span>,<span class="hljs-string">&quot;w&quot;</span>);<br>        <span class="hljs-keyword">if</span>(fp == <span class="hljs-literal">NULL</span>)&#123;<br>            perror(<span class="hljs-string">&quot;fopen()&quot;</span>);<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>        count++;<br>    &#125;<br>    <br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;count = %d\n&quot;</span>, count);<br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>解释：<br>在这里不断创建文件，直到达到文件数量上限时给出break，输出创建文件数量<br>输出：<br><img src="https://pic.downk.cc/item/5fc636a7f81f7e3bd97f3e42.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>和<br><img src="https://pic.downk.cc/item/5fc63722f81f7e3bd97f5887.jpg" srcset="/img/loading.gif" lazyload><br>给出的限制是相同的。因为自动打开的流为stdin，stdout，stderr，因此剩余256-3&#x3D;253</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/" class="category-chain-item">计算机</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/" class="category-chain-item">Linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/APUE/" class="category-chain-item">APUE</a>
+  
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>APUE-5-标准IO库</div>
+      <div>http://example.com/2022/12/99d058d12e53.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/d2ab364cdf37.html" title="APUE-6-系统数据文件和信息">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">APUE-6-系统数据文件和信息</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/c6a1a6c9562a.html" title="APUE-4-文件和目录">
+                        <span class="hidden-mobile">APUE-4-文件和目录</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/99d058d12e53.html';
+          this.page.identifier = '/2022/12/99d058d12e53.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

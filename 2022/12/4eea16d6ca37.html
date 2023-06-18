@@ -1,0 +1,827 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="cat普通cat显示文本内容   cat -n 1.txt-n参数给所有的行加上行号    cat -b 1.txt对脚本很有用，只给有文本的行加上行号    cat结合wc显示行数1cat 1.txt | wc -l   显示1.txt的行数 参数- c 统计字节数。- l 统计行数。- w 统计字数。 cpcp -i test_one test_two询问是否用test_one替换test_t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux基本命令">
+<meta property="og:url" content="http://example.com/2022/12/4eea16d6ca37.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="cat普通cat显示文本内容   cat -n 1.txt-n参数给所有的行加上行号    cat -b 1.txt对脚本很有用，只给有文本的行加上行号    cat结合wc显示行数1cat 1.txt | wc -l   显示1.txt的行数 参数- c 统计字节数。- l 统计行数。- w 统计字数。 cpcp -i test_one test_two询问是否用test_one替换test_t">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404012449.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404012510.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404012623.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404012656.png">
+<meta property="article:published_time" content="2022-12-03T18:38:48.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404012449.png">
+  
+  
+  
+  <title>Linux基本命令 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Linux基本命令"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:38" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Linux基本命令</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="cat"><a href="#cat" class="headerlink" title="cat"></a>cat</h1><h3 id="普通cat"><a href="#普通cat" class="headerlink" title="普通cat"></a>普通cat</h3><p>显示文本内容</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404012449.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h3 id="cat-n-1-txt"><a href="#cat-n-1-txt" class="headerlink" title="cat -n 1.txt"></a>cat -n 1.txt</h3><p>-n参数给所有的行加上行号</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404012510.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+
+<h3 id="cat-b-1-txt"><a href="#cat-b-1-txt" class="headerlink" title="cat -b 1.txt"></a>cat -b 1.txt</h3><p>对脚本很有用，只给有文本的行加上行号</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404012623.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+
+<h3 id="cat结合wc显示行数"><a href="#cat结合wc显示行数" class="headerlink" title="cat结合wc显示行数"></a>cat结合wc显示行数</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> 1.txt | <span class="hljs-built_in">wc</span> -l<br></code></pre></td></tr></table></figure>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210404012656.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>显示1.txt的行数</p>
+<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><p>- c 统计字节数。<br>- l 统计行数。<br>- w 统计字数。</p>
+<h1 id="cp"><a href="#cp" class="headerlink" title="cp"></a>cp</h1><h3 id="cp-i-test-one-test-two"><a href="#cp-i-test-one-test-two" class="headerlink" title="cp -i test_one test_two"></a>cp -i test_one test_two</h3><p>询问是否用test_one替换test_two</p>
+<h3 id="cp-R"><a href="#cp-R" class="headerlink" title="cp -R"></a>cp -R</h3><p>在一条命令中递归地复制整个目录的内容</p>
+<h1 id="crontab"><a href="#crontab" class="headerlink" title="crontab"></a>crontab</h1><p>用来编辑定时任务。</p>
+<h3 id="列出所有定时任务"><a href="#列出所有定时任务" class="headerlink" title="列出所有定时任务"></a>列出所有定时任务</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">crontab -l<br></code></pre></td></tr></table></figure>
+<p>得到所有crontab任务</p>
+<h3 id="编辑crontab文件"><a href="#编辑crontab文件" class="headerlink" title="编辑crontab文件"></a>编辑crontab文件</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">crontab -e<br></code></pre></td></tr></table></figure>
+
+<h1 id="date"><a href="#date" class="headerlink" title="date"></a>date</h1><h3 id="date-1"><a href="#date-1" class="headerlink" title="date"></a>date</h3><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs applescript"><span class="hljs-built_in">date</span><br></code></pre></td></tr></table></figure>
+
+
+<h3 id="date-”-F”"><a href="#date-”-F”" class="headerlink" title="date +”%F”"></a>date +”%F”</h3><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs applescript"><span class="hljs-built_in">date</span> +<span class="hljs-string">&quot;%F&quot;</span><br></code></pre></td></tr></table></figure>
+
+
+<h3 id="date-”-F-T”"><a href="#date-”-F-T”" class="headerlink" title="date +”%F %T”"></a>date +”%F %T”</h3><figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs perl">date +<span class="hljs-string">&quot;%F %T&quot;</span><br></code></pre></td></tr></table></figure>
+
+
+<h3 id="date-d"><a href="#date-d" class="headerlink" title="date -d"></a>date -d</h3><p>得到字符串形式的输出</p>
+<h3 id="date-s"><a href="#date-s" class="headerlink" title="date +%s"></a>date +%s</h3><p>得到当前unix时间戳</p>
+<h3 id="date-s-d”24-hour-ago”"><a href="#date-s-d”24-hour-ago”" class="headerlink" title="date +%s -d”24 hour ago”"></a>date +%s -d”24 hour ago”</h3><p>得到24小时之间的unix时间戳</p>
+<h1 id="ls"><a href="#ls" class="headerlink" title="ls"></a>ls</h1><h3 id="ls-1"><a href="#ls-1" class="headerlink" title="ls"></a>ls</h3><p>展示所有文件和目录</p>
+<h3 id="ls-F"><a href="#ls-F" class="headerlink" title="ls -F"></a>ls -F</h3><p>区分文件和目录，是目录的后面会有”&#x2F;“</p>
+<h3 id="ls-a"><a href="#ls-a" class="headerlink" title="ls -a"></a>ls -a</h3><p>将隐藏文件和普通文件及目录一起显示出来</p>
+<h3 id="ls-R"><a href="#ls-R" class="headerlink" title="ls -R"></a>ls -R</h3><p>递归显示当前目录下包含的子目录的文件</p>
+<h3 id="ls-l"><a href="#ls-l" class="headerlink" title="ls -l"></a>ls -l</h3><p>显示长列表</p>
+<h1 id="man"><a href="#man" class="headerlink" title="man"></a>man</h1><h3 id="bash手册"><a href="#bash手册" class="headerlink" title="bash手册"></a>bash手册</h3><p>man命令用来访问存储在Linux系统上的手册压面。在想要查找的工具的名称前面输入man命令，就可以找到那个工具相应的手册条目。</p>
+<h3 id="Linux手册页的内容区域"><a href="#Linux手册页的内容区域" class="headerlink" title="Linux手册页的内容区域"></a>Linux手册页的内容区域</h3><table>
+<thead>
+<tr>
+<th>区域号</th>
+<th>所涵盖的内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>可执行的程序或shell命令</td>
+</tr>
+<tr>
+<td>2</td>
+<td>系统调用</td>
+</tr>
+<tr>
+<td>3</td>
+<td>库调用</td>
+</tr>
+<tr>
+<td>4</td>
+<td>特殊文件</td>
+</tr>
+<tr>
+<td>5</td>
+<td>文件格式与约定</td>
+</tr>
+<tr>
+<td>6</td>
+<td>游戏</td>
+</tr>
+<tr>
+<td>7</td>
+<td>概览、约定及杂项</td>
+</tr>
+<tr>
+<td>8</td>
+<td>超级用户和系统管理员命令</td>
+</tr>
+<tr>
+<td>9</td>
+<td>内核例程</td>
+</tr>
+</tbody></table>
+<h1 id="rm"><a href="#rm" class="headerlink" title="rm"></a>rm</h1><h3 id="rm-i"><a href="#rm-i" class="headerlink" title="rm -i"></a>rm -i</h3><p>删除前询问是否删除</p>
+<h3 id="rmdir"><a href="#rmdir" class="headerlink" title="rmdir"></a>rmdir</h3><p>rmdir是删除目录，没有rmdir -i，因为其只能删除空目录，可以先用rm -i进入其目录删除其中的文件，然后再删除目录本身</p>
+<h3 id="rm-r-x2F-rm-rf"><a href="#rm-r-x2F-rm-rf" class="headerlink" title="rm -r &#x2F; rm -rf"></a>rm -r &#x2F; rm -rf</h3><p>会直接将目录和其中的文件一起删除<br>和rm -rf相同</p>
+<h3 id="rm-ri"><a href="#rm-ri" class="headerlink" title="rm -ri"></a>rm -ri</h3><p>会进行递归询问</p>
+<h1 id="tr"><a href="#tr" class="headerlink" title="tr"></a>tr</h1><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>tr是对管道传输过来的参数进行过滤。tr是一个过滤器<br>##作用<br>对来自标准输入的字符进行替换、压缩和删除。它可以将一组字符变成另一组字符，经常用来编写优美的单行命令，作用很强大</p>
+<h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><ol>
+<li><p>将输入字符由大写转换为小写：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;hello world&quot;</span> | <span class="hljs-built_in">tr</span> <span class="hljs-string">&#x27;a-z&#x27;</span> <span class="hljs-string">&#x27;A-Z&#x27;</span><br></code></pre></td></tr></table></figure>
+<p>输出：<br>HELLO WORLD</p>
+</li>
+<li><p>使用tr删除字符：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;hello 123 world 456&quot;</span> | <span class="hljs-built_in">tr</span> -d <span class="hljs-string">&#x27;0-9&#x27;</span><br></code></pre></td></tr></table></figure>
+<p>输出：<br>hello world</p>
+</li>
+<li><p>将制表符转换为空格</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> text | <span class="hljs-built_in">tr</span> <span class="hljs-string">&#x27;\t&#x27;</span> <span class="hljs-string">&#x27; &#x27;</span><br></code></pre></td></tr></table></figure>
+
+</li>
+<li><p>字符集补集，从输入文本中将不在补集中的所有字符删除</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">echo</span> aa.,a <span class="hljs-number">1</span> b#$bb <span class="hljs-number">2</span> c*cc <span class="hljs-number">3</span> ddd <span class="hljs-number">4</span> | tr -d -c &#x27;<span class="hljs-number">0</span>-<span class="hljs-number">9</span> \n&#x27;<br></code></pre></td></tr></table></figure>
+<p>输出：<br>1 2 3 4<br>解释：<br>在这里，-d和-c配合，如果去掉-d则会出错，如果去掉-c则会得到相反的结果，会将所有0-9删除。</p>
+</li>
+</ol>
+<h1 id="wc"><a href="#wc" class="headerlink" title="wc"></a>wc</h1><p>wc用来统计字数<br>输出格式如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash"><span class="hljs-built_in">wc</span> testfile           <span class="hljs-comment"># testfile文件的统计信息</span></span>  <br>3 92 598 testfile       # testfile文件的行数为3、单词数92、字节数598 <br></code></pre></td></tr></table></figure>
+<p>输出的第一个参数为行数，第二个参数为单词数量，第三个参数为字节数量，第四个参数是文件名</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/" class="category-chain-item">计算机</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/" class="category-chain-item">Linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/Command/" class="category-chain-item">Command</a>
+  
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Linux基本命令</div>
+      <div>http://example.com/2022/12/4eea16d6ca37.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/f3cb063fb17b.html" title="Linux实操">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Linux实操</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/bd95ec7aebba.html" title="APUE-15-进程间通信">
+                        <span class="hidden-mobile">APUE-15-进程间通信</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/4eea16d6ca37.html';
+          this.page.identifier = '/2022/12/4eea16d6ca37.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

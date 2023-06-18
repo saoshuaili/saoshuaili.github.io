@@ -1,0 +1,771 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. 动态类型语言动态类型语言定义何谓动态类型语言？动态类型语言的关键特征是它的类型检查的主体过程是在运行期而不是编译器进行的。 运行时异常和连接时异常所谓运行时异常，就是指只要代码不执行到这一行就不会出问题。 所谓连接时异常，与运行时异常相对应。例如很常见的 NoClassDefFoundError 便属于连接时异常，即使连接时异常的代码放在一条根本无法被执行到的路径分支上，类加载时也照样会抛出">
+<meta property="og:type" content="article">
+<meta property="og:title" content="8.4.1 动态类型语言支持">
+<meta property="og:url" content="http://example.com/2022/12/7f4e400f1df4.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="1. 动态类型语言动态类型语言定义何谓动态类型语言？动态类型语言的关键特征是它的类型检查的主体过程是在运行期而不是编译器进行的。 运行时异常和连接时异常所谓运行时异常，就是指只要代码不执行到这一行就不会出问题。 所谓连接时异常，与运行时异常相对应。例如很常见的 NoClassDefFoundError 便属于连接时异常，即使连接时异常的代码放在一条根本无法被执行到的路径分支上，类加载时也照样会抛出">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-12-19T17:17:49.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>8.4.1 动态类型语言支持 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="8.4.1 动态类型语言支持"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-20 01:17" pubdate>
+          2022年12月20日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          44 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">8.4.1 动态类型语言支持</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-动态类型语言"><a href="#1-动态类型语言" class="headerlink" title="1. 动态类型语言"></a>1. 动态类型语言</h1><h2 id="动态类型语言定义"><a href="#动态类型语言定义" class="headerlink" title="动态类型语言定义"></a>动态类型语言定义</h2><p>何谓动态类型语言？动态类型语言的关键特征是它的<strong>类型检查的主体过程是在运行期</strong>而不是编译器进行的。</p>
+<h2 id="运行时异常和连接时异常"><a href="#运行时异常和连接时异常" class="headerlink" title="运行时异常和连接时异常"></a>运行时异常和连接时异常</h2><p>所谓运行时异常，就是指只要代码不执行到这一行就不会出问题。</p>
+<p>所谓连接时异常，与运行时异常相对应。例如很常见的 NoClassDefFoundError 便属于连接时异常，即使连接时异常的代码放在一条根本无法被执行到的路径分支上，类加载时也照样会抛出异常。</p>
+<h2 id="动态类型语言和静态类型语言区别"><a href="#动态类型语言和静态类型语言区别" class="headerlink" title="动态类型语言和静态类型语言区别"></a>动态类型语言和静态类型语言区别</h2><ul>
+<li>静态类型语言是判断变量自身的类型信息；</li>
+<li>动态类型于语言是判断变量值的类型信息，变量没有类型信息，变量值才有类型信息。</li>
+</ul>
+<h1 id="2-Java-与动态类型"><a href="#2-Java-与动态类型" class="headerlink" title="2. Java 与动态类型"></a>2. Java 与动态类型</h1><p>现在我们回到本节的主题，来看看 Java 语言、Java 虚拟机与动态类型语言之间有什么关系。</p>
+<p>Java 虚拟机毫无疑问是 Java 语言的运行平台，但它的使命并不限于此，早在 1997 年出版的《Java 虚拟机规范》第 1 版中就规划了这样一个愿景：“在未来，我们会对 Java 虚拟机进行适当的扩展，以便更好地支持其他语言运行于 Java 虚拟机之上。”而目前确实已经有许多动态类型语言运行于 Java 虚拟机之上了，如 Clojure、Groovy、Jython 和 JRuby 等，能够在同一个虚拟机之上可以实现静态类型语言的严谨与动态类型语言的灵活，这的确是一件很美妙的事情。</p>
+<p>但遗憾的是 Java 虚拟机层面对动态类型语言的支持一直都还有所欠缺</p>
+<h2 id="Java-在面对动态类型语言的支持欠缺"><a href="#Java-在面对动态类型语言的支持欠缺" class="headerlink" title="Java 在面对动态类型语言的支持欠缺"></a>Java 在面对动态类型语言的支持欠缺</h2><p>主要表现在<strong>方法调用</strong>方面：</p>
+<p>JDK 7 以前的字节码指令集中，4 条方法调用指令（invokevirtual、invokespecial、invokestatic、 invokeinterface）的第一个参数都是被调用的方法的符号引用（CONSTANT_Methodref_info 或者 CONSTANT_InterfaceMethodref_info 常量）</p>
+<p>前面已经提到过，方法的符号引用在编译时产生，而动态类型语言只有在运行期才能确定方法的接收者。这样，在 Java 虚拟机上实现的动态类型语言就不得不使用“曲线救国”的方式（如编译时留个占位符类型，运行时动态生成字节码实现具体类型到占位符类型的适配）来实现，但这样势必会让动态类型语言实现的复杂度增加，也会带来额外的性能和内存开销。内存开销是很显而易见的，方法调用产生的那一大堆的动态类就摆在那里。而其中最严重的性能瓶颈是在于动态类型方法调用时，由于无法确定调用对象的静态类型，而导致的方法内联无法有效进行。在第 11 章里我们会讲到方法内联的重要性，它是其他优化措施的基础，也可以说是最重要的一项优化。尽管也可以想一些办法（譬如调用点缓存）尽量缓解支持动态语言而导致的性能下降，但这种改善毕竟不是本质的。譬如有类似以下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">var</span> <span class="hljs-variable">arrays</span> <span class="hljs-operator">=</span> &#123;<span class="hljs-string">&quot;abc&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">ObjectX</span> (), <span class="hljs-number">123</span>, Dog, Cat, Car..&#125; <br><span class="hljs-keyword">for</span> (item in arrays) &#123; <br>    item.sayHello(); <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在动态类型语言下这样的代码是没有问题，但由于在运行时 arrays 中的元素可以是任意类型，即使它们的类型中都有 <code>sayHello()</code> 方法，也肯定无法在编译优化的时候就确定具体 <code>sayHello()</code> 的代码在哪里，编译器只能不停编译它所遇见的每一个 <code>sayHello()</code> 方法，并缓存起来供执行时选择、调用和内联，如果 arrays 数组中不同类型的对象很多，就势必会对内联缓存产生很大的压力，缓存的大小总是有限的，类型信息的不确定性导致了缓存内容不断被失效和更新，先前优化过的方法也可能被不断替换而无法重复使用。所以这种动态类型方法调用的底层问题终归是应当在 Java 虚拟机层次上去解决才最合适。因此，在 Java 虚拟机层面上提供动态类型的直接支持就成为 Java 平台发展必须解决的问题，这便是 JDK 7 时 JSR-292 提案中 invokedynamic 指令以及 <code>java.lang.invoke</code> 包出现的技术背景</p>
+<h1 id="3-java-lang-invoke-包"><a href="#3-java-lang-invoke-包" class="headerlink" title="3. java.lang.invoke 包"></a>3. <code>java.lang.invoke</code> 包</h1><h2 id="invoke-包的作用"><a href="#invoke-包的作用" class="headerlink" title="invoke 包的作用"></a>invoke 包的作用</h2><p>这个包的主要目的是在之前单纯依靠符号引用来确定调用的目标方法这条路之外，提供一种新的动态确定目标方法的机制，称为“方法句柄”（Method Handle）</p>
+<p>方法句柄就类似于 C&#x2F;C++中的函数指针，在 C&#x2F;C++中，我们可以传入一个函数指针，实现排序功能，例如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">sort</span><span class="hljs-params">(<span class="hljs-type">int</span> list[], <span class="hljs-type">const</span> <span class="hljs-type">int</span> size, <span class="hljs-type">int</span> (*compare)(<span class="hljs-type">int</span>, <span class="hljs-type">int</span>))</span></span><br></code></pre></td></tr></table></figure>
+
+<p>但是在 Java 语言中做不到这一点，没有办法单独把一个函数作为参数进行传递。因此普遍的做法是设计一个带有 <code>compare()</code> 方法的 <code>Comparator</code> 接口，以实现这个接口的对象作为参数，例如 Java 类库中的 <code>Collections::sort()</code> 方法就是这么定义的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">void</span> <span class="hljs-title function_">sort</span><span class="hljs-params">(List list, Comparator c)</span><br></code></pre></td></tr></table></figure>
+
+<p>这样还是很麻烦，因此我们必须实现一个接口，创建一个类，然后用这个类的对象来作为参数传递。但是有了方法句柄之后，Java 语言也可以拥有类似于函数指针或者委托的方法别名这样的工具了。</p>
+<p>接下来看基本应用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/28 16:11</span><br><span class="hljs-comment"> * 方法句柄演示</span><br><span class="hljs-comment"> **/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MethodHandleTest</span> &#123;<br>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ClassA</span>&#123;<br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">println</span><span class="hljs-params">(String s)</span> &#123;<br>            System.out.println(s);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Throwable&#123;<br>        <span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> System.currentTimeMillis() % <span class="hljs-number">2</span> == <span class="hljs-number">0</span> ? System.out : <span class="hljs-keyword">new</span> <span class="hljs-title class_">ClassA</span>();<br>        <span class="hljs-comment">// 无论obj最终是哪个实现类，下面这句都能正确调用到println方法</span><br>        getPrintlnMH(obj).invokeExact(<span class="hljs-string">&quot;coachhe&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> MethodHandle <span class="hljs-title function_">getPrintlnMH</span><span class="hljs-params">(Object receiver)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>        <span class="hljs-comment">// MethodType代表&quot;方法类型&quot;，包含了方法的返回值（methodType的第一个参数和具体参数（methodType的第二个及之后的参数）</span><br>        <span class="hljs-type">MethodType</span> <span class="hljs-variable">mt</span> <span class="hljs-operator">=</span> MethodType.methodType(<span class="hljs-keyword">void</span>.class, String.class);<br>        <span class="hljs-comment">// lookup()方法这句的作用是在指定类中查找符合给定的方法名称、方法类型，并且符合调用权限的方法句柄</span><br>        <span class="hljs-comment">// 因为这里调用的是一个虚方法，按照Java语言的规则，方法第一个参数是隐式的，代表该方法的接收者，也就是this指向的对象，</span><br>            <span class="hljs-comment">// 这个参数以前是放在参数列表中进行传递，现在提供了bindTo()方法来完成这件事情</span><br>        <span class="hljs-keyword">return</span> MethodHandles.lookup().findVirtual(receiver.getClass(), <span class="hljs-string">&quot;println&quot;</span>, mt).bindTo(receiver);<br>    &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，方法 <code>getPrintlnHM()</code> 中实际上是模拟了 invokevirtual 指令的执行过程，只不过它的分派逻辑并非固化在 Class 文件的字节码上，而是通过一个由用户设计的 Java 方法来实现。而这个方法本身的返回值（MethodHandle 对象），可以视为对最终调用方法的一个“引用”。以此为基础，有了 MethodHandle 就可以写出类似于 C&#x2F;C++那样的函数声明了</p>
+<h2 id="方法句柄和反射的区别"><a href="#方法句柄和反射的区别" class="headerlink" title="方法句柄和反射的区别"></a>方法句柄和反射的区别</h2><ul>
+<li><p>Reflection 和 MethodHandle 机制本质上都是在模拟方法调用，但是 Reflection 是在模拟 Java 代码层次的方法调用，而 MethodHandle 是在模拟字节码层次的方法调用。在 <code>MethodHandles.Lookup</code> 上的 3 个方法 <code>findStatic()</code>、<code>findVirtual()</code>、<code>findSpecial()</code> 正是为了对应于 invokestatic、invokevirtual（以及 invokeinterface）和 invokespecial 这几条字节码指令的执行权限校验行为，而这些底层细节在使用 Reflection API 时是不需要关心的。</p>
+</li>
+<li><p>Reflection 中的 <code>java.lang.reflect.Method</code> 对象远比 MethodHandle 机制中的 <code>java.lang.invoke.MethodHandle</code> 对象所包含的信息来得多。前者是方法在 Java 端的全面映像，包含了方法的签名、描述符以及方法属性表中各种属性的 Java 端表示方式，还包含执行权限等的运行期信息。而后者仅包含执行该方法的相关信息。用开发人员通俗的话来讲，Reflection 是重量级，而 MethodHandle 是轻量级。</p>
+</li>
+<li><p>由于 MethodHandle 是对字节码的方法指令调用的模拟，那理论上虚拟机在这方面做的各种优化 （如方法内联），在 MethodHandle 上也应当可以采用类似思路去支持（但目前实现还在继续完善中），而通过反射去调用方法则几乎不可能直接去实施各类调用点优化措施。</p>
+</li>
+<li><p>MethodHandle 与 Reflection 除了上面列举的区别外，最关键的一点还在于去掉前面讨论施加的前提“仅站在 Java 语言的角度看”之后：Reflection API 的设计目标是只为 Java 语言服务的，而 MethodHandle 则设计为可服务于所有 Java 虚拟机之上的语言，其中也包括了 Java 语言而已，而且 Java 在这里并不是主角。</p>
+</li>
+</ul>
+<h1 id="4-InvokeDynamic-指令"><a href="#4-InvokeDynamic-指令" class="headerlink" title="4. InvokeDynamic 指令"></a>4. InvokeDynamic 指令</h1><p>来看段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/28 23:38</span><br><span class="hljs-comment"> **/</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">InvokeDynamicTest</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testMethod</span><span class="hljs-params">(String s)</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;hello String:&quot;</span> + s);<br>    &#125;<br>    <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> CallSite <span class="hljs-title function_">BootstrapMethod</span><span class="hljs-params">(MethodHandles.Lookup lookup, String name, MethodType mt)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConstantCallSite</span>(lookup.findStatic(InvokeDynamicTest.class, name, mt));<br>    &#125;<br>    <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> MethodType <span class="hljs-title function_">MT_BootstrapMethod</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> MethodType.<br>                fromMethodDescriptorString(<br>                        <span class="hljs-string">&quot;(Ljava/lang/invoke/MethodHandle$Loopup;Ljava/lang/String; Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;&quot;</span>, <span class="hljs-literal">null</span><br>                );<br>    &#125;<br>    <br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> MethodHandle <span class="hljs-title function_">MH_BootstrapMethod</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>        <span class="hljs-keyword">return</span> MethodHandles.lookup().findStatic(InvokeDynamicTest.class, <span class="hljs-string">&quot;BootstrapMethod&quot;</span>, MT_BootstrapMethod());<br>    &#125;<br>    <br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> MethodHandle <span class="hljs-title function_">INDY_BootstrapMethod</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>        <span class="hljs-type">CallSite</span> <span class="hljs-variable">cs</span> <span class="hljs-operator">=</span> (CallSite) MH_BootstrapMethod().invokeWithArguments(MethodHandles.lookup(), <span class="hljs-string">&quot;testMethod&quot;</span>,<br>                MethodType.fromMethodDescriptorString(<span class="hljs-string">&quot;(Ljava/lang/String;)V&quot;</span>, <span class="hljs-literal">null</span>));<br>        <span class="hljs-keyword">return</span> cs.dynamicInvoker();<br>    &#125;<br>    <br>&#125;<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" class="category-chain-item">编程语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" class="category-chain-item">Java</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/" class="category-chain-item">Java语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/JVM/" class="category-chain-item">JVM</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/JVM/%E7%AC%AC8%E7%AB%A0-%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%97%E8%8A%82%E7%A0%81%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E/" class="category-chain-item">第8章 虚拟机字节码执行引擎</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/JVM/%E7%AC%AC8%E7%AB%A0-%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%97%E8%8A%82%E7%A0%81%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E/8-4-%E5%8A%A8%E6%80%81%E7%B1%BB%E5%9E%8B%E8%AF%AD%E8%A8%80%E6%94%AF%E6%8C%81/" class="category-chain-item">8.4 动态类型语言支持</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>8.4.1 动态类型语言支持</div>
+      <div>http://example.com/2022/12/7f4e400f1df4.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/722f56f08f83.html" title="8.1.1 概述">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">8.1.1 概述</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/c6e7bd0bb1c8.html" title="3 字节码指令简介">
+                        <span class="hidden-mobile">3 字节码指令简介</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/7f4e400f1df4.html';
+          this.page.identifier = '/2022/12/7f4e400f1df4.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

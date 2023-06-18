@@ -1,0 +1,781 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1 文件系统需要了解文件系统，我们需要先对磁盘的物理结构有一定的了解 磁盘的物理结构可以看到，磁盘由很多盘面组成，而盘上则是由很多同心圆组成的磁道，每个磁道又被切割为许多扇区。所有磁盘面的同一个磁道构成一个柱面，同一柱面的所有磁道学完后，才会移入下一柱面。磁盘的最小组成单位可以看成扇区，每个扇区的大小逻辑看起来是512字节，但是实际上底层的物理扇区是4096字节. 文件系统的结构在UNIX系统中，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APUE-4-文件和目录">
+<meta property="og:url" content="http://example.com/2022/12/c6a1a6c9562a.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="1 文件系统需要了解文件系统，我们需要先对磁盘的物理结构有一定的了解 磁盘的物理结构可以看到，磁盘由很多盘面组成，而盘上则是由很多同心圆组成的磁道，每个磁道又被切割为许多扇区。所有磁盘面的同一个磁道构成一个柱面，同一柱面的所有磁道学完后，才会移入下一柱面。磁盘的最小组成单位可以看成扇区，每个扇区的大小逻辑看起来是512字节，但是实际上底层的物理扇区是4096字节. 文件系统的结构在UNIX系统中，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636a7f81f7e3bd97f3e32.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636f5f81f7e3bd97f4de7.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63722f81f7e3bd97f5883.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6364cf81f7e3bd97ee226.jpg">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221211170049.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63707f81f7e3bd97f5223.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6364cf81f7e3bd97ee22a.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636b8f81f7e3bd97f4149.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63689f81f7e3bd97f1ddc.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636a7f81f7e3bd97f3e2c.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6363cf81f7e3bd97edf05.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6371af81f7e3bd97f56a6.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636d9f81f7e3bd97f4925.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636b8f81f7e3bd97f4153.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6369df81f7e3bd97f3883.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6363cf81f7e3bd97edf02.jpg">
+<meta property="article:published_time" content="2022-12-03T18:37:34.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pic.downk.cc/item/5fc636a7f81f7e3bd97f3e32.jpg">
+  
+  
+  
+  <title>APUE-4-文件和目录 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="APUE-4-文件和目录"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:37" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          25 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">APUE-4-文件和目录</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-文件系统"><a href="#1-文件系统" class="headerlink" title="1 文件系统"></a>1 文件系统</h1><p>需要了解文件系统，我们需要先对磁盘的物理结构有一定的了解</p>
+<h2 id="磁盘的物理结构"><a href="#磁盘的物理结构" class="headerlink" title="磁盘的物理结构"></a>磁盘的物理结构</h2><p><img src="https://pic.downk.cc/item/5fc636a7f81f7e3bd97f3e32.jpg" srcset="/img/loading.gif" lazyload><br>可以看到，磁盘由很多盘面组成，而盘上则是由很多同心圆组成的磁道，每个磁道又被切割为许多扇区。所有磁盘面的同一个磁道构成一个柱面，同一柱面的所有磁道学完后，才会移入下一柱面。<br>磁盘的最小组成单位可以看成扇区，每个扇区的大小逻辑看起来是512字节，但是实际上底层的物理扇区是4096字节.</p>
+<h2 id="文件系统的结构"><a href="#文件系统的结构" class="headerlink" title="文件系统的结构"></a>文件系统的结构</h2><p>在UNIX系统中，要将具体的文件与磁盘相对应，就会将磁盘划分为很多个分区，每个分区对应一个文件系统，磁盘、分区和文件系统的结构如下：<br><img src="https://pic.downk.cc/item/5fc636f5f81f7e3bd97f4de7.jpg" srcset="/img/loading.gif" lazyload></p>
+<ol>
+<li>自举块：也称为引导块，分区中文件系统自身引导程序存放的地方。在每个分区的第一个扇区，用来安装引导记录</li>
+<li>超级块：超级块在每个文件系统的根上，超级块描述和维护文件系统的状态。用来记录文件系统整体信息，例如inode总量和blocks总量等。</li>
+</ol>
+<h3 id="对文件分区的理解："><a href="#对文件分区的理解：" class="headerlink" title="对文件分区的理解："></a><strong>对文件分区的理解：</strong></h3><p>文件系统指文件存在的物理空间。</p>
+<h4 id="对于Linux系统："><a href="#对于Linux系统：" class="headerlink" title="对于Linux系统："></a><strong>对于Linux系统：</strong></h4><p>linux系统中每个分区都是一个文件系统，都有自己的目录层次结构。Linux文件系统中的文件是数据的集合，文件系统不仅包含着文件中的数据而且还有文件系统的结构，所有Linux 用户和程序看到的文件、目录、软连接及文件保护信息等都存储在其中。这种机制有利于用户和操作系统的交互。<br>每个实际文件系统从操作系统和系统服务中分离出来，它们之间通过一个接口层：虚拟文件系统或VFS来通讯。VFS使得Linux可以支持多个不同的文件系统，每个表示一个VFS 的通用接口。由于软件将Linux 文件系统的所有细节进行了转换,所以Linux核心的其它部分及系统中运行的程序将看到统一的文件系统。Linux 的虚拟文件系统允许用户同时能透明地安装许多不同的文件系统。<br>在Linux文件系统中，<strong>EXT2文件系统</strong>、<strong>虚拟文件系统</strong>、**&#x2F;proc**文件系统是三个具有代表性的文件系统。</p>
+<h4 id="对于macOS："><a href="#对于macOS：" class="headerlink" title="对于macOS："></a><strong>对于macOS：</strong></h4><p>Mac 不需要分区。近年的Mac都是SSD（闪存）了，并且使用专为闪存设计的新文件管理系统APFS（Apple File System），响应速度和安全性都有所增强，分区反而会增加SSD写入次数损耗。 </p>
+<p>在这里，只关注柱面组里的i节点和数据块部分结构，其中数据块存放着文件的具体内容，如下图：<br><img src="https://pic.downk.cc/item/5fc63722f81f7e3bd97f5883.jpg" srcset="/img/loading.gif" lazyload><br>每个i节点都有一个链接计数标记，表示指向该i节点的文件&#x2F;目录的数量，只有当链接计数标记减少到0时，才会释放该文件所占用的数据块，可以从图中看到有两个目录项指向同一个i节点。<br>i节点包含了文件的所有信息，包含文件的权限位信息，文件类型文件长度等（文件名保存在目录项中）。<br>在不更换文件系统的情况下为一个文件重命名，该文件的实际位置并没有更改，只需在目录块中构造一个新的目录项指向原先的i节点，并将原来的目录项删除即可。</p>
+<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><p>若现在创建一个名为testdir的文件，那么会自动包含.（当前位置）和..（上一级位置）和testdir目录，那么这三个目录以及testdir目录在柱面组里目录块和数据块的结构如下：<br><img src="https://pic.downk.cc/item/5fc6364cf81f7e3bd97ee226.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>对于标号为1267的i节点，其类型字段表示它是一个目录，链接计数大于等于3，原因：至少有三个目录指向她：</p>
+<ol>
+<li>命名它的目录项</li>
+<li>在该目录中的.项</li>
+<li>在其子目录testdir中的..项。<br><strong>注意</strong><br>父目录中的每一个子目录都使该父目录的链接计数增加1，因为会有一个..项指向它。</li>
+</ol>
+<p>i节点一般存放的是一些状态信息，所以影响到i节点的操作有很多，比如更改文件的访问权限，更改用户ID，更改链接数等，一些涉及到文件实际内容相关的操作都不会影响到节点。</p>
+<h1 id="2-文件相关属性的解读"><a href="#2-文件相关属性的解读" class="headerlink" title="2 文件相关属性的解读"></a>2 文件相关属性的解读</h1><h2 id="1-引言"><a href="#1-引言" class="headerlink" title="1 引言"></a>1 引言</h2><p>第3章主要讲了执行I&#x2F;O操作的函数，讨论是围绕普通文件I&#x2F;O进行的-打开文件、读文件和写文件。<br>本章将描述文件系统的其他特征和文件的性质。<br>文件相关的信息都保存在stat结构中，大部分信息都来自inode节点。本章讲述的大部分函数都是针对其中的属性进行修改。</p>
+<h2 id="2-函数stat、fstat、fstatat和lstat"><a href="#2-函数stat、fstat、fstatat和lstat" class="headerlink" title="2 函数stat、fstat、fstatat和lstat"></a>2 函数stat、fstat、fstatat和lstat</h2><p>给定函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#incllude <span class="hljs-string">&lt;sys/stat.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">stat</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *<span class="hljs-keyword">restrict</span> pathname, <span class="hljs-keyword">struct</span> stat *<span class="hljs-keyword">restrict</span> buf)</span>;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">fstat</span><span class="hljs-params">(<span class="hljs-type">int</span> id, <span class="hljs-keyword">struct</span> stat *buf)</span>;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">lstat</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *<span class="hljs-keyword">restrict</span> pathname, <span class="hljs-keyword">struct</span> stat *<span class="hljs-keyword">restrict</span> buf)</span>;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">fstatat</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *<span class="hljs-keyword">restrict</span> pathname, <span class="hljs-keyword">struct</span> stat *<span class="hljs-keyword">restrict</span> buf, <span class="hljs-type">int</span> flag)</span>;<br><br><span class="hljs-comment">//所有四个函数的返回值：若成功范围0，若出错返回-1；</span><br></code></pre></td></tr></table></figure>
+
+<p>stat是一个结构体，定义大致如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">stat</span> &#123;</span><br>  <span class="hljs-type">mode_t</span>         st_mode;     <span class="hljs-comment">//文件类型和模式（访问权限）</span><br>  <span class="hljs-type">ino_t</span>          st_ino;<br>  <span class="hljs-type">dev_t</span>          st_dev;<br>  <span class="hljs-type">dev_t</span>          st_rdev;<br>  <span class="hljs-type">nlink_t</span>        st_nlink;<br>  <span class="hljs-type">uid_t</span>          st_uid;<br>  <span class="hljs-type">gid_t</span>          st_gid;<br>  <span class="hljs-type">off_t</span>          st_size;<br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">timespec</span> <span class="hljs-title">st_atime</span>;</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">timespec</span> <span class="hljs-title">st_mtime</span>;</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">timespec</span> <span class="hljs-title">st_ctime</span>;</span><br>  <span class="hljs-type">blisize_t</span>      st_blksize;<br>  <span class="hljs-type">blkcnt_t</span>       st_blocks;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>在这里附上MAC OS的stat代码：</p>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a><strong>注意</strong></h4><p>linux的stat.h头文件的目录在&#x2F;usr&#x2F;include&#x2F;stat.h<br>macos的stat.h头文件的目录在&#x2F;Library&#x2F;Developer&#x2F;CommanLineTools&#x2F;SDKs&#x2F;MacOSX10.14.sdk&#x2F;usr&#x2F;include&#x2F;sys</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221211170049.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，除了中间部分不同，其余都是一样的。</p>
+<h3 id="lstat和stat的区别"><a href="#lstat和stat的区别" class="headerlink" title="lstat和stat的区别"></a>lstat和stat的区别</h3><p>对于除了软链接情况下的所有情况lstat和stat都是相同的，但是对于软链接情况，lstat表示的是<strong>当前文件</strong>的文件类型，stat表示的是<strong>指向的文件</strong>的文件类型。</p>
+<p><img src="https://pic.downk.cc/item/5fc63707f81f7e3bd97f5223.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到，原来的lstat版本表明stdout文件时一个软链接，改动后的stat版本表示stat是一个特殊字符类型。</p>
+<p>接下来探讨结构体stat中的具体内容：</p>
+<h2 id="3-文件类型"><a href="#3-文件类型" class="headerlink" title="3 文件类型"></a>3 文件类型</h2><p>对应上面stat结构体中的st_mode。<br>文件类型包括以下几种：</p>
+<ol>
+<li>普通文件</li>
+<li>目录文件</li>
+<li>块特殊文件</li>
+<li>字符特殊文件</li>
+<li>FIFO</li>
+<li>套接字</li>
+<li>符号链接<br>文件类型信息包含在stat结构的st_mode成员中。可以用以下的宏确定文件类型。<br><img src="https://pic.downk.cc/item/5fc6364cf81f7e3bd97ee22a.jpg" srcset="/img/loading.gif" lazyload></li>
+</ol>
+<p><img src="https://pic.downk.cc/item/5fc636b8f81f7e3bd97f4149.jpg" srcset="/img/loading.gif" lazyload><br>可以看到，不同的文件输出了不同的结果。</p>
+<h2 id="4-设置用户ID和设置组ID"><a href="#4-设置用户ID和设置组ID" class="headerlink" title="4 设置用户ID和设置组ID"></a>4 设置用户ID和设置组ID</h2><p>与一个进程相关的I有6个或者更多，如图：<br><img src="https://pic.downk.cc/item/5fc63689f81f7e3bd97f1ddc.jpg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="5-文件访问权限"><a href="#5-文件访问权限" class="headerlink" title="5 文件访问权限"></a>5 文件访问权限</h2><p>st_mode值也包含了对文件的访问权限位。<br>也就是说，st_mode同时定义了文件类型和文件的访问权限。<br>每个文件有9个访问权限位，可将它们分为3类：<br><img src="https://pic.downk.cc/item/5fc636a7f81f7e3bd97f3e2c.jpg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="7-函数access和faccessat"><a href="#7-函数access和faccessat" class="headerlink" title="7 函数access和faccessat"></a>7 函数access和faccessat</h2><p><img src="https://pic.downk.cc/item/5fc6363cf81f7e3bd97edf05.jpg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="9-函数chmod、fchmod和fchmodat"><a href="#9-函数chmod、fchmod和fchmodat" class="headerlink" title="9 函数chmod、fchmod和fchmodat"></a>9 函数chmod、fchmod和fchmodat</h2><p><img src="https://pic.downk.cc/item/5fc6371af81f7e3bd97f56a6.jpg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="18-创建和读取符号链接"><a href="#18-创建和读取符号链接" class="headerlink" title="18 创建和读取符号链接"></a>18 创建和读取符号链接</h2><p><img src="https://pic.downk.cc/item/5fc636d9f81f7e3bd97f4925.jpg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="22-读目录"><a href="#22-读目录" class="headerlink" title="22 读目录"></a>22 读目录</h2><p><img src="https://pic.downk.cc/item/5fc636b8f81f7e3bd97f4153.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://pic.downk.cc/item/5fc6369df81f7e3bd97f3883.jpg" srcset="/img/loading.gif" lazyload>、</p>
+<p><img src="https://pic.downk.cc/item/5fc6363cf81f7e3bd97edf02.jpg" srcset="/img/loading.gif" lazyload></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/" class="category-chain-item">计算机</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/" class="category-chain-item">Linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/APUE/" class="category-chain-item">APUE</a>
+  
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>APUE-4-文件和目录</div>
+      <div>http://example.com/2022/12/c6a1a6c9562a.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/99d058d12e53.html" title="APUE-5-标准IO库">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">APUE-5-标准IO库</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/dedbfe4f5532.html" title="APUE-3-文件IO">
+                        <span class="hidden-mobile">APUE-3-文件IO</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/c6a1a6c9562a.html';
+          this.page.identifier = '/2022/12/c6a1a6c9562a.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,1064 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="环境和工具准备虚拟机环境准备准备三台虚拟机  关闭防火墙等步骤和之前一样  集群分发脚本scpscp功能scp可以实现服务器与服务器之间的数据拷贝（from server1 to server2）  基本语法1scp -r $pdir&#x2F;$fname  $user@hadoop$host:$pdir&#x2F;$fname   解释 三种用法 本机数据拷贝到别的服务器  从别的服务器将数据拷贝到本机  将某台">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hadoop1 介绍2（完全分布式集群搭建）">
+<meta property="og:url" content="http://example.com/2022/12/ddac69573aa6.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="环境和工具准备虚拟机环境准备准备三台虚拟机  关闭防火墙等步骤和之前一样  集群分发脚本scpscp功能scp可以实现服务器与服务器之间的数据拷贝（from server1 to server2）  基本语法1scp -r $pdir&#x2F;$fname  $user@hadoop$host:$pdir&#x2F;$fname   解释 三种用法 本机数据拷贝到别的服务器  从别的服务器将数据拷贝到本机  将某台">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194648.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194735.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194820.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194842.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194924.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210154825.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210154916.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210154931.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210154955.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155018.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155031.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155057.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155147.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155208.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155227.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155338.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155347.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155400.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210201558.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155445.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155503.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155523.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155534.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155552.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155618.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155629.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155642.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155931.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155943.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155955.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160008.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160027.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160051.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155833.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155847.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155857.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155907.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160119.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160146.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160207.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160215.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160233.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160244.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160254.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160304.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160316.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160331.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160346.png">
+<meta property="article:published_time" content="2022-12-03T18:44:30.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194648.png">
+  
+  
+  
+  <title>Hadoop1 介绍2（完全分布式集群搭建） - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Hadoop1 介绍2（完全分布式集群搭建）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:44" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          90 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Hadoop1 介绍2（完全分布式集群搭建）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="环境和工具准备"><a href="#环境和工具准备" class="headerlink" title="环境和工具准备"></a>环境和工具准备</h1><h2 id="虚拟机环境准备"><a href="#虚拟机环境准备" class="headerlink" title="虚拟机环境准备"></a>虚拟机环境准备</h2><p>准备三台虚拟机 </p>
+<p>关闭防火墙等步骤和之前一样 </p>
+<h2 id="集群分发脚本scp"><a href="#集群分发脚本scp" class="headerlink" title="集群分发脚本scp"></a>集群分发脚本scp</h2><h3 id="scp功能"><a href="#scp功能" class="headerlink" title="scp功能"></a>scp功能</h3><p>scp可以实现服务器与服务器之间的数据拷贝（from server1 to server2） </p>
+<h3 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">scp -r $pdir/$fname  $user@hadoop$host:$pdir/$fname <br></code></pre></td></tr></table></figure>
+
+<h3 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h3><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194648.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="三种用法"><a href="#三种用法" class="headerlink" title="三种用法"></a>三种用法</h3><ol>
+<li>本机数据拷贝到别的服务器 </li>
+<li>从别的服务器将数据拷贝到本机 </li>
+<li>将某台非本机的服务器的数据拷贝到另一台主机</li>
+</ol>
+<h3 id="scp-使用案例1"><a href="#scp-使用案例1" class="headerlink" title="scp 使用案例1"></a><code>scp</code> 使用案例1</h3><p>在hadoop100上，将hadoop100中&#x2F;home&#x2F;hadoop_learning目录下的软件拷贝到hadoop102上。 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">scp -r hadoop_learning/ root@hadoop101:/home/hadoop_learning <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194735.png" srcset="/img/loading.gif" lazyload width=50% />
+
+<h4 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h4><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194820.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194842.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+
+<h3 id="scp-使用案例2"><a href="#scp-使用案例2" class="headerlink" title="scp 使用案例2"></a><code>scp</code> 使用案例2</h3><p>在hadoop102上从hadoop100处拉取&#x2F;home&#x2F;hadoop_learning下的数据 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo scp -r coachhe@hadoop100:/home/hadoop_learning /home/hadoop_learning <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210194924.png" srcset="/img/loading.gif" lazyload style="zoom:67%;" />
+
+<h4 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h4><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210154825.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+
+<h4 id="注意-1"><a href="#注意-1" class="headerlink" title="注意"></a>注意</h4><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210154916.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+
+
+<h3 id="scp-使用案例3"><a href="#scp-使用案例3" class="headerlink" title="scp 使用案例3"></a><code>scp</code> 使用案例3</h3><p>在hadoop101上将hadoop100的数据拷贝到hadoop102 </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">scp -r coachhe@hadoop100:/home/hadoop_learning root@hadoop102:/home/hadoop_learning2 <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210154931.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+
+<h2 id="远程同步工具rsync"><a href="#远程同步工具rsync" class="headerlink" title="远程同步工具rsync"></a>远程同步工具rsync</h2><h3 id="rsync和scp的区别"><a href="#rsync和scp的区别" class="headerlink" title="rsync和scp的区别"></a>rsync和scp的区别</h3><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><p>rsync主要用于备份和镜像。具有速度快，避免复制相同内容和支持符号链接的优点。</p>
+<h4 id="和scp的区别"><a href="#和scp的区别" class="headerlink" title="和scp的区别"></a>和scp的区别</h4><p>用rsync做文件的复制要比scp速度快，rsync只对差异文件做更新，scp是把所有文件都复制过去。</p>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">rsync -rvl $pdir/$fname $user@hadoop$host:$host:$pdir/$fname<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="选项说明"><a href="#选项说明" class="headerlink" title="选项说明"></a>选项说明</h3><table>
+<thead>
+<tr>
+<th>选项</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-r</td>
+<td>递归</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>显示复制过程</td>
+</tr>
+<tr>
+<td>-l</td>
+<td>拷贝符号连接</td>
+</tr>
+</tbody></table>
+<h3 id="rsync-使用案例"><a href="#rsync-使用案例" class="headerlink" title="rsync 使用案例"></a><code>rsync</code> 使用案例</h3><p>将hadoop100机器上的&#x2F;home&#x2F;newdisk目录同步到hadoop101服务器root目录下的&#x2F;home&#x2F;newdisk下。 </p>
+<h4 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo rsync -rvl /home/newdisk/ root@hadoop101:/home/newdisk <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210154955.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+
+
+
+<h2 id="编写集群分发脚本xsync"><a href="#编写集群分发脚本xsync" class="headerlink" title="编写集群分发脚本xsync"></a>编写集群分发脚本xsync</h2><h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span> <br><span class="hljs-meta prompt_">#</span><span class="language-bash">1 获取输入参数个数，如果没有参数则直接退出</span> <br>pcount=$# <br><br>if((pcount==0)); then <br>    echo no args; <br>    exit; <br>fi <br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">2 获取文件名称</span> <br>p1=$1 <br>fname=`basename $p1` #这里就是拿到最终文件的名称，/opt/module就是module <br>echo fname=$fname <br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">3 获取上级目录到绝对路径</span> <br>pdir=`cd -P $(dirname $p1); pwd` #这里是得到文件的路径 <br>echo pdir=$pdir <br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">4 获取当前用户名称</span> <br>user=`whoami`  #也就是coachhe <br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">5 循环</span> <br>for((host=101;host&lt;103;host++)); do <br>    echo -------- hadoop$host --------- <br>    rsync -rvl $pdir/$fname root@hadoop$host:$pdir <br>done <br></code></pre></td></tr></table></figure>
+
+<h3 id="脚本执行"><a href="#脚本执行" class="headerlink" title="脚本执行"></a>脚本执行</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155018.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+
+<h3 id="执行结果"><a href="#执行结果" class="headerlink" title="执行结果"></a>执行结果</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155031.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+
+<h3 id="位置"><a href="#位置" class="headerlink" title="位置"></a>位置</h3><p>将这个脚本放在coachhe的bin目录下。方便以后查看和执行<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155057.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" /></p>
+<h3 id="注意-2"><a href="#注意-2" class="headerlink" title="注意"></a>注意</h3><p>因为&#x2F;home&#x2F;coachhe&#x2F;bin的是在全局PATH中的，因此可以在任意位置直接执行xsync这个脚本 </p>
+<h1 id="集群配置和启动"><a href="#集群配置和启动" class="headerlink" title="集群配置和启动"></a>集群配置和启动</h1><h2 id="1-集群配置"><a href="#1-集群配置" class="headerlink" title="1. 集群配置"></a>1. 集群配置</h2><h3 id="1-大纲"><a href="#1-大纲" class="headerlink" title="1 大纲"></a>1 大纲</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>hadoop100</th>
+<th>hadoop101</th>
+<th>hadoop102</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HDFS</td>
+<td>NameNode <br> DataNode</td>
+<td>DataNode</td>
+<td>SecondaryNameNode <br> DataNode</td>
+</tr>
+<tr>
+<td>YARN</td>
+<td>NodeManager</td>
+<td>ResourceManager <br> NodeManager</td>
+<td>NodeManager</td>
+</tr>
+</tbody></table>
+<h4 id="解释-1"><a href="#解释-1" class="headerlink" title="解释"></a>解释</h4><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155147.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="2-核心配置文件"><a href="#2-核心配置文件" class="headerlink" title="2 核心配置文件"></a>2 核心配置文件</h3><ol>
+<li>配置core-site.xml，指定HDFS中的NameNode的地址为hadoop100<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155208.png" srcset="/img/loading.gif" lazyload></li>
+<li>配置hadoop-env.sh，设置JAVA_HOME<br>这一步之前就做过，就是将JAVA_HOME设置为本机jdk </li>
+<li>配置hdfs-site.xml，将备份数设置为3（默认值），并且指定Hadoop辅助名称节点主机配置<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155227.png" srcset="/img/loading.gif" lazyload></li>
+</ol>
+<h3 id="3-YARN配置文件"><a href="#3-YARN配置文件" class="headerlink" title="3 YARN配置文件"></a>3 YARN配置文件</h3><ol>
+<li><p>yarn-env.sh配置JAVA_HOME<br>已经配置过了。 </p>
+</li>
+<li><p>yarn-site.xml添加Reducer获取数据的方式和ResourceManager的地址<br>在这里指定为resourmanager为hadoop101（根据大纲）   </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- Site specific YARN configuration properties --&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.nodemanager.aux-services<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>mapreduce_shuffle<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br><br>        <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.resourcemanager.hostname<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>clinux02<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br><br><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br></code></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="4-MapReduce配置文件"><a href="#4-MapReduce配置文件" class="headerlink" title="4 MapReduce配置文件"></a>4 MapReduce配置文件</h3><ol>
+<li><p>配置mapred-senv.sh的JAVA_HOME<br>已经配置过了 </p>
+</li>
+<li><p>配置mapred-site.xml，增加指定MR运行在YARN上的配置   </p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>		<span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>mapreduce.framework.name<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>		<span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>yarn<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br></code></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="2-集群单点启动"><a href="#2-集群单点启动" class="headerlink" title="2 集群单点启动"></a>2 集群单点启动</h2><h3 id="1-格式化namenode"><a href="#1-格式化namenode" class="headerlink" title="1. 格式化namenode"></a>1. 格式化namenode</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">hdfs namenode -format<br></code></pre></td></tr></table></figure>
+
+<h4 id="注意-3"><a href="#注意-3" class="headerlink" title="注意"></a>注意</h4><p><strong>格式化之前需要删除 logs 和 data</strong>，否则再次启动时就会报错，因为格式化时为 namenode 分配了新的 ID，但是因为没有删除 data 文件夹，里面的 DataNode 对应的 ID 还是原先分配的 ID，匹配不上就会报错。</p>
+<h3 id="2-启动所有节点的-namenode-和-datanode"><a href="#2-启动所有节点的-namenode-和-datanode" class="headerlink" title="2. 启动所有节点的 namenode 和 datanode"></a>2. 启动所有节点的 namenode 和 datanode</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155338.png" srcset="/img/loading.gif" lazyload width=50%>
+
+<h4 id="注意-4"><a href="#注意-4" class="headerlink" title="注意"></a>注意</h4><p>hadoop101和hadoop102的Namenode不用启动   </p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155347.png" srcset="/img/loading.gif" lazyload width=30%>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155400.png" srcset="/img/loading.gif" lazyload width=30%>
+
+<h2 id="3-SSH无密登录配置"><a href="#3-SSH无密登录配置" class="headerlink" title="3 SSH无密登录配置"></a>3 SSH无密登录配置</h2><h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><p>如果节点增加到1000个，那么不可能给一个个启动，怎么办呢？ </p>
+<h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>ssh可以直接访问其他服务器 </p>
+<h3 id="免密登录原理"><a href="#免密登录原理" class="headerlink" title="免密登录原理"></a>免密登录原理</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210201558.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h3 id="生成公钥和私钥"><a href="#生成公钥和私钥" class="headerlink" title="生成公钥和私钥"></a>生成公钥和私钥</h3><p>在.ssh目录下执行 </p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">ssh-keygen -t rsa <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155445.png" srcset="/img/loading.gif" lazyload style="zoom: 67%;" />
+
+<h3 id="将公钥复制到其他服务器"><a href="#将公钥复制到其他服务器" class="headerlink" title="将公钥复制到其他服务器"></a>将公钥复制到其他服务器</h3><h4 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ssh-copy-id hadoop101 <br></code></pre></td></tr></table></figure>
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155503.png" srcset="/img/loading.gif" lazyload style="zoom:67%;" />
+
+<h4 id="注意-5"><a href="#注意-5" class="headerlink" title="注意"></a>注意</h4><p>本机也需要拷贝！！ </p>
+<h3 id="需要配置-ssh的具体服务器"><a href="#需要配置-ssh的具体服务器" class="headerlink" title="需要配置.ssh的具体服务器"></a>需要配置.ssh的具体服务器</h3><h4 id="1-配置hadoop100"><a href="#1-配置hadoop100" class="headerlink" title="1. 配置hadoop100"></a>1. 配置hadoop100</h4><h5 id="原因："><a href="#原因：" class="headerlink" title="原因："></a>原因：</h5><p>hadoop100上有NodeManager，用来控制不同节点的任务，因此需要配置hadoop100的.ssh，从而能控制其他节点。 </p>
+<h4 id="2-配置hadoop101"><a href="#2-配置hadoop101" class="headerlink" title="2. 配置hadoop101"></a>2. 配置hadoop101</h4><h5 id="原因：-1"><a href="#原因：-1" class="headerlink" title="原因："></a>原因：</h5><p>hadoop101上有YARN的ResourceManager，也需要控制不同的节点，因此也需要对ssh进行配置。 </p>
+<h3 id="对hadoop101也进行配置"><a href="#对hadoop101也进行配置" class="headerlink" title="对hadoop101也进行配置"></a>对hadoop101也进行配置</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155523.png" srcset="/img/loading.gif" lazyload style="zoom: 80%;" />
+
+<h3 id="对hadoop102的root用户配置"><a href="#对hadoop102的root用户配置" class="headerlink" title="对hadoop102的root用户配置"></a>对hadoop102的root用户配置</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155534.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+
+<h1 id="群起集群"><a href="#群起集群" class="headerlink" title="群起集群"></a>群起集群</h1><h2 id="配置slaves-md"><a href="#配置slaves-md" class="headerlink" title="配置slaves.md"></a>配置slaves.md</h2><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155552.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="注意！！"><a href="#注意！！" class="headerlink" title="注意！！"></a>注意！！</h3><p>不允许有空格，不允许有空行！ </p>
+<h2 id="关闭所有NameNode和DataNode"><a href="#关闭所有NameNode和DataNode" class="headerlink" title="关闭所有NameNode和DataNode"></a>关闭所有NameNode和DataNode</h2><h3 id="hadoop100"><a href="#hadoop100" class="headerlink" title="hadoop100"></a>hadoop100</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155618.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+
+<h3 id="hadoop101"><a href="#hadoop101" class="headerlink" title="hadoop101"></a>hadoop101</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155629.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+没有namenode
+
+<h3 id="hadoop102"><a href="#hadoop102" class="headerlink" title="hadoop102"></a>hadoop102</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155642.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+没有NameNode
+
+<h2 id="执行群起脚本"><a href="#执行群起脚本" class="headerlink" title="执行群起脚本"></a>执行群起脚本</h2><h3 id="1-在hadoop100上执行start-dfs-sh脚本执行hdfs"><a href="#1-在hadoop100上执行start-dfs-sh脚本执行hdfs" class="headerlink" title="1 在hadoop100上执行start-dfs.sh脚本执行hdfs"></a>1 在hadoop100上执行start-dfs.sh脚本执行hdfs</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>hadoop100</th>
+<th>hadoop101</th>
+<th>hadoop102</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>jps</td>
+<td><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155931.png" srcset="/img/loading.gif" lazyload></td>
+<td><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155943.png" srcset="/img/loading.gif" lazyload></td>
+<td><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155955.png" srcset="/img/loading.gif" lazyload></td>
+</tr>
+</tbody></table>
+<h3 id="2-启动YARN"><a href="#2-启动YARN" class="headerlink" title="2 启动YARN"></a>2 启动YARN</h3><h3 id="注意-6"><a href="#注意-6" class="headerlink" title="注意"></a>注意</h3><p>必须在hadoop101上启动，不能在其他节点上！（也就是必须在ResourceManager所在的节点启动！！）</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>hadoop100</th>
+<th>hadoop101</th>
+<th>hadoop102</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>jps</td>
+<td><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160008.png" srcset="/img/loading.gif" lazyload></td>
+<td><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160027.png" srcset="/img/loading.gif" lazyload></td>
+<td><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160051.png" srcset="/img/loading.gif" lazyload></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>hadoop100</code></th>
+<th><code>hadoop101</code></th>
+<th><code>hadoop102</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HDFS</td>
+<td>NameNode <br> DataNode</td>
+<td><br> DataNode</td>
+<td>SecondaryNameNode <br> DataNode</td>
+</tr>
+<tr>
+<td>YARN</td>
+<td><br> NodeManager</td>
+<td>ResourceManager <br> NodeManager</td>
+<td><br> NodeManager</td>
+</tr>
+</tbody></table>
+<h1 id="集群基本测试"><a href="#集群基本测试" class="headerlink" title="集群基本测试"></a>集群基本测试</h1><h3 id="1-上传大小文件"><a href="#1-上传大小文件" class="headerlink" title="1 上传大小文件"></a>1 上传大小文件</h3><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155833.png" srcset="/img/loading.gif" lazyload></p>
+<h5 id="结果-2"><a href="#结果-2" class="headerlink" title="结果"></a>结果</h5><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155847.png" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+
+<h4 id="对小文件"><a href="#对小文件" class="headerlink" title="对小文件"></a>对小文件</h4><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155857.png" srcset="/img/loading.gif" lazyload style="zoom:67%;" />
+
+<h4 id="对大文件"><a href="#对大文件" class="headerlink" title="对大文件"></a>对大文件</h4><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210155907.png" srcset="/img/loading.gif" lazyload style="zoom:67%;" />
+
+<h3 id="2-文件存储位置"><a href="#2-文件存储位置" class="headerlink" title="2 文件存储位置"></a>2 文件存储位置</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160119.png" srcset="/img/loading.gif" lazyload style="zoom:67%;" />
+
+<h4 id="注意-7"><a href="#注意-7" class="headerlink" title="注意"></a>注意</h4><p>  多个block拼接起来就是我们所需要的文件！ </p>
+<h2 id="6-集群启动停止方式总结"><a href="#6-集群启动停止方式总结" class="headerlink" title="6 集群启动停止方式总结"></a>6 集群启动停止方式总结</h2><h3 id="各个模块分开启动停止"><a href="#各个模块分开启动停止" class="headerlink" title="各个模块分开启动停止"></a>各个模块分开启动停止</h3><h4 id="注意-8"><a href="#注意-8" class="headerlink" title="注意"></a>注意</h4><p>配置ssh是前提 </p>
+<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><h5 id="1-整体启动-x2F-停止HDFS"><a href="#1-整体启动-x2F-停止HDFS" class="headerlink" title="1. 整体启动&#x2F;停止HDFS"></a>1. 整体启动&#x2F;停止HDFS</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">start-dfs.sh / stop-dfs.sh <br></code></pre></td></tr></table></figure>
+
+<h5 id="2-整体启动-x2F-停止YARN"><a href="#2-整体启动-x2F-停止YARN" class="headerlink" title="2. 整体启动&#x2F;停止YARN"></a>2. 整体启动&#x2F;停止YARN</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">start-yarn.sh / stop-yarn.sh <br></code></pre></td></tr></table></figure>
+
+<h3 id="各一组件逐一停止"><a href="#各一组件逐一停止" class="headerlink" title="各一组件逐一停止"></a>各一组件逐一停止</h3><h4 id="1-分别启动停止HDFS组件"><a href="#1-分别启动停止HDFS组件" class="headerlink" title="1. 分别启动停止HDFS组件"></a>1. 分别启动停止HDFS组件</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">hadoop-daemon.sh start/stop namenode/datanode/secondarynamenode <br></code></pre></td></tr></table></figure>
+
+<h4 id="2-启动-x2F-停止YARN"><a href="#2-启动-x2F-停止YARN" class="headerlink" title="2. 启动&#x2F;停止YARN"></a>2. 启动&#x2F;停止YARN</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">yarn-daemon.sh start/stop resourcemanager/nodemanager <br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="crontab和集群时间同步"><a href="#crontab和集群时间同步" class="headerlink" title="crontab和集群时间同步"></a>crontab和集群时间同步</h1><h2 id="crond服务管理"><a href="#crond服务管理" class="headerlink" title="crond服务管理"></a>crond服务管理</h2><h4 id="使用前需要打开crond服务"><a href="#使用前需要打开crond服务" class="headerlink" title="使用前需要打开crond服务"></a>使用前需要打开crond服务</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jps">service crontad restart <br></code></pre></td></tr></table></figure>
+
+<h3 id="基本语法-1"><a href="#基本语法-1" class="headerlink" title="基本语法"></a>基本语法</h3><p>crontab [选项] </p>
+<h5 id="选项说明-1"><a href="#选项说明-1" class="headerlink" title="选项说明"></a>选项说明</h5><p>-e：编辑crontab定时任务<br>-l：查询crontab任务<br>-r：删除当前用户所有crontab任务 </p>
+<h2 id="集群时间同步"><a href="#集群时间同步" class="headerlink" title="集群时间同步"></a>集群时间同步</h2><h3 id="时间同步的方式："><a href="#时间同步的方式：" class="headerlink" title="时间同步的方式："></a>时间同步的方式：</h3><p>找一个机器，作为时间服务器，所有的机器与这台集群时间进行定时的同步，比如，每隔十分钟，同步一次时间。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160146.png" srcset="/img/loading.gif" lazyload style="zoom:67%;" />
+
+<h3 id="具体步骤1-服务时间配置（以hadoop100为例）"><a href="#具体步骤1-服务时间配置（以hadoop100为例）" class="headerlink" title="具体步骤1 服务时间配置（以hadoop100为例）"></a>具体步骤1 服务时间配置（以hadoop100为例）</h3><h4 id="注意-9"><a href="#注意-9" class="headerlink" title="注意"></a>注意</h4><p>  所有步骤都采用root权限安装。 </p>
+<h4 id="1-检查ntp是否安装"><a href="#1-检查ntp是否安装" class="headerlink" title="1. 检查ntp是否安装"></a>1. 检查ntp是否安装</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">rpm -qa | grep ntp <br></code></pre></td></tr></table></figure>
+
+<p>如果出现上面的三个文件则表示安装了ntp </p>
+<h4 id="2-修改ntp配置文件"><a href="#2-修改ntp配置文件" class="headerlink" title="2. 修改ntp配置文件"></a>2. 修改ntp配置文件</h4><h5 id="a-授权192-168-137-0-192-168-137-255的所有机器可以从这台机器上查询和同步时间"><a href="#a-授权192-168-137-0-192-168-137-255的所有机器可以从这台机器上查询和同步时间" class="headerlink" title="a. 授权192.168.137.0-192.168.137.255的所有机器可以从这台机器上查询和同步时间"></a>a. 授权192.168.137.0-192.168.137.255的所有机器可以从这台机器上查询和同步时间</h5><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160207.png" srcset="/img/loading.gif" lazyload><br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160215.png" srcset="/img/loading.gif" lazyload>  </p>
+<h5 id="b-修改集群在局域网中，不使用其他互联网的时间"><a href="#b-修改集群在局域网中，不使用其他互联网的时间" class="headerlink" title="b.修改集群在局域网中，不使用其他互联网的时间"></a>b.修改集群在局域网中，不使用其他互联网的时间</h5><h6 id="注释前"><a href="#注释前" class="headerlink" title="注释前"></a>注释前</h6><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160233.png" srcset="/img/loading.gif" lazyload></p>
+<h6 id="注释后"><a href="#注释后" class="headerlink" title="注释后"></a>注释后</h6><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160244.png" srcset="/img/loading.gif" lazyload></p>
+<h5 id="c-当该节点丢失网络连接，依然可以采用本地时间作为时间服务器为集群中的其他节点提供时间同步"><a href="#c-当该节点丢失网络连接，依然可以采用本地时间作为时间服务器为集群中的其他节点提供时间同步" class="headerlink" title="c.当该节点丢失网络连接，依然可以采用本地时间作为时间服务器为集群中的其他节点提供时间同步"></a>c.当该节点丢失网络连接，依然可以采用本地时间作为时间服务器为集群中的其他节点提供时间同步</h5><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160254.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="3-配置-x2F-etc-x2F-sysconfig-x2F-ntpd文件"><a href="#3-配置-x2F-etc-x2F-sysconfig-x2F-ntpd文件" class="headerlink" title="3. 配置&#x2F;etc&#x2F;sysconfig&#x2F;ntpd文件"></a>3. 配置&#x2F;etc&#x2F;sysconfig&#x2F;ntpd文件</h4><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160304.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="4-重新启动ntps服务"><a href="#4-重新启动ntps服务" class="headerlink" title="4. 重新启动ntps服务"></a>4. 重新启动ntps服务</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">service ntps restart <br></code></pre></td></tr></table></figure>
+
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160316.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="具体步骤2-其他服务器配置"><a href="#具体步骤2-其他服务器配置" class="headerlink" title="具体步骤2 其他服务器配置"></a>具体步骤2 其他服务器配置</h3><h4 id="在其他机器上配置1分钟与服务器时间一致"><a href="#在其他机器上配置1分钟与服务器时间一致" class="headerlink" title="在其他机器上配置1分钟与服务器时间一致"></a>在其他机器上配置1分钟与服务器时间一致</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">crontab -e: <br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160331.png" srcset="/img/loading.gif" lazyload><br>然后用date -s XXX来随意将时间进行设置<br>然后等待1分钟之后看时间是否会恢复<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160346.png" srcset="/img/loading.gif" lazyload style="zoom:67%;" /></p>
+<h1 id="Hadoop3-x-配置"><a href="#Hadoop3-x-配置" class="headerlink" title="Hadoop3.x 配置"></a><code>Hadoop3.x</code> 配置</h1><h2 id="core-site-xml"><a href="#core-site-xml" class="headerlink" title="core-site.xml"></a><code>core-site.xml</code></h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="hljs-meta">&lt;?xml-stylesheet type=<span class="hljs-string">&quot;text/xsl&quot;</span> href=<span class="hljs-string">&quot;configuration.xsl&quot;</span>?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br>    <span class="hljs-comment">&lt;!-- 指定NameNode的地址 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>fs.defaultFS<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hdfs://hadoop102:8020<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>    <span class="hljs-comment">&lt;!-- 指定hadoop数据的存储目录 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>hadoop.tmp.dir<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>/root/module/hadoop/data<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- 配置HDFS网页登录使用的静态用户为atguigu --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>hadoop.http.staticuser.user<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>root<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- 配置该root(superUser)允许通过代理访问的主机节点 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>hadoop.proxyuser.root.hosts<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>*<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>    <span class="hljs-comment">&lt;!-- 配置该root(superUser)允许通过代理用户所属组 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>hadoop.proxyuser.root.groups<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>*<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>    <span class="hljs-comment">&lt;!-- 配置该root(superUser)允许通过代理的用户--&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>hadoop.proxyuser.root.users<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>*<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>可以看到，最大的变更来自于 NameNode 的端口，在上面的配置中我们可以看到，在 <code>Hadoop1.x</code> 中使用的是 9000 端口，但是在 <code>Hadoop3.x</code> 中，我们使用的是 8020 端口。</p>
+<p>其余其实变化不大。</p>
+<h2 id="hdfs-site-xml"><a href="#hdfs-site-xml" class="headerlink" title="hdfs-site.xml"></a><code>hdfs-site.xml</code></h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="hljs-meta">&lt;?xml-stylesheet type=<span class="hljs-string">&quot;text/xsl&quot;</span> href=<span class="hljs-string">&quot;configuration.xsl&quot;</span>?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br>		<span class="hljs-comment">&lt;!-- nn web端访问地址--&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>dfs.namenode.http-address<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hadoop102:9870<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>	<span class="hljs-comment">&lt;!-- 2nn web端访问地址--&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>dfs.namenode.secondary.http-address<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hadoop104:9868<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>    <span class="hljs-comment">&lt;!-- 测试环境指定HDFS副本的数量1 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>dfs.replication<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>3<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>可以看到，最大的变化也是来自端口上。默认的端口变动了。</p>
+<h2 id="yarn-site-xml"><a href="#yarn-site-xml" class="headerlink" title="yarn-site.xml"></a><code>yarn-site.xml</code></h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span>?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br><span class="hljs-comment">&lt;!-- Site specific YARN configuration properties --&gt;</span><br><span class="hljs-comment">&lt;!-- 指定MR走shuffle --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.nodemanager.aux-services<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>mapreduce_shuffle<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>    <br>    <span class="hljs-comment">&lt;!-- 指定ResourceManager的地址--&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.resourcemanager.hostname<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hadoop103<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>    <br>    <span class="hljs-comment">&lt;!-- 环境变量的继承 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.nodemanager.env-whitelist<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>    <br>    <span class="hljs-comment">&lt;!--yarn单个容器允许分配的最大最小内存 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.scheduler.minimum-allocation-mb<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>512<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.scheduler.maximum-allocation-mb<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>4096<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>    <br>    <span class="hljs-comment">&lt;!-- yarn容器允许管理的物理内存大小 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.nodemanager.resource.memory-mb<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>4096<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>    <br>    <span class="hljs-comment">&lt;!-- 关闭yarn对虚拟内存的限制检查 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.nodemanager.pmem-check-enabled<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.nodemanager.vmem-check-enabled<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- 开启日志聚集功能 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.log-aggregation-enable<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>    <br>    <span class="hljs-comment">&lt;!-- 设置日志聚集服务器地址 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.log.server.url<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>http://hadoop102:19888/jobhistory/logs<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br>    <br>    <span class="hljs-comment">&lt;!-- 设置日志保留时间为7天 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.log-aggregation.retain-seconds<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>604800<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>可以看到，和 <code>1.x</code> 版本最大的差别来自于需要显式指定 JAVA_HOME 等配置参数</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 环境变量的继承 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.nodemanager.env-whitelist<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_MAPRED_HOME<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="mapred-site-xml"><a href="#mapred-site-xml" class="headerlink" title="mapred-site.xml"></a><code>mapred-site.xml</code></h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="hljs-meta">&lt;?xml-stylesheet type=<span class="hljs-string">&quot;text/xsl&quot;</span> href=<span class="hljs-string">&quot;configuration.xsl&quot;</span>?&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br>	<span class="hljs-comment">&lt;!-- 指定MapReduce程序运行在Yarn上 --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>mapreduce.framework.name<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>yarn<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>这块没有变动</p>
+<h2 id="workers"><a href="#workers" class="headerlink" title="workers"></a><code>workers</code></h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs xml">hadoop102<br>hadoop103<br>hadoop104<br></code></pre></td></tr></table></figure>
+
+<p>这块其实就是 <code>hadoop1.x</code> 中的 slaves，但是在 <code>hadoop3.x</code> 中换成了 workers，里面内容是完全相同的，也是不能有空格和空行</p>
+<h2 id="配置历史服务器"><a href="#配置历史服务器" class="headerlink" title="配置历史服务器"></a>配置历史服务器</h2><p>要修改 <code>mapred-site.xml</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 历史服务器端地址 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>mapreduce.jobhistory.address<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hadoop102:10020<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- 历史服务器web端地址 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>mapreduce.jobhistory.webapp.address<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>hadoop102:19888<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br><br></code></pre></td></tr></table></figure>
+
+<p>这里也是和 <code>hadoop1.x</code> 最大的区别就是端口不同。</p>
+<h2 id="配置日志的聚集"><a href="#配置日志的聚集" class="headerlink" title="配置日志的聚集"></a>配置日志的聚集</h2><p>日志聚集概念：应用运行完成以后，将程序运行日志信息上传到 HDFS 系统上。</p>
+<p>日志聚集功能好处：可以方便的查看到程序运行详情，方便开发调试。</p>
+<p>注意：开启日志聚集功能，需要重新启动 NodeManager 、ResourceManager 和 HistoryManager。</p>
+<h3 id="1-配置-yarn-site-xml"><a href="#1-配置-yarn-site-xml" class="headerlink" title="1. 配置 yarn-site.xml"></a>1. 配置 <code>yarn-site.xml</code></h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 开启日志聚集功能 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.log-aggregation-enable<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- 设置日志聚集服务器地址 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span>  <br>    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.log.server.url<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>  <br>    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>http://hadoop102:19888/jobhistory/logs<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- 设置日志保留时间为7天 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">property</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>yarn.log-aggregation.retain-seconds<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">value</span>&gt;</span>604800<span class="hljs-tag">&lt;/<span class="hljs-name">value</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">property</span>&gt;</span><br><br></code></pre></td></tr></table></figure>
+
+<p>然后就可以群起 hadoop 集群了。</p>
+<h2 id="注意-10"><a href="#注意-10" class="headerlink" title="注意"></a>注意</h2><p>这里启动时还需要在启动脚本上加上相应的配置。</p>
+<h3 id="start-dfs-sh"><a href="#start-dfs-sh" class="headerlink" title="start-dfs.sh"></a><code>start-dfs.sh</code></h3><p>需要在最上方加上对应配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml">HDFS_DATANODE_USER=root<br>HADOOP_SECURE_DN_USER=hdfs<br>HDFS_NAMENODE_USER=root<br>HDFS_SECONDARYNAMENODE_USER=root<br></code></pre></td></tr></table></figure>
+
+<h3 id="start-yarn-sh"><a href="#start-yarn-sh" class="headerlink" title="start-yarn.sh"></a><code>start-yarn.sh</code></h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs xml">YARN_RESOURCEMANAGER_USER=root<br>HADOOP_SECURE_DN_USER=yarn<br>YARN_NODEMANAGER_USER=root<br></code></pre></td></tr></table></figure>
+
+<h3 id="stop-dfs-sh"><a href="#stop-dfs-sh" class="headerlink" title="stop-dfs.sh"></a><code>stop-dfs.sh</code></h3><p>这里和上面的 start 对应配置是相同的</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml">HDFS_DATANODE_USER=root<br>HADOOP_SECURE_DN_USER=hdfs<br>HDFS_NAMENODE_USER=root<br>HDFS_SECONDARYNAMENODE_USER=root<br></code></pre></td></tr></table></figure>
+
+<h3 id="stop-yarn-sh"><a href="#stop-yarn-sh" class="headerlink" title="stop-yarn.sh"></a><code>stop-yarn.sh</code></h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs xml">YARN_RESOURCEMANAGER_USER=root<br>HADOOP_SECURE_DN_USER=yarn<br>YARN_NODEMANAGER_USER=root<br></code></pre></td></tr></table></figure>
+
+<p>还有一个要注意的，需要更新 <code>hadoop-env.sh</code> 配置</p>
+<p><code>hadoop-env.sh</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">export</span> JAVA_HOME=<span class="hljs-string">&quot;/root/module/jdk/tencent_jdk8&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>这样就可以完美启动啦</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/" class="category-chain-item">大数据</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/" class="category-chain-item">Hadoop生态</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/Hadoop/" class="category-chain-item">Hadoop</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/Hadoop/1-Hadoop%E4%BB%8B%E7%BB%8D/" class="category-chain-item">1 Hadoop介绍</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Hadoop1 介绍2（完全分布式集群搭建）</div>
+      <div>http://example.com/2022/12/ddac69573aa6.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/d995c04924db.html" title="Hadoop1 介绍3（源码编译）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Hadoop1 介绍3（源码编译）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/4c13f50f6448.html" title="Hadoop1 介绍1（伪分布式集群搭建）">
+                        <span class="hidden-mobile">Hadoop1 介绍1（伪分布式集群搭建）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/ddac69573aa6.html';
+          this.page.identifier = '/2022/12/ddac69573aa6.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

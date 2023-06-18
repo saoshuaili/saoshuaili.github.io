@@ -1,0 +1,872 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1 引言本章开始讨论UNIX系统，先说明可用的文件I&#x2F;O函数-打开文件、读文件、写文件等。UNIX系统中的大部分文件I&#x2F;O只需要用到5个函数：open、read、write、lseek以及close。然后说明不同缓冲长度对read和write函数的影响。 不带缓冲的定义：术语不带缓冲指的是每个read和write都调用内核中的一个系统调用。也就是说，不带缓冲的I&#x2F;O就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APUE-3-文件IO">
+<meta property="og:url" content="http://example.com/2022/12/dedbfe4f5532.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="1 引言本章开始讨论UNIX系统，先说明可用的文件I&#x2F;O函数-打开文件、读文件、写文件等。UNIX系统中的大部分文件I&#x2F;O只需要用到5个函数：open、read、write、lseek以及close。然后说明不同缓冲长度对read和write函数的影响。 不带缓冲的定义：术语不带缓冲指的是每个read和write都调用内核中的一个系统调用。也就是说，不带缓冲的I&#x2F;O就">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-3691c953c62dba149ea2cc16e190b7f7_1440w.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636fdf81f7e3bd97f4fc3.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6369df81f7e3bd97f387d.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636f5f81f7e3bd97f4de2.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63669f81f7e3bd97eec47.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63616f81f7e3bd97ed88f.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636d9f81f7e3bd97f492d.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63673f81f7e3bd97efa59.jpg">
+<meta property="article:published_time" content="2022-12-03T18:37:21.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pic4.zhimg.com/80/v2-3691c953c62dba149ea2cc16e190b7f7_1440w.jpg">
+  
+  
+  
+  <title>APUE-3-文件IO - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="APUE-3-文件IO"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:37" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          35 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">APUE-3-文件IO</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-引言"><a href="#1-引言" class="headerlink" title="1 引言"></a>1 引言</h1><p>本章开始讨论UNIX系统，先说明可用的文件I&#x2F;O函数-打开文件、读文件、写文件等。<br>UNIX系统中的大部分文件I&#x2F;O只需要用到5个函数：open、read、write、lseek以及close。然后说明不同缓冲长度对read和write函数的影响。</p>
+<p><strong>不带缓冲的定义</strong>：术语不带缓冲指的是每个read和write都调用内核中的一个系统调用。<br>也就是说，不带缓冲的I&#x2F;O就是其中的I&#x2F;O操作都是直接对内核进行系统调用的。而带缓冲的I&#x2F;O就不会直接对内核调用。</p>
+<h1 id="2-文件描述符"><a href="#2-文件描述符" class="headerlink" title="2 文件描述符"></a>2 文件描述符</h1><p>对于内核而言，所有打开的文件都通过文件描述符引用。</p>
+<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><p>open()&#x2F;create()&#x2F;socket等函数<strong>生成</strong>文件描述符<br>&amp;darr;&amp;darr;&amp;darr;&amp;darr;&amp;darr;&amp;darr;&amp;darr;&amp;darr;&amp;darr;&amp;darr;&amp;darr;&amp;darr;&amp;darr;&amp;darr;<br>read()&#x2F;write()等函数<strong>使用</strong>文件描述符</p>
+<h2 id="对应"><a href="#对应" class="headerlink" title="对应"></a>对应</h2><p>按照惯例，UNIX系统shell把文件描述符0余进程的标准输入相关联，文件描述符1与标准输出相关联，文件描述符2与标准错误相关联。  </p>
+<h4 id="解释"><a href="#解释" class="headerlink" title="解释"></a><strong>解释</strong></h4><p>Linux shell在创建一个进程的时候，会自动生成三个文件，分别是标准输入、输出和标准错误，并且生成三个文件描述符与其相对应。之后我们操作输入输出其实是直接对这些文件操作，而不是直接I&#x2F;O。</p>
+<h2 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h2><p><img src="https://pic4.zhimg.com/80/v2-3691c953c62dba149ea2cc16e190b7f7_1440w.jpg" srcset="/img/loading.gif" lazyload alt="fig1.4"><br>这是fig1.4.c，作用是模拟将标准输入写到标准输出中。里面就用到了STDIN_FILENO，默认为0。</p>
+<h2 id="3-函数open和openat"><a href="#3-函数open和openat" class="headerlink" title="3 函数open和openat"></a>3 函数open和openat</h2><p>调用open和openat可以打开或创建一个文件。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs Cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcnt1.h&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">open</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *path, <span class="hljs-type">int</span> olafg. ... <span class="hljs-comment">/* mode_t */</span></span></span><br><span class="hljs-params"><span class="hljs-function"></span></span><br><span class="hljs-params"><span class="hljs-function"><span class="hljs-type">int</span> openat(<span class="hljs-type">int</span> fd, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *path, <span class="hljs-type">int</span> <span class="hljs-number">0f</span>lay, ... <span class="hljs-comment">/* mode_t mode */</span>;</span></span><br></code></pre></td></tr></table></figure>
+<p>两函数的返回值：若成功则返回文件描述符，若出错则返回-1.</p>
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ol>
+<li>path是要打开或创建的文件的名字</li>
+<li>*path表示打开或创建的文件所在的地址</li>
+<li>oflag参数用来说明此函数的多个选项，用下列一个或者多个常量进行“或”运算构成oflag参数（在&lt;fcntl.h&gt;头文件中定义）<br><strong>理解</strong>：也就是说，多个常量是可以同时指定的，例如O_RDONLY || O_CREATE就是一个oflg参数形式，表示这是只读打开的，并且如果没有这个文件就创建它。</li>
+<li>fd参数：将open和openat区分开<br>(1) 若path是<strong>绝对路径名</strong>，这种情况open和openat含义相同，fd参数被忽略<br>(2) 若path是<strong>相对路径名</strong>，这种情况fd是相对路径在文件名系统中的开始地址。fd参数通过打开相对路径所在目录来获取。<br>(3) 若path是<strong>相对路径名</strong>，且fd具有特殊值AT_FDCWD。openat和open效果类似。</li>
+</ol>
+<h2 id="openat希望解决的问题"><a href="#openat希望解决的问题" class="headerlink" title="openat希望解决的问题"></a>openat希望解决的问题</h2><ol>
+<li>让线程可以使用相对路径名打开目录中的文件，而不再只能打开当前工作目录。</li>
+<li>避免TOCTTOU错误。</li>
+</ol>
+<h2 id="文件名和路径名截断"><a href="#文件名和路径名截断" class="headerlink" title="文件名和路径名截断"></a>文件名和路径名截断</h2><p>如果试图创建的文件名超过NAME_MAX，那么早期UNIX系统会进行截断，也就是指保留14个。</p>
+<h3 id="带来的问题"><a href="#带来的问题" class="headerlink" title="带来的问题"></a>带来的问题</h3><p>这样无法判断是否该文件名被截断过</p>
+<h1 id="4-函数create（不建议）"><a href="#4-函数create（不建议）" class="headerlink" title="4 函数create（不建议）"></a>4 函数create（不建议）</h1><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;functl.h&gt;</span></span><br><span class="hljs-type">int</span> <span class="hljs-title function_">create</span> <span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *path, <span class="hljs-type">mode_t</span> mode)</span>;<br></code></pre></td></tr></table></figure>
+<p>等价于</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs C">open(path, OWRONLY | O_CREATE |O_TRUNC, mode)<br></code></pre></td></tr></table></figure>
+<p>因此可以被open替代<br>##不足之处<br>   它以制度方式打开所创建的文件，需要创建一个文件，然后写，然后读，则必须的步骤：<br>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">create<br>close<br>open<br></code></pre></td></tr></table></figure><br>   很复杂，现在不建议使用。</p>
+<h1 id="5-函数close（少用）"><a href="#5-函数close（少用）" class="headerlink" title="5 函数close（少用）"></a>5 函数close（少用）</h1><p>关闭一个进程时还会释放该进程加在文件上的所有锁。<br>进程终止时内核自动关闭它所有的打开文件，因此很多程序都利用了这一点，而不是显式地使用close关闭打开文件。  </p>
+<h4 id="理解"><a href="#理解" class="headerlink" title="理解"></a><strong>理解</strong></h4><p>我们可以让文件一直开着，知道我们这个进程终止了，自动所有文件都会全部关掉，而不用中途显式地使用close了。</p>
+<h1 id="6-函数lseek"><a href="#6-函数lseek" class="headerlink" title="6 函数lseek"></a>6 函数lseek</h1><h2 id="当前文件偏移量-current-file-offset"><a href="#当前文件偏移量-current-file-offset" class="headerlink" title="当前文件偏移量(current file offset)"></a>当前文件偏移量(current file offset)</h2><p>通常是一个非负整数，用以度量从文件开始处计算的字节数。通常，读写操作都从当前文件偏移处开始。</p>
+<h2 id="lseek函数作用"><a href="#lseek函数作用" class="headerlink" title="lseek函数作用"></a>lseek函数作用</h2><p>调用lseek可以显式地为一个打开文件设置偏移量    </p>
+<h4 id="理解-1"><a href="#理解-1" class="headerlink" title="理解"></a><strong>理解</strong></h4><ol>
+<li>前提是这个文件已经打开，也就是说lseek不能打开文件，只能作用于一个打开的文件</li>
+<li>作用是为这个打开的文件设置一个偏移量，也就是确定该文件的偏移量具体位于哪个位置。</li>
+</ol>
+<h2 id="lseek函数形式"><a href="#lseek函数形式" class="headerlink" title="lseek函数形式"></a>lseek函数形式</h2><p>lseek函数如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-type">off_t</span> <span class="hljs-title function_">lseek</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, <span class="hljs-type">off_t</span> offset, <span class="hljs-type">int</span> whence)</span>;<br></code></pre></td></tr></table></figure>
+<h3 id="参数说明-1"><a href="#参数说明-1" class="headerlink" title="参数说明"></a>参数说明</h3><p>fd：文件标识符<br>offset：偏移量，其解释是根据whence来决定的<br>whence：分三种情况：</p>
+<ol>
+<li>whence&#x3D;SEEK_SET，则该文件的偏移量为距文件开始出offset个字节</li>
+<li>whence&#x3D;SEEK_CUR，则该文件偏移量设置为当前值加offset，offset<strong>可正可负</strong>。</li>
+<li>whence&#x3D;SEEK_END，则该文件偏移量设置为文件长度加offset，offset<strong>可正可负</strong>。</li>
+</ol>
+<p>若lseek成功执行，则返回新的文件偏移量</p>
+<h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><p>例如</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs C++"><span class="hljs-type">off_t</span> currpos;;<br>currpos = <span class="hljs-built_in">lseek</span>(fd, <span class="hljs-number">0</span>, SEEK_CUR);<br></code></pre></td></tr></table></figure>
+<p>第一行先初始化一个currpos，接着第二行执行lseek(fd,0,SEEK_CUR);SEEK_CUR代表将文件偏移量设置为当前值加上offset。因此这两行代码其实就是得到了当前文件的偏移量。并且还可以用来测试当前的文件是否可以设置偏移量。</p>
+<p>例3.1</p>
+<p><strong>注意</strong><br>当前文件偏移量有正有负，因此需要比较lseek的返回值时应当谨慎，不要测试它是否小于0，而是测试是否等于-1。</p>
+<h2 id="空洞"><a href="#空洞" class="headerlink" title="空洞"></a>空洞</h2><p>文件偏移量可以大于文件的当前长度，在这种情况下，对该文件的下一次写将加长该文件，并在文件中构成一个空洞。位于文件中但没有写过的字节都被读为0。<br><strong>理解</strong><br>例如一个文件长度为5，但是文件偏移量为10，那么在进行写操作的时候会直接在10这个位置进行写入，那么5到9这个位置就是空洞，它其实不存在，但是读出来都为默认为0。并且这段区域是不需要分配磁盘块的。也就是0-4有一个磁盘块，10开始有磁盘块，但是5-9没有分配磁盘块。</p>
+<h3 id="例3-2"><a href="#例3-2" class="headerlink" title="例3.2"></a>例3.2</h3><p><img src="https://pic.downk.cc/item/5fc636fdf81f7e3bd97f4fc3.png" srcset="/img/loading.gif" lazyload><br>运行之后可以得到结果：<br><img src="https://pic.downk.cc/item/5fc6369df81f7e3bd97f387d.png" srcset="/img/loading.gif" lazyload><br>函数解释：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ls -l    //以长格式显示目录下的内容列表<br></code></pre></td></tr></table></figure>
+<p><img src="https://pic.downk.cc/item/5fc636f5f81f7e3bd97f4de2.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ls -l -&quot;filename&quot;   //以长格式显示目录下某个文件的内容列表<br></code></pre></td></tr></table></figure>
+<p><img src="https://pic.downk.cc/item/5fc63669f81f7e3bd97eec47.png" srcset="/img/loading.gif" lazyload><br>格式说明</p>
+<ol>
+<li>首字母代表的是文件类型，其中”-“为普通文件、”d”为目录文件、”c”为字符设备文件、”b”为块设备文件、”p”为管道文件、”l”为链接文件、”s”为socket文件。<br>“rwx”分别代表拥有读、写和执行权限，“-”代表无对应权限。三个“rwx”依次代表文件所有者、文件所有者所在用户组、其它用户对文件拥有的权限。<br>例如我们这里的首字段是-rw-r--r--@，第一个字符是”-“，代表普通文件，接下来是rw-，代表文件所有者对其拥有读写权，但没有执行权。接下来是r–，代表用户所有者所在用户组对其只有读的权利。最后一个是r–，代表其他用户对文件只有读的权利。</li>
+<li>第二字段：文件硬连接数量<br>这里的数量为1，表示只有一个硬连接</li>
+<li>第三字段：文件拥有者<br>文件拥有者是heyizhi</li>
+<li>第四字段：文件拥有者所在组<br>文件拥有者所在组是staff</li>
+<li>第五字段：文件大小（以字节为单位）<br>文件大小，4035</li>
+<li>第六字段：文件最后更改时间<br>文件最后更改时间是4月14日凌晨00:52分</li>
+<li>第七字段：文件名（若为链接文件则追加显示其链接的原文件的路径）<br>文件名是vimrc</li>
+</ol>
+<p><strong>od作用</strong>：按指定格式输出其内容<br>主要分为以下几种：</p>
+<table>
+<thead>
+<tr>
+<th>缩写</th>
+<th>格式规范</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-a</td>
+<td>-t a</td>
+<td>输出命名字符</td>
+</tr>
+<tr>
+<td>-b</td>
+<td>-t o1</td>
+<td>输出八进制字节</td>
+</tr>
+<tr>
+<td>-c</td>
+<td>-t c</td>
+<td>输出可打印的单字节字符，C反斜杠转义或3位八进制序列</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>-t u2</td>
+<td>输出无符号十进制数（双字节）</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>-t fF</td>
+<td>输出浮点型。</td>
+</tr>
+<tr>
+<td>-i</td>
+<td>-t dI（大写I）</td>
+<td>输出十进制整数。</td>
+</tr>
+<tr>
+<td>-l</td>
+<td>-t dL</td>
+<td>输出十进制长整型。</td>
+</tr>
+<tr>
+<td>-o</td>
+<td>-t o2</td>
+<td>输出八进制字节（双字节）。</td>
+</tr>
+<tr>
+<td>-s</td>
+<td>-t d2</td>
+<td>输出十进制数（双字节）。</td>
+</tr>
+<tr>
+<td>-x</td>
+<td>-t x2</td>
+<td>输出十六进制数（双字节）。</td>
+</tr>
+<tr>
+<td>也就是按照参数的不同以不同的格式输出。若没有参数则直接输出内容：</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>例如：</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">od file.hole<br></code></pre></td></tr></table></figure>
+<p>输出<br><img src="https://pic.downk.cc/item/5fc63616f81f7e3bd97ed88f.png" srcset="/img/loading.gif" lazyload><br>若设置参数则会在每行相应给出地址来输出，同时满足固定的格式：<br>例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">od -c file.hole //意思是输出可打印的单字节字符，以8进制形式<br></code></pre></td></tr></table></figure>
+<p><img src="https://pic.downk.cc/item/5fc636d9f81f7e3bd97f492d.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="7-函数read"><a href="#7-函数read" class="headerlink" title="7 函数read"></a>7 函数read</h1><p>函数形式</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-type">ssize_t</span> <span class="hljs-title function_">read</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, <span class="hljs-type">void</span> *buf, <span class="hljs-type">size_t</span> nbytes)</span>;<br></code></pre></td></tr></table></figure>
+<p>如果read成功，返回读到的字节数；如已经到达文件尾端，则返回0.</p>
+<h2 id="读取到的字节数少于要求读的字节数"><a href="#读取到的字节数少于要求读的字节数" class="headerlink" title="读取到的字节数少于要求读的字节数"></a>读取到的字节数少于要求读的字节数</h2><ol>
+<li>读普通文件时，在读到要求字节数之前已经到达了文件尾端。</li>
+<li>当从终端设备读时，通常一次最多读一行</li>
+<li>当从网络读时，缓冲机制可能导致</li>
+<li>从管道或者FIFO读时，如若管道包含的字节少于所需的数量，那么read将只返回实际可用的字节数。</li>
+<li>信号中断而已经读了部分数据量时</li>
+</ol>
+<h1 id="8-函数write"><a href="#8-函数write" class="headerlink" title="8 函数write"></a>8 函数write</h1><p>函数形式</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-type">ssize_t</span> <span class="hljs-title function_">write</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, <span class="hljs-type">const</span> <span class="hljs-type">void</span> *buf, <span class="hljs-type">size_t</span> nbytes)</span>;<br></code></pre></td></tr></table></figure>
+<p>若成功则返回读到的字节数，若出错，返回-1<br><strong>注意：</strong><br>其返回值通常与参数nbytes的值相同，否则表示出错。</p>
+<h1 id="9-I-x2F-O效率"><a href="#9-I-x2F-O效率" class="headerlink" title="9 I&#x2F;O效率"></a>9 I&#x2F;O效率</h1><h2 id="举例-1"><a href="#举例-1" class="headerlink" title="举例"></a>举例</h2><p>只使用read和write函数复制一个文件。<br><img src="https://pic.downk.cc/item/5fc63673f81f7e3bd97efa59.jpg" srcset="/img/loading.gif" lazyload><br>可以看到。文件的作用是复制所写的内容将其再输出一遍。</p>
+<h1 id="10-文件共享"><a href="#10-文件共享" class="headerlink" title="10 文件共享"></a>10 文件共享</h1><p>UNIX在不同进程间<strong>共享</strong>打开文件。<br>UNIX内核使用3种数据结构表示打开文件，它们之间的关系决定了在文件共享方面一个进程对另一个进程可能产生的影响。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/" class="category-chain-item">计算机</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/" class="category-chain-item">Linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/APUE/" class="category-chain-item">APUE</a>
+  
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>APUE-3-文件IO</div>
+      <div>http://example.com/2022/12/dedbfe4f5532.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/c6a1a6c9562a.html" title="APUE-4-文件和目录">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">APUE-4-文件和目录</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/85488c520ee6.html" title="APUE-1-UNIX基础知识">
+                        <span class="hidden-mobile">APUE-1-UNIX基础知识</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/dedbfe4f5532.html';
+          this.page.identifier = '/2022/12/dedbfe4f5532.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

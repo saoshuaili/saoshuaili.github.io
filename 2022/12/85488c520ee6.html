@@ -1,0 +1,786 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言：APUE的实验环境的搭建APUE源代码下载  http:&#x2F;&#x2F;www.apuebook.com&#x2F;code3e.html  得到源代码压缩包文件src.tar.gz 保存在自己的工作目录并解压·  1234cp src.3e.tar.gz ~ &#x2F;&#x2F;作用是将其放入工作环境中tar -xzvf src.tar.gz&#x2F;&#x2F;作用是解压 进入apaue.2e查看README  第二版中需要进行更改works">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APUE-1-UNIX基础知识">
+<meta property="og:url" content="http://example.com/2022/12/85488c520ee6.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="前言：APUE的实验环境的搭建APUE源代码下载  http:&#x2F;&#x2F;www.apuebook.com&#x2F;code3e.html  得到源代码压缩包文件src.tar.gz 保存在自己的工作目录并解压·  1234cp src.3e.tar.gz ~ &#x2F;&#x2F;作用是将其放入工作环境中tar -xzvf src.tar.gz&#x2F;&#x2F;作用是解压 进入apaue.2e查看README  第二版中需要进行更改works">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6364bf81f7e3bd97ee21d.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63689f81f7e3bd97f1e08.png">
+<meta property="og:image" content="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3321797453,2172960764&fm=26&gp=0.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636f5f81f7e3bd97f4dec.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636c3f81f7e3bd97f43ab.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636cef81f7e3bd97f4639.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63661f81f7e3bd97ee741.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6371af81f7e3bd97f56b7.png">
+<meta property="article:published_time" content="2022-12-03T18:37:15.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pic.downk.cc/item/5fc6364bf81f7e3bd97ee21d.png">
+  
+  
+  
+  <title>APUE-1-UNIX基础知识 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="APUE-1-UNIX基础知识"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:37" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          38 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">APUE-1-UNIX基础知识</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="前言：APUE的实验环境的搭建"><a href="#前言：APUE的实验环境的搭建" class="headerlink" title="前言：APUE的实验环境的搭建"></a>前言：APUE的实验环境的搭建</h1><h2 id="APUE源代码下载"><a href="#APUE源代码下载" class="headerlink" title="APUE源代码下载"></a>APUE源代码下载</h2><p>  <a target="_blank" rel="noopener" href="http://www.apuebook.com/code3e.html">http://www.apuebook.com/code3e.html</a><br>  得到源代码压缩包文件src.tar.gz</p>
+<h2 id="保存在自己的工作目录并解压·"><a href="#保存在自己的工作目录并解压·" class="headerlink" title="保存在自己的工作目录并解压·"></a>保存在自己的工作目录并解压·</h2>  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">cp src.3e.tar.gz ~ <br>//作用是将其放入工作环境中<br>tar -xzvf src.tar.gz<br>//作用是解压<br></code></pre></td></tr></table></figure>
+<h2 id="进入apaue-2e查看README"><a href="#进入apaue-2e查看README" class="headerlink" title="进入apaue.2e查看README"></a>进入apaue.2e查看README</h2><p>  第二版中需要进行更改workspace的操作，但是第三版似乎不需要（至少我没有遇见），因此这步可以跳过</p>
+<h2 id="将入lib库执行make"><a href="#将入lib库执行make" class="headerlink" title="将入lib库执行make"></a>将入lib库执行make</h2>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd lib<br>make<br></code></pre></td></tr></table></figure>
+<p>   执行之后会得到静态库lib apue.a<br>  <img src="https://pic.downk.cc/item/5fc6364bf81f7e3bd97ee21d.png" srcset="/img/loading.gif" lazyload><br>   将其复制到&#x2F;usr&#x2F;lib中<br>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo cp apue.a  /usr/lib<br></code></pre></td></tr></table></figure></p>
+<h2 id="把头文件apue-x2F-h复制到-x2F-usr-x2F-include中"><a href="#把头文件apue-x2F-h复制到-x2F-usr-x2F-include中" class="headerlink" title="把头文件apue&#x2F;h复制到&#x2F;usr&#x2F;include中"></a>把头文件apue&#x2F;h复制到&#x2F;usr&#x2F;include中</h2><p>   我们所需要的头文件在apue.2e中的include文件中，需要将其复制到&#x2F;usr&#x2F;include中，这样gcc编译期间就能顺利找到头文件apue.h了。<br>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo cp include/apue.h /usr/include<br></code></pre></td></tr></table></figure></p>
+<h2 id="到这里准备工作就做完了，尝试进行一次编译"><a href="#到这里准备工作就做完了，尝试进行一次编译" class="headerlink" title="到这里准备工作就做完了，尝试进行一次编译"></a>到这里准备工作就做完了，尝试进行一次编译</h2>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd filedir                 //进入随意一个文件库<br>gcc -o myls ls1.c -lapue   //进行编译<br></code></pre></td></tr></table></figure>
+<p>   最后一句-lapue必须加上，含义是去掉err部分<br>   这里我们可以看到，正确输出了myls，并且编译正常<br><img src="https://pic.downk.cc/item/5fc63689f81f7e3bd97f1e08.png" srcset="/img/loading.gif" lazyload></p>
+<p>   <strong>注意</strong><br>      第二版的各章的源代码直接放在了apue.2e里，第三版各章的源代码放在figlinks文件夹下。</p>
+<h1 id="2-UNIX基础知识"><a href="#2-UNIX基础知识" class="headerlink" title="2 UNIX基础知识"></a>2 UNIX基础知识</h1><h2 id="1-引言"><a href="#1-引言" class="headerlink" title="1 引言"></a>1 引言</h2><p>本章从程序员的角度快速浏览UNIX，对舒总引用的一些术语和概念进行简要的说明并给出实例。在以后各章中，将对这些概念做更详细的说明。</p>
+<h2 id="2-UNIX体系结构"><a href="#2-UNIX体系结构" class="headerlink" title="2 UNIX体系结构"></a>2 UNIX体系结构</h2><p><img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3321797453,2172960764&fm=26&gp=0.jpg" srcset="/img/loading.gif" lazyload alt="WX20200414-151549@2x.png"></p>
+<p>如图所示，操作系统所对应的是内核（kernel）部分，内核的接口被称为系统调用。公用函数库构建在系统调用接口之上，对系统调用进行封装，应用程序既可使用公共函数库，也可使用系统调用。</p>
+<p><strong>说人话</strong>：操作系统&#x3D;内核，需要用系统调用才能使用操作系统为我们工作，例如进行内存的分配，设备的IO等。shell和公共函数都能直接进行系统调用，应用程序可以直接进行系统调用，也可以使用shell和公共函数库里的函数，从而间接进行系统调用。</p>
+<h2 id="3-登录"><a href="#3-登录" class="headerlink" title="3 登录"></a>3 登录</h2><h3 id="登录名"><a href="#登录名" class="headerlink" title="登录名"></a>登录名</h3><p>用户在登录UNIX系统键入用户名和密码时，系统在其口令文件中查看登录名：<br>口令文件通常在&#x2F;etc&#x2F;passwd中：</p>
+<h3 id="shell"><a href="#shell" class="headerlink" title="shell"></a>shell</h3><p>shell是一个命令行解释器，读取用户输入，然后执行命令。shell的用户输入通常来自终端（交互式shell），有时则来自于文件（成为shell脚本）。</p>
+<h2 id="4-文件和目录"><a href="#4-文件和目录" class="headerlink" title="4 文件和目录"></a>4 文件和目录</h2><h4 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h4><p>   UNIX文件系统是目录和文件的一种层次结构，所有东西的起点是成为<strong>根</strong>（root）的目录，这个目录的名称是一个字符“&#x2F;”。</p>
+<h4 id="根目录的文件"><a href="#根目录的文件" class="headerlink" title="根目录的文件"></a>根目录的文件</h4><p>  主要由以下几个文件组成<br>   &#x2F;bin：基本命令的二进制文件<br>   &#x2F;boot：自动自动的静态代码<br>   &#x2F;dev：device files：设备代码<br>   &#x2F;etc：host-specific system configuration:主机特定的系统配置<br>  &amp;emsp; &#x2F;etc&#x2F;opt：&#x2F;opt的配置文件<br>  &amp;emsp; &#x2F;etc&#x2F;X11：X Window System的配置文件<br>  &amp;emsp; &#x2F;etc&#x2F;sgml：SGML的配置文件<br>  &amp;emsp; &#x2F;etc&#x2F;xml：XML的配置文件<br>   &#x2F;home：家目录<br>   &#x2F;lib：<br>   &#x2F;media<br>   &#x2F;mnt<br>   &#x2F;root：管理文件<br>   &#x2F;tmp：暂存文件目录<br>   <strong>&#x2F;usr</strong>：用户目录  </p>
+<h4 id="用户目录"><a href="#用户目录" class="headerlink" title="用户目录"></a>用户目录</h4><p>   &#x2F;usr&#x2F;bin：主要作用是放置自己安装的命令，例如python，perl<br>   &#x2F;usr&#x2F;include：包括标准头文件（也就是APUE.h放置的地方，gcc会自动找到这个头文件）<br>   &#x2F;usr&#x2F;lib：包括我们的库和安装包（也就是APUE.a放置的地方，是一个静态库）<br>   &#x2F;usr&#x2F;src：放一些源文件（user source）<br>   更加具体的，请参考FHS<br>   <a target="_blank" rel="noopener" href="http://www.pathname.com/fhs/pub/fhs-2.3.pdf">FHS下载链接</a></p>
+<h2 id="5-输入和输出"><a href="#5-输入和输出" class="headerlink" title="5 输入和输出"></a>5 输入和输出</h2><h3 id="文件描述符"><a href="#文件描述符" class="headerlink" title="文件描述符"></a>文件描述符</h3><p>   文件描述符（file descriptor）通常是一个非常小的非负整数，内核用以表示一个特定进程正在访问的文件。当内核打开一个现有文件或者创建一个新文件时，它都返回一个文件描述符，在读写文件时，可以使用这个文件描述符<br>   <strong>理解</strong><br>  &amp;emsp;&amp;emsp;0,1,2叫文件描述符；Linux中，每打开一个文件都有一个小的整数与之对应，就是文件描述符！<br>&amp;emsp;&amp;emsp;0 是标准输入的 （stdin）<br>&amp;emsp;&amp;emsp;1 是标准输出的 （stdout）<br>&amp;emsp;&amp;emsp;2 是标准报错输出的 （stderr）<br>&amp;emsp;&amp;emsp;’&lt;’是输入重定向符<br>&amp;emsp;&amp;emsp;’&gt;’是输出重定向符  </p>
+<h3 id="标准输入、标准输出和标准错误"><a href="#标准输入、标准输出和标准错误" class="headerlink" title="标准输入、标准输出和标准错误"></a>标准输入、标准输出和标准错误</h3><p>   按照惯例，每当运行一个新程序的时候，所有的shell都会为其打开三个文件描述符，即<strong>标准输入</strong>、<strong>标准输出</strong>和<strong>标准错误</strong>，如果不做特殊处理，执行一个简单的命令ls，那么三个描述符都是指向终端的。大多数shell都提供一种方法，使任何一个或所有者三个描述符都能重新定向到某个文件。例如：<br>   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ls &gt; file.list<br></code></pre></td></tr></table></figure><br>   执行ls命令，其标准输出重新定向到名为file.list的文件</p>
+<h3 id="不带缓冲的I-x2F-O（unbuffered-I-x2F-O）"><a href="#不带缓冲的I-x2F-O（unbuffered-I-x2F-O）" class="headerlink" title="不带缓冲的I&#x2F;O（unbuffered I&#x2F;O）"></a>不带缓冲的I&#x2F;O（unbuffered I&#x2F;O）</h3><p>不带缓冲的I&#x2F;O又称为非标准I&#x2F;O，含义是在函数中需要进行buffer size的确认。</p>
+<h4 id="典型函数"><a href="#典型函数" class="headerlink" title="典型函数"></a>典型函数</h4><p>open<br>read<br>write<br>lseek<br>close<br>提供了不带缓存的I&#x2F;O,这些函数都使用文件描述符。</p>
+<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><p><img src="https://pic.downk.cc/item/5fc636f5f81f7e3bd97f4dec.png" srcset="/img/loading.gif" lazyload><br>在这里可以看见，需要预先设定一个BUFFSIZE，这对程序的性能是有影响的。</p>
+<h3 id="标准I-x2F-O"><a href="#标准I-x2F-O" class="headerlink" title="标准I&#x2F;O"></a>标准I&#x2F;O</h3><p>带缓存的I&#x2F;O也称为标准I&#x2F;O，含义是不需要自己去定义buffer size，库函数会帮助自己定义好。</p>
+<h4 id="举例-1"><a href="#举例-1" class="headerlink" title="举例"></a>举例</h4><p>在这里可以看见，不需要预先设定BUFFSIZE了，库函数都会帮自己做好。因此对于程序员来说方便了许多。</p>
+<h2 id="6-程序和进程"><a href="#6-程序和进程" class="headerlink" title="6 程序和进程"></a>6 程序和进程</h2><h3 id="1-程序"><a href="#1-程序" class="headerlink" title="1 程序"></a>1 程序</h3><p>程序是一个存储在磁盘上某个目录中的可执行文件。内核使用exec函数将程序读入内存，并执行程序。<br><strong>理解</strong><br>程序只是一段代码，并没有动起来，内核使用exec函数将这段程序（代码）读入内存并执行之后程序变成了进程，也就是说，进程是动起来的程序。</p>
+<h3 id="2-进程和进程ID"><a href="#2-进程和进程ID" class="headerlink" title="2 进程和进程ID"></a>2 进程和进程ID</h3><p>程序的执行实例叫做进程，某些操作系统用任务表示正在被执行的程序。<br>UNIX系统确保每个进程都有一个唯一的数字标识符，称为进程ID，进程ID总是一个非负整数。</p>
+<h4 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h4><p><img src="https://pic.downk.cc/item/5fc636c3f81f7e3bd97f43ab.png" srcset="/img/loading.gif" lazyload><br>如图所示，将该程序会调用getpid得到其进程ID进行打印，可以看见，随着多次调用该程序，内核多次使用exec函数将程序读入内存并执行，进程ID也会随之增大。</p>
+<h3 id="3-进程控制"><a href="#3-进程控制" class="headerlink" title="3 进程控制"></a>3 进程控制</h3><p>有三个用户进程控制的主要函数：fork、exec和waitpid。<br>fork用于创建一个新锦成。新进程是调用进程的一个副本，调动进程被称为父进程，新创建的进程被称为子进程。  </p>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a><strong>注意</strong></h4><p>fork调用一次返回两个进程ID，对父进程返回子进程的进程ID，对子进程返回0。<br>exec函数是内核调用以生成新的进程的。<br>waitpid是父进程用来等待子进程结束所调用的，参数指定要等待的进程，当该进程停止时得到通知。  </p>
+<h4 id="实例-1"><a href="#实例-1" class="headerlink" title="实例"></a>实例</h4><p><img src="https://pic.downk.cc/item/5fc636cef81f7e3bd97f4639.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="4-线程和线程ID"><a href="#4-线程和线程ID" class="headerlink" title="4 线程和线程ID"></a>4 线程和线程ID</h3><p>与进程先攻，线程也用ID表示。但是，线程ID只在它所属的进程里起作用。一个进程中的线程ID在另一个进程中没有意义。</p>
+<h2 id="7-出错处理"><a href="#7-出错处理" class="headerlink" title="7 出错处理"></a>7 出错处理</h2><p>当UNIX系统函数出错时，通常会返回一个负值，整型变量errno通常被设置为具有特定信息的值。</p>
+<h3 id="errno的使用规则"><a href="#errno的使用规则" class="headerlink" title="errno的使用规则"></a>errno的使用规则</h3><ol>
+<li>如果没有出错，其值不会被例程清零。因此，仅当函数的返回值指明出错时，才检验其值。</li>
+<li>任何函数都不会讲errno的值设置为0，而且在&lt;errno.h&gt;头文件中定义的所有常量都不为0。</li>
+</ol>
+<h3 id="errno的打印"><a href="#errno的打印" class="headerlink" title="errno的打印"></a>errno的打印</h3><p>C标准定义了两个函数来打印出错信息</p>
+<ol>
+<li>strerror函数将errno映射为一个出错消息字符串，并返回此字符串的指针</li>
+<li>perror函数基于errno的当前值，在标准错误上产生一条错误信息然后返回</li>
+</ol>
+<h4 id="实例-2"><a href="#实例-2" class="headerlink" title="实例"></a>实例</h4><p><img src="https://pic.downk.cc/item/5fc63661f81f7e3bd97ee741.png" srcset="/img/loading.gif" lazyload><br>如图所示，可以看到采用了两种方式进行打印errno。<br><strong>注意</strong>：我们将程序名作为参数传递给perror。这是标准的UNIX惯例。使用这种方法，在程序作为管道的一部分执行时，例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">prog1 &lt; inputfile | prog2 | prog3 &gt; outputfile<br></code></pre></td></tr></table></figure>
+<p>我们就能分清3个程序中的哪一个产生了一条特定的出错信息。</p>
+<h3 id="出错恢复"><a href="#出错恢复" class="headerlink" title="出错恢复"></a>出错恢复</h3><p>   可将&lt;errno.h&gt;中定义的各种出分为两类：致命性的和非致命性的。<br>   对于非致命出错，是可能恢复的，例如典型恢复操作是延迟一段时间后重试（例如网络不可用）</p>
+<h2 id="8-用户标识"><a href="#8-用户标识" class="headerlink" title="8 用户标识"></a>8 用户标识</h2><h3 id="1-用户ID"><a href="#1-用户ID" class="headerlink" title="1 用户ID"></a>1 用户ID</h3><p>   口令文件登录项中的用户ID是一个数值，它向系统标识各个不同的用户。<br>   <strong>注意</strong>：用户标识为0的用户为根用户或者超级用户。也就是登录名为root的用户，这种用户的特权称为超级用户特权。</p>
+<h3 id="2-组ID"><a href="#2-组ID" class="headerlink" title="2 组ID"></a>2 组ID</h3><p>   口令文件登录项也包括用户的组ID，它是一个数值。<br>   <strong>注意</strong>：多个用户ID可以是同一个组ID，组被用于将若干用户集合到项目或部门中去。<br>   族文件将组名映射为数值的组ID。组文件通常是&#x2F;etc&#x2F;group。</p>
+<h3 id="实例-3"><a href="#实例-3" class="headerlink" title="实例"></a>实例</h3><p><img src="https://pic.downk.cc/item/5fc6371af81f7e3bd97f56b7.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="9-信号"><a href="#9-信号" class="headerlink" title="9 信号"></a>9 信号</h2><p>   信号用于通知进程发生了某种情况。例如进程执行除法时发现除数为0，则将名为SIGFPE（浮点异常）的信号发送给该进程。</p>
+<h3 id="处理信号的方式"><a href="#处理信号的方式" class="headerlink" title="处理信号的方式"></a>处理信号的方式</h3><ol>
+<li>忽略信号（不推荐）</li>
+<li>系统默认方式处理（例如除以0的默认是终止进程）</li>
+<li>捕捉信号进行处理：提供一个函数来进行处理。</li>
+</ol>
+<h2 id="10-时间值"><a href="#10-时间值" class="headerlink" title="10 时间值"></a>10 时间值</h2><p>历史上，UNIX系统使用过两种不同的时间值</p>
+<ol>
+<li><p>日历时间<br>用date函数，根据参数的不同可以表达不同的时间。例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">date //显示当前时间<br>date +%s //显示自协调世界时（UTC，1970年1月1日00:00:00)这个特定的时间以来所经历的秒数累计值。<br></code></pre></td></tr></table></figure>
+
+</li>
+<li><p>进程时间<br>也被称为CPU时间，用以度量进程使用的中央处理器资源。</p>
+</li>
+</ol>
+<h2 id="11-系统调动和库函数"><a href="#11-系统调动和库函数" class="headerlink" title="11 系统调动和库函数"></a>11 系统调动和库函数</h2><p>《UNIX程序员手册》第三部分定义了程序员可以使用的通用库函数。虽然这些函数可能会调用一个或多个内核的系统调用，但是它们并不是内核的入口点。<br>例如printf函数函数会调用write系统调用以输出一个字符串，但strcpy（复制一个字符串）和atoi（将ASCII转换成正数）并不使用任何内核的系统调用。<strong>也就是说</strong>：库函数可能涉及系统调用，也可能不涉及系统调用，可能需要调用内核，也可能不需要调用内核。</p>
+<h3 id="系统调用和库函数的区别"><a href="#系统调用和库函数的区别" class="headerlink" title="系统调用和库函数的区别"></a>系统调用和库函数的区别</h3><p>库函数可以替换，但是系统调用通常是不能替换的。<br>   <strong>例如</strong>我们可以有多种输出方式，但是核心系统调用write是不能替换的。<br>   <strong>再比如</strong>UNIX系统只提供一个时间的系统调用：也就是返回自协调世界时以来所经历的秒数累计值，但是可以通过后续的多种库函数处理得到我们所需要的结论</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/" class="category-chain-item">计算机</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/" class="category-chain-item">Linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/APUE/" class="category-chain-item">APUE</a>
+  
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>APUE-1-UNIX基础知识</div>
+      <div>http://example.com/2022/12/85488c520ee6.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/dedbfe4f5532.html" title="APUE-3-文件IO">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">APUE-3-文件IO</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/360f10bcae04.html" title="1 单一职责原则">
+                        <span class="hidden-mobile">1 单一职责原则</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/85488c520ee6.html';
+          this.page.identifier = '/2022/12/85488c520ee6.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

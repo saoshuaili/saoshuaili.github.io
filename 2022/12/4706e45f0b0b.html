@@ -1,0 +1,812 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="dfs和fs的区别hadoop fs使用面最广，可以操作任何文件系统。 hadoop dfs与hdfs dfs只能操作HDFS文件系统相关（包括与Local FS间的操作），前者（dfs）已经Deprecated，一般使用后者。 以下内容参考自stackoverflowFollowing are the three commands which appears same but have minu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDFS2 Shell操作">
+<meta property="og:url" content="http://example.com/2022/12/4706e45f0b0b.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="dfs和fs的区别hadoop fs使用面最广，可以操作任何文件系统。 hadoop dfs与hdfs dfs只能操作HDFS文件系统相关（包括与Local FS间的操作），前者（dfs）已经Deprecated，一般使用后者。 以下内容参考自stackoverflowFollowing are the three commands which appears same but have minu">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160717.png">
+<meta property="article:published_time" content="2022-12-03T18:44:47.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160717.png">
+  
+  
+  
+  <title>HDFS2 Shell操作 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="HDFS2 Shell操作"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:44" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">HDFS2 Shell操作</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="dfs和fs的区别"><a href="#dfs和fs的区别" class="headerlink" title="dfs和fs的区别"></a>dfs和fs的区别</h1><h2 id="hadoop-fs"><a href="#hadoop-fs" class="headerlink" title="hadoop fs"></a>hadoop fs</h2><p>使用面最广，可以操作任何文件系统。</p>
+<h2 id="hadoop-dfs与hdfs-dfs"><a href="#hadoop-dfs与hdfs-dfs" class="headerlink" title="hadoop dfs与hdfs dfs"></a>hadoop dfs与hdfs dfs</h2><p>只能操作HDFS文件系统相关（包括与Local FS间的操作），前者（dfs）已经Deprecated，一般使用后者。</p>
+<h2 id="以下内容参考自stackoverflow"><a href="#以下内容参考自stackoverflow" class="headerlink" title="以下内容参考自stackoverflow"></a>以下内容参考自stackoverflow</h2><p>Following are the three commands which appears same but have minute differences</p>
+<ol>
+<li>hadoop fs {args}</li>
+<li>hadoop dfs {args}</li>
+<li>hdfs dfs {args}</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">hadoop fs &lt;args&gt;<br></code></pre></td></tr></table></figure>
+
+<p>FS relates to a generic file system which can point to any file systems like local, HDFS etc. So this can be used when you are dealing with different file systems such as Local FS, HFTP FS, S3 FS, and others 。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml">hadoop dfs <span class="hljs-tag">&lt;<span class="hljs-name">args</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>dfs is very specific to HDFS. would work for operation relates to HDFS. This has been deprecated and we should use hdfs dfs instead.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml">hdfs   dfs <span class="hljs-tag">&lt;<span class="hljs-name">args</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>same as 2nd i.e would work for all the operations related to HDFS and is the recommended command instead of hadoop dfs<br>below is the list categorized as HDFS commands.</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c">**<span class="hljs-meta">#hdfs commands**</span><br></code></pre></td></tr></table></figure>
+
+<p>  namenode|secondarynamenode|datanode|dfs|dfsadmin|fsck|balancer|fetchdt|oiv|dfsgroups<br>So even if you use Hadoop dfs , it will look locate hdfs and delegate that command to hdfs dfs</p>
+<h1 id="shell操作"><a href="#shell操作" class="headerlink" title="shell操作"></a>shell操作</h1><h2 id="常用命令操作"><a href="#常用命令操作" class="headerlink" title="常用命令操作"></a>常用命令操作</h2><p>（0）启动Hadoop集群（方便后续的测试）</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs crystal">[atguigu<span class="hljs-variable">@hadoop102</span> hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]<span class="hljs-variable">$ </span>sbin/start-dfs.sh<br>[atguigu<span class="hljs-variable">@hadoop103</span> hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]<span class="hljs-variable">$ </span>sbin/start-yarn.sh<br></code></pre></td></tr></table></figure>
+
+<p>（1）-help：输出这个命令参数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">[atguigu@hadoop102 hadoop-2.7.2]$ hadoop fs -<span class="hljs-built_in">help</span> <span class="hljs-built_in">rm</span><br></code></pre></td></tr></table></figure>
+
+<p>（2）-ls: 显示目录信息</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crystal">[atguigu<span class="hljs-variable">@hadoop102</span> hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]<span class="hljs-variable">$ </span>hadoop fs -ls /<br></code></pre></td></tr></table></figure>
+
+<p>（3）-mkdir：在HDFS上创建目录</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs -mkdir -p <span class="hljs-regexp">/sanguo/</span>shuguo<br></code></pre></td></tr></table></figure>
+
+<p>（4）-moveFromLocal：从本地剪切粘贴到HDFS</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs crystal">[atguigu<span class="hljs-variable">@hadoop102</span> hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]<span class="hljs-variable">$ </span>touch kongming.txt<br>[atguigu<span class="hljs-variable">@hadoop102</span> hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]<span class="hljs-variable">$ </span>hadoop fs  -moveFromLocal  ./kongming.txt  /sanguo/shuguo<br></code></pre></td></tr></table></figure>
+
+<p>（5）-appendToFile：追加一个文件到已经存在的文件末尾</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs crystal">[atguigu<span class="hljs-variable">@hadoop102</span> hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]<span class="hljs-variable">$ </span>touch liubei.txt<br>[atguigu<span class="hljs-variable">@hadoop102</span> hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]<span class="hljs-variable">$ </span>vi liubei.txt<br>   输入<br>san gu mao lu<br>[atguigu<span class="hljs-variable">@hadoop102</span> hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]<span class="hljs-variable">$ </span>hadoop fs -appendToFile liubei.txt /sanguo/shuguo/kongming.txt<br></code></pre></td></tr></table></figure>
+
+<p>（6）-cat：显示文件内容</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs -cat <span class="hljs-regexp">/sanguo/</span>shuguo/kongming.txt<br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">（7）-chgrp、-chmod、-chown：Linux文件系统中的用法一样，修改文件所属权限
+</code></pre>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs  -chmod  <span class="hljs-number">666</span>  <span class="hljs-regexp">/sanguo/</span>shuguo/kongming.txt<br>[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs  -chown  atguigu:atguigu   <span class="hljs-regexp">/sanguo/</span>shuguo/kongming.txt<br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">（8）-copyFromLocal：从本地文件系统中拷贝文件到HDFS路径去
+</code></pre>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crystal">[atguigu<span class="hljs-variable">@hadoop102</span> hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]<span class="hljs-variable">$ </span>hadoop fs -copyFromLocal README.txt /<br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">（9）-copyToLocal：从HDFS拷贝到本地
+</code></pre>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs -copyToLocal <span class="hljs-regexp">/sanguo/</span>shuguo<span class="hljs-regexp">/kongming.txt ./</span><br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">（10）-cp ：从HDFS的一个路径拷贝到HDFS的另一个路径
+</code></pre>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs -cp <span class="hljs-regexp">/sanguo/</span>shuguo<span class="hljs-regexp">/kongming.txt /</span>zhuge.txt<br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">（11）-mv：在HDFS目录中移动文件
+</code></pre>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs -mv <span class="hljs-regexp">/zhuge.txt /</span>sanguo<span class="hljs-regexp">/shuguo/</span><br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">（12）-get：等同于copyToLocal，就是从HDFS下载文件到本地
+</code></pre>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs -get <span class="hljs-regexp">/sanguo/</span>shuguo<span class="hljs-regexp">/kongming.txt ./</span><br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">（13）-getmerge：合并下载多个文件，比如HDFS的目录 /user/atguigu/test下有多个文件:log.1, log.2,log.3,...
+</code></pre>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs -getmerge <span class="hljs-regexp">/user/</span>atguigu<span class="hljs-regexp">/test/</span>* ./zaiyiqi.txt<br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">（14）-put：等同于copyFromLocal
+</code></pre>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs -put .<span class="hljs-regexp">/zaiyiqi.txt /u</span>ser<span class="hljs-regexp">/atguigu/</span>test/<br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">（15）-tail：显示一个文件的末尾
+</code></pre>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs -tail <span class="hljs-regexp">/sanguo/</span>shuguo/kongming.txt<br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">（16）-rm：删除文件或文件夹
+</code></pre>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs -rm <span class="hljs-regexp">/user/</span>atguigu<span class="hljs-regexp">/test/</span>jinlian2.txt<br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">（17）-rmdir：删除空目录
+</code></pre>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">[atguigu@hadoop102 hadoop-2.7.2]$ hadoop fs -<span class="hljs-built_in">mkdir</span> /test<br>[atguigu@hadoop102 hadoop-2.7.2]$ hadoop fs -<span class="hljs-built_in">rmdir</span> /test<br></code></pre></td></tr></table></figure>
+
+<pre><code class="hljs">（18）-du统计文件夹的大小信息
+</code></pre>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs awk">[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs -du -s -h <span class="hljs-regexp">/user/</span>atguigu/test<br><span class="hljs-number">2.7</span> K  <span class="hljs-regexp">/user/</span>atguigu/test<br>[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs -du  -h <span class="hljs-regexp">/user/</span>atguigu/test<br><span class="hljs-number">1.3</span> K  <span class="hljs-regexp">/user/</span>atguigu<span class="hljs-regexp">/test/</span>README.txt<br><span class="hljs-number">15</span>     <span class="hljs-regexp">/user/</span>atguigu<span class="hljs-regexp">/test/</span>jinlian.txt<br><span class="hljs-number">1.4</span> K  <span class="hljs-regexp">/user/</span>atguigu<span class="hljs-regexp">/test/</span>zaiyiqi.txt<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-setrep-md"><a href="#2-setrep-md" class="headerlink" title="2 -setrep.md"></a>2 -setrep.md</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">[atguigu@hadoop102 hadoop-<span class="hljs-number">2.7</span>.<span class="hljs-number">2</span>]$ hadoop fs -setrep <span class="hljs-number">10</span> <span class="hljs-regexp">/sanguo/</span>shuguo/kongming.txt<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210160717.png" srcset="/img/loading.gif" lazyload>  		<br>图3-3  HDFS副本数量<br>这里设置的副本数只是记录在NameNode的元数据中，是否真的会有这么多副本，还得看DataNode的数量。因为目前只有3台设备，最多也就3个副本，只有节点数的增加到10台时，副本数才能达到10。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/" class="category-chain-item">大数据</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/" class="category-chain-item">Hadoop生态</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/Hadoop/" class="category-chain-item">Hadoop</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/Hadoop/2-HDFS%E4%BB%8B%E7%BB%8D/" class="category-chain-item">2 HDFS介绍</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>HDFS2 Shell操作</div>
+      <div>http://example.com/2022/12/4706e45f0b0b.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/8519d8f5dca0.html" title="HDFS3 客户端操作">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">HDFS3 客户端操作</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/92d6be048dad.html" title="HDFS1 概述">
+                        <span class="hidden-mobile">HDFS1 概述</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/4706e45f0b0b.html';
+          this.page.identifier = '/2022/12/4706e45f0b0b.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

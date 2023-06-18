@@ -1,0 +1,821 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Future 接口简介Future 接口实现了操作异步任务执行一些方法，如获取异步任务的执行结果，取消任务的执行，判断任务是否被取消，判断任务是否执行完毕等。 Future 接口可以为主线程开一个分支任务，专门为主线程处理耗时耗力的复杂业务。 Future 接口是 Java5 新加的一个接口，它提供了一种异步并行计算的功能。 如果主线程需要执行一个很耗时的计算任务，我们就可以通过 future 把">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1. Future接口">
+<meta property="og:url" content="http://example.com/2023/05/9dcf8865f6a1.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="Future 接口简介Future 接口实现了操作异步任务执行一些方法，如获取异步任务的执行结果，取消任务的执行，判断任务是否被取消，判断任务是否执行完毕等。 Future 接口可以为主线程开一个分支任务，专门为主线程处理耗时耗力的复杂业务。 Future 接口是 Java5 新加的一个接口，它提供了一种异步并行计算的功能。 如果主线程需要执行一个很耗时的计算任务，我们就可以通过 future 把">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230507231624.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230508001002.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230508001153.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230508014846.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230508014228.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230508014454.png">
+<meta property="article:published_time" content="2023-05-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230507231624.png">
+  
+  
+  
+  <title>1. Future接口 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="1. Future接口"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-05-06 00:00" pubdate>
+          2023年5月6日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          66 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">1. Future接口</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Future-接口简介"><a href="#Future-接口简介" class="headerlink" title="Future 接口简介"></a>Future 接口简介</h1><p>Future 接口实现了操作异步任务执行一些方法，如获取异步任务的执行结果，取消任务的执行，判断任务是否被取消，判断任务是否执行完毕等。</p>
+<p>Future 接口可以为主线程开一个分支任务，专门为主线程处理耗时耗力的复杂业务。</p>
+<p>Future 接口是 <code>Java5</code> 新加的一个<mark style="background: #FF5582A6;">接口</mark>，它提供了一种<mark style="background: #FFB86CA6;">异步并行</mark>计算的功能。</p>
+<p>如果主线程需要执行一个很耗时的计算任务，我们就可以通过 future 把这个任务放到异步线程中执行。主线程继续处理其他任务或者先行结束，再通过 Future 获取计算结果。</p>
+<h1 id="Runnable-接口和-Callable-接口"><a href="#Runnable-接口和-Callable-接口" class="headerlink" title="Runnable 接口和 Callable 接口"></a>Runnable 接口和 Callable 接口</h1><p>我们先来看下最简单的接口实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyThread</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Runnable</span>&#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br><br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyThread2</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Callable</span>&lt;String&gt; &#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">call</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，Runnable 接口和 Callable 接口的区别有：</p>
+<ul>
+<li>Runnable 接口实现的方法是 <code>run()</code>，Callable 接口是 <code>call()</code></li>
+<li>Runnable 接口无返回，Callable 接口有返回值</li>
+<li>Runnable 接口不抛出异常，Callable 接口会抛出异常</li>
+</ul>
+<h1 id="Thread-类"><a href="#Thread-类" class="headerlink" title="Thread 类"></a>Thread 类</h1><p>当我们想创建一个 Thread 线程时，看对应的构造方法：</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230507231624.png" srcset="/img/loading.gif" lazyload width=50%>
+
+<h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ol>
+<li>多线程</li>
+<li>有返回值</li>
+<li>异步执行</li>
+</ol>
+<p>可以看到</p>
+<ul>
+<li>Thread 类只接受 Runnable 接口, 因此没有返回值，和目标 2 冲突</li>
+<li>不能异步执行</li>
+</ul>
+<p>为了解决以上痛点，我们找到的 Runnable 接口的一个子接口：<code>RunnableFuture&lt;V&gt;</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * A &#123;<span class="hljs-doctag">@link</span> Future&#125; that is &#123;<span class="hljs-doctag">@link</span> Runnable&#125;. Successful execution of</span><br><span class="hljs-comment"> * the &#123;<span class="hljs-doctag">@code</span> run&#125; method causes completion of the &#123;<span class="hljs-doctag">@code</span> Future&#125;</span><br><span class="hljs-comment"> * and allows access to its results.</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@see</span> FutureTask</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@see</span> Executor</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@since</span> 1.6</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> Doug Lea</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> &lt;V&gt; The result type returned by this Future&#x27;s &#123;<span class="hljs-doctag">@code</span> get&#125; method</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">RunnableFuture</span>&lt;V&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Runnable</span>, Future&lt;V&gt; &#123;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * Sets this Future to the result of its computation</span><br><span class="hljs-comment">     * unless it has been cancelled.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，<code>RunnableFuture</code> 接口继承了 Runnable 接口和 Future 接口。</p>
+<p>有个重要的实现类： <code>FutureTask</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * A cancellable asynchronous computation.  This class provides a base</span><br><span class="hljs-comment"> * implementation of &#123;<span class="hljs-doctag">@link</span> Future&#125;, with methods to start and cancel</span><br><span class="hljs-comment"> * a computation, query to see if the computation is complete, and</span><br><span class="hljs-comment"> * retrieve the result of the computation.  The result can only be</span><br><span class="hljs-comment"> * retrieved when the computation has completed; the &#123;<span class="hljs-doctag">@code</span> get&#125;</span><br><span class="hljs-comment"> * methods will block if the computation has not yet completed.  Once</span><br><span class="hljs-comment"> * the computation has completed, the computation cannot be restarted</span><br><span class="hljs-comment"> * or cancelled (unless the computation is invoked using</span><br><span class="hljs-comment"> * &#123;<span class="hljs-doctag">@link</span> #runAndReset&#125;).</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * &lt;p&gt;A &#123;<span class="hljs-doctag">@code</span> FutureTask&#125; can be used to wrap a &#123;<span class="hljs-doctag">@link</span> Callable&#125; or</span><br><span class="hljs-comment"> * &#123;<span class="hljs-doctag">@link</span> Runnable&#125; object.  Because &#123;<span class="hljs-doctag">@code</span> FutureTask&#125; implements</span><br><span class="hljs-comment"> * &#123;<span class="hljs-doctag">@code</span> Runnable&#125;, a &#123;<span class="hljs-doctag">@code</span> FutureTask&#125; can be submitted to an</span><br><span class="hljs-comment"> * &#123;<span class="hljs-doctag">@link</span> Executor&#125; for execution.</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * &lt;p&gt;In addition to serving as a standalone class, this class provides</span><br><span class="hljs-comment"> * &#123;<span class="hljs-doctag">@code</span> protected&#125; functionality that may be useful when creating</span><br><span class="hljs-comment"> * customized task classes.</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@since</span> 1.5</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> Doug Lea</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> &lt;V&gt; The result type returned by this FutureTask&#x27;s &#123;<span class="hljs-doctag">@code</span> get&#125; methods</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">FutureTask</span>&lt;V&gt; <span class="hljs-keyword">implements</span> <span class="hljs-title class_">RunnableFuture</span>&lt;V&gt; &#123;<br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">     * Revision notes: This differs from previous versions of this</span><br><span class="hljs-comment">     * class that relied on AbstractQueuedSynchronizer, mainly to</span><br><span class="hljs-comment">     * avoid surprising users about retaining interrupt status during</span><br><span class="hljs-comment">     * cancellation races. Sync control in the current design relies</span><br><span class="hljs-comment">     * on a &quot;state&quot; field updated via CAS to track completion, along</span><br><span class="hljs-comment">     * with a simple Treiber stack to hold waiting threads.</span><br><span class="hljs-comment">     */</span><br><span class="hljs-comment">//...</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>但是看到这里可能会有疑惑，<code>FutureTask</code> 类实现了 RunnableFuture 接口，那么只实现了 Runnable 接口和 Future 接口，但是没有和 Callable 接口扯上关系，也就是说还是获取不到返回值。</p>
+<p>为了解决这个问题， FutureTask 类<mark style="background: #FF5582A6;">没有空参构造</mark>方法，必须要注入一个 Callable 接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Creates a &#123;<span class="hljs-doctag">@code</span> FutureTask&#125; that will, upon running, execute the</span><br><span class="hljs-comment"> * given &#123;<span class="hljs-doctag">@code</span> Callable&#125;.</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span>  callable the callable task</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@throws</span> NullPointerException if the callable is null</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-title function_">FutureTask</span><span class="hljs-params">(Callable&lt;V&gt; callable)</span> &#123;<br>    <span class="hljs-keyword">if</span> (callable == <span class="hljs-literal">null</span>)<br>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NullPointerException</span>();<br>    <span class="hljs-built_in">this</span>.callable = callable;<br>    <span class="hljs-built_in">this</span>.state = NEW;       <span class="hljs-comment">// ensure visibility of callable</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，通过构造方法可以注入一个 Callable 接口的实现类，从而满足我们上面的 3 个目标。</p>
+<h1 id="FutureTask-代码示例"><a href="#FutureTask-代码示例" class="headerlink" title="FutureTask 代码示例"></a>FutureTask 代码示例</h1><p>对应的代码位于[[FutureDemoDoc]]</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CompletableFutureDemo</span> &#123;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        FutureTask&lt;String&gt; futureTask = <span class="hljs-keyword">new</span> <span class="hljs-title class_">FutureTask</span>&lt;&gt;(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyThread</span>());<br>        <span class="hljs-type">Thread</span> <span class="hljs-variable">thread</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(futureTask, <span class="hljs-string">&quot;t1&quot;</span>);<br>        thread.start();<br><br>    &#125;<br><br>&#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyThread</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Callable</span>&lt;String&gt; &#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">call</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        System.out.println(<span class="hljs-string">&quot;------- come in call()&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hello Callable&quot;</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，这里自定义了一个 <code>MyThread</code> 类实现了 Callable 接口，在主线程中实例化了一个 FutureTask 类，传入的参数就是实现了 Callable 接口的 MyThread 实例，然后将这个 FutureTask 实例构造生成了一个 Thread 实例，最后运行：</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230508001002.png" srcset="/img/loading.gif" lazyload width=50%>
+
+<p>可以看到，成功进入到了 <code>call()</code> 方法中，执行了语句的输出，那么，怎么获取 MyThread 中 <code>call()</code> 方法的返回值呢？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">try</span> &#123;<br>    System.out.println(futureTask.get());<br>&#125; <span class="hljs-keyword">catch</span> (InterruptedException | ExecutionException e) &#123;<br>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(e);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，通过 futureTask 的 <code>get()</code> 方法，可以获取方法的返回值。最终程序为：</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230508001153.png" srcset="/img/loading.gif" lazyload width=50%>
+
+<p>可以看到，效果符合预期。</p>
+<h1 id="FutureTask-结合线程池提升性能"><a href="#FutureTask-结合线程池提升性能" class="headerlink" title="FutureTask 结合线程池提升性能"></a>FutureTask 结合线程池提升性能</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 三个任务，目前只有一个线程来处理，要耗时多久</span><br><span class="hljs-comment">// 每个线程都需要执行500毫秒，总耗时大概1500毫秒</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">m1</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-type">long</span> <span class="hljs-variable">startTime</span> <span class="hljs-operator">=</span> System.currentTimeMillis();<br><br>    <span class="hljs-comment">// 暂停毫秒</span><br>    <span class="hljs-keyword">try</span> &#123;<br>        TimeUnit.MILLISECONDS.sleep(<span class="hljs-number">500</span>);<br>        TimeUnit.MILLISECONDS.sleep(<span class="hljs-number">500</span>);<br>        TimeUnit.MILLISECONDS.sleep(<span class="hljs-number">500</span>);<br>    &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>        e.printStackTrace();<br>    &#125;<br><br>    <span class="hljs-type">long</span> <span class="hljs-variable">endTime</span> <span class="hljs-operator">=</span> System.currentTimeMillis();<br>    System.out.println(<span class="hljs-string">&quot;---cost time: &quot;</span> + (endTime - startTime) + <span class="hljs-string">&quot; 毫秒&quot;</span>);<br>&#125;<br><br><span class="hljs-comment">// 三个任务，使用线程池来执行，需要耗时多久</span><br><span class="hljs-comment">// 三个线程一起执行，总耗时大概500毫秒</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">m2</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException, ExecutionException &#123;<br>    <span class="hljs-type">long</span> <span class="hljs-variable">startTime</span> <span class="hljs-operator">=</span> System.currentTimeMillis();<br><br>    <span class="hljs-type">ExecutorService</span> <span class="hljs-variable">threadPool</span> <span class="hljs-operator">=</span> Executors.newFixedThreadPool(<span class="hljs-number">3</span>);<br><br>    FutureTask&lt;String&gt; futureTask1 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">FutureTask</span>&lt;&gt;(() -&gt; &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            TimeUnit.MILLISECONDS.sleep(<span class="hljs-number">500</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;task1 over&quot;</span>;<br>    &#125;);<br>    threadPool.submit(futureTask1);<br><br>    FutureTask&lt;String&gt; futureTask2 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">FutureTask</span>&lt;&gt;(() -&gt; &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            TimeUnit.MILLISECONDS.sleep(<span class="hljs-number">500</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;task2 over&quot;</span>;<br>    &#125;);<br>    threadPool.submit(futureTask2);<br><br>    FutureTask&lt;String&gt; futureTask3 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">FutureTask</span>&lt;&gt;(() -&gt; &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            TimeUnit.MILLISECONDS.sleep(<span class="hljs-number">500</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;task3 over&quot;</span>;<br>    &#125;);<br>    threadPool.submit(futureTask3);<br><br>    System.out.println(futureTask1.get());<br>    System.out.println(futureTask2.get());<br>    System.out.println(futureTask3.get());<br><br>    threadPool.shutdown();<br>    <span class="hljs-type">long</span> <span class="hljs-variable">endTime</span> <span class="hljs-operator">=</span> System.currentTimeMillis();<br>    System.out.println(<span class="hljs-string">&quot;---cost time: &quot;</span> + (endTime - startTime) + <span class="hljs-string">&quot; 毫秒&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>给出了两个方法，分别是顺序往下执行和使用线程池执行的方法，效果差距很明显：</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230508014846.png" srcset="/img/loading.gif" lazyload width=50%>
+
+
+<h1 id="Future-的优缺点"><a href="#Future-的优缺点" class="headerlink" title="Future 的优缺点"></a>Future 的优缺点</h1><h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><p>future+线程池异步多线程任务配合，能显著提高程序的执行效率</p>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ol>
+<li><code>get()</code> 方法会阻塞</li>
+<li><code>isDone()</code> 轮询的方法会耗费无畏的 CPU 资源，而且也不见得能及时得到计算结果。</li>
+</ol>
+<p>案例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// get()方法会导致阻塞</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">getTest</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException, ExecutionException, TimeoutException &#123;<br>    FutureTask&lt;String&gt; futureTask = <span class="hljs-keyword">new</span> <span class="hljs-title class_">FutureTask</span>&lt;&gt;(() -&gt; &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t -----come in&quot;</span>);<br>            TimeUnit.SECONDS.sleep(<span class="hljs-number">5</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;task over&quot;</span>;<br>    &#125;);<br><br>    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(futureTask, <span class="hljs-string">&quot;t1&quot;</span>).start();<br><br>    System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t + 忙其他任务了&quot;</span>);<br><br>    System.out.println(futureTask.get());<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>执行结果：</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230508014228.png" srcset="/img/loading.gif" lazyload width=50%>
+
+<p>可以看到，这个结果是符合预期的，主线程会先忙其他任务，然后获取 futureTask 的执行结果。</p>
+<p>但是如果我们将打印 main 线程的任务往后移，就可能会导致因为 <code>get()</code> 方法阻塞而很迟才能打印 main 线程的情况：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java">    <span class="hljs-comment">// get()方法会导致阻塞</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">getTest</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException, ExecutionException, TimeoutException &#123;<br>        FutureTask&lt;String&gt; futureTask = <span class="hljs-keyword">new</span> <span class="hljs-title class_">FutureTask</span>&lt;&gt;(() -&gt; &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t -----come in&quot;</span>);<br>                TimeUnit.SECONDS.sleep(<span class="hljs-number">5</span>);<br>            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>                e.printStackTrace();<br>            &#125;<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;task over&quot;</span>;<br>        &#125;);<br><br>        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(futureTask, <span class="hljs-string">&quot;t1&quot;</span>).start();<br><br><br>        System.out.println(futureTask.get());<br><span class="hljs-comment">//        System.out.println(futureTask.get(3, TimeUnit.SECONDS));</span><br>        <br>        System.out.println(Thread.currentThread().getName() + <span class="hljs-string">&quot;\t + 忙其他任务了&quot;</span>);<br><br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>打印结果为：</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20230508014454.png" srcset="/img/loading.gif" lazyload width=50%>
+
+<p>程序会阻塞等待 get 方法返回之后，再继续执行主线程，这样其实是不符合预期的。</p>
+<p>解决的方式有几种：</p>
+<ol>
+<li>使用 get 方法时添加超时参数：<code>utureTask.get(3, TimeUnit.SECONDS)</code>，这样超时之后会抛出异常，然后使用程序对异常进行处理</li>
+<li>使用 <code>isDone()</code> 方法轮询</li>
+</ol>
+<p>但是这两种方法都不太优雅，是否有方式可以在程序执行完了之后主动通知我们，而不需要我们一直去查询执行中的程序呢？</p>
+<h1 id="Future-接口改进"><a href="#Future-接口改进" class="headerlink" title="Future 接口改进"></a>Future 接口改进</h1><ol>
+<li>对于简单的业务场景来说，使用 Future 完全没问题</li>
+<li>多个任务前后依赖可以组合处理的场景，Future 不太适合</li>
+<li>对多个任务比较计算速度的场景，Future 不太适合</li>
+</ol>
+<p>阻塞方式和异步编程的设计理念相违背，而轮询的方式会耗费无谓的 CPU 资源。因此，JDK 8 设计出 CompletableFuture。</p>
+<p>CompletableFuture 提供了一种<mark style="background: #FF5582A6;">观察者模式类似</mark>的机制。可以让任务执行完后通知监听的一方。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" class="category-chain-item">编程语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" class="category-chain-item">Java</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/" class="category-chain-item">Java语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/JUC/" class="category-chain-item">JUC</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/JUC/2-Future%E6%8E%A5%E5%8F%A3/" class="category-chain-item">2. Future接口</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>1. Future接口</div>
+      <div>http://example.com/2023/05/9dcf8865f6a1.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年5月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/05/d7da117255eb.html" title="IDEA 快捷键">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">IDEA 快捷键</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/e2844b30d1ed.html" title="2. 用户线程和守护线程">
+                        <span class="hidden-mobile">2. 用户线程和守护线程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2023/05/9dcf8865f6a1.html';
+          this.page.identifier = '/2023/05/9dcf8865f6a1.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

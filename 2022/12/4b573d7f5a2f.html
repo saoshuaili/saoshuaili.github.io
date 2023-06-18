@@ -1,0 +1,821 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="首先下载最新版的centos   此时的 centos 是最简版本，很多基本命令都没有。  写一个Dockerfile，通过centos，设置密码为123456，安装ssh服务并启动  123456789101112131415FROM centosMAINTAINER mwfRUN yum install -y openssh-server sudoRUN sed -i &amp;#x27;s&#x2F;Use">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过docker搭建集群">
+<meta property="og:url" content="http://example.com/2022/12/4b573d7f5a2f.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="首先下载最新版的centos   此时的 centos 是最简版本，很多基本命令都没有。  写一个Dockerfile，通过centos，设置密码为123456，安装ssh服务并启动  123456789101112131415FROM centosMAINTAINER mwfRUN yum install -y openssh-server sudoRUN sed -i &amp;#x27;s&#x2F;Use">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326003243.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326003750.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326010435.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326010948.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326011132.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326011255.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326011503.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326011748.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326012056.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326012249.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326012916.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326014924.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210419094542.png">
+<meta property="article:published_time" content="2022-12-03T18:36:27.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326003243.png">
+  
+  
+  
+  <title>通过docker搭建集群 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="通过docker搭建集群"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:36" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          38 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">通过docker搭建集群</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <ol>
+<li>首先下载最新版的centos</li>
+</ol>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326003243.png" srcset="/img/loading.gif" lazyload></p>
+<p>此时的 centos 是最简版本，很多基本命令都没有。</p>
+<ol start="2">
+<li>写一个Dockerfile，通过centos，设置密码为123456，安装ssh服务并启动</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs shell">FROM centos<br>MAINTAINER mwf<br><br>RUN yum install -y openssh-server sudo<br>RUN sed -i &#x27;s/UsePAM yes/UsePAM no/g&#x27; /etc/ssh/sshd_config<br>RUN yum  install -y openssh-clients<br><br>RUN echo &quot;root:123456&quot; | chpasswd<br>RUN echo &quot;root   ALL=(ALL)       ALL&quot; &gt;&gt; /etc/sudoers<br>RUN ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key<br>RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key<br><br>RUN mkdir /var/run/sshd<br>EXPOSE 22<br>CMD [&quot;/usr/sbin/sshd&quot;, &quot;-D&quot;]<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ad-note">更新： 20230314<br><br>因为Centos已经停止维护了Centos Linux，并推出了CentOS Stream项目，这里需要将镜像对应更新，更新版本放在下方<br><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs sh">FROM centos<br>MAINTAINER mwf<br><br>RUN sed -i <span class="hljs-string">&#x27;s/mirrorlist/#mirrorlist/g&#x27;</span> /etc/yum.repos.d/CentOS-*<br>RUN sed -i <span class="hljs-string">&#x27;s|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g&#x27;</span> /etc/yum.repos.d/CentOS-*<br><br>RUN yum makecache<br>RUN yum update -y<br><br>RUN yum install -y openssh-server sudo<br>RUN sed -i <span class="hljs-string">&#x27;s/UsePAM yes/UsePAM no/g&#x27;</span> /etc/ssh/sshd_config<br>RUN yum  install -y openssh-clients<br><br><br><br>RUN <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;root:HYZsucceed!!11&quot;</span> | chpasswd<br>RUN <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;root   ALL=(ALL)       ALL&quot;</span> &gt;&gt; /etc/sudoers<br>RUN ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key<br>RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key<br><br>RUN <span class="hljs-built_in">mkdir</span> /var/run/sshd<br>EXPOSE 22<br>CMD [<span class="hljs-string">&quot;/usr/sbin/sshd&quot;</span>, <span class="hljs-string">&quot;-D&quot;</span>]<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>通过Dockerfile创建镜像centos7-ssh</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">[root@VM-11-161-centos /home/docker/centos]# docker build -t=&quot;centos7-ssh&quot; .<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326003750.png" srcset="/img/loading.gif" lazyload></p>
+<ol start="4">
+<li>通过该镜像进一步生成带有我们所需要的工作环境的镜像</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">base image</span><br>FROM centos7-ssh<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">MainTainer</span><br>MAINTAINER CoachHe &lt;coachhe@tencent.com&gt;<br><br><br>RUN yum -y install vim<br>RUN yum -y install net-tools<br>RUN mkdir /opt/module<br>RUN mkdir /opt/software<br>RUN yum -y install ncurses<br>RUN yum -y install rsync<br>RUN yum -y install lrzsz<br><br><br>ADD jdk-8u144-linux-x64.tar.gz /opt/module<br>ADD hadoop-2.7.2.tar.gz /opt/module<br>ADD apache-hive-1.2.1-bin.tar.gz /opt/module<br>COPY mysql-libs.zip /opt/software<br><br><br>ENV JAVA_HOME /opt/module/jdk1.8.0_144<br>ENV HADOOP_HOME /opt/module/hadoop-2.7.2<br>ENV HIVE_HOME /opt/module/apache-hive-1.2.1-bin<br>ENV PATH $JAVA_HOME/bin:$HADOOP_HOME/bin:$HIVE_HOME/bin:$PATH<br><br>RUN yum install -y which sudo<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326010435.png" srcset="/img/loading.gif" lazyload></p>
+<p>执行结果</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326010948.png" srcset="/img/loading.gif" lazyload></p>
+<ol start="5">
+<li>配置网络</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -itd --network bridge --name chadoop1 -p 50070:50070 -p 8088:8088 chadoop<br>docker run -itd --network bridge --name chadoop2 chadoop<br>docker run -itd --network bridge --name chadoop3 chadoop<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326011132.png" srcset="/img/loading.gif" lazyload></p>
+<p>查看网络情况</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker network inspect bridge<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326011255.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到，分别分配了三个IP地址</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">chadoop1 192.168.10.2<br>chadoop2 192.168.10.3<br>chadoop3 192.168.10.4<br></code></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>登录docker容器</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker exec -it chadoop1 bash<br>docker exec -it chadoop2 bash<br>docker exec -it chadoop3 bash<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326011503.png" srcset="/img/loading.gif" lazyload></p>
+<ol start="7">
+<li>配置hosts以及ssh免密</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">vim /etc/hosts<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326011748.png" srcset="/img/loading.gif" lazyload></p>
+<p>ssh免密</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ssh-keygen # 一路回车<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326012056.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">ssh-copy-id -i /root/.ssh/id_rsa -p 22 root@chadoop1<br>ssh-copy-id -i /root/.ssh/id_rsa -p 22 root@chadoop2<br>ssh-copy-id -i /root/.ssh/id_rsa -p 22 root@chadoop3<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326012249.png" srcset="/img/loading.gif" lazyload></p>
+<ol start="8">
+<li>创建集群同步脚本xsync</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">mkdir /home/bin<br>vim /home/bin/xsync<br>chmod u+x /home/bin/xsync<br></code></pre></td></tr></table></figure>
+
+<p>脚本：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">!/bin/bash</span> <br><span class="hljs-meta prompt_">#</span><span class="language-bash">1 获取输入参数个数，如果没有参数则直接退出</span> <br>pcount=$# <br><br>if((pcount==0)); then <br>    echo no args; <br>    exit; <br>fi <br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">2 获取文件名称</span> <br>p1=$1 <br>fname=`basename $p1` #这里就是拿到最终文件的名称，/opt/module就是module <br>echo fname=$fname <br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">3 获取上级目录到绝对路径</span> <br>pdir=`cd -P $(dirname $p1); pwd` #这里是得到文件的路径 <br>echo pdir=$pdir <br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">4 获取当前用户名称</span> <br>user=`whoami`  #也就是coachhe <br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">5 循环</span> <br>for((host=1;host&lt;4;host++)); do    <br>    echo -------- hadoop$host ---------<br>    rsync -rvl $pdir/$fname root@chadoop$host:$pdir<br>done<br></code></pre></td></tr></table></figure>
+
+<p>同步实例</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326012916.png" srcset="/img/loading.gif" lazyload></p>
+<p>启动</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210326014924.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="指定容器的hostname"><a href="#指定容器的hostname" class="headerlink" title="指定容器的hostname"></a>指定容器的hostname</h1><h2 id="chadoop01"><a href="#chadoop01" class="headerlink" title="chadoop01"></a>chadoop01</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -itd --network bridge -v module01:/opt/module --name chadoop01 --hostname chadoop01 -p 50080:50080 -p 8088:8088 coachhe/chadoop:2.0<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Docker/20210419094542.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="chadoop02"><a href="#chadoop02" class="headerlink" title="chadoop02"></a>chadoop02</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -itd --network bridge -v module02:/opt/module --name chadoop02 --hostname chadoop02 -p 50081:50081 coachhe/chadoop:2.1<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="chadoop03"><a href="#chadoop03" class="headerlink" title="chadoop03"></a>chadoop03</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -itd --network bridge -v module03:/opt/module --name chadoop03 --hostname chadoop03 -p 50082:50082 coachhe/chadoop:2.1<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -itd --network bridge -v pulsar:/root --name pulsar01 --hostname pulsar01 -p 50090:50090 apachepulsar/pulsar<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+<p>最新版：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">[root@VM-11-161-centos ~]# docker run -itd --name clinux01 --hostname clinux01  -p 60122:22 -p 60123:36000 -p 60124:80 -p 60125:8080 --mount type=bind,source=/cbs/dockerVolume/clinux01,target=/root centos7-ssh<br>896ef5a69b1352d085cfe6e66b0803621c10e77844dc48f76c99d892892b48ba<br>[root@VM-11-161-centos ~]# docker run -itd --name clinux02 --hostname clinux02  -p 60222:22 -p 60223:36000 -p 60224:80 -p 60225:8080 --mount type=bind,source=/cbs/dockerVolume/clinux01,target=/root centos7-ssh<br>f9e7377a0612c10abdd8995a1283423927200b6bd471efcf209b2f8f6351403e<br>[root@VM-11-161-centos ~]# docker run -itd --name clinux03 --hostname clinux03  -p 60322:22 -p 60323:36000 -p 60324:80 -p 60325:8080 --mount type=bind,source=/cbs/dockerVolume/clinux01,target=/root centos7-ssh<br>1581f4a90b50fe0ac113b7e600464333f3d98e20a0b7a3d9e0dacbf7a8f6bd13<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -itd --name springcloud2022 --hostname coachhe -p 50001-60000:1-10000  --mount type=bind, source=/cbs/dockerVolume/springcloud2022, target=/root centos7-ssh<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="category-chain-item">微服务</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%BE%AE%E6%9C%8D%E5%8A%A1/Docker/" class="category-chain-item">Docker</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>通过docker搭建集群</div>
+      <div>http://example.com/2022/12/4b573d7f5a2f.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/6b0eb04eb2a2.html" title="Git命令">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Git命令</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/9db1ea7e8dd4.html" title="虚拟机安装">
+                        <span class="hidden-mobile">虚拟机安装</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/4b573d7f5a2f.html';
+          this.page.identifier = '/2022/12/4b573d7f5a2f.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,801 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. 接口的定义在 Java 程序设计语言中，接口不是类，而是对希望符合这个接口的类的一组需求。 所以接口是对类的一组需求，我希望这个类会符合什么样的规则。 例如 Comparable 接口的代码： 12345678910111213141516171819202122232425262728public interface Comparable&lt;T&gt; &amp;#123;      &#x2F;**">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1 接口">
+<meta property="og:url" content="http://example.com/2022/12/52d072793d93.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="1. 接口的定义在 Java 程序设计语言中，接口不是类，而是对希望符合这个接口的类的一组需求。 所以接口是对类的一组需求，我希望这个类会符合什么样的规则。 例如 Comparable 接口的代码： 12345678910111213141516171819202122232425262728public interface Comparable&lt;T&gt; &amp;#123;      &#x2F;**">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221207003606.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221207004711.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221207141234.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221208013829.png">
+<meta property="article:published_time" content="2022-12-08T17:24:17.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221207003606.png">
+  
+  
+  
+  <title>1 接口 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="1 接口"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-09 01:24" pubdate>
+          2022年12月9日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          64 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">1 接口</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-接口的定义"><a href="#1-接口的定义" class="headerlink" title="1. 接口的定义"></a>1. 接口的定义</h1><p>在 Java 程序设计语言中，<strong>接口不是类，而是对希望符合这个接口的类的一组需求</strong>。</p>
+<p>所以接口是对类的一组需求，我希望这个类会符合什么样的规则。</p>
+<p>例如 <code>Comparable</code> 接口的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Comparable</span>&lt;T&gt; &#123;  <br>    <span class="hljs-comment">/**  </span><br><span class="hljs-comment">     * Compares this object with the specified object for order.  Returns a     * negative integer, zero, or a positive integer as this object is less     * than, equal to, or greater than the specified object.     *     * &lt;p&gt;The implementor must ensure  </span><br><span class="hljs-comment">     * &#123;<span class="hljs-doctag">@code</span> sgn(x.compareTo(y)) == -sgn(y.compareTo(x))&#125;  </span><br><span class="hljs-comment">     * for all &#123;<span class="hljs-doctag">@code</span> x&#125; and &#123;<span class="hljs-doctag">@code</span> y&#125;.  (This  </span><br><span class="hljs-comment">     * implies that &#123;<span class="hljs-doctag">@code</span> x.compareTo(y)&#125; must throw an exception iff  </span><br><span class="hljs-comment">     * &#123;<span class="hljs-doctag">@code</span> y.compareTo(x)&#125; throws an exception.)  </span><br><span class="hljs-comment">     *     * &lt;p&gt;The implementor must also ensure that the relation is transitive:  </span><br><span class="hljs-comment">     * &#123;<span class="hljs-doctag">@code</span> (x.compareTo(y) &gt; 0 &amp;&amp; y.compareTo(z) &gt; 0)&#125; implies  </span><br><span class="hljs-comment">     * &#123;<span class="hljs-doctag">@code</span> x.compareTo(z) &gt; 0&#125;.  </span><br><span class="hljs-comment">     *     * &lt;p&gt;Finally, the implementor must ensure that &#123;<span class="hljs-doctag">@code</span> x.compareTo(y)==0&#125;  </span><br><span class="hljs-comment">     * implies that &#123;<span class="hljs-doctag">@code</span> sgn(x.compareTo(z)) == sgn(y.compareTo(z))&#125;, for  </span><br><span class="hljs-comment">     * all &#123;<span class="hljs-doctag">@code</span> z&#125;.  </span><br><span class="hljs-comment">     *     * &lt;p&gt;It is strongly recommended, but &lt;i&gt;not&lt;/i&gt; strictly required that  </span><br><span class="hljs-comment">     * &#123;<span class="hljs-doctag">@code</span> (x.compareTo(y)==0) == (x.equals(y))&#125;.  Generally speaking, any  </span><br><span class="hljs-comment">     * class that implements the &#123;<span class="hljs-doctag">@code</span> Comparable&#125; interface and violates  </span><br><span class="hljs-comment">     * this condition should clearly indicate this fact.  The recommended     * language is &quot;Note: this class has a natural ordering that is     * inconsistent with equals.&quot;     *     * &lt;p&gt;In the foregoing description, the notation  </span><br><span class="hljs-comment">     * &#123;<span class="hljs-doctag">@code</span> sgn(&#125;&lt;i&gt;expression&lt;/i&gt;&#123;<span class="hljs-doctag">@code</span> )&#125; designates the mathematical  </span><br><span class="hljs-comment">     * &lt;i&gt;signum&lt;/i&gt; function, which is defined to return one of &#123;<span class="hljs-doctag">@code</span> -1&#125;,  </span><br><span class="hljs-comment">     * &#123;<span class="hljs-doctag">@code</span> 0&#125;, or &#123;<span class="hljs-doctag">@code</span> 1&#125; according to whether the value of  </span><br><span class="hljs-comment">     * &lt;i&gt;expression&lt;/i&gt; is negative, zero, or positive, respectively.  </span><br><span class="hljs-comment">     *     * <span class="hljs-doctag">@param</span>   o the object to be compared.  </span><br><span class="hljs-comment">     * <span class="hljs-doctag">@return</span>  a negative integer, zero, or a positive integer as this object  </span><br><span class="hljs-comment">     *          is less than, equal to, or greater than the specified object.     *     * <span class="hljs-doctag">@throws</span> NullPointerException if the specified object is null  </span><br><span class="hljs-comment">     * <span class="hljs-doctag">@throws</span> ClassCastException if the specified object&#x27;s type prevents it  </span><br><span class="hljs-comment">     *         from being compared to this object.     */</span>    <br>     <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">compareTo</span><span class="hljs-params">(T o)</span>;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，任何实现 <code>Comparable</code> 接口都需要包含 <code>compareTo</code> 方法，这个方法有一个 <code>Object</code> 参数，并且返回一个正数。也就是我们规定了一个接口，这个接口是我们对任何实现这个接口的类的一种规则，它需要实现我们希望的具有比较功能的方法。</p>
+<p>注意：</p>
+<ul>
+<li>接口中的所有方法都自动是 <code>public</code> 方法，因此不用显式声明关键字 <code>public</code>，不过在实现接口的时候必须将方法声明为 <code>public</code>。</li>
+<li>接口绝不会有实例字段</li>
+</ul>
+<h1 id="2-接口的属性"><a href="#2-接口的属性" class="headerlink" title="2. 接口的属性"></a>2. 接口的属性</h1><p>接口不是类。具体来说，不能使用 <code>new</code> 运算符实例化一个接口。</p>
+<ol>
+<li>可以使用 <code>instanceof</code> 检查一个对象是否实现了某个特定的接口。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/6 01:42  </span><br><span class="hljs-comment"> **/</span><br><span class="hljs-meta">@SuppressWarnings(&quot;all&quot;)</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">interfaceTest</span>&#123;  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;  <br>        <span class="hljs-type">classA</span> <span class="hljs-variable">testclass</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">classA</span>();  <br>        System.out.println(testclass <span class="hljs-keyword">instanceof</span> interfaceA);  <br>    &#125;  <br>&#125;  <br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">interfaceA</span> &#123;&#125;  <br><span class="hljs-keyword">class</span> <span class="hljs-title class_">classA</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">interfaceA</span>&#123;&#125;<br></code></pre></td></tr></table></figure>
+
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221207003606.png" srcset="/img/loading.gif" lazyload width = "80%" />
+
+<p>可以看到，<code>classA</code> 实现了 <code>interfaceA()</code> 这个接口，那么其对象 <code>testclass instanceof interfaceA</code> 时判断结果为 <code>true</code> 。</p>
+<ol start="2">
+<li>与接口中的方法都自动被设置为 <code>public</code> 一样，接口中的字段总是 <code>public static final</code>。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/6 01:42  </span><br><span class="hljs-comment"> **/</span><br><span class="hljs-meta">@SuppressWarnings(&quot;all&quot;)</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">interfaceTest</span>&#123;  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;  <br>        <span class="hljs-type">classB</span> <span class="hljs-variable">testclassB</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">classB</span>();  <br>        System.out.println(testclassB.intA);  <br>    &#125;  <br>&#125;  <br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">interfaceA</span> &#123;  <br>    <span class="hljs-type">String</span> <span class="hljs-variable">intA</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;string of interface A&quot;</span>;  <br>&#125;  <br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">interfaceB</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">interfaceA</span>&#123;&#125;  <br><span class="hljs-keyword">class</span> <span class="hljs-title class_">classB</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">interfaceB</span>&#123;&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，<code>classB</code> 实现了 <code>interfaceB()</code> 这个接口，并且 <code>interfaceB</code> 继承了 <code>interfaceA</code>，并且在 <code>interfaceA()</code> 中定义了 <code>intA</code> 这个字符串，可以看到，<code>classB</code> 的对象也自动拥用了 <code>interfaceA</code> 的字符串。</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221207004711.png" srcset="/img/loading.gif" lazyload width = "80%" />
+
+<h1 id="3-接口与抽象类"><a href="#3-接口与抽象类" class="headerlink" title="3. 接口与抽象类"></a>3. 接口与抽象类</h1><h2 id="使用抽象类的问题"><a href="#使用抽象类的问题" class="headerlink" title="使用抽象类的问题"></a>使用抽象类的问题</h2><p>使用抽象类表示通用属性存在一个严重的问题。每个类只能扩展一个类。</p>
+<h1 id="4-静态和私有方法"><a href="#4-静态和私有方法" class="headerlink" title="4. 静态和私有方法"></a>4. 静态和私有方法</h1><p>目前为止，通常的做法是将静态方法放在伴随类中。在标准库里会看到承兑出现的接口和实用工具类。例如 <code>Path</code> 和 <code>Paths</code>。</p>
+<p>这里看下 <code>get()</code> 的源码和具体使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Paths</span> &#123;<br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Path <span class="hljs-title function_">get</span><span class="hljs-params">(String first, String... more)</span> &#123;  <br>	    <span class="hljs-keyword">return</span> FileSystems.getDefault().getPath(first, more);  <br>	&#125;<br>&#125;<br><br><span class="hljs-comment">// 具体使用</span><br><span class="hljs-type">Path</span> <span class="hljs-variable">pathA</span> <span class="hljs-operator">=</span> Paths.get(<span class="hljs-string">&quot;&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，在这里 <code>Paths</code> 实用工具类的静态方法 <code>get()</code> 会生成一个 <code>Path</code> 类型的对象 <code>pathA</code>。这是之前常用的做法。</p>
+<p>静态方法的出现解决了这个问题，在接口中内置静态方法可以直接在接口中获取对应的内置类。</p>
+<p>在 java 11 中，<code>Path</code> 接口提供了等价的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Path</span> &#123;<br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Path <span class="hljs-title function_">of</span> <span class="hljs-params">(URI uri)</span> &#123;...&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这样一来，<code>Paths</code> 类就不是必须的了。</p>
+<p>我们来看一个接口，是 <code>Flink</code> 中的水位线生成策略接口 <code>WatermarkStrategy</code>，我们只看其中的静态方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Public</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">WatermarkStrategy</span>&lt;T&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title class_">TimestampAssignerSupplier</span>&lt;T&gt;, WatermarkGeneratorSupplier&lt;T&gt; &#123;  <br><br>    <span class="hljs-keyword">static</span> &lt;T&gt; WatermarkStrategy&lt;T&gt; <span class="hljs-title function_">forMonotonousTimestamps</span><span class="hljs-params">()</span> &#123;  <br>        <span class="hljs-keyword">return</span> (ctx) -&gt; &#123;  <br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AscendingTimestampsWatermarks</span>();  <br>        &#125;;  <br>    &#125;  <br>  <br>    <span class="hljs-keyword">static</span> &lt;T&gt; WatermarkStrategy&lt;T&gt; <span class="hljs-title function_">forBoundedOutOfOrderness</span><span class="hljs-params">(Duration maxOutOfOrderness)</span> &#123;  <br>        <span class="hljs-keyword">return</span> (ctx) -&gt; &#123;  <br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BoundedOutOfOrdernessWatermarks</span>(maxOutOfOrderness);  <br>        &#125;;  <br>    &#125;  <br>  <br>    <span class="hljs-keyword">static</span> &lt;T&gt; WatermarkStrategy&lt;T&gt; <span class="hljs-title function_">forGenerator</span><span class="hljs-params">(WatermarkGeneratorSupplier&lt;T&gt; generatorSupplier)</span> &#123;  <br>        <span class="hljs-keyword">return</span> generatorSupplier::createWatermarkGenerator;  <br>    &#125;  <br>  <br>    <span class="hljs-keyword">static</span> &lt;T&gt; WatermarkStrategy&lt;T&gt; <span class="hljs-title function_">noWatermarks</span><span class="hljs-params">()</span> &#123;  <br>        <span class="hljs-keyword">return</span> (ctx) -&gt; &#123;  <br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NoWatermarksGenerator</span>();  <br>        &#125;;  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，在该接口中提供了 4 个静态方法，这四个静态方法分别能生成对应的水位线生成策略。相当于是 <code>flink</code> 内置了 4 个方法，用来生成对应的水位线生成策略。这四个方法的作用只是返回 <code>Flink</code> 预先写好的对应实现了 <code>WatermarkStrategy</code> 接口的相应功能类。这样也就不用预制水位线生成策略的工具类来专门生成具有某些功能的类了。</p>
+<h1 id="5-默认方法"><a href="#5-默认方法" class="headerlink" title="5. 默认方法"></a>5. 默认方法</h1><p>可以为接口方法提供一个默认实现。必须用 <code>default</code> 修饰符号标记这样一个方法。</p>
+<p>继承接口的方法可以不重写默认方法，会自动调用接口的方法。</p>
+<p>例如我们还是看 <code>flink</code> 中提供的 <code>WatermarkStrategy</code> 接口，里面有四个默认方法，继承该接口的方法可以直接调用这四个方法而不用重写。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Public</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">WatermarkStrategy</span>&lt;T&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title class_">TimestampAssignerSupplier</span>&lt;T&gt;, WatermarkGeneratorSupplier&lt;T&gt; &#123;  <br>    <span class="hljs-keyword">default</span> TimestampAssigner&lt;T&gt; <span class="hljs-title function_">createTimestampAssigner</span><span class="hljs-params">(TimestampAssignerSupplier.Context context)</span> &#123;  <br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RecordTimestampAssigner</span>();  <br>    &#125;  <br>  <br>    <span class="hljs-keyword">default</span> WatermarkStrategy&lt;T&gt; <span class="hljs-title function_">withTimestampAssigner</span><span class="hljs-params">(TimestampAssignerSupplier&lt;T&gt; timestampAssigner)</span> &#123;  <br>        Preconditions.checkNotNull(timestampAssigner, <span class="hljs-string">&quot;timestampAssigner&quot;</span>);  <br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">WatermarkStrategyWithTimestampAssigner</span>(<span class="hljs-built_in">this</span>, timestampAssigner);  <br>    &#125;  <br>  <br>    <span class="hljs-keyword">default</span> WatermarkStrategy&lt;T&gt; <span class="hljs-title function_">withTimestampAssigner</span><span class="hljs-params">(SerializableTimestampAssigner&lt;T&gt; timestampAssigner)</span> &#123;  <br>        Preconditions.checkNotNull(timestampAssigner, <span class="hljs-string">&quot;timestampAssigner&quot;</span>);  <br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">WatermarkStrategyWithTimestampAssigner</span>(<span class="hljs-built_in">this</span>, TimestampAssignerSupplier.of(timestampAssigner));  <br>    &#125;  <br>  <br>    <span class="hljs-keyword">default</span> WatermarkStrategy&lt;T&gt; <span class="hljs-title function_">withIdleness</span><span class="hljs-params">(Duration idleTimeout)</span> &#123;  <br>        Preconditions.checkNotNull(idleTimeout, <span class="hljs-string">&quot;idleTimeout&quot;</span>);  <br>        Preconditions.checkArgument(!idleTimeout.isZero() &amp;&amp; !idleTimeout.isNegative(), <span class="hljs-string">&quot;idleTimeout must be greater than zero&quot;</span>);  <br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">WatermarkStrategyWithIdleness</span>(<span class="hljs-built_in">this</span>, idleTimeout);  <br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>默认方法的一个重要作用的“接口演化”。</p>
+<p>比如我这里实现了一个类 <code>Bag</code>，这个类实现了 <code>InterfaceA</code> 接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Bag</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">InterfaceA</span> &#123;&#125;  <br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">InterfaceA</span> &#123;&#125;<br></code></pre></td></tr></table></figure>
+
+<p>那么如果后面的变动导致我需要给 <code>InterfaceA</code> 新增一个方法，但是又不想影响之前的类，那么我们可以用默认方法来实现这个功能。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Bag</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">InterfaceA</span> &#123;  <br>&#125;  <br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">InterfaceA</span> &#123;  <br>    <span class="hljs-keyword">default</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">sayHi</span><span class="hljs-params">()</span>&#123;  <br>        System.out.println(<span class="hljs-string">&quot;Hi, I am interface A&quot;</span>);  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，这样我新增了一个 <code>sayHi()</code> 方法，并且不需要对原来的 <code>Bag</code> 类做变动，当我调用 <code>Bag</code> 类的对象时，还是可以使用这个方法：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221207141234.png" srcset="/img/loading.gif" lazyload width = "90%" />
+
+<p>可以看到，打印出了 <code>sayHi()</code> 方法中的内容。</p>
+<h1 id="7-接口和回调"><a href="#7-接口和回调" class="headerlink" title="7. 接口和回调"></a>7. 接口和回调</h1><p>回调 (<code>callback</code>) 是一种常见的程序设计模式。在这种模式中，可以指定某个特定事件发生时应该采取的动作</p>
+<p>例如，我们在构造定时器时，需要告诉定时器需要定时做什么。在很多程序设计语言中，可以提供一个函数名，定时器会定期调用这个函数。但是 <code>Java</code> 标准库中的类采用的是面向对象的方式，可以<strong>向定时器传入某个类的对象</strong>，然后定时器调用这个对象的方法。由于对象可以携带一些附加的信息。所以传递一个对象比传递一个函数要灵活的多。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/8 01:28  </span><br><span class="hljs-comment"> **/</span><br> <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TimeTest</span> &#123;  <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException &#123;  <br>        System.out.println(<span class="hljs-string">&quot;Begin&quot;</span>);  <br>        <span class="hljs-type">TimePrinter</span> <span class="hljs-variable">listener</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TimePrinter</span>();  <br>        <span class="hljs-type">Timer</span> <span class="hljs-variable">t</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Timer</span>(<span class="hljs-number">1000</span>, listener);  <br>        t.start();  <br>  <br>        <span class="hljs-comment">// keep program running until the user select &quot;OK&quot;  </span><br>        JOptionPane.showMessageDialog(<span class="hljs-literal">null</span>, <span class="hljs-string">&quot;Quit program?&quot;</span>);  <br>        System.exit(<span class="hljs-number">0</span>);  <br>    &#125;  <br>&#125;  <br>  <br><span class="hljs-keyword">class</span> <span class="hljs-title class_">TimePrinter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">ActionListener</span> &#123;  <br>    <span class="hljs-meta">@Override</span>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">actionPerformed</span><span class="hljs-params">(ActionEvent e)</span> &#123;  <br>        System.out.println(<span class="hljs-string">&quot;At the tone, the time is &quot;</span>  <br>                + Instant.ofEpochMilli(e.getWhen()));  <br>        Toolkit.getDefaultToolkit().beep();  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在这里，我们有一个实现了 <code>ActionListener</code> 接口的类，接口内的方法是 <code>actionPerformed</code>，<code>Timer</code> 类会定时回调这个方法。执行效果就是每隔一秒钟调用一次：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221208013829.png" srcset="/img/loading.gif" lazyload width = "90%" />
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" class="category-chain-item">编程语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" class="category-chain-item">Java</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/" class="category-chain-item">Java语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/Java%E8%AF%AD%E6%B3%95/" class="category-chain-item">Java语法</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/Java%E8%AF%AD%E6%B3%95/%E6%8E%A5%E5%8F%A3%E5%92%8Clambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="category-chain-item">接口和lambda表达式</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/Java%E8%AF%AD%E6%B3%95/%E6%8E%A5%E5%8F%A3%E5%92%8Clambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/java%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/" class="category-chain-item">java核心技术</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>1 接口</div>
+      <div>http://example.com/2022/12/52d072793d93.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月9日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/7c64ae9eed8f.html" title="第6章 IO复用：Select和poll函数">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">第6章 IO复用：Select和poll函数</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/141382e40ce6.html" title="8.2.2 运行时栈帧结构">
+                        <span class="hidden-mobile">8.2.2 运行时栈帧结构</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/52d072793d93.html';
+          this.page.identifier = '/2022/12/52d072793d93.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

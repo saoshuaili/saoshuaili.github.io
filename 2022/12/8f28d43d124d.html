@@ -1,0 +1,808 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. 字符串的定义字符串有两种定义方式： 12String str &#x3D; &quot;abc&quot;;String str_new &#x3D; new String(&quot;def&quot;);  这两种方式的具体区别可以看[[补充-String和字符串常量池]] 2. 字符串的不可变性 当对字符串重新赋值时，需要重写指定区域赋值，不能使用原有的 value 进行赋值。 当对现有的字符串进行连接操">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1. 字符串概述">
+<meta property="og:url" content="http://example.com/2022/12/8f28d43d124d.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="1. 字符串的定义字符串有两种定义方式： 12String str &#x3D; &quot;abc&quot;;String str_new &#x3D; new String(&quot;def&quot;);  这两种方式的具体区别可以看[[补充-String和字符串常量池]] 2. 字符串的不可变性 当对字符串重新赋值时，需要重写指定区域赋值，不能使用原有的 value 进行赋值。 当对现有的字符串进行连接操">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221215022503.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221215022552.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221215022733.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221215022900.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221215023013.png">
+<meta property="article:published_time" content="2022-12-14T17:17:02.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221215022503.png">
+  
+  
+  
+  <title>1. 字符串概述 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="1. 字符串概述"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-15 01:17" pubdate>
+          2022年12月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          35 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">1. 字符串概述</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-字符串的定义"><a href="#1-字符串的定义" class="headerlink" title="1. 字符串的定义"></a>1. 字符串的定义</h1><p>字符串有两种定义方式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">String</span> <span class="hljs-variable">str</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;abc&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">str_new</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(<span class="hljs-string">&quot;def&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>这两种方式的具体区别可以看[[补充-String和字符串常量池]]</p>
+<h1 id="2-字符串的不可变性"><a href="#2-字符串的不可变性" class="headerlink" title="2. 字符串的不可变性"></a>2. 字符串的不可变性</h1><ul>
+<li>当对字符串重新赋值时，需要重写指定区域赋值，不能使用原有的 <code>value</code> 进行赋值。</li>
+<li>当对现有的字符串进行连接操作时，也需要重新指定内存区域赋值，不能使用原有的 <code>value</code> 进行赋值</li>
+<li>当调用 <code>String</code> 的 <code>replace()</code> 方法修改指定字符或字符串时，也需要重新指定内存区域赋值，不能使用原有的 <code>value</code> 进行赋值</li>
+</ul>
+<p>先看对应的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Test</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">ImmutableTest</span><span class="hljs-params">()</span> &#123;  <br>    <span class="hljs-type">String</span> <span class="hljs-variable">s1</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;abc&quot;</span>;   <span class="hljs-comment">// 字面量定义的方式，“abc”存储在字符串常量池中</span><br>    <span class="hljs-type">String</span> <span class="hljs-variable">s2</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;abc&quot;</span>;  <br>    System.out.println(s1 == s2);   <span class="hljs-comment">// true</span><br>    s1 = <span class="hljs-string">&quot;hello&quot;</span>;  <br>    System.out.println(s1 == s2);   <span class="hljs-comment">// false</span><br>  <br>    System.out.println(s1);   <span class="hljs-comment">// hello</span><br>    System.out.println(s2);   <span class="hljs-comment">// abc</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，最开始 <code>s1</code> 和 <code>s2</code> 都是字面量的引用，都指向存储在字符串常量池中的 <code>&quot;abc&quot;</code>，因此第一次判断为 <code>true</code>，但是随着 <code>s1=&quot;hello&quot;</code> 的赋值，由于字符串的不可变性，<code>s1</code> 重新指向了另一个常量 <code>&quot;hello&quot;</code>，而不是更新自身的值，并且 <code>s2</code> 也不会随之变动，因此第二次判断相等时打印 <code>false</code>，并且 s1 和 s2 的值也不相同了。</p>
+<p>再看一段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Test</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">ImmutableTest2</span><span class="hljs-params">()</span> &#123;  <br>    <span class="hljs-type">String</span> <span class="hljs-variable">s1</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;abc&quot;</span>;  <br>    <span class="hljs-type">String</span> <span class="hljs-variable">s2</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;abc&quot;</span>;  <br>    s2 += <span class="hljs-string">&quot;def&quot;</span>;  <br>    System.out.println(s2); <span class="hljs-comment">// abcdef  </span><br>    System.out.println(s1); <span class="hljs-comment">// abc  </span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里也很容易判断，<code>s2</code> 重新指向了一个新的字符串引用，不会影响 <code>s1</code>。</p>
+<p>最后一段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Test</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">ImmutableTest3</span><span class="hljs-params">()</span>&#123;  <br>    <span class="hljs-type">String</span> <span class="hljs-variable">s1</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;abc&quot;</span>;  <br>    <span class="hljs-type">String</span> <span class="hljs-variable">s2</span> <span class="hljs-operator">=</span> s1.replace(<span class="hljs-string">&quot;a&quot;</span>, <span class="hljs-string">&quot;m&quot;</span>);  <br>    System.out.println(s1); <span class="hljs-comment">// abc  </span><br>    System.out.println(s2); <span class="hljs-comment">// mbc  </span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，调用了 <code>replace</code> 之后，<code>s1</code> 的值也是不会变动的。</p>
+<p>接下来给一段《On Java8》中的实例，直接看代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/15 01:00  </span><br><span class="hljs-comment"> * 这里是为了展示Java字符串的不可变性，传入的其实是q对象引用的副本  </span><br><span class="hljs-comment"> **/</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Immutable</span> &#123;  <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title function_">upcase</span><span class="hljs-params">(String s)</span> &#123;  <br>        <span class="hljs-keyword">return</span> s.toUpperCase();  <br>    &#125;  <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;  <br>        <span class="hljs-type">String</span> <span class="hljs-variable">q</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;howdy&quot;</span>;  <br>        System.out.println(q); <span class="hljs-comment">//howdy  </span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">qq</span> <span class="hljs-operator">=</span> upcase(q);  <br>        System.out.println(qq); <span class="hljs-comment">// HOWDY  </span><br>        System.out.println(q); <span class="hljs-comment">// howdy  </span><br>    &#125;  <br>  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在 <code>upcase()</code> 里，参数 <code>s</code> 值存活于这个方法的方法体中。传入的参数是 <code>q</code> 的引用。</p>
+<h1 id="3-字符串底层结构的变更"><a href="#3-字符串底层结构的变更" class="headerlink" title="3. 字符串底层结构的变更"></a>3. 字符串底层结构的变更</h1><p>我们先来看看 <code>jdk8</code> 中字符串的底层结构：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">String</span>  <br>    <span class="hljs-keyword">implements</span> <span class="hljs-title class_">java</span>.io.Serializable, Comparable&lt;String&gt;, CharSequence &#123;  <br>    <span class="hljs-comment">/** The value is used for character storage. */</span>  <br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">char</span> value[];<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，这里底层是用 <code>char</code> 数组来存储的。但是在 <code>jdk9</code> 之后就变了，我们来看个 <code>jdk11</code> 的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">String</span><br>    <span class="hljs-keyword">implements</span> <span class="hljs-title class_">java</span>.io.Serializable, Comparable&lt;String&gt;, CharSequence &#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * The value is used for character storage.</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@implNote</span> This field is trusted by the VM, and is a subject to</span><br><span class="hljs-comment">     * constant folding if String instance is constant. Overwriting this</span><br><span class="hljs-comment">     * field after construction will cause problems.</span><br><span class="hljs-comment">     *</span><br><span class="hljs-comment">     * Additionally, it is marked with &#123;<span class="hljs-doctag">@link</span> Stable&#125; to trust the contents</span><br><span class="hljs-comment">     * of the array. No other facility in JDK provides this functionality (yet).</span><br><span class="hljs-comment">     * &#123;<span class="hljs-doctag">@link</span> Stable&#125; is safe here, because value is never null.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Stable</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">byte</span>[] value;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，底层存储数据结构变为了 <code>byte</code> 数组，原因是因为原先一个 <code>char</code> 是两个 <code>byte</code>，但是在实际使用中发现其实大部分 <code>String</code> 对象都是拉丁字符，只需要一个 <code>byte</code>，因此使用 <code>char</code> 数组其实很浪费，因此更新为了 <code>byte</code> 数组。</p>
+<h1 id="4-String-的基本特征"><a href="#4-String-的基本特征" class="headerlink" title="4. String 的基本特征"></a>4. String 的基本特征</h1><p><code>String</code> 的 <code>String Pool</code> （字符串常量池）是一个固定大小的 <code>Hashtable</code>，默认值大小长度在 <code>jdk6</code> 以及之前是 1009，之后都是 60013。</p>
+<h1 id="5-String-的内存分配"><a href="#5-String-的内存分配" class="headerlink" title="5. String 的内存分配"></a>5. String 的内存分配</h1><p>在 Java 语言中有 8 种基本数据类型和一种比较特殊的类型 String，这些类型为了使它们在运行过程中速度更快、更节省内存，都提供了一种常量池的概念。</p>
+<p>常量池就类似一个 Java 系统级别提供的缓存。8 种基本数据类型的变量都是系统协调放入常量池的，但是 String 类型的常量池比较特殊。它主要使用方法有两种：</p>
+<ol>
+<li>直接使用双引号声明出来的 &#x3D;&#x3D;String 对象&#x3D;&#x3D;会直接存储在常量池中。</li>
+<li>如果不是使用双引号声明的 String 对象，可以使用 String 提供的 intern 方法。</li>
+</ol>
+<h2 id="字符串常量池的位置"><a href="#字符串常量池的位置" class="headerlink" title="字符串常量池的位置"></a>字符串常量池的位置</h2><ul>
+<li>Jdk6 及之前，字符串常量池存放在永久代。</li>
+<li>Jdk7 及之后，字符串常量池存放在堆中。</li>
+</ul>
+<p>调整的原因：</p>
+<ol>
+<li>方法区 permSize 默认比较小，如果有大量字符串常见会内存不足</li>
+<li>永久代垃圾回收频率低，String 不能及时回收</li>
+</ol>
+<h1 id="6-字符串常量池"><a href="#6-字符串常量池" class="headerlink" title="6. 字符串常量池"></a>6. 字符串常量池</h1><p>字符串常量池不会存在两个相同的字符串常量，我们这里来证明一下，先看下这段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">/**  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@author</span> CoachHe  </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@date</span> 2022/12/15 02:20  </span><br><span class="hljs-comment"> * 为了证明字符串常量池不能持有相同的两个字符串常量，多次引用时不会重新生成对应字符串  </span><br><span class="hljs-comment"> **/</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">StringPool</span> &#123;  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;  <br>        System.out.println();  <br>        System.out.println(<span class="hljs-string">&quot;1&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;2&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;3&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;4&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;5&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;6&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;7&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;8&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;9&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;10&quot;</span>);  <br>  <br>        System.out.println(<span class="hljs-string">&quot;1&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;2&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;3&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;4&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;5&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;6&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;7&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;8&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;9&quot;</span>);  <br>        System.out.println(<span class="hljs-string">&quot;10&quot;</span>);  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>首先我们让程序开始运行，然后在第一个打印处打上断点：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221215022503.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<p>打开 Memory 界面。</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221215022552.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，当前有 1123 个字符串。</p>
+<p>往下执行一行：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221215022733.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，变成了 1124，多了一个字符串，其实是多了一个换行的字符串。</p>
+<p>然后继续往下：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221215022900.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，变成了 1134，多个 10 个字符串，自然就是 1 到 10 这 10 个。</p>
+<p>此时若继续往下执行</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221215023013.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，这 10 个字符串再执行之后，还是 1134 个字符串，不会再生成一次。他们指向同一份字符串实例。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" class="category-chain-item">编程语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" class="category-chain-item">Java</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/" class="category-chain-item">Java语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/Java%E8%AF%AD%E6%B3%95/" class="category-chain-item">Java语法</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/Java%E8%AF%AD%E6%B3%95/%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="category-chain-item">字符串</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Java%E8%AF%AD%E8%A8%80/Java%E8%AF%AD%E6%B3%95/%E5%AD%97%E7%AC%A6%E4%B8%B2/onjava8/" class="category-chain-item">onjava8</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>1. 字符串概述</div>
+      <div>http://example.com/2022/12/8f28d43d124d.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/dd12e1e6022d.html" title="2. 重载 + 与StringBuilder与intern">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2. 重载 + 与StringBuilder与intern</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/8d368549b04b.html" title="2 lambda表达式">
+                        <span class="hidden-mobile">2 lambda表达式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/8f28d43d124d.html';
+          this.page.identifier = '/2022/12/8f28d43d124d.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

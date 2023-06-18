@@ -1,0 +1,792 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="NN和2NN工作机制一 NameNode元数据存储位置思考：NameNode中的元数据是存储在哪里的？首先，我们做个假设，如果存储在NameNode节点的磁盘中，因为经常需要进行随机访问，还有响应客户请求，必然是效率过低。因此，元数据需要存放在内存中。但如果只存在内存中，一旦断电，元数据丢失，整个集群就无法工作了。     因此产生在磁盘中备份元数据的FsImage。这样又会带来新的问题，当在内存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDFS5 NN和2NN">
+<meta property="og:url" content="http://example.com/2022/12/bf7fc4b98f6d.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="NN和2NN工作机制一 NameNode元数据存储位置思考：NameNode中的元数据是存储在哪里的？首先，我们做个假设，如果存储在NameNode节点的磁盘中，因为经常需要进行随机访问，还有响应客户请求，必然是效率过低。因此，元数据需要存放在内存中。但如果只存在内存中，一旦断电，元数据丢失，整个集群就无法工作了。     因此产生在磁盘中备份元数据的FsImage。这样又会带来新的问题，当在内存">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210182339.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210182608.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210183305.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210183325.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210183409.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210183848.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210183916.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210183931.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210183958.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210184015.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210184046.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210184111.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc7845b394ac52378b4e7b2.png">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc7845b394ac52378b4e7a9.png">
+<meta property="article:published_time" content="2022-12-03T18:45:00.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210182339.png">
+  
+  
+  
+  <title>HDFS5 NN和2NN - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="HDFS5 NN和2NN"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:45" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">HDFS5 NN和2NN</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="NN和2NN工作机制"><a href="#NN和2NN工作机制" class="headerlink" title="NN和2NN工作机制"></a>NN和2NN工作机制</h1><h2 id="一-NameNode元数据存储位置"><a href="#一-NameNode元数据存储位置" class="headerlink" title="一 NameNode元数据存储位置"></a>一 NameNode元数据存储位置</h2><h3 id="思考：NameNode中的元数据是存储在哪里的？"><a href="#思考：NameNode中的元数据是存储在哪里的？" class="headerlink" title="思考：NameNode中的元数据是存储在哪里的？"></a>思考：NameNode中的元数据是存储在哪里的？</h3><p>首先，我们做个假设，如果存储在NameNode节点的磁盘中，因为经常需要进行随机访问，还有响应客户请求，必然是效率过低。因此，元数据需要存放在内存中。但如果只存在内存中，一旦断电，元数据丢失，整个集群就无法工作了。    </p>
+<h3 id="因此产生在磁盘中备份元数据的FsImage。"><a href="#因此产生在磁盘中备份元数据的FsImage。" class="headerlink" title="因此产生在磁盘中备份元数据的FsImage。"></a>因此产生在磁盘中备份元数据的FsImage。</h3><p>这样又会带来新的问题，当在内存中的元数据更新时，如果同时更新FsImage，就会导致效率过低，但如果不更新，就会发生一致性问题，一旦NameNode节点断电，就会产生数据丢失。 </p>
+<h3 id="因此，引入Edits文件-只进行追加操作，效率很高-。每当元数据有更新或者添加元数据时，修改内存中的元数据并追加到Edits中。这样，一旦NameNode节点断电，可以通过FsImage和Edits的合并，合成元数据。"><a href="#因此，引入Edits文件-只进行追加操作，效率很高-。每当元数据有更新或者添加元数据时，修改内存中的元数据并追加到Edits中。这样，一旦NameNode节点断电，可以通过FsImage和Edits的合并，合成元数据。" class="headerlink" title="因此，引入Edits文件(只进行追加操作，效率很高)。每当元数据有更新或者添加元数据时，修改内存中的元数据并追加到Edits中。这样，一旦NameNode节点断电，可以通过FsImage和Edits的合并，合成元数据。"></a>因此，引入Edits文件(只进行追加操作，效率很高)。每当元数据有更新或者添加元数据时，修改内存中的元数据并追加到Edits中。这样，一旦NameNode节点断电，可以通过FsImage和Edits的合并，合成元数据。</h3><p>但是，如果长时间添加数据到Edits中，会导致该文件数据过大，效率降低，而且一旦断电，恢复元数据需要的时间过长。因此，需要定期进行FsImage和Edits的合并，如果这个操作由NameNode节点完成，又会效率过低。</p>
+<h3 id="因此，引入一个新的节点SecondaryNamenode，专门用于FsImage和Edits的合并。"><a href="#因此，引入一个新的节点SecondaryNamenode，专门用于FsImage和Edits的合并。" class="headerlink" title="因此，引入一个新的节点SecondaryNamenode，专门用于FsImage和Edits的合并。"></a>因此，引入一个新的节点SecondaryNamenode，专门用于FsImage和Edits的合并。</h3><h2 id="二-NameNode工作机制"><a href="#二-NameNode工作机制" class="headerlink" title="二 NameNode工作机制"></a>二 NameNode工作机制</h2><ol>
+<li>NameNode加载编辑日志和镜像文件到内存中</li>
+<li>客户端发起某个文件的增删改查请求</li>
+<li>NameNode将记录操作日志、更新滚动日志</li>
+<li>将内存中的数据进行修改</li>
+</ol>
+<h3 id="原理图："><a href="#原理图：" class="headerlink" title="原理图："></a>原理图：</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210182339.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+
+
+<h2 id="三-Secondary-NameNode工作机制"><a href="#三-Secondary-NameNode工作机制" class="headerlink" title="三 Secondary NameNode工作机制"></a>三 Secondary NameNode工作机制</h2><p>当编辑日志太大之后，引入了Secondary NameNode</p>
+<h3 id="1-请求是否需要CheckPoint"><a href="#1-请求是否需要CheckPoint" class="headerlink" title="1. 请求是否需要CheckPoint"></a>1. 请求是否需要CheckPoint</h3><h4 id="CheckPoint："><a href="#CheckPoint：" class="headerlink" title="CheckPoint："></a>CheckPoint：</h4><h4 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h4><p>将编辑日志和镜像文件进行合并，然后序列化到新的镜像文件中。</p>
+<h4 id="触发条件"><a href="#触发条件" class="headerlink" title="触发条件"></a>触发条件</h4><ol>
+<li>定时时间到</li>
+<li>Edits中的数据满了</li>
+</ol>
+<h3 id="2-请求执行CheckPoint"><a href="#2-请求执行CheckPoint" class="headerlink" title="2. 请求执行CheckPoint"></a>2. 请求执行CheckPoint</h3><h3 id="3-滚动正在写的Edits"><a href="#3-滚动正在写的Edits" class="headerlink" title="3. 滚动正在写的Edits"></a>3. 滚动正在写的Edits</h3><h3 id="4-拷贝到2nn"><a href="#4-拷贝到2nn" class="headerlink" title="4. 拷贝到2nn"></a>4. 拷贝到2nn</h3><h3 id="5-加载到内存并合并"><a href="#5-加载到内存并合并" class="headerlink" title="5. 加载到内存并合并"></a>5. 加载到内存并合并</h3><h3 id="6-生成新的Fsimage"><a href="#6-生成新的Fsimage" class="headerlink" title="6. 生成新的Fsimage"></a>6. 生成新的Fsimage</h3><h3 id="7-拷贝到nn"><a href="#7-拷贝到nn" class="headerlink" title="7. 拷贝到nn"></a>7. 拷贝到nn</h3><h3 id="8-重新命名为Fsimage"><a href="#8-重新命名为Fsimage" class="headerlink" title="8.重新命名为Fsimage"></a>8.重新命名为Fsimage</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210182608.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+
+
+<h1 id="Fsimage和Edits解析"><a href="#Fsimage和Edits解析" class="headerlink" title="Fsimage和Edits解析"></a>Fsimage和Edits解析</h1><h2 id="1-目录"><a href="#1-目录" class="headerlink" title="1 目录"></a>1 目录</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210183305.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210183325.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210183409.png" srcset="/img/loading.gif" lazyload style="zoom: 67%;" />
+
+<h2 id="2-解析的命令"><a href="#2-解析的命令" class="headerlink" title="2 解析的命令"></a>2 解析的命令</h2><h3 id="oiv查看Fsimage文件"><a href="#oiv查看Fsimage文件" class="headerlink" title="oiv查看Fsimage文件"></a>oiv查看Fsimage文件</h3><h4 id="查看oiv和oev命令"><a href="#查看oiv和oev命令" class="headerlink" title="查看oiv和oev命令"></a>查看oiv和oev命令</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$</span><span class="language-bash"> hdfs oiv apply the offline fsimage viewer to an fsimage</span> <br>oev apply the offline edits viewer to an edits file <br></code></pre></td></tr></table></figure>
+
+<h4 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">hdfs oiv -<span class="hljs-selector-tag">p</span> 文件类型 -<span class="hljs-selector-tag">i</span>镜像文件 -o 转换后文件输出路径<br></code></pre></td></tr></table></figure>
+
+<h4 id="案例实操"><a href="#案例实操" class="headerlink" title="案例实操"></a>案例实操</h4><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">$ pwd <span class="hljs-regexp">/opt/m</span>odule<span class="hljs-regexp">/hadoop-2.7.2/</span>data<span class="hljs-regexp">/tmp/</span>dfs<span class="hljs-regexp">/name/</span>current <br>$ hdfs oiv -p XML -i fsimage_0000000000000000025 -o <span class="hljs-regexp">/opt/m</span>odule<span class="hljs-regexp">/hadoop-2.7.2/</span>fsimage.xml <br>$ cat <span class="hljs-regexp">/opt/m</span>odule<span class="hljs-regexp">/hadoop-2.7.2/</span>fsimage.xml <br></code></pre></td></tr></table></figure>
+
+<h3 id="oev查看Edits文件"><a href="#oev查看Edits文件" class="headerlink" title="oev查看Edits文件"></a>oev查看Edits文件</h3><h4 id="基本语法-1"><a href="#基本语法-1" class="headerlink" title="基本语法"></a>基本语法</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">hdfs oev -<span class="hljs-selector-tag">p</span> 文件类型 -<span class="hljs-selector-tag">i</span>编辑日志 -o 转换后文件输出路径 <br></code></pre></td></tr></table></figure>
+
+<h4 id="案例实操-1"><a href="#案例实操-1" class="headerlink" title="案例实操"></a>案例实操</h4><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">$ hdfs oev -p XML -i edits_0000000000000000012-<span class="hljs-number">0000000000000000013</span> -o <span class="hljs-regexp">/opt/m</span>odule<span class="hljs-regexp">/hadoop-2.7.2/</span>edits.xml <br>$ cat <span class="hljs-regexp">/opt/m</span>odule<span class="hljs-regexp">/hadoop-2.7.2/</span>edits.xml <br></code></pre></td></tr></table></figure>
+
+<p>将显示的xml文件内容拷贝到Eclipse中创建的xml文件中，并格式化。</p>
+<h2 id="3-重新格式化举例"><a href="#3-重新格式化举例" class="headerlink" title="3 重新格式化举例"></a>3 重新格式化举例</h2><h3 id="格式化之后的fsimage和edits"><a href="#格式化之后的fsimage和edits" class="headerlink" title="格式化之后的fsimage和edits"></a>格式化之后的fsimage和edits</h3><h4 id="hadoop100（NameNode）上的文件"><a href="#hadoop100（NameNode）上的文件" class="headerlink" title="hadoop100（NameNode）上的文件"></a>hadoop100（NameNode）上的文件</h4><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210183848.png" srcset="/img/loading.gif" lazyload><br>可以看到，只有fsimage_000000的文件，并没有edits文件，也就是说，没有修改的过程，所以没有edits。</p>
+<h3 id="hadoop102上的文件（Secondary-NameNade）"><a href="#hadoop102上的文件（Secondary-NameNade）" class="headerlink" title="hadoop102上的文件（Secondary NameNade）"></a>hadoop102上的文件（Secondary NameNade）</h3><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210183916.png" srcset="/img/loading.gif" lazyload><br>可以看到，hadoop102上没有文件，因为还不需要它来进行合并fsimage和edits文件的操作</p>
+<h3 id="进行一次操作：增加一个文件夹”-x2F-examples”"><a href="#进行一次操作：增加一个文件夹”-x2F-examples”" class="headerlink" title="进行一次操作：增加一个文件夹”&#x2F;examples”"></a>进行一次操作：增加一个文件夹”&#x2F;examples”</h3><p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210183931.png" srcset="/img/loading.gif" lazyload><br>可以看到，多了一个edits文件。仔细查看这两个文件：</p>
+<h4 id="fsimage-00-00"><a href="#fsimage-00-00" class="headerlink" title="fsimage_00..00:"></a>fsimage_00..00:</h4><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">hdfs oiv -p <span class="hljs-keyword">XML</span> <span class="hljs-title">-i</span> fsimage_0000000000000000000 -o fsimage.xml<br></code></pre></td></tr></table></figure>
+
+<p>将其复制到IDEA格式化之后可以看到，最新的创建文件夹的动作并没有被记录。<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210183958.png" srcset="/img/loading.gif" lazyload style="zoom:67%;" /></p>
+<h4 id="edits文件"><a href="#edits文件" class="headerlink" title="edits文件"></a>edits文件</h4><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">hdfs oev -p <span class="hljs-keyword">XML</span> <span class="hljs-title">-i</span> edits_0000000000000000001-<span class="hljs-number">0000000000000000003</span> -o edits.xml<br></code></pre></td></tr></table></figure>
+
+<p>同样复制到IDEA格式化之后，可以看到创建文件夹的动作被记录在edits文件中。<br><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210184015.png" srcset="/img/loading.gif" lazyload> 			<br>也就是说，在这个时候edits文件还没有和fsimage文件进行合并，这个动作是由2NN进行的。所以在2NN中没有出现文件。</p>
+<h1 id="集群安全模式"><a href="#集群安全模式" class="headerlink" title="集群安全模式"></a>集群安全模式</h1><h2 id="1-进入和离开安全模式"><a href="#1-进入和离开安全模式" class="headerlink" title="1 进入和离开安全模式"></a>1 进入和离开安全模式</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210184046.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h2 id="2-等待安全模式"><a href="#2-等待安全模式" class="headerlink" title="2 等待安全模式"></a>2 等待安全模式</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Hadoop/20201210184111.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+
+
+<h1 id="NameNode多目录配置"><a href="#NameNode多目录配置" class="headerlink" title="NameNode多目录配置"></a>NameNode多目录配置</h1><h2 id="修改hdfs-site-xml"><a href="#修改hdfs-site-xml" class="headerlink" title="修改hdfs-site.xml"></a>修改hdfs-site.xml</h2><img src="https://pic.downk.cc/item/5fc7845b394ac52378b4e7b2.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h2 id="结果：双目录"><a href="#结果：双目录" class="headerlink" title="结果：双目录"></a>结果：双目录</h2><img src="https://pic.downk.cc/item/5fc7845b394ac52378b4e7a9.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/" class="category-chain-item">大数据</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/" class="category-chain-item">Hadoop生态</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/Hadoop/" class="category-chain-item">Hadoop</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/Hadoop%E7%94%9F%E6%80%81/Hadoop/2-HDFS%E4%BB%8B%E7%BB%8D/" class="category-chain-item">2 HDFS介绍</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>HDFS5 NN和2NN</div>
+      <div>http://example.com/2022/12/bf7fc4b98f6d.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/b8eda0d8381b.html" title="HDFS6 DataNode工作机制">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">HDFS6 DataNode工作机制</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/a578ae6e6060.html" title="HDFS4 数据流">
+                        <span class="hidden-mobile">HDFS4 数据流</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/bf7fc4b98f6d.html';
+          this.page.identifier = '/2022/12/bf7fc4b98f6d.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

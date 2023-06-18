@@ -1,0 +1,924 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="引言-异步事件处理的两种方式异步事件的处理 查询法 通知法  一、信号实现并发 信号的概念   信号是软件中断。 signal(); 信号的不可靠 可重入函数 信号的响应过程（重点） 常用函数 kill(); raise(); alarm(); pause(); abort(); system(); sleep问题   信号集 信号屏蔽字&#x2F;pending集的处理 扩展： sigsuspe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="APUE-10-信号">
+<meta property="og:url" content="http://example.com/2022/12/ee502027f0af.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="引言-异步事件处理的两种方式异步事件的处理 查询法 通知法  一、信号实现并发 信号的概念   信号是软件中断。 signal(); 信号的不可靠 可重入函数 信号的响应过程（重点） 常用函数 kill(); raise(); alarm(); pause(); abort(); system(); sleep问题   信号集 信号屏蔽字&#x2F;pending集的处理 扩展： sigsuspe">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636d9f81f7e3bd97f4929.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6369df81f7e3bd97f3888.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6371af81f7e3bd97f56b0.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6367bf81f7e3bd97f069d.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63659f81f7e3bd97ee582.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636fdf81f7e3bd97f4fc7.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63669f81f7e3bd97eec0f.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63722f81f7e3bd97f5881.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63669f81f7e3bd97eec35.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6364bf81f7e3bd97ee217.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63707f81f7e3bd97f522e.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc6364cf81f7e3bd97ee222.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc636f5f81f7e3bd97f4ddd.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63661f81f7e3bd97ee75b.jpg">
+<meta property="og:image" content="https://pic.downk.cc/item/5fc63661f81f7e3bd97ee75b.jpg">
+<meta property="article:published_time" content="2022-12-03T18:38:18.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pic.downk.cc/item/5fc636d9f81f7e3bd97f4929.jpg">
+  
+  
+  
+  <title>APUE-10-信号 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="APUE-10-信号"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:38" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          15k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          126 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">APUE-10-信号</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="引言-异步事件处理的两种方式"><a href="#引言-异步事件处理的两种方式" class="headerlink" title="引言-异步事件处理的两种方式"></a>引言-异步事件处理的两种方式</h1><h2 id="异步事件的处理"><a href="#异步事件的处理" class="headerlink" title="异步事件的处理"></a>异步事件的处理</h2><ol>
+<li>查询法</li>
+<li>通知法</li>
+</ol>
+<h3 id="一、信号实现并发"><a href="#一、信号实现并发" class="headerlink" title="一、信号实现并发"></a>一、信号实现并发</h3><ol>
+<li>信号的概念<br>   信号是软件中断。</li>
+<li>signal();</li>
+<li>信号的不可靠</li>
+<li>可重入函数</li>
+<li>信号的响应过程（重点）</li>
+<li>常用函数<ul>
+<li>kill();</li>
+<li>raise();</li>
+<li>alarm();</li>
+<li>pause();</li>
+<li>abort();</li>
+<li>system();</li>
+<li>sleep问题</li>
+</ul>
+</li>
+<li>信号集</li>
+<li>信号屏蔽字&#x2F;pending集的处理</li>
+<li>扩展：<ul>
+<li>sigsuspend();</li>
+<li>sigaction();</li>
+<li>setitimer();</li>
+</ul>
+</li>
+<li>实时信号</li>
+</ol>
+<h3 id="二、多线程实现并发"><a href="#二、多线程实现并发" class="headerlink" title="二、多线程实现并发"></a>二、多线程实现并发</h3><h1 id="系统日志"><a href="#系统日志" class="headerlink" title="系统日志"></a>系统日志</h1><h2 id="系统日志所在位置："><a href="#系统日志所在位置：" class="headerlink" title="系统日志所在位置："></a>系统日志所在位置：</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">/var/log<br></code></pre></td></tr></table></figure>
+
+<h2 id="syslog设施"><a href="#syslog设施" class="headerlink" title="syslog设施"></a>syslog设施</h2><p>简单来说，就是所有文件（包括守护进程等）都将信息全部发送给syslogd，然后让其控制格式进行统一的输出。</p>
+<h2 id="3种产生日志消息的方法"><a href="#3种产生日志消息的方法" class="headerlink" title="3种产生日志消息的方法"></a>3种产生日志消息的方法</h2><ol>
+<li>内核例程可以调用log函数</li>
+<li>大多数用户进程（守护进程）调用syslog(3)函数来产生日志消息</li>
+<li>将日志信息发送给UDP端口514</li>
+</ol>
+<h3 id="syslog系列函数"><a href="#syslog系列函数" class="headerlink" title="syslog系列函数"></a>syslog系列函数</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;syslog.h&gt;</span>        <span class="hljs-comment">//可选的，如果不调用，则会第一次调用syslog时调用。</span></span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">openlog</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *ident, <span class="hljs-type">int</span> option, <span class="hljs-type">int</span> facility)</span>;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">syslog</span><span class="hljs-params">(<span class="hljs-type">int</span> priority, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *format, ...)</span>;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">closelog</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>;    <span class="hljs-comment">//也是可选的，因为它只是关闭层被用于与syslogd的守护进程进行通信的描述符</span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">setlogmask</span><span class="hljs-params">(<span class="hljs-type">int</span> maskpri)</span>;<br></code></pre></td></tr></table></figure>
+<h1 id="信号的基本概念"><a href="#信号的基本概念" class="headerlink" title="信号的基本概念"></a>信号的基本概念</h1><h2 id="1-引言"><a href="#1-引言" class="headerlink" title="1 引言"></a>1 引言</h2><p>信号是软件中断。<br>信号提供了一种处理异步事件的方法。<br>也就是说，系统有很多时刻会产生的情况是无法预料的，通过信号机制可以随时对突发事件进行处理。</p>
+<h2 id="2-信号概念"><a href="#2-信号概念" class="headerlink" title="2 信号概念"></a>2 信号概念</h2><p>信号是异步事件的经典实例。产生信号的时间对进程而言是随机出现。</p>
+<h3 id="内核对信号的处理操作"><a href="#内核对信号的处理操作" class="headerlink" title="内核对信号的处理操作"></a>内核对信号的处理操作</h3><ol>
+<li>忽略此信号<br>大多数信号都可以使用这种方式进行处理，但有两种信号却绝不能被忽略。它们是SIGKILL和SIGSTOP。</li>
+<li>捕捉信号</li>
+<li>执行系统默认动作</li>
+</ol>
+<h3 id="core文件"><a href="#core文件" class="headerlink" title="core文件"></a>core文件</h3><p>注意到，系统的默认动作大部分都是终止或者终止+core。那么这个core文件是什么呢？<br>core文件其实就是程序的某个现场（大部分都是出错现场）</p>
+<h2 id="3-函数signal"><a href="#3-函数signal" class="headerlink" title="3 函数signal"></a>3 函数signal</h2><p>UNIX系统信号机制最简单的接口是signal函数。形式如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;signal.h&gt;</span></span><br><br><span class="hljs-type">void</span> (*signal(<span class="hljs-type">int</span> signo, <span class="hljs-type">void</span> (*func)(<span class="hljs-type">int</span>)))(<span class="hljs-type">int</span>);<br></code></pre></td></tr></table></figure>
+<p>参数解释：<br>在这里，signo是函数名，参考图10-1。<br>func的值有三种情况：</p>
+<ol>
+<li>SIG_IGN（signal ignore)，表示忽略该信号</li>
+<li>SIG_DFL (signal default)，表示系统默认动作</li>
+<li>指定函数地址：则在信号发生时，调用该函数，这种处理被称为<strong>捕捉信号</strong>，称此函数为信号处理程序或信号捕捉程序。</li>
+</ol>
+<h3 id="等价替换"><a href="#等价替换" class="headerlink" title="等价替换"></a>等价替换</h3><p>可将上面的表达式替换为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-type">void</span> <span class="hljs-title function_">Sigfunc</span><span class="hljs-params">(<span class="hljs-type">int</span>)</span>;<br><br>Sigfunc *<span class="hljs-title function_">signal</span><span class="hljs-params">(<span class="hljs-type">int</span>, Sigfunc *)</span>;<br></code></pre></td></tr></table></figure>
+<p>解释：<br>这里的形式和常规的不太一样，在常规的typedef中，更类似于：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-type">double</span> wage;    <span class="hljs-comment">//创建一个叫wage的别名，其实wage就是double的意思</span><br></code></pre></td></tr></table></figure>
+<p>但是在这里，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-type">void</span> <span class="hljs-title function_">Sigfunc</span><span class="hljs-params">(<span class="hljs-type">int</span>)</span>;<br></code></pre></td></tr></table></figure>
+<p>在这里的意思是定义一种指针类型Sigfunc，它是一种指向函数void (int) 的指针，也就是说Sigfunc表示的是这种类型的函数的地址，因为：<br>函数名不是其类型的一部分，函数的类型只由它的返回值和参数表决定.<br>因此在这里，我们可以通过Sigfunc来指向不同的类型为void (int)的函数，例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">abs</span><span class="hljs-params">(<span class="hljs-type">int</span> <span class="hljs-built_in">abs</span>)</span>&#123;<br>  <span class="hljs-keyword">if</span>(<span class="hljs-built_in">abs</span> &gt; <span class="hljs-number">0</span>)&#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">abs</span>;<br>  &#125; <span class="hljs-keyword">else</span>&#123;<br>    <span class="hljs-keyword">return</span> -<span class="hljs-built_in">abs</span>;<br>  &#125;<br>&#125;<br><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br><br>  <span class="hljs-keyword">typedef</span> <span class="hljs-title function_">int</span> <span class="hljs-params">(*Sigfunc)</span><span class="hljs-params">(<span class="hljs-type">int</span>)</span>;<br>  Sigfunc my_abs = <span class="hljs-built_in">abs</span>;<br>  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d\n&quot;</span>, my_abs(<span class="hljs-number">-1</span>));<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="举例1（忽略中断信号）"><a href="#举例1（忽略中断信号）" class="headerlink" title="举例1（忽略中断信号）"></a>举例1（忽略中断信号）</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;signal.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br><br>  <span class="hljs-type">int</span> i;<br><br>  signal(SIGINT, SIG_IGN);<br><br>  <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++)&#123;<br>    write(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;*&quot;</span>, <span class="hljs-number">1</span>);<br>    sleep(<span class="hljs-number">1</span>);<br>  &#125;<br><br><br>  <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>可以看到，在这里我们使用了signal信号，设定了接收到SIGINT（signal interrupt）时处理的动作是SIG_IGN（signal ignore），那么当接受到（CTRL+C）的时候程序就不会中断了，会继续输出直到结束。<br>输出：<br>![IMAGE](resources&#x2F;1DD53AD6BEF2155AE6D59D83D2B57A4F.jpg &#x3D;208x49)<br>就像我们预期的那样，中间那个^C即使出现了也不会又反应。</p>
+<h3 id="举例2（执行函数地址来处理信号）"><a href="#举例2（执行函数地址来处理信号）" class="headerlink" title="举例2（执行函数地址来处理信号）"></a>举例2（执行函数地址来处理信号）</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;signal.h&gt;</span></span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">int_handler</span><span class="hljs-params">(<span class="hljs-type">int</span> s)</span>&#123;<br>  write(<span class="hljs-number">1</span>,<span class="hljs-string">&quot;1&quot;</span>,<span class="hljs-number">1</span>);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br><br>  <span class="hljs-type">int</span> i;<br><br>  signal(SIGINT, int_handler);       <span class="hljs-comment">//给入口地址</span><br><br>  <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++)&#123;<br>    write(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;*&quot;</span>, <span class="hljs-number">1</span>);<br>    sleep(<span class="hljs-number">1</span>);<br>  &#125;<br><br><br>  <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>可以看到，当SIGINT信号到时，指定了一个函数的入口地址来处理，处理方式是打印一个1.<br>输出：<br>![IMAGE](resources&#x2F;D211813D0F7E0ED70777180DAA7744D5.jpg &#x3D;194x51)</p>
+<h4 id="注意："><a href="#注意：" class="headerlink" title="注意："></a>注意：</h4><p><strong>信号会打断阻塞的系统调用</strong></p>
+<h3 id="书中例子（fig10-2）"><a href="#书中例子（fig10-2）" class="headerlink" title="书中例子（fig10.2）"></a>书中例子（fig10.2）</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;apue.h&quot;</span></span><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span>	<span class="hljs-title function_">sig_usr</span><span class="hljs-params">(<span class="hljs-type">int</span>)</span>;	<span class="hljs-comment">/* one handler for both signals */</span><br><br><span class="hljs-type">int</span><br><span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-keyword">if</span> (signal(SIGUSR1, sig_usr) == SIG_ERR)<br>		err_sys(<span class="hljs-string">&quot;can&#x27;t catch SIGUSR1&quot;</span>);<br>	<span class="hljs-keyword">if</span> (signal(SIGUSR2, sig_usr) == SIG_ERR)<br>		err_sys(<span class="hljs-string">&quot;can&#x27;t catch SIGUSR2&quot;</span>);<br>	<span class="hljs-keyword">for</span> ( ; ; )<br>		pause();<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span><br><span class="hljs-title function_">sig_usr</span><span class="hljs-params">(<span class="hljs-type">int</span> signo)</span>		<span class="hljs-comment">/* argument is signal number */</span><br>&#123;<br>	<span class="hljs-keyword">if</span> (signo == SIGUSR1)<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;received SIGUSR1\n&quot;</span>);<br>	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (signo == SIGUSR2)<br>		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;received SIGUSR2\n&quot;</span>);<br>	<span class="hljs-keyword">else</span><br>		err_dump(<span class="hljs-string">&quot;received signal %d\n&quot;</span>, signo);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>解释：<br>当信号来临时，signal会自动进行捕捉，然后将交给sig_usr进行处理，如果处理结果是SIG_ERR，那么打印不能捕捉，如果是其他信号则按照默认方式处理。<br>输出：<br>![IMAGE](resources&#x2F;3F816E69971AA60325437504C2D5EB13.jpg &#x3D;432x343)</p>
+<p>可以看到，我们发送SIGUSR信号1和2时，会打印接收到信号，但是不会结束，而直接kill的时候会结束，这是因为没有对kill信号（SIGTEAM）设置相应的捕捉方式，而是按照默认方式进行操作，所以就直接终止了。</p>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><p>exec函数将原先设置为要捕捉的信号都更改为默认动作，其他信号的状态则保持不变。</p>
+<h2 id="4-不可靠信号"><a href="#4-不可靠信号" class="headerlink" title="4 不可靠信号"></a>4 不可靠信号</h2><h3 id="不可靠概念"><a href="#不可靠概念" class="headerlink" title="不可靠概念"></a>不可靠概念</h3><p>信号可能会丢失：<br>一个信号发生了，但进程却可能一直不知道这一点。</p>
+<h1 id="2-可重入函数"><a href="#2-可重入函数" class="headerlink" title="2 可重入函数"></a>2 可重入函数</h1><p>所有的系统调用都是可重入的。<br>一部分库函数是可重入的。如：memcpy<br>进程捕捉到信号并对其进行处理时，进程正在执行的正常指令序列就被信号处理程序临时中断，它首先执行该信号处理程序中的指令。<br>如果从信号处理程序返回（例如没有调用 exit 或longjmp），则继续执行在捕捉到信号时进程正在执行的正常指令序列（这类似于发生硬件中断时所做的）。<br>但在信号处理程序中，不能判断捕捉到信号时进程执行到何处。如果进程正在执行malloc，在其堆中分配另外的存储空间，而此时由于捕捉到信号而插入执行该信号处理程序，其中又调用malloc，这时会发生什么？又例如，若进程正在执行getpwnam（见6.2节）这种将其结果存放在静态存储单元中的函数，其间插入执行信号处理程序，它又调用这样的函数，这时又会发生什么呢？在malloc例子中，可能会对进程造成破坏，因为malloc通常为它所分配的存储区维护一个链表，而插入执行信号处理程序时，进程可能正在更改此链表。在getpwnam的例子中，返回给正常调用者的信息可能会被返回给信号处理程序的信息覆盖。<br><img src="https://pic.downk.cc/item/5fc636d9f81f7e3bd97f4929.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>Single UNIX Specification说明了在信号处理程序中保证调用安全的函数。这些函数是可重入的并被称为是异步信号安全的（async-signal safe）。<br>除了可重入以外，在信号处理操作期间，它会阻塞任何会引起不一致的信号发送。图10-4列出了这些异步信号安全的函数。没有列入图10-4中的大多数函数是不可重入的，<br>因为</p>
+<ul>
+<li>已知它们使用静态数据结构；</li>
+<li>它们调用 malloc 或free；</li>
+<li>它们是标准I&#x2F;O函数。标准I&#x2F;O库的很多实现都以不可重入方式使用全局数据结构。注意，虽然在本书的某些实例中，信号处理程序也调用了printf函数，但这并不保证产生所期望的结果，信号处理程序可能中断主程序中的printf函数调用。</li>
+</ul>
+<p>应当了解，即使信号处理程序调用的是图10-4中的函数，但是由于每个线程只有一个errno变量（回忆1.7节对errno和线程的讨论），所以信号处理程序可能会修改其原先值。考虑一个信号处理程序，它恰好在main刚设置errno之后被调用。如果该信号处理程序调用read这类函数，则它可能更改errno的值，从而取代了刚由main设置的值。因此，作为一个通用的规则，当在信号处理程序中调用图10-4中的函数时，应当在调用前保存errno，在调用后恢复errno。（应当了解，经常被捕捉到的信号是SIGCHLD，其信号处理程序通常要调用一种wait函数，而各种wait函数都能改变errno。）</p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;pwd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;apue.h&quot;</span></span><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">my_alarm</span><span class="hljs-params">(<span class="hljs-type">int</span> signo)</span>&#123;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">passwd</span> *<span class="hljs-title">rootptr</span>;</span><br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;in signal handler\n&quot;</span>);<br>    <span class="hljs-keyword">if</span>((rootptr = getpwnam(<span class="hljs-string">&quot;root&quot;</span>)) == <span class="hljs-literal">NULL</span>)&#123;<br>        err_sys(<span class="hljs-string">&quot;getpwnam(root) error&quot;</span>);<br>    &#125;<br>    alarm(<span class="hljs-number">1</span>);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>&#123;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">passwd</span> *<span class="hljs-title">ptr</span>;</span><br><br>    signal(SIGALRM, my_alarm);<br>    alarm(<span class="hljs-number">1</span>);<br>    <span class="hljs-keyword">for</span>(; ;)&#123;<br>        <span class="hljs-keyword">if</span>((ptr = getpwnam(<span class="hljs-string">&quot;sar&quot;</span>)) == <span class="hljs-literal">NULL</span>)&#123;<br>            err_sys(<span class="hljs-string">&quot;getpwnam error&quot;</span>);<br>        &#125;<br>        <span class="hljs-keyword">if</span>(<span class="hljs-built_in">strcmp</span>(ptr-&gt;pw_name,<span class="hljs-string">&quot;sar&quot;</span>) != <span class="hljs-number">0</span>)&#123;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;return value corrupted, pw_name = %s\n&quot;</span>,ptr-&gt;pw_name);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>解析：<br>在这里，main进程调用alarm函数使得每秒产生一次SIGALAM信号，并且被signal函数定向到my_alarm进程中，但是my_alarm中有petpwnam这个不可重入函数，因此执行的结果是异常的。（不可预测）<br>输出：<br><img src="https://pic.downk.cc/item/5fc6369df81f7e3bd97f3888.jpg" srcset="/img/loading.gif" lazyload></p>
+<h1 id="3-1-守护进程"><a href="#3-1-守护进程" class="headerlink" title="3.1 守护进程"></a>3.1 守护进程</h1><p>守护进程(daemon)是生存期长的一种进程。它们常常在系统引导装入时启动，仅在系统关闭时才终止。<br>因为它们没有控制终端，所以说它们是在后台进行的。UNIX系统有很多守护进程，它们执行日常事务活动。</p>
+<h2 id="守护进程的特征"><a href="#守护进程的特征" class="headerlink" title="守护进程的特征"></a>守护进程的特征</h2><p>我们执行</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">ps -axj</span><br></code></pre></td></tr></table></figure>
+<p>命令。<br>参数说明：<br>-a：显示由其他用户所拥有的进程的状态<br>-x：显示没有控制终端的进程状态<br>-j：显示与作业有关的信息。<br>部分输出：<br><img src="https://pic.downk.cc/item/5fc6371af81f7e3bd97f56b0.jpg" srcset="/img/loading.gif" lazyload><br>解释：<br>USER是用户，PID是进程ID，PPID是父进程ID，PGID是组ID，SESS是会话ID，TT是表明是否由控制终端控制。</p>
+<ol>
+<li>守护进程脱离控制终端（因此TT应该是？）</li>
+<li>守护进程的父进程一定得是init进程（因为守护进程一直在运行，因此若让父进程一直等待则会造成很多资源损耗，因此直接让父进程fork之后setsid，然后销毁父进程，将守护进程托管给init进程）</li>
+<li>守护进程PID&#x3D;PGID&#x3D;SESS</li>
+</ol>
+<h3 id="编程规则"><a href="#编程规则" class="headerlink" title="编程规则"></a>编程规则</h3><ol>
+<li>调用umask将文件模式创建屏蔽字设置为一个已知值（通常是0）；</li>
+<li>调用fork然后使父进程exit</li>
+<li>调用setsid创建一个新会话。然后执行9.5节中列出的三个步骤：</li>
+</ol>
+<ul>
+<li>成为新会话的首进程</li>
+<li>成为一个新进程组的组长进程</li>
+<li>没有控制终端</li>
+</ul>
+<ol start="4">
+<li>将当前目录更改为根目录。</li>
+<li>关闭不再需要的文件描述符</li>
+</ol>
+<h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/resource.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/stat.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> FNAME <span class="hljs-string">&quot;/tmp/out&quot;</span></span><br><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">daemonize</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>&#123;<br>  <span class="hljs-type">pid_t</span> pid;<br>  <span class="hljs-type">int</span> fd;<br>  <span class="hljs-comment">//实现守护进程</span><br>  pid = fork();<br>  <span class="hljs-keyword">if</span>(pid &lt; <span class="hljs-number">0</span>)&#123;<br>  perror(<span class="hljs-string">&quot;fork()&quot;</span>);<br>  <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br> &#125;<br>  <span class="hljs-keyword">if</span>(pid &gt; <span class="hljs-number">0</span>)&#123;<br>   <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br> &#125;<br>  fd = open(<span class="hljs-string">&quot;/dev/null&quot;</span>,O_RDWR);<br>  <span class="hljs-keyword">if</span>(fd &lt; <span class="hljs-number">0</span>)&#123;<br>    perror(<span class="hljs-string">&quot;1&quot;</span>);<br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>  &#125;<br><br>  dup2(fd,<span class="hljs-number">0</span>);<br>  dup2(fd,<span class="hljs-number">1</span>);<br>  dup2(fd,<span class="hljs-number">2</span>);<br>  <span class="hljs-keyword">if</span>(fd &gt; <span class="hljs-number">2</span>)&#123;<br>    close(fd);<br>  &#125;<br><br>  setsid();<br>  chdir(<span class="hljs-string">&quot;/&quot;</span>);     <span class="hljs-comment">//设置到根目录位置</span><br><br>  umask(<span class="hljs-number">0</span>);<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br><br>  FILE *fp;<br><br>  <span class="hljs-keyword">if</span>(daemonize())&#123;  <span class="hljs-comment">//表示自己的函数名字，用它来实现daemon</span><br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>  &#125;<br><br> fp = fopen(FNAME,<span class="hljs-string">&quot;w&quot;</span>);<br> <span class="hljs-keyword">if</span>(fp == <span class="hljs-literal">NULL</span>)&#123;<br>   perror(<span class="hljs-string">&quot;&quot;</span>);<br>   <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br> &#125;<br>  <span class="hljs-comment">//做任务，目的是不间断每秒钟往文件打印一个数字</span><br> <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; ; i++)&#123;<br>   <span class="hljs-built_in">fprintf</span>(fp,<span class="hljs-string">&quot;%d&quot;</span>,i);<br>   sleep(<span class="hljs-number">1</span>);<br> &#125;<br>  <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://pic.downk.cc/item/5fc6367bf81f7e3bd97f069d.jpg" srcset="/img/loading.gif" lazyload><br><img src="https://pic.downk.cc/item/5fc63659f81f7e3bd97ee582.jpg" srcset="/img/loading.gif" lazyload><br><img src="https://pic.downk.cc/item/5fc636fdf81f7e3bd97f4fc7.jpg" srcset="/img/loading.gif" lazyload><br>解释：<br>可以看到，这里PID和PGID都是15252，是相等的，其实其SID也相等，但是并没有显示出来，并且没有控制终端，所以其是一个标准的守护进程。<br>查看我们重定向到的&#x2F;tmp&#x2F;out文件</p>
+<h1 id="3-2-kill-raise-alarm和pause函数"><a href="#3-2-kill-raise-alarm和pause函数" class="headerlink" title="3.2 kill,raise,alarm和pause函数"></a>3.2 kill,raise,alarm和pause函数</h1><h2 id="1-函数kill和raise"><a href="#1-函数kill和raise" class="headerlink" title="1. 函数kill和raise"></a>1. 函数kill和raise</h2><p>kill函数将信号发送给进程或进程组。raise函数则允许进程向自身发送信号。</p>
+<h3 id="注意-1"><a href="#注意-1" class="headerlink" title="注意"></a>注意</h3><p>kill只发送信号，不杀死信号，很多情况下进程会因为收到kill信号终止是因为很多信号处理的默认行为就是终止线程。</p>
+<p>raise最初是由ISO C定义的。后来，为了与ISO C标准保持一致，POSIX.1也包括了该函数。但是POSIX.1扩展了raise的规范，使其可处理线程（12.8中讨论线程如何与信号交互）。<br>因为ISO C并不涉及多进程，所以它不能定义以进程ID作为其参数（如kill函数）的函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;signal.h&gt;</span></span><br><span class="hljs-type">int</span> <span class="hljs-title function_">kill</span><span class="hljs-params">(<span class="hljs-type">pid_t</span> pid, <span class="hljs-type">int</span> signo)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">raise</span><span class="hljs-params">(<span class="hljs-type">int</span> signo)</span>;<br><span class="hljs-comment">//两个函数返回值：若成功，返回0；若出错，返回−1</span><br></code></pre></td></tr></table></figure>
+<p>调用<br>raise(signo);<br>等价于调用<br>kill(getpid(), signo);</p>
+<h3 id="kill的pid参数有以下4种不同的情况。"><a href="#kill的pid参数有以下4种不同的情况。" class="headerlink" title="kill的pid参数有以下4种不同的情况。"></a>kill的pid参数有以下4种不同的情况。</h3><ul>
+<li>pid &gt; 0 将该信号发送给进程ID为pid的进程。</li>
+<li>pid &#x3D;&#x3D; 0 将该信号发送给与发送进程属于同一进程组的所有进程（这些进程的进程组 ID等于发送进程的进程组ID），而且发送进程具有权限向这些进程发送信号。这里用的术语“所有进程”不包括实现定义的系统进程集。对于大多数UNIX系统，系统进程集包括内核进程和init（pid为1）。</li>
+<li>pid &lt; 0 将该信号发送给其进程组ID等于pid绝对值，而且发送进程具有权限向其发送信号的所有进程。如前所述，所有进程并不包括系统进程集中的进程。</li>
+<li>pid &#x3D;&#x3D; −1 将该信号发送给发送进程有权限向它们发送信号的所有进程。如前所述，所有进程不包括系统进程集中的进程。</li>
+</ul>
+<p>如前所述，进程将信号发送给其他进程需要权限。超级用户可将信号发送给任一进程。对于非超级用户，其基本规则是发送者的实际用户 ID 或有效用户 ID 必须等于接收者的实际用户 ID或有效用户ID。<br>如果实现支持_POSIX_SAVED_IDS（如POSIX.1现在要求的那样），则检查接收者的保存设置用户ID（而不是有效用户ID）。在对权限进行测试时也有一个特例：如果被发送的信号是SIGCONT，则进程可将它发送给属于同一会话的任一其他进程。<br>POSIX.1将信号编号0定义为空信号。如果signo参数是0，则kill仍执行正常的错误检查，但不发送信号。这常被用来确定一个特定进程是否仍然存在。如果向一个并不存在的进程发送空信号，则kill返回−1，errno被设置为ESRCH。但是，应当注意，UNIX系统在经过一定时间后会重新使用进程ID，所以一个现有的具有所给定进程ID的进程并不一定就是你所想要的进程。<br>还应理解的是，测试进程是否存在的操作不是原子操作。在kill向调用者返回测试结果时，原来已存在的被测试进程此时可能已经终止，所以这种测试并无多大价值。<br>?: 如果调用kill为调用进程产生信号，而且此信号是不被阻塞的，那么在kill返回之前， signo或者某个其他未决的、非阻塞信号被传送至该进程。（对于线程而言，还有一些附加条件；详细情况见12.8节。）</p>
+<h2 id="2-alarm"><a href="#2-alarm" class="headerlink" title="2. alarm"></a>2. alarm</h2><p>使用alarm函数可以设置一个定时器（闹钟时间），在将来的某个时刻该定时器会超时。当定时器超时时，产生 SIGALRM信号。如果忽略或不捕捉此信号，则其默认动作是<strong>终止调用该alarm函数的进程</strong>。</p>
+<h3 id="函数形式"><a href="#函数形式" class="headerlink" title="函数形式"></a>函数形式</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> <span class="hljs-title function_">alarm</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> seconds)</span>;<br><span class="hljs-comment">//返回值：0或以前设置的闹钟时间的余留秒数</span><br></code></pre></td></tr></table></figure>
+<p>每个进程只能有一个闹钟时间。如果在调用alarm时，之前已为该进程注册的闹钟时间还没有超时，则该闹钟时间的余留值作为本次alarm函数调用的值返回。以前注册的闹钟时间则被新值代替。<br>如果有以前注册的尚未超过的闹钟时间，而且本次调用的seconds值是0，则取消以前的闹钟时间，其余留值仍作为alarm函数的返回值。<br>虽然 SIGALRM 的默认动作是终止进程，但是大多数使用闹钟的进程捕捉此信号。如果此时进程要终止，则在终止之前它可以执行所需的清理操作。如果我们想捕捉 SIGALRM 信号，则必须在调用 alarm 之前安装该信号的处理程序。如果我们先调用alarm，然后在我们能够安装SIGALRM处理程序之前已接到该信号，那么进程将终止。</p>
+<h3 id="alarm举例"><a href="#alarm举例" class="headerlink" title="alarm举例"></a>alarm举例</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br>  alarm(<span class="hljs-number">5</span>);<br>  <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>);    <span class="hljs-comment">//不让进程直接终止了</span><br>  <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>输出：<br>运行5s之后出现：</p>
+<h3 id="alarm举例2"><a href="#alarm举例2" class="headerlink" title="alarm举例2"></a>alarm举例2</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br>  alarm(<span class="hljs-number">10</span>);<br>  alarm(<span class="hljs-number">1</span>);<br>  alarm(<span class="hljs-number">5</span>);<br>  <span class="hljs-comment">//alarm(1)和alarm(5)都是无效的</span><br>  <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>);<br>  <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="3-pause函数"><a href="#3-pause函数" class="headerlink" title="3. pause函数"></a>3. pause函数</h2><h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>pause函数使调用进程挂起直至捕捉到一个信号。</p>
+<h3 id="函数形式-1"><a href="#函数形式-1" class="headerlink" title="函数形式"></a>函数形式</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-type">int</span> <span class="hljs-title function_">pause</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>;<br><span class="hljs-comment">//返回值：−1，errno设置为EINTR</span><br></code></pre></td></tr></table></figure>
+<p>只有执行了一个信号处理程序并从其返回时，pause才返回。在这种情况下，pause返回−1， errno设置为EINTR。</p>
+<h2 id="举例：自己实现一个sleep（fig10-7"><a href="#举例：自己实现一个sleep（fig10-7" class="headerlink" title="举例：自己实现一个sleep（fig10.7)"></a>举例：自己实现一个sleep（fig10.7)</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span>	<span class="hljs-string">&lt;signal.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span>	<span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span><br><span class="hljs-title function_">sig_alrm</span><span class="hljs-params">(<span class="hljs-type">int</span> signo)</span><br>&#123;<br>	<span class="hljs-comment">/* nothing to do, just return to wake up the pause */</span><br>&#125;<br><br><span class="hljs-type">unsigned</span> <span class="hljs-type">int</span><br><span class="hljs-title function_">sleep1</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> seconds)</span><br>&#123;<br>	<span class="hljs-keyword">if</span> (signal(SIGALRM, sig_alrm) == SIG_ERR)<br>		<span class="hljs-keyword">return</span>(seconds);<br>	alarm(seconds);		<span class="hljs-comment">/* start the timer */</span><br>	pause();			<span class="hljs-comment">/* next caught signal wakes us up */</span><br>	<span class="hljs-keyword">return</span>(alarm(<span class="hljs-number">0</span>));	<span class="hljs-comment">/* turn off timer, return unslept time */</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="存在问题"><a href="#存在问题" class="headerlink" title="存在问题"></a>存在问题</h3><ol>
+<li>如果在调用sleep1之前，调用者已设置了闹钟，则它被sleep1函数中的第一次alarm调用擦除。可用下列方法更正这一点：检查第一次调用 alarm 的返回值，如其值小于本次调用alarm的参数值，则只应等到已有的闹钟超时。如果之前设置的闹钟超时时间晚于本次设置值，则在sleep1函数返回之前，重置此闹钟，使其在之前闹钟的设定时间再次发生超时。</li>
+<li>该程序中修改了对 SIGALRM 的配置。如果编写了一个函数供其他函数调用，则在该函数被调用时先要保存原配置，在该函数返回前再恢复原配置。更正这一点的方法是：保存signal函数的返回值，在返回前重置原配置。</li>
+<li>在第一次调用alarm和pause之间有一个竞争条件。在一个繁忙的系统中，可能alarm在调用pause之前超时，并调用了信号处理程序。如果发生了这种情况，则在调用pause后，如果没有捕捉到其他信号，调用者将永远被挂起。</li>
+</ol>
+<h2 id="举例：自己实现一个sleep（改进：fig10-8）"><a href="#举例：自己实现一个sleep（改进：fig10-8）" class="headerlink" title="举例：自己实现一个sleep（改进：fig10.8）"></a>举例：自己实现一个sleep（改进：fig10.8）</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span>	<span class="hljs-string">&lt;setjmp.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span>	<span class="hljs-string">&lt;signal.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span>	<span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-type">static</span> jmp_buf	env_alrm;<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span><br><span class="hljs-title function_">sig_alrm</span><span class="hljs-params">(<span class="hljs-type">int</span> signo)</span><br>&#123;<br>	longjmp(env_alrm, <span class="hljs-number">1</span>);<br>&#125;<br><br><span class="hljs-type">unsigned</span> <span class="hljs-type">int</span><br><span class="hljs-title function_">sleep2</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> seconds)</span><br>&#123;<br>	<span class="hljs-keyword">if</span> (signal(SIGALRM, sig_alrm) == SIG_ERR)<br>		<span class="hljs-keyword">return</span>(seconds);<br>	<span class="hljs-keyword">if</span> (setjmp(env_alrm) == <span class="hljs-number">0</span>) &#123;<br>		alarm(seconds);		<span class="hljs-comment">/* start the timer */</span><br>		pause();			<span class="hljs-comment">/* next caught signal wakes us up */</span><br>	&#125;<br>	<span class="hljs-keyword">return</span>(alarm(<span class="hljs-number">0</span>));		<span class="hljs-comment">/* turn off timer, return unslept time */</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="4-信号集"><a href="#4-信号集" class="headerlink" title="4 信号集"></a>4 信号集</h1><h2 id="函数形式-2"><a href="#函数形式-2" class="headerlink" title="函数形式"></a>函数形式</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;signal.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">sigaddset</span><span class="hljs-params">(<span class="hljs-type">sigset_t</span> *<span class="hljs-built_in">set</span>, <span class="hljs-type">int</span> signo)</span>;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">sigdelset</span><span class="hljs-params">(<span class="hljs-type">sigset_t</span> *<span class="hljs-built_in">set</span>, <span class="hljs-type">int</span> signo)</span>;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">sigemptyset</span><span class="hljs-params">(<span class="hljs-type">sigset_t</span> *<span class="hljs-built_in">set</span>)</span>;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">sigfillset</span><span class="hljs-params">(<span class="hljs-type">sigset_t</span> *<span class="hljs-built_in">set</span>)</span>;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">sigismember</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">sigset_t</span> *<span class="hljs-built_in">set</span>, <span class="hljs-type">int</span> signo)</span>;<br></code></pre></td></tr></table></figure>
+<p>这里的set就是信号集<br>注意：<br>这里假定一种实现有31种信号和32位整型。也就是说通过sigset_t定义得到的对象都是一个由31个信号，每种信号有32位整型的对象。不同之处在于整型的设置：</p>
+<ol>
+<li>sigaddset：将某一位整型设置为1</li>
+<li>sigdelset：将某一位整型设置为0</li>
+<li>sigemptyset：将所有位的整型都设置为0</li>
+<li>sigfillset：将所有位都设置为1</li>
+<li>sigismember：测试一个指定的位</li>
+</ol>
+<h2 id="函数实现"><a href="#函数实现" class="headerlink" title="函数实现"></a>函数实现</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span>	<span class="hljs-string">&lt;signal.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span>	<span class="hljs-string">&lt;errno.h&gt;</span></span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * &lt;signal.h&gt; usually defines NSIG to include signal number 0.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span>	SIGBAD(signo)	((signo) <span class="hljs-string">&lt;= 0 || (signo) &gt;</span>= NSIG)</span><br><br><span class="hljs-type">int</span><br><span class="hljs-title function_">sigaddset</span><span class="hljs-params">(<span class="hljs-type">sigset_t</span> *<span class="hljs-built_in">set</span>, <span class="hljs-type">int</span> signo)</span><br>&#123;<br>	<span class="hljs-keyword">if</span> (SIGBAD(signo)) &#123;<br>		errno = EINVAL;<br>		<span class="hljs-keyword">return</span>(<span class="hljs-number">-1</span>);<br>	&#125;<br>	*<span class="hljs-built_in">set</span> |= <span class="hljs-number">1</span> &lt;&lt; (signo - <span class="hljs-number">1</span>);		<span class="hljs-comment">/* turn bit on */</span><br>	<span class="hljs-keyword">return</span>(<span class="hljs-number">0</span>);<br>&#125;<br><br><span class="hljs-type">int</span><br><span class="hljs-title function_">sigdelset</span><span class="hljs-params">(<span class="hljs-type">sigset_t</span> *<span class="hljs-built_in">set</span>, <span class="hljs-type">int</span> signo)</span><br>&#123;<br>	<span class="hljs-keyword">if</span> (SIGBAD(signo)) &#123;<br>		errno = EINVAL;<br>		<span class="hljs-keyword">return</span>(<span class="hljs-number">-1</span>);<br>	&#125;<br>	*<span class="hljs-built_in">set</span> &amp;= ~(<span class="hljs-number">1</span> &lt;&lt; (signo - <span class="hljs-number">1</span>));	<span class="hljs-comment">/* turn bit off */</span><br>	<span class="hljs-keyword">return</span>(<span class="hljs-number">0</span>);<br>&#125;<br><br><span class="hljs-type">int</span><br><span class="hljs-title function_">sigismember</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">sigset_t</span> *<span class="hljs-built_in">set</span>, <span class="hljs-type">int</span> signo)</span><br>&#123;<br>	<span class="hljs-keyword">if</span> (SIGBAD(signo)) &#123;<br>		errno = EINVAL;<br>		<span class="hljs-keyword">return</span>(<span class="hljs-number">-1</span>);<br>	&#125;<br>	<span class="hljs-keyword">return</span>((*<span class="hljs-built_in">set</span> &amp; (<span class="hljs-number">1</span> &lt;&lt; (signo - <span class="hljs-number">1</span>))) != <span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="sigprocmask"><a href="#sigprocmask" class="headerlink" title="sigprocmask"></a>sigprocmask</h2><p>参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/137364536">补充-重点：信号的响应过程</a>，这个其实就是修改位图中的masks函数：</p>
+<h3 id="函数形式如下"><a href="#函数形式如下" class="headerlink" title="函数形式如下"></a>函数形式如下</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;signal.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">sigprocmaks</span><span class="hljs-params">(<span class="hljs-type">int</span> how, <span class="hljs-type">const</span> <span class="hljs-type">sigset_t</span> *<span class="hljs-keyword">restrict</span> <span class="hljs-built_in">set</span>, <span class="hljs-type">sigset_t</span> *<span class="hljs-keyword">restrict</span> oset)</span>;<br></code></pre></td></tr></table></figure>
+<p>参数说明：<br>oset：若oset是非空指针，那么进程的当前信号屏蔽字(也就是masks)通过oset返回。<br>set：若set是一个非空指针，那么how参数指示如何修改当前信号屏蔽字。<br>注意：<br>不能阻塞SIGKILL和SIGSTOP信号。<br>SIG_BLOCK是或操作，SIG_SETMASK是赋值操作。<br>若set是个空指针，则不能改变进程的信号屏蔽字，此时how无意义。</p>
+<h3 id="举例-1"><a href="#举例-1" class="headerlink" title="举例"></a>举例</h3><p>更改star.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;signal.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br><br>  signal(SIGINT, SIG_IGN);<br><br>  <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)&#123;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++)&#123;<br>      write(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;*&quot;</span>, <span class="hljs-number">1</span>);<br>      sleep(<span class="hljs-number">1</span>);<br>    &#125;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n&quot;</span>);<br>  &#125;<br><br>  <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h4 id="输出："><a href="#输出：" class="headerlink" title="输出："></a>输出：</h4><p><img src="https://pic.downk.cc/item/5fc63669f81f7e3bd97eec0f.jpg" srcset="/img/loading.gif" lazyload><br>每5个星都换行。并且CTRL+C不会中断进程。</p>
+<h4 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h4><p>CTRL+C虽说不会中断进程，但是会中断系统调用，也就是说会中断等待的那一秒钟，从而直接输出下一个※</p>
+<h4 id="注意：-1"><a href="#注意：-1" class="headerlink" title="注意："></a>注意：</h4><p>若需要中断键入CTRL+\</p>
+<h3 id="更改要求："><a href="#更改要求：" class="headerlink" title="更改要求："></a>更改要求：</h3><p>在行内输出的时候不被CTRL+C的影响，但是一行输出完之后可以。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;signal.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">int_handler</span><span class="hljs-params">(<span class="hljs-type">int</span> signo)</span>&#123;<br>  write(<span class="hljs-number">1</span>,<span class="hljs-string">&quot;!&quot;</span>,<span class="hljs-number">1</span>);<br>&#125;<br><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br><br>  <span class="hljs-type">sigset_t</span> <span class="hljs-built_in">set</span>;<br><br>  signal(SIGINT, int_handler);<br>  sigemptyset(&amp;<span class="hljs-built_in">set</span>);<br>  sigaddset(&amp;<span class="hljs-built_in">set</span>,SIGINT);<br><br>  <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)&#123;<br>    sigprocmask(SIG_BLOCK, &amp;<span class="hljs-built_in">set</span>, <span class="hljs-literal">NULL</span>);<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++)&#123;<br>      write(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;*&quot;</span>, <span class="hljs-number">1</span>);<br>      sleep(<span class="hljs-number">1</span>);<br>    &#125;<br>    write(<span class="hljs-number">1</span>,<span class="hljs-string">&quot;\n&quot;</span>,<span class="hljs-number">1</span>);<br>    sigprocmask(SIG_UNBLOCK,&amp;<span class="hljs-built_in">set</span>, <span class="hljs-literal">NULL</span>);<br>  &#125;<br><br>  <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="输出：-1"><a href="#输出：-1" class="headerlink" title="输出："></a>输出：</h4><p><img src="https://pic.downk.cc/item/5fc63722f81f7e3bd97f5881.jpg" srcset="/img/loading.gif" lazyload></p>
+<h4 id="解释："><a href="#解释：" class="headerlink" title="解释："></a>解释：</h4><p>在每行的打印期间阻塞了信号，只有当每行结束之后换行之前解除阻塞，此时才会开始进行信号的处理。</p>
+<h4 id="注意：-2"><a href="#注意：-2" class="headerlink" title="注意："></a>注意：</h4><ol>
+<li>无论打多少次CTRL+C都只响应一次，因为pending只能被置为一次。</li>
+<li>这里的set是一个sigset_t类型的集合，第12行到第16行都是对该集合进行初始化和添加信号等操作。</li>
+</ol>
+<h3 id="继续改进"><a href="#继续改进" class="headerlink" title="继续改进"></a>继续改进</h3><p>因为若在搭建工程的时候，需要确保进入的状态和出去的状态是相同的，也就是说进入状态若是阻塞的，就需要保证出去的状态是阻塞的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;signal.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">int_handler</span><span class="hljs-params">(<span class="hljs-type">int</span> signo)</span>&#123;<br>  write(<span class="hljs-number">1</span>,<span class="hljs-string">&quot;!&quot;</span>,<span class="hljs-number">1</span>);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br><br>  <span class="hljs-type">sigset_t</span> <span class="hljs-built_in">set</span>;<br>  <span class="hljs-type">sigset_t</span> saveset;<br><br>  signal(SIGINT, int_handler);<br>  sigemptyset(&amp;<span class="hljs-built_in">set</span>);<br>  sigaddset(&amp;<span class="hljs-built_in">set</span>,SIGINT);<br>  sigprocmask(SIG_UNBLOCK,&amp;<span class="hljs-built_in">set</span>,&amp;saveset);       <span class="hljs-comment">//保存状态</span><br><br>  <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)&#123;<br>    sigprocmask(SIG_BLOCK, &amp;<span class="hljs-built_in">set</span>, <span class="hljs-literal">NULL</span>);<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++)&#123; write(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;*&quot;</span>, <span class="hljs-number">1</span>);<br>      sleep(<span class="hljs-number">1</span>);<br>    &#125;<br>    write(<span class="hljs-number">1</span>,<span class="hljs-string">&quot;\n&quot;</span>,<span class="hljs-number">1</span>);<br>    sigprocmask(SIG_UNBLOCK,&amp;<span class="hljs-built_in">set</span>, <span class="hljs-literal">NULL</span>);<br>  &#125;<br>  sigprocmask(SIG_SETMASK, &amp;saveset, <span class="hljs-literal">NULL</span>); <span class="hljs-comment">//恢复状态</span><br><br>  <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="补充：信号的响应过程"><a href="#补充：信号的响应过程" class="headerlink" title="补充：信号的响应过程"></a>补充：信号的响应过程</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>信号的响应机制非常重要，必须首先理解信号的响应机制才能进一步研究，在这里非常详细地给出了信号的响应机制！</p>
+<h2 id="以之前给出的例子为例："><a href="#以之前给出的例子为例：" class="headerlink" title="以之前给出的例子为例："></a>以之前给出的例子为例：</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;signal.h&gt;</span></span><br><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">int_handler</span><span class="hljs-params">(<span class="hljs-type">int</span> s)</span>&#123;<br>  write(<span class="hljs-number">1</span>,<span class="hljs-string">&quot;1&quot;</span>,<span class="hljs-number">1</span>);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;<br><br>  <span class="hljs-type">int</span> i;<br><br>  signal(SIGINT, int_handler);       <span class="hljs-comment">//给入口地址</span><br><br>  <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++)&#123;<br>    write(<span class="hljs-number">1</span>, <span class="hljs-string">&quot;*&quot;</span>, <span class="hljs-number">1</span>);<br>    sleep(<span class="hljs-number">1</span>);<br>  &#125;<br><br><br>  <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>输出：</p>
+<p><img src="https://pic.downk.cc/item/5fc63669f81f7e3bd97eec35.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>解释：</p>
+<p>按下ctrl+c时不会中断，此时会打印出1并且继续打印*，直到打印完</p>
+<h2 id="内核为进程维护的两个位图"><a href="#内核为进程维护的两个位图" class="headerlink" title="内核为进程维护的两个位图"></a>内核为进程维护的两个位图</h2><p>要理解信号的响应过程，我们需要先知道内核会为进程自动维护两个位图，一个是pending，一个是masks。其中masks是信号的标志位，代表该信号是否会被忽略。pending是信号的待定位，用来提示接受到了信号。并且masks默认设置为1，pending默认设置为0，如下所示：<br><img src="https://pic.downk.cc/item/5fc6364bf81f7e3bd97ee217.jpg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="不同函数的入口地址"><a href="#不同函数的入口地址" class="headerlink" title="不同函数的入口地址"></a>不同函数的入口地址</h2><p>并且在我们的例子中，主要包含两个函数，一个是main函数，一个是int_handeler函数，它们的入口地址都存放在内存的代码段中。如图所示：<br><img src="https://pic.downk.cc/item/5fc63707f81f7e3bd97f522e.jpg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="UNIX系统的进程状态"><a href="#UNIX系统的进程状态" class="headerlink" title="UNIX系统的进程状态"></a>UNIX系统的进程状态</h2><p>而在UNIX操作系统中，进程主要有两种状态，一种是用户态，一种是内核态，用户态权限很少，并且在发生系统中断时会立刻从用户态进入内核态。如下：<br><img src="https://pic.downk.cc/item/5fc6364cf81f7e3bd97ee222.jpg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="信号的响应过程"><a href="#信号的响应过程" class="headerlink" title="信号的响应过程"></a>信号的响应过程</h2><ol>
+<li>当我们在键盘上键入CTRL+C时，进程会中断，从用户态进入内核态排队等待。此时pending中相应的信号位会置位1，如下所示：<br><img src="https://pic.downk.cc/item/5fc636f5f81f7e3bd97f4ddd.jpg" srcset="/img/loading.gif" lazyload></li>
+<li>排队结束之后，内核态会重新变为用户态，重定向的地址为main函数的地址，但是此时会做一个非常重要的操作！将masks按位与pending。此时会发现在第3的位置按位与的结果为1，表明收到了该信号，通过signal函数发现处理函数的入口地址变为了int_handler，所以将地址重定向为int_handler的地址，并且此时会将masks和pending为上的值都变为0，如下所示：<br><img src="https://pic.downk.cc/item/5fc63661f81f7e3bd97ee75b.jpg" srcset="/img/loading.gif" lazyload></li>
+<li>处理结束之后会重新将masks的值置为1，pending的值置为0，并且最终的地址被重定向为main函数。<br><img src="https://pic.downk.cc/item/5fc63661f81f7e3bd97ee75b.jpg" srcset="/img/loading.gif" lazyload><br>这就是个完整的信号响应过程。</li>
+</ol>
+<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><ol>
+<li>信号从收到到相应有一个不可避免的延迟</li>
+<li>如何忽略掉一个信号的？</li>
+<li>标准信号为什么要丢失？</li>
+<li>标准信号的响应没有严格的顺序。</li>
+</ol>
+<h3 id="回答"><a href="#回答" class="headerlink" title="回答"></a>回答</h3><ol>
+<li>因为并不是一有信号发送就马上会进入内核态，只有中断之后进入内核态，并且内核态重新回到用户态时才会进行信号的检查。</li>
+<li>将masks置为0，那么masks与pending的按位与永远都是0了，也就不会有信号响应了。</li>
+<li>pending无论收到多少个信号也就只能置为1，因为丢失不会带来影响<br>注意：如果是实时信号就不能丢失，必须每个信号都响应。</li>
+<li>当同时收到多个信号时，pending的多个位都会被置为1，在没有明确确定优先级的情况下，类似优先级的标准信号相应是没有固定顺序的。</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/" class="category-chain-item">计算机</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/" class="category-chain-item">Linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E8%AE%A1%E7%AE%97%E6%9C%BA/Linux/APUE/" class="category-chain-item">APUE</a>
+  
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>APUE-10-信号</div>
+      <div>http://example.com/2022/12/ee502027f0af.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/48639a98d1c8.html" title="APUE-11-线程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">APUE-11-线程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/3fb0f73bdb7a.html" title="APUE-9-进程关系">
+                        <span class="hidden-mobile">APUE-9-进程关系</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/ee502027f0af.html';
+          this.page.identifier = '/2022/12/ee502027f0af.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

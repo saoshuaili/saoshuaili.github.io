@@ -1,0 +1,881 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="时间语义算子语义应该依赖事件实际发生时间而且应用收到事件的时间。   流式应用可以使用两个完全不同概念的时间，即处理时间和事件时间  处理时间（processing time） 处理时间是当前流处理算在所在机器上的本地时钟时间。与机器有关  事件时间（event time） 事件时间是数据流中事件实际发生的时间，它以附加在数据流中事件的时间戳为依据。   图解处理时间和事件时间  事件时间将处理速">
+<meta property="og:type" content="article">
+<meta property="og:title" content="6.2 基于时间的算子">
+<meta property="og:url" content="http://example.com/2022/12/64d0f3bde106.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="时间语义算子语义应该依赖事件实际发生时间而且应用收到事件的时间。   流式应用可以使用两个完全不同概念的时间，即处理时间和事件时间  处理时间（processing time） 处理时间是当前流处理算在所在机器上的本地时钟时间。与机器有关  事件时间（event time） 事件时间是数据流中事件实际发生的时间，它以附加在数据流中事件的时间戳为依据。   图解处理时间和事件时间  事件时间将处理速">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210228185234.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210228185928.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221204143724.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210301025256.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221205165720.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221130014608.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221130014750.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221130015328.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/image-20221130020335168.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/image-20221130020619684.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221205013809.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221205014130.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221205011630.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221205165654.png">
+<meta property="article:published_time" content="2022-12-03T18:13:35.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210228185234.png">
+  
+  
+  
+  <title>6.2 基于时间的算子 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="6.2 基于时间的算子"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:13" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          10k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          87 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">6.2 基于时间的算子</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="时间语义"><a href="#时间语义" class="headerlink" title="时间语义"></a>时间语义</h1><p>算子语义应该依赖事件实际发生时间而且应用收到事件的时间。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210228185234.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>流式应用可以使用两个完全不同概念的时间，即处理时间和事件时间</p>
+<ol>
+<li><p>处理时间（processing time）</p>
+<p>处理时间是当前流处理算在所在机器上的本地时钟时间。与机器有关</p>
+</li>
+<li><p>事件时间（event time）</p>
+<p>事件时间是数据流中事件实际发生的时间，它以附加在数据流中事件的时间戳为依据。</p>
+</li>
+</ol>
+<h2 id="图解处理时间和事件时间"><a href="#图解处理时间和事件时间" class="headerlink" title="图解处理时间和事件时间"></a>图解处理时间和事件时间</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210228185928.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>事件时间将处理速度和结果内容彻底解耦。我们也往往更关心事件时间。基于事件时间的操作是可预测的，其结果具有确定性。无论数据流的处理速度如何、事件到达算子的顺序怎样，基于事件时间的窗口都会生成相同的结果。</p>
+<h2 id="哪种时间语义更重要"><a href="#哪种时间语义更重要" class="headerlink" title="哪种时间语义更重要"></a>哪种时间语义更重要</h2><img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221204143724.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，红色框为 Processing Time，绿色框为 Event Time，大部分时间 Event Time 更重要。</p>
+<h2 id="设置处理时间或事件时间的方法"><a href="#设置处理时间或事件时间的方法" class="headerlink" title="设置处理时间或事件时间的方法"></a>设置处理时间或事件时间的方法</h2><p>默认状态即为处理时间，若需要使用事件时间则需要设置</p>
+<h3 id="Scala-版本"><a href="#Scala-版本" class="headerlink" title="Scala 版本"></a>Scala 版本</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.apitest<br><br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.<span class="hljs-type">TimeCharacteristic</span><br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.environment.<span class="hljs-type">StreamExecutionEnvironment</span><br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">TimeWindowTest</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-keyword">val</span> env: <span class="hljs-type">StreamExecutionEnvironment</span> = <span class="hljs-type">StreamExecutionEnvironment</span>.getExecutionEnvironment<br>    <span class="hljs-comment">// 设置事件时间</span><br><span class="hljs-comment">//    env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime)</span><br>    <span class="hljs-comment">// 设置处理时间</span><br>    env.setStreamTimeCharacteristic(<span class="hljs-type">TimeCharacteristic</span>.<span class="hljs-type">ProcessingTime</span>)<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Java-版本"><a href="#Java-版本" class="headerlink" title="Java 版本"></a>Java 版本</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">apitest</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">StreamExecutionEnvironment</span> <span class="hljs-variable">env</span> <span class="hljs-operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();<br>        <span class="hljs-comment">// 设置为处理时间</span><br>        env.setStreamTimeCharacteristic(TimeCharacteristic.ProcessingTime);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="水位线（watermark）"><a href="#水位线（watermark）" class="headerlink" title="水位线（watermark）"></a>水位线（watermark）</h1><h2 id="乱序数据的影响"><a href="#乱序数据的影响" class="headerlink" title="乱序数据的影响"></a>乱序数据的影响</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210301025256.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<p>在上图中，我们将窗口设置为 5s，那么在实际情况中，5s 的数据已经来到，此时是否应该关闭窗口？</p>
+<ul>
+<li>Flink 以 Event Time 模式处理数据流时，它会根据数据里的时间戳来处理基于时间的算子</li>
+<li>由于网络、分布式等原因，会导致乱序数据的产生</li>
+</ul>
+<p>因为需要引入水位线</p>
+<h2 id="水位线概念"><a href="#水位线概念" class="headerlink" title="水位线概念"></a>水位线概念</h2><h3 id="水位线定义"><a href="#水位线定义" class="headerlink" title="水位线定义"></a>水位线定义</h3><p>水位线是一个<strong>全局进度指标</strong>，表示我们确信不会再有延迟事件到来的某个的时间点。本质上水位线提供了一个逻辑时钟，用来通知系统当前的事件时间。</p>
+<p>当一个算子接收到时间为 T 的水位线，就可以认为不会再收到任何时间戳小于或等于 T 的事件了。水位线无论对于事件时间窗口还是处理乱序事件的算子都很关键。算子一旦收到某个水位线，就相当于接到信号：某个特定时间区间的时间戳已经到齐，可以触发窗口计算或对接收的数据进行排序了。</p>
+<h3 id="水位线特点"><a href="#水位线特点" class="headerlink" title="水位线特点"></a>水位线特点</h3><img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221205165720.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<ul>
+<li>watermark 是一条特殊的数据记录（里面只有一类信息：当前的事件时间）<br>也就是说，水位线到来之后，水位线的记录时间之前的数据开始全部不接受，窗口关闭。</li>
+<li>watermark 必须单调递增，以确保任务的事件时间时钟在向前推进，而不是在后退</li>
+<li>water 与数据时间戳相关</li>
+</ul>
+<h3 id="水位线的类型"><a href="#水位线的类型" class="headerlink" title="水位线的类型"></a>水位线的类型</h3><h4 id="有序流中的水位线"><a href="#有序流中的水位线" class="headerlink" title="有序流中的水位线"></a>有序流中的水位线</h4><ol>
+<li>每条记录都插入一条水位线</li>
+</ol>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221130014608.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，每到来一条记录就会产生一条水位线，这种是最直观的，但是效率也很低</p>
+<ol start="2">
+<li>周期性插入水位线</li>
+</ol>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221130014750.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，首先来的数据是 2 5 7，此时到了一个周期，会自动找到这个周期中最大值，也就是 7，产生一条水位线，然后是 9 9 9 10 11，最大值是 11，也会产生一条水位线。</p>
+<h4 id="乱序流中的水位线"><a href="#乱序流中的水位线" class="headerlink" title="乱序流中的水位线"></a>乱序流中的水位线</h4><ol>
+<li>判断只有数据的时间戳比当前时钟大，才能推动时间前进，这时才插入水位线</li>
+</ol>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221130015328.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，当水位线为 9 时，来了时间戳为 7 9 9 的数据，水位线都不产生变动，因为这个是所谓“迟到数据”，只有当时间戳为 11 的数据来了时，水位线才会变动。以此类推</p>
+<ol start="2">
+<li>周期性插入水位线的方法</li>
+</ol>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/image-20221130020335168.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>和上面的类似，也是比较周期时间范围内时间戳的最大值</p>
+<h4 id="处理迟到数据的水位线"><a href="#处理迟到数据的水位线" class="headerlink" title="处理迟到数据的水位线"></a>处理迟到数据的水位线</h4><img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/image-20221130020619684.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，此时处理的水位线是 T-2 的，也就是说，当接受到数据时间为 8 的数据时，此时会将窗口的右半边延伸至 T&#x3D;6 处，确保迟到数据能处理完成（但也不绝对，有可能就是延迟很久，需要做权衡）</p>
+<h3 id="水位线作用"><a href="#水位线作用" class="headerlink" title="水位线作用"></a>水位线作用</h3><p>水位线允许我们在结果的<strong>准确性和延迟之间做出取舍</strong>。</p>
+<h4 id="水位线的特性"><a href="#水位线的特性" class="headerlink" title="水位线的特性"></a>水位线的特性</h4><ul>
+<li>水位线是插入到数据流中的一个标记，可以认为是一个特殊的数据</li>
+<li>水位线主要的内容是一个时间戳，用来表示当前事件时间的进展</li>
+<li>水位线是基于数据的时间戳生成的</li>
+<li>水位线的时间戳必须单调递增，以确保任务的事件时间时钟一直向前推进</li>
+<li>水位线可以通过设置延迟，来保证正确处理乱序数据</li>
+</ul>
+<h2 id="水位线生成"><a href="#水位线生成" class="headerlink" title="水位线生成"></a>水位线生成</h2><h3 id="水位线的生成原则"><a href="#水位线的生成原则" class="headerlink" title="水位线的生成原则"></a>水位线的生成原则</h3><p>从上面我们了解到，如果存在迟到数据，那对我们水位线的生成是有影响的，那我们怎么能保证我们未来不会出现一个超级迟到数据呢？所以一种做法是，可以单独创建一个 Flink 作业来监控事件流，建立概率分布或者机器学习模型，学习事件的迟到规律。得到分布规律之后，就可以选择置信区间来确定延迟，作为水位线的生成策略了。例如，如果得到数据的迟到时间服从 μ&#x3D;1，σ&#x3D;1 的正态分布，那么设置水位线延迟为 3 秒，就可以保证至少 97.7%的数据可以正确处理。</p>
+<p>如果我们希望计算结果能更加准确，那可以将水位线的延迟设置得更高一些，等待的时间越长，自然也就越不容易漏掉数据。不过这样做的代价是处理的实时性降低了，我们可能为极少数的迟到数据增加了很多不必要的延迟。</p>
+<p>如果我们希望处理得更快、实时性更强，那么可以将水位线延迟设得低一些。这种情况下，可能很多迟到数据会在水位线之后才到达，就会导致窗口遗漏数据，计算结果不准确。对于这些 “漏网之鱼”，Flink 另外提供了窗口处理迟到数据的方法，我们会在后面介绍。当然，如果我们对准确性完全不考虑、一味地追求处理速度，可以直接使用处理时间语义，这在理论上可以得到最低的延迟。</p>
+<h3 id="水位线的生成策略-watermarkStrategy"><a href="#水位线的生成策略-watermarkStrategy" class="headerlink" title="水位线的生成策略 (watermarkStrategy)"></a>水位线的生成策略 (watermarkStrategy)</h3><p>在 Flink 的 DataStream API 中，有一个单独用于生成水位线的方法：<code>.assignTimestampsAndWatermarks()</code> ，它主要用来为流中的数据分配时间戳，并生成水位线来指示事件时间：</p>
+<p><code>assignTimestampsAndWatermarks</code> 源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> SingleOutputStreamOperator&lt;T&gt; <span class="hljs-title function_">assignTimestampsAndWatermarks</span> <span class="hljs-params">(</span><br><span class="hljs-params">	WatermarkStrategy&lt;T&gt; watermarkStrategy)</span><br></code></pre></td></tr></table></figure>
+
+<p>可以看到，这个方法接收了一个 <code>WatermarkStrategy</code> 类型的参数，并且返回一个 <code>SingleOutputStreamOperator</code>。</p>
+<p><code>WatermarkStrategy</code> 就是所谓的 <strong>水位线生成策略</strong> 。要实现 <code>WatermarkStrategy</code> 这个接口，则必须实现其中包含的一个 <strong>时间戳分配器</strong> <code>TimestampAssigner</code> 和一个 <strong>水位线生成器</strong>  <code>WatermarkGenerator</code>。</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221205013809.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<p>时间戳和水位线通常都是在数据流刚刚进入流处理应用的时候分配和生成的。</p>
+<ul>
+<li><p><code>TimestampAssigner</code> ：时间戳分配器, 主要负责从流中数据元素的某个字段中提取时间戳，并分配给元素。时间戳的分配是生成水位线的基础。</p>
+<p>  这里可能有疑惑：不是说数据里已经有时间戳了吗，为什么这里还要“分配”呢？这是因为原始的时间戳只是写入日志数据的一个字段，如果不提取出来并明确把它分配给数据， <code>Flink</code> 是无法知道数据真正产生的时间的。当然，有些时候数据源本身就提供了时间戳信息，比如读取 <code>Kafka</code> 时，我们就可以从 <code>Kafka</code> 数据中直接获取时间戳，而不需要单独提取字段分配了。</p>
+</li>
+<li><p><code>WatermarkGenerator</code> ：水位线生成器, 主要负责按照既定的方式，基于时间戳生成水位线。在 <code>WatermarkGenerator</code> 接口中，主要又有两个方法：<code>onEvent()</code> 和 <code>onPeriodicEmit()</code>。这两个方法就对应了我们之前说的周期性生成和事件性生成</p>
+</li>
+</ul>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221205014130.png" srcset="/img/loading.gif" lazyload width = "50%" />
+    - `onEvent()` ：每个事件(数据)到来都会调用的方法，它的参数有当前事件、时间戳，以及允许发出水位线的一个 `WatermarkOutput`，可以基于事件做各种操作
+    - `onPeriodicEmit()` ：周期性调用的方法，可以由 `WatermarkOutput` 发出水位线。周期时间为处理时间，可以调用环境配置的 . `setAutoWatermarkInterval()` 方法来设置，默认为 200ms。
+
+<p>需要注意的是， <code>WatermarksStrategy</code> 是一个接口，若是要自己实现这个接口还是比较麻烦，因此对于一般应用我们不会自己去实现这个接口，<code>flink</code> 的 <code>WatermarkStrategy</code> 接口中自带了几个抽象方法，可以用来获取 <code>flink</code> 内置的类。</p>
+<p>抽象方法和默认方法的使用可以参照 [[1 接口]]</p>
+<p>我们先来看看 <code>WatermarkStrategy</code> 接口的方法 (<code>cmd+F12</code>)</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221205011630.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>重点关注其中的 <code>forBoundedOutOfOrderness</code> 和 <code>forMonotonousTimestamps</code>，这两个方法直接返回了两种不同类型的 <code>WatermarkStrategy</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// forBoundedOutOfOrderness</span><br><span class="hljs-keyword">static</span> &lt;T&gt; WatermarkStrategy&lt;T&gt; <span class="hljs-title function_">forBoundedOutOfOrderness</span><span class="hljs-params">(Duration maxOutOfOrderness)</span> &#123;  <br>    <span class="hljs-keyword">return</span> (ctx) -&gt; &#123;  <br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BoundedOutOfOrdernessWatermarks</span>(maxOutOfOrderness);  <br>    &#125;;  <br>&#125;<br><br><span class="hljs-comment">// forMonotonousTimestamps</span><br><span class="hljs-keyword">static</span> &lt;T&gt; WatermarkStrategy&lt;T&gt; <span class="hljs-title function_">forMonotonousTimestamps</span><span class="hljs-params">()</span> &#123;  <br>    <span class="hljs-keyword">return</span> (ctx) -&gt; &#123;  <br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AscendingTimestampsWatermarks</span>();  <br>    &#125;;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这两个方法提供了一个对应的实现，从名字可以看出来，<code>forBoundedOutOfOrderness</code> 方法是用来获取处理乱序数据的 <code>WatermarkStrategy</code> 的，同样的，另一个方法 <code>forMonotonousTimestamps</code> 是用来处理顺序（单调）数据的，同样返回一个 <code>WatermarkStrategy</code>。</p>
+<h4 id="有序流水位线的生成方式"><a href="#有序流水位线的生成方式" class="headerlink" title="有序流水位线的生成方式"></a>有序流水位线的生成方式</h4><p>经过上面我们知道，有序流的水位线生成有下面这个方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">WatermarkStrategy.&lt;T&gt;forMonotonousTimestamps()<br></code></pre></td></tr></table></figure>
+
+<p>举例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;  <br>    <span class="hljs-type">StreamExecutionEnvironment</span> <span class="hljs-variable">env</span> <span class="hljs-operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();  <br>    env.setParallelism(<span class="hljs-number">1</span>);  <br>    env.getConfig().setAutoWatermarkInterval(<span class="hljs-number">100</span>);  <br>  <br>    env.fromElements(  <br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Mary&quot;</span>, <span class="hljs-string">&quot;./home&quot;</span>, <span class="hljs-number">1000L</span>),  <br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./cart&quot;</span>, <span class="hljs-number">2000L</span>),  <br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;./prod?id=100&quot;</span>, <span class="hljs-number">3000L</span>),  <br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;./prod?id=200&quot;</span>, <span class="hljs-number">3500L</span>),  <br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=2&quot;</span>, <span class="hljs-number">2500L</span>),  <br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;./prod?id=300&quot;</span>, <span class="hljs-number">3600L</span>),  <br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./home&quot;</span>, <span class="hljs-number">3000L</span>),  <br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=1&quot;</span>, <span class="hljs-number">2300L</span>),  <br>            <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=3&quot;</span>, <span class="hljs-number">3300L</span>))  <br>            <span class="hljs-comment">// 有序流的watermark生成，一般做测试用  </span><br>            .assignTimestampsAndWatermarks( WatermarkStrategy.&lt;Event&gt;forMonotonousTimestamps()  <br>                    .withTimestampAssigner(<span class="hljs-keyword">new</span> <span class="hljs-title class_">SerializableTimestampAssigner</span>&lt;Event&gt;() &#123;  <br>                        <span class="hljs-meta">@Override</span>  <br>                        <span class="hljs-keyword">public</span> <span class="hljs-type">long</span> <span class="hljs-title function_">extractTimestamp</span><span class="hljs-params">(Event event, <span class="hljs-type">long</span> l)</span> &#123;  <br>                            <span class="hljs-keyword">return</span> event.timestamp;  <br>                        &#125;  <br>                    &#125;)) ;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，使用了 <code>flink</code> 内置的 <code>forMonotonousTimestamps()</code> 方法返回一个有序流的 <code>WatermarkStrategy</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">static</span> &lt;T&gt; WatermarkStrategy&lt;T&gt; <span class="hljs-title function_">forMonotonousTimestamps</span><span class="hljs-params">()</span> &#123;  <br>    <span class="hljs-keyword">return</span> (ctx) -&gt; &#123;  <br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AscendingTimestampsWatermarks</span>();  <br>    &#125;;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里就是<br>进一步的，来看 <code>AscendingTimestampsWatermarks()</code> ：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Public</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AscendingTimestampsWatermarks</span>&lt;T&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title class_">BoundedOutOfOrdernessWatermarks</span>&lt;T&gt; &#123;  <br>    <span class="hljs-keyword">public</span> <span class="hljs-title function_">AscendingTimestampsWatermarks</span><span class="hljs-params">()</span> &#123;  <br>        <span class="hljs-built_in">super</span>(Duration.ofMillis(<span class="hljs-number">0L</span>));  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>并且生成 <code>WatermarkStrategy</code> 之后还需要实现一个 <code>.withTimestampsAssigner</code> 方法，这是因为默认生成的方法无法知道我们系统的时间戳具体形式，这样确定好了时间戳分配器和水位线生成器之后，一个完备的 <code>WatermarkStrategy</code> 就可以使用了。</p>
+<h4 id="无序流水位线的生成方法"><a href="#无序流水位线的生成方法" class="headerlink" title="无序流水位线的生成方法"></a>无序流水位线的生成方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">StreamExecutionEnvironment</span> <span class="hljs-variable">env</span> <span class="hljs-operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();  <br>        env.setParallelism(<span class="hljs-number">1</span>);  <br>        env.getConfig().setAutoWatermarkInterval(<span class="hljs-number">100</span>);  <br>  <br>        env.fromElements(  <br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Mary&quot;</span>, <span class="hljs-string">&quot;./home&quot;</span>, <span class="hljs-number">1000L</span>),  <br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./cart&quot;</span>, <span class="hljs-number">2000L</span>),  <br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;./prod?id=100&quot;</span>, <span class="hljs-number">3000L</span>),  <br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;./prod?id=200&quot;</span>, <span class="hljs-number">3500L</span>),  <br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=2&quot;</span>, <span class="hljs-number">2500L</span>),  <br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;./prod?id=300&quot;</span>, <span class="hljs-number">3600L</span>),  <br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./home&quot;</span>, <span class="hljs-number">3000L</span>),  <br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=1&quot;</span>, <span class="hljs-number">2300L</span>),  <br>                <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=3&quot;</span>, <span class="hljs-number">3300L</span>))  <br>                <span class="hljs-comment">// 乱序流的watermark生成  </span><br>                .assignTimestampsAndWatermarks(WatermarkStrategy.&lt;Event&gt;forBoundedOutOfOrderness(Duration.ofSeconds(<span class="hljs-number">2</span>))  <br>                        .withTimestampAssigner(<span class="hljs-keyword">new</span> <span class="hljs-title class_">SerializableTimestampAssigner</span>&lt;Event&gt;() &#123;  <br>                            <span class="hljs-meta">@Override</span>  <br>                            <span class="hljs-keyword">public</span> <span class="hljs-type">long</span> <span class="hljs-title function_">extractTimestamp</span><span class="hljs-params">(Event event, <span class="hljs-type">long</span> l)</span> &#123;  <br>                                <span class="hljs-keyword">return</span> event.timestamp;  <br>                            &#125;  <br>                        &#125;)  <br>                );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，和有序流水位线的生成方式非常类似。</p>
+<h4 id="自定义水位线生成方法"><a href="#自定义水位线生成方法" class="headerlink" title="自定义水位线生成方法"></a>自定义水位线生成方法</h4><p>当然，若是这两种内置类都无法满足应用的要求，那么最通用的方法自然是直接实现 <code>WatermarkStrategy</code> 接口。具体使用时，直接用 DataStream 调用该方法即可，与普通的 transform 方法完全一样，下面就是一个典型的用法:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java">DataStream&lt;Event&gt; stream = env.addSource (<span class="hljs-keyword">new</span> <span class="hljs-title class_">ClickSource</span>());<br>DataStream&lt;Event&gt; withTimestampsAndWatermarks = stream. assignTimestampsAndWatermarks (&lt;watermark strategy&gt;);<br></code></pre></td></tr></table></figure>
+
+<p>具体的使用举例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">WatermarkTest</span> &#123;  <br>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;  <br>  <br>  <br>  <br>        <span class="hljs-type">StreamExecutionEnvironment</span> <span class="hljs-variable">env</span> <span class="hljs-operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();  <br>        env.setParallelism(<span class="hljs-number">1</span>);  <br>        env.getConfig().setAutoWatermarkInterval(<span class="hljs-number">100</span>);  <br>  <br>        env.fromElements(  <br>                        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Mary&quot;</span>, <span class="hljs-string">&quot;./home&quot;</span>, <span class="hljs-number">1000L</span>),  <br>                        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./cart&quot;</span>, <span class="hljs-number">2000L</span>),  <br>                        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;./prod?id=100&quot;</span>, <span class="hljs-number">3000L</span>),  <br>                        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;./prod?id=200&quot;</span>, <span class="hljs-number">3500L</span>),  <br>                        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=2&quot;</span>, <span class="hljs-number">2500L</span>),  <br>                        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Alice&quot;</span>, <span class="hljs-string">&quot;./prod?id=300&quot;</span>, <span class="hljs-number">3600L</span>),  <br>                        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./home&quot;</span>, <span class="hljs-number">3000L</span>),  <br>                        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=1&quot;</span>, <span class="hljs-number">2300L</span>),  <br>                        <span class="hljs-keyword">new</span> <span class="hljs-title class_">Event</span>(<span class="hljs-string">&quot;Bob&quot;</span>, <span class="hljs-string">&quot;./prod?id=3&quot;</span>, <span class="hljs-number">3300L</span>))  <br>                <span class="hljs-comment">// 自定义的watermark生成  </span><br>                .assignTimestampsAndWatermarks(<span class="hljs-keyword">new</span> <span class="hljs-title class_">WatermarkStrategy</span>&lt;Event&gt;() &#123;  <br>                    <span class="hljs-meta">@Override</span>  <br>                    <span class="hljs-keyword">public</span> WatermarkGenerator&lt;Event&gt; <span class="hljs-title function_">createWatermarkGenerator</span><span class="hljs-params">(WatermarkGeneratorSupplier.Context context)</span> &#123;  <br>                        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CustomBoundedOutOfOrdernessGenerator</span>();  <br>                    &#125;  <br>                &#125;.withTimestampAssigner(<span class="hljs-keyword">new</span> <span class="hljs-title class_">SerializableTimestampAssigner</span>&lt;Event&gt;() &#123;  <br>                    <span class="hljs-meta">@Override</span>  <br>                    <span class="hljs-keyword">public</span> <span class="hljs-type">long</span> <span class="hljs-title function_">extractTimestamp</span><span class="hljs-params">(Event event, <span class="hljs-type">long</span> l)</span> &#123;  <br>                        <span class="hljs-keyword">return</span> event.timestamp;  <br>                    &#125;  <br>                &#125;));  <br>    &#125;  <br>&#125;  <br>  <br><span class="hljs-keyword">class</span> <span class="hljs-title class_">CustomBoundedOutOfOrdernessGenerator</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">WatermarkGenerator</span>&lt;Event&gt; &#123;  <br>  <br>    <span class="hljs-keyword">private</span> <span class="hljs-type">Long</span> <span class="hljs-variable">delayTime</span> <span class="hljs-operator">=</span> <span class="hljs-number">5000L</span>; <span class="hljs-comment">// 延迟时间  </span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">Long</span> <span class="hljs-variable">maxTx</span> <span class="hljs-operator">=</span> -Long.MAX_VALUE + delayTime + <span class="hljs-number">1L</span>; <span class="hljs-comment">// 观察到的最大时间  </span><br>  <br>    <span class="hljs-meta">@Override</span>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onEvent</span><span class="hljs-params">(Event event, <span class="hljs-type">long</span> l, WatermarkOutput watermarkOutput)</span> &#123;  <br>        <span class="hljs-comment">// 每来一条数据就调用一次  </span><br>        maxTx = Math.max(event.timestamp, maxTx); <span class="hljs-comment">// 更新最大时间戳  </span><br>    &#125;  <br>  <br>    <span class="hljs-meta">@Override</span>  <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onPeriodicEmit</span><span class="hljs-params">(WatermarkOutput watermarkOutput)</span> &#123;  <br>        <span class="hljs-comment">// 发射水位线，默认200ms调用一次  </span><br>        watermarkOutput.emitWatermark(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Watermark</span>(maxTx - delayTime - <span class="hljs-number">1L</span>));  <br>    &#125;  <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，我们自定义了一个 <code>CustomBoundedOutOfOrdernessGenerator</code> 实现了 <code>WatermarkGenerator</code> 接口，自定义了里面 <code>onEvent</code> 和 <code>onPeriodicEmit</code> 方法，确认了时间戳更新策略和水位线发射策略，这样就实现了自定义的功能。</p>
+<h2 id="水位线的传播"><a href="#水位线的传播" class="headerlink" title="水位线的传播"></a>水位线的传播</h2><p>当任务接收到一个水位线时会执行以下操作：</p>
+<ol>
+<li>基于水位线记录的时间戳更新内部时间时钟</li>
+<li>任务的时间服务会找出所有触发时间小于更新后事件时间的计时器。对于每个到期的计时器，调用回调函数，利用它来执行计算或发出记录</li>
+<li>任务根据更新后的事件时间将水位线发出</li>
+</ol>
+<p>Flink 会将数据流划分为不同的分区，并将它们交由不同的算子任务来并行执行。每个分区作为一个数据流，都会包含带有时间戳的记录以及水位线。</p>
+<p>一个任务可能同时接受来自多个输入分区的记录和水位线，也可能需要将它们发送到多个输出分区。</p>
+<h3 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h3><p>一个 4 个输入分区和 3 个输出分区的任务在接收到水位线后对分区水位线和事件时钟的更新过程。</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20221205165654.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>解释：</p>
+<ol>
+<li>四个分区，水位线分别为 2 3 4 6，那么当前算子的水位线就为所有分区中最小的那个水位线 2（因为水位线的含义是确信不会再有延迟事件到来的某个的时间点，既然分区中有 2 这个水位线存在，说明这个分区里比 2 大的事件还是有可能来临，那么当前算子的水位线就应该是最小的这个水位线），此时会将水位线 2 进行广播。</li>
+<li>此时新来了一个水位线，将水位线为 2 的子分区的水位线更新为 4，此时 4 个分区水位线分别为 4 4 3 6，最小的为 3，那么按照上面的分析，算子的水位线就应该是 3，将该水位线进行广播。</li>
+<li>此时又来了一个水位线，将水位线为 4 的子分区的水位线更新为 7，此时 4 个分区的水位线分别为 4 7 3 6，最小的还是 3，那么算子的水位线还是 3，将该水位线进行广播。</li>
+<li>最后一个新来的水位线将水位线为 3 的子分区的水位线更新为 6，此时 4 个分区的水位线分别为 4 7 6 6，最小的水位线更新为 4，那么算子的水位线更新为 4，将该水位线进行广播。</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/" class="category-chain-item">大数据</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/" class="category-chain-item">实时计算</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/Flink/" class="category-chain-item">Flink</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/Flink/%E5%9F%BA%E4%BA%8EApache-Flink%E7%9A%84%E6%B5%81%E5%A4%84%E7%90%86/" class="category-chain-item">基于Apache Flink的流处理</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>6.2 基于时间的算子</div>
+      <div>http://example.com/2022/12/64d0f3bde106.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/6ba230b21ffa.html" title="7 Flink的状态管理">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">7 Flink的状态管理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/0dbee4ce3eb3.html" title="6.1 基于窗口的算子">
+                        <span class="hidden-mobile">6.1 基于窗口的算子</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/64d0f3bde106.html';
+          this.page.identifier = '/2022/12/64d0f3bde106.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

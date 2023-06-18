@@ -1,0 +1,751 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="基本语法insert模式： Shift+a:直接跳到尾部进入insert模式 a: 在当前字符的后面进入 insert 模式 Shift+i: 直接跳到行的开头进入 insert 模式 i: 在当前字符的前面进入 insert 模式 Shift+o: 在当前一行的上一行插入一行进入 insert 模式 o: 在当前一行的下一行插入一行进入 insert 模式 Shift+g: 直接到达最后一行 g">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vim">
+<meta property="og:url" content="http://example.com/2022/12/623b5ffad47c.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="基本语法insert模式： Shift+a:直接跳到尾部进入insert模式 a: 在当前字符的后面进入 insert 模式 Shift+i: 直接跳到行的开头进入 insert 模式 i: 在当前字符的前面进入 insert 模式 Shift+o: 在当前一行的上一行插入一行进入 insert 模式 o: 在当前一行的下一行插入一行进入 insert 模式 Shift+g: 直接到达最后一行 g">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-12-03T18:39:21.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Vim - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Vim"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:39" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          47 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Vim</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h1><h2 id="insert模式："><a href="#insert模式：" class="headerlink" title="insert模式："></a>insert模式：</h2><ol>
+<li>Shift+a:直接跳到尾部进入insert模式</li>
+<li>a: 在当前字符的后面进入 insert 模式</li>
+<li>Shift+i: 直接跳到行的开头进入 insert 模式</li>
+<li>i: 在当前字符的前面进入 insert 模式</li>
+<li>Shift+o: 在当前一行的上一行插入一行进入 insert 模式</li>
+<li>o: 在当前一行的下一行插入一行进入 insert 模式</li>
+<li>Shift+g: 直接到达最后一行</li>
+<li>gg: 来到文件的最开头一个字符</li>
+</ol>
+<h2 id="normal模式"><a href="#normal模式" class="headerlink" title="normal模式"></a>normal模式</h2><h3 id="进入方式"><a href="#进入方式" class="headerlink" title="进入方式"></a>进入方式</h3><p>从insert模式按q键退出</p>
+<h4 id="操作："><a href="#操作：" class="headerlink" title="操作："></a>操作：</h4><p>c+数字：删除后面数字个元素后进入insert模式。例如c6的含义是删除当前位置之后的6个元素后进入insert模式</p>
+<h3 id="删除系列"><a href="#删除系列" class="headerlink" title="删除系列"></a>删除系列</h3><h3 id="d-系列"><a href="#d-系列" class="headerlink" title="d 系列"></a>d 系列</h3><p>dd：剪切整行<br>d→：往右剪切一个字符<br>d3→：往右剪切三个字符</p>
+<h3 id="d-结合-f："><a href="#d-结合-f：" class="headerlink" title="d 结合 f："></a>d 结合 f：</h3><p>df: 往后删到第一个出现的冒号<br>df3: 往后删除第一个出现的 3</p>
+<h3 id="c-系列："><a href="#c-系列：" class="headerlink" title="c 系列："></a>c 系列：</h3><p>c6→：删除右边6个字符后进入insert模式<br>chw：删除当前光标所在的单词（这里是因为我将i改成了h，也就是进入insert模式的i）<br>ch”：删除两个双引号之间的所有内容（这也是因为我将i改成了h）</p>
+<h2 id="y-系列：（复制系列）"><a href="#y-系列：（复制系列）" class="headerlink" title="y 系列：（复制系列）"></a>y 系列：（复制系列）</h2><p>Y3→：往右复制3个字符</p>
+<h2 id="粘贴系列"><a href="#粘贴系列" class="headerlink" title="粘贴系列"></a>粘贴系列</h2><p>p：粘贴</p>
+<h2 id="寻找系列："><a href="#寻找系列：" class="headerlink" title="寻找系列："></a>寻找系列：</h2><p>f系列：（往后找）<br>fv：往后找到第一个v</p>
+<h2 id="搜索："><a href="#搜索：" class="headerlink" title="搜索："></a>搜索：</h2><p>&#x2F;：</p>
+<h2 id="撤回：u"><a href="#撤回：u" class="headerlink" title="撤回：u"></a>撤回：u</h2><h2 id="分屏系列："><a href="#分屏系列：" class="headerlink" title="分屏系列："></a>分屏系列：</h2><p>上下分屏：在normal模式下输入:split<br>左右分屏：在normal模式下输入:vsplit<br>设置快捷键si（这里是因为把i改成了h）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sql">map si : <span class="hljs-keyword">set</span> splitright<span class="hljs-operator">&lt;</span>CR<span class="hljs-operator">&gt;</span>:vsplit<span class="hljs-operator">&lt;</span>CR<span class="hljs-operator">&gt;</span> ：向上分屏<br></code></pre></td></tr></table></figure>
+
+<h3 id="可视模式："><a href="#可视模式：" class="headerlink" title="可视模式："></a>可视模式：</h3><h4 id="按v进入一般的可视模式："><a href="#按v进入一般的可视模式：" class="headerlink" title="按v进入一般的可视模式："></a>按v进入一般的可视模式：</h4><p>可以选中当前的字符，然后按上下左右选中自己所需要的字符，进行删除，剪切，复制等操作<br>Shift+g：从当前所在位置直接选到最后一行<br>ggVG：全选</p>
+<h4 id="进行normal模式操作："><a href="#进行normal模式操作：" class="headerlink" title="进行normal模式操作："></a>进行normal模式操作：</h4><p>:normal A.png ：对选中的所有行加上.png后缀<br>:normal Hmy-：对选中的所有行加上my-前缀（这里是因为我将i键改为了h键）</p>
+<h3 id="可视块模式："><a href="#可视块模式：" class="headerlink" title="可视块模式："></a>可视块模式：</h3><p>按control+v进入可视块模式<br>此时可以选中块<br>按上下左右或者G等键可以按照矩形的方式选中块进行操作</p>
+<h3 id="典型操作："><a href="#典型操作：" class="headerlink" title="典型操作："></a>典型操作：</h3><ol>
+<li>gg进入开头，按Shift+g键选中第一列，那么按d就可删除</li>
+<li>gg进入开头，按Shift+g键选中第一列，按Shift+i进入insert模式，写入之后按Esc，此时发现所有第一列都更改了！</li>
+</ol>
+<h1 id="Vim配置文件"><a href="#Vim配置文件" class="headerlink" title="Vim配置文件"></a>Vim配置文件</h1><h2 id="设置配置文件的方法："><a href="#设置配置文件的方法：" class="headerlink" title="设置配置文件的方法："></a>设置配置文件的方法：</h2><p>首先进入主目录：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> ~<br></code></pre></td></tr></table></figure>
+<p>然后新建一个文件夹</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> .vim<br></code></pre></td></tr></table></figure>
+<p>然后新建文件vimrc</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim vimrc<br></code></pre></td></tr></table></figure>
+
+<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br></pre></td><td class="code"><pre><code class="hljs shell">let mapleader=&quot; &quot;       &quot; 第一行注释的意思是将leader键更改为空格<br>syntax on		&quot; 自动语法高亮<br>set number		&quot; 显示行号<br>set norelativenumber	&quot; 不显示相对行号<br>set cursorline		&quot; 突出显示当前行<br>set wrap<br>set showcmd<br><br>set hlsearch		&quot; 搜索时启动高亮<br>exec &quot;nohlsearch&quot;	<br>set incsearch		&quot; <br>set ignorecase		&quot; 搜索时忽略大小写<br>set smartcase<br><br>set nocompatible	&quot; 保证使用流畅<br>filetype on<br>filetype indent on<br>filetype plugin on<br>filetype plugin indent on  &quot; 这四行是硬性要求,识别不同的文件格式<br>set mouse=a 		&quot; 让vim可以使用鼠标<br>set encoding=utf-8	&quot; 支持中文<br>let &amp;t_ut=&#x27; &#x27;		&quot; 改变有些终端可能配色不对的问题<br><br>set expandtab           &quot; 用向上的箭头将窗口向上移5个单位<br>set tabstop=2<br>set shiftwidth=2<br>set softtabstop=2<br><br>&quot; 可以显示空格<br>set listchars=tab:▸\ ,trail:▫<br>set scrolloff=5<br>&quot; 缩进选项<br>set tw=0<br>set indentexpr=<br><br>set backspace=indent,eol,start        &quot; 这行的作用是能让行首back时回到行尾<br>set foldmethod=indent<br>set foldlevel=99<br>let &amp;t_SI = &quot;\&lt;Esc&gt;]50;CursorShape=1\x7&quot;<br>let &amp;t_SR = &quot;\&lt;Esc&gt;]50;CursorShape=2\x7&quot;<br>let &amp;t_EI = &quot;\&lt;Esc&gt;]50;CursorShape=0\x7&quot;<br>set laststatus=2<br>set autochdir<br><br>&quot;作用：关闭vim之后重新打开，光标能回到上一次的位置<br>au BufReadPost * if line(&quot;&#x27;\&quot;&quot;) &gt; 1 &amp;&amp; line(&quot;&#x27;\&quot;&quot;) &lt;= line(&quot;$&quot;) | exe &quot;normal! g&#x27;\&quot;&quot; | endif<br><br><br>noremap &lt;LEADER&gt;&lt;CR&gt; :nohlsearch&lt;CR&gt;<br>			&quot; 用空格+回车取消搜索的高亮<br>map s &lt;nop&gt;<br>			&quot; <br>map S :w&lt;CR&gt;<br>			&quot; 用S来进行保存<br>map Q :q&lt;CR&gt;<br>			&quot; 用Q来退出<br>map R :source $MYVIMRC&lt;CR&gt;<br>			&quot; 用R来执行这个配置文件让其直接起作用<br><br>map sl :set splitright&lt;CR&gt;:vsplit&lt;CR&gt;<br>			&quot; 向右分屏，并且将光标放到右边<br>map sh :set nosplitright&lt;CR&gt;:vsplit&lt;CR&gt;<br>			&quot; 向左分屏，并且将光标放到左边<br>map sk :set nosplitbelow&lt;CR&gt;:split&lt;CR&gt;<br>			&quot; 向上分屏，并且将光标放到上面<br>map sj :set splitbelow&lt;CR&gt;:split&lt;CR&gt;<br>			&quot; 向下分屏，并且将光标放到下面<br><br>map &lt;LEADER&gt;l &lt;C-w&gt;l<br>			&quot; 用空格+l将光标切换到右边<br>map &lt;LEADER&gt;j &lt;C-w&gt;k<br>			&quot; 用空格+k将光标切换到下面<br>map &lt;LEADER&gt;h &lt;C-w&gt;h<br>			&quot; 用空格+j将光标切换到左边<br>map &lt;LEADER&gt;k &lt;C-w&gt;j <br>			&quot; 用空格+i将光标切换到上面<br>map &lt;up&gt; :res + 5&lt;CR&gt;<br>			&quot; 用向上的箭头将窗口向上移5个单位<br>map &lt;down&gt; :res -5&lt;CR&gt;<br>                        &quot; 用向下的箭头将窗口向下移5个单位<br>map &lt;left&gt; :vertical resize-5&lt;CR&gt;<br>                        &quot; 用向左的箭头将窗口向左移5个单位<br>map &lt;right&gt; :vertical resize+5&lt;CR&gt;<br>			&quot; 用向右的箭头将窗口向右移5个单位<br><br>&quot; 进行插件的安装<br>call plug#begin(&#x27;~/.vim/plugged&#x27;)	<br><br>Plug &#x27;vim-airline/vim-airline&#x27;<br>			&quot; 该插件安装后能在下面出现工作框<br>Plug &#x27;connorholyday/vim-snazzy&#x27;<br>			&quot; 该插件安装后使用snazzy字体<br><br>&quot; File navigation<br>Plug &#x27;Xuyuanp/nerdtree-git-plugin&#x27;<br><br>&quot; Taglist<br>Plug &#x27;majutsushi/tagbar&#x27;, &#123; &#x27;on&#x27;: &#x27;TagbarOpenAutoClose&#x27; &#125;<br><br>&quot; Error checking<br>Plug &#x27;w0rp/ale&#x27;<br><br>&quot; Other visual enhancement<br>Plug &#x27;nathanaelkane/vim-indent-guides&#x27;<br>Plug &#x27;itchyny/vim-cursorword&#x27;<br><br><br>&quot; HTML, CSS, JavaScript, PHP, JSON, etc.<br>Plug &#x27;elzr/vim-json&#x27;<br>Plug &#x27;hail2u/vim-css3-syntax&#x27;<br>Plug &#x27;spf13/PIV&#x27;, &#123; &#x27;for&#x27; :[&#x27;php&#x27;, &#x27;vim-plug&#x27;] &#125;<br>Plug &#x27;gko/vim-coloresque&#x27;, &#123; &#x27;for&#x27;: [&#x27;vim-plug&#x27;, &#x27;php&#x27;, &#x27;html&#x27;, &#x27;javascript&#x27;, &#x27;css&#x27;, &#x27;less&#x27;] &#125;<br>Plug &#x27;pangloss/vim-javascript&#x27;, &#123; &#x27;for&#x27; :[&#x27;javascript&#x27;, &#x27;vim-plug&#x27;] &#125;<br>Plug &#x27;mattn/emmet-vim&#x27;<br><br><br>&quot; Other useful utilities<br>Plug &#x27;terryma/vim-multiple-cursors&#x27;<br>Plug &#x27;junegunn/goyo.vim&#x27; &quot; distraction free writing mode<br>Plug &#x27;tpope/vim-surround&#x27; &quot; type ysks&#x27; to wrap the word with &#x27;&#x27; or type cs&#x27;` to change &#x27;word&#x27; to `word`<br>Plug &#x27;godlygeek/tabular&#x27; &quot; type ;Tabularize /= to align the =<br>Plug &#x27;gcmt/wildfire.vim&#x27; &quot; in Visual mode, type i&#x27; to select all text in &#x27;&#x27;, or type i) i] i&#125; ip<br>Plug &#x27;scrooloose/nerdcommenter&#x27; &quot; in &lt;space&gt;cc to comment a line<br><br>&quot; Dependencies<br>Plug &#x27;MarcWeber/vim-addon-mw-utils&#x27;<br>Plug &#x27;kana/vim-textobj-user&#x27;<br>Plug &#x27;fadein/vim-FIGlet&#x27;<br><br>call plug#end()<br><br>&quot; 这里进行snazy的设置<br>color snazzy<br>let g:SnazzyTransparent = 1<br><br></code></pre></td></tr></table></figure>
+
+<h1 id="Vim插件安装"><a href="#Vim插件安装" class="headerlink" title="Vim插件安装"></a>Vim插件安装</h1><h2 id="1-安装插件支持"><a href="#1-安装插件支持" class="headerlink" title="1. 安装插件支持"></a>1. 安装插件支持</h2><p>在shell中执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">curl -fLo ~/.vim/autoload/plug.vim --create-dirs \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim<br></code></pre></td></tr></table></figure>
+<h2 id="2-安装Vundle插件支持"><a href="#2-安装Vundle插件支持" class="headerlink" title="2. 安装Vundle插件支持"></a>2. 安装Vundle插件支持</h2><h3 id="安装Vundle"><a href="#安装Vundle" class="headerlink" title="安装Vundle:"></a>安装Vundle:</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim<br>~/.vimrc<br></code></pre></td></tr></table></figure>
+<h3 id="文件中也添加如下命令："><a href="#文件中也添加如下命令：" class="headerlink" title="文件中也添加如下命令："></a>文件中也添加如下命令：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">set nocompatible<br>filetype off<br>set rtp+=~/.vim/bundle/Vundle.vim<br>call vundle#begin()<br>Plugin &#x27;VundleVim/Vundle.vim&#x27;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Plugs下面加入你需要的vim-plug"><a href="#Plugs下面加入你需要的vim-plug" class="headerlink" title="Plugs下面加入你需要的vim-plug"></a>Plugs下面加入你需要的vim-plug</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">Plugin &#x27;vim-airline/vim-airline&#x27;<br>call vundle#end()<br>filetype plugin indent on<br></code></pre></td></tr></table></figure>
+
+
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/" class="category-chain-item">工具</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/Vim/" class="category-chain-item">Vim</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Vim</div>
+      <div>http://example.com/2022/12/623b5ffad47c.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/a64286afc4ab.html" title="抓包实例">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">抓包实例</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/47b3275c21d1.html" title="tshark使用技巧">
+                        <span class="hidden-mobile">tshark使用技巧</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/623b5ffad47c.html';
+          this.page.identifier = '/2022/12/623b5ffad47c.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,919 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="主要内容 window 概念 window 类型 window API  window 概念streaming 流式计算是一种被设计用于处理无限数据集的数据处理引擎，而无限数据集是指一种不断增长的本质上无限的数据集， 而 window 是一种切割无限数据为有限块进行处理的手段。 Window 是无限数据流处理的核心，Window 将一个无限的 stream 拆分成有限大小的”buckets”桶，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="6.1 基于窗口的算子">
+<meta property="og:url" content="http://example.com/2022/12/0dbee4ce3eb3.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="主要内容 window 概念 window 类型 window API  window 概念streaming 流式计算是一种被设计用于处理无限数据集的数据处理引擎，而无限数据集是指一种不断增长的本质上无限的数据集， 而 window 是一种切割无限数据为有限块进行处理的手段。 Window 是无限数据流处理的核心，Window 将一个无限的 stream 拆分成有限大小的”buckets”桶，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221212014302.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221212015146.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210226015355.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210226015520.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210226020035.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221213013817.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221213014110.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/20210609004754.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210227035639.png">
+<meta property="article:published_time" content="2022-12-03T18:13:25.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221212014302.png">
+  
+  
+  
+  <title>6.1 基于窗口的算子 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="6.1 基于窗口的算子"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:13" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          14k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          119 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">6.1 基于窗口的算子</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h1><ul>
+<li>window 概念</li>
+<li>window 类型</li>
+<li>window API</li>
+</ul>
+<h1 id="window-概念"><a href="#window-概念" class="headerlink" title="window 概念"></a>window 概念</h1><p>streaming 流式计算是一种被设计用于处理无限数据集的数据处理引擎，而无限数据集是指一种不断增长的本质上无限的数据集， 而 window 是一种切割无限数据为有限块进行处理的手段。</p>
+<p>Window 是无限数据流处理的核心，Window 将一个无限的 stream 拆分成有限大小的”buckets”桶， 我们可以在这些桶上做计算操作。</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221212014302.png" srcset="/img/loading.gif" lazyload width = "70%" />
+
+<p>也就是说，<code>Flink</code> 的窗口并不是静态准备好的，而是动态创建–当有落在这个窗口区间范围的数据到达时，才创建对应的窗口。</p>
+<p>另外，这里我们认为到达窗口结束时间时，窗口就会触发计算并关闭，事实上“触发计算”和“窗口关闭”两个行为也可以分开。</p>
+<h1 id="window-类型"><a href="#window-类型" class="headerlink" title="window 类型"></a>window 类型</h1><h2 id="1-按照驱动类型分类"><a href="#1-按照驱动类型分类" class="headerlink" title="1. 按照驱动类型分类"></a>1. 按照驱动类型分类</h2><p>以什么标准来开始和结束数据的截取，叫做窗口的“驱动类型”</p>
+<p>按照驱动类型分类，一共分为两种：</p>
+<ol>
+<li>时间窗口（Time Window），按照时间段来截取数据的窗口</li>
+<li>计数窗口（Count Window），按照固定个数来截取一段数据集</li>
+</ol>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221212015146.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>可以看到，时间窗口是按照时间进行划分，计数窗口是按照事件个数进行划分。</p>
+<h2 id="2-按照窗口分配数据的规则分类"><a href="#2-按照窗口分配数据的规则分类" class="headerlink" title="2. 按照窗口分配数据的规则分类"></a>2. 按照窗口分配数据的规则分类</h2><p>一共分为 4 类：</p>
+<h3 id="1-滚动窗口（tumbling-window）"><a href="#1-滚动窗口（tumbling-window）" class="headerlink" title="1 . 滚动窗口（tumbling window）"></a>1 . 滚动窗口（tumbling window）</h3><p>特点是窗口长度不变，首尾相连</p>
+<p>其中滚动窗口又可以分为<strong>滚动时间窗口</strong>和<strong>滚动计数窗口</strong>。</p>
+<h3 id="2-滑动窗口（sliding-window）"><a href="#2-滑动窗口（sliding-window）" class="headerlink" title="2. 滑动窗口（sliding window）"></a>2. 滑动窗口（sliding window）</h3><p>特点是窗口长度不变，首尾不相连</p>
+<p>滑动窗口分为<strong>滑动时间窗口</strong>和<strong>滑动计数窗口</strong>。</p>
+<h3 id="3-会话窗口（Session-Window）"><a href="#3-会话窗口（Session-Window）" class="headerlink" title="3. 会话窗口（Session Window）"></a>3. 会话窗口（Session Window）</h3><p>会话窗口顾名思义，是基于“会话”（session）来对数据进行分组的。与滑动窗口和滚动窗口不同，会话窗口只能基于时间来定义。</p>
+<p>对于会话窗口而言，最重要的参数就是会话的超时时间，也就是两个会话窗口之间的最小距离，如果相邻两个数据的到来时间小于指定的大小，那么就保持在同一个窗口中，他们就属于同一个窗口，否则属于新的会话窗口，而前一个窗口就应该关闭了。</p>
+<h3 id="4-全局窗口"><a href="#4-全局窗口" class="headerlink" title="4. 全局窗口"></a>4. 全局窗口</h3><p>这是一类比较通用的窗口，这种窗口全局有效，会把相同 <code>key</code> 的所有数据都分配到一个窗口中，这种窗口没有结束的时候，默认是不会做触发计算的。如果希望它能对数据进行计算处理，还需要自定义“触发器”（Trigger）</p>
+<h2 id="3-按照是否按键分区的规则分类"><a href="#3-按照是否按键分区的规则分类" class="headerlink" title="3. 按照是否按键分区的规则分类"></a>3. 按照是否按键分区的规则分类</h2><p>在定义窗口操作之前，首先需要确认，到底是基于按键分区（Keyed）的数据流 <code>KeyStream</code> 来开窗，还是直接在没有按键分区的 <code>DataStream</code> 上开窗。</p>
+<p>简单来说，就是看在调用窗口算子之前，是否有 <code>KeyBy</code> 操作。</p>
+<h3 id="1-按键分区窗口"><a href="#1-按键分区窗口" class="headerlink" title="1. 按键分区窗口"></a>1. 按键分区窗口</h3><p>经过按键分区 <code>keyBy</code> 操作后，数据流会按照 key 被分为多条逻辑流（logical streams），这就是 <code>KeyedStream</code>。基于 <code>KeyedStream</code> 进行窗口操作时, 窗口计算会在多个并行子任务上同时执行。相同 key 的数据会被发送到同一个并行子任务，而窗口操作会基于每个 key 进行单独的处理。所以可以认为，每个 key 上都定义了一组窗口，各自独立地进行统计计算。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java">stream.keyBy(...)<br>      .window(...)<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-非按键分区窗口"><a href="#2-非按键分区窗口" class="headerlink" title="2. 非按键分区窗口"></a>2. 非按键分区窗口</h3><p>如果没有进行 <code>keyBy</code>，那么原始的 <code>DataStream</code> 就不会分成多条逻辑流。这时窗口逻辑只能在一个任务（task）上执行，就相当于并行度变成了 1。所以在实际应用中一般<strong>不推荐</strong>使用这种方式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">stream.windowAll(...)<br></code></pre></td></tr></table></figure>
+
+<p>这里需要注意的是，对于非按键分区的窗口操作，手动调大窗口算子的并行度也是无效的， <code>windowAll</code> 本身就是一个非并行的操作。</p>
+<p>具体的，看接下来的内容</p>
+<h1 id="window-API-概览"><a href="#window-API-概览" class="headerlink" title="window API 概览"></a>window API 概览</h1><p>可以用 <code>.window()</code> 来定义一个窗口，然后基于这个 window 去做一些聚合或者其他处理操作。</p>
+<p>简单来说，窗口操作主要有两个部分：窗口分配器（Window Assigners）和窗口函数（Window Functions）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java">stream.keyBy(&lt;key selector&gt;)<br>	.window (&lt;window assigner&gt;)<br>	.aggregate (&lt;window function&gt;)<br><br></code></pre></td></tr></table></figure>
+
+<p>其中 <code>.window()</code> 方法需要传入一个窗口分配器，它指明了窗口的类型；而后面的 <code>.aggregate()</code> 方法传入一个窗口函数作为参数，它用来定义窗口具体的处理逻辑。窗口分配器有各种形式，而窗口函数的调用方法也不只 <code>.aggregate()</code> 一种，我们接下来就详细展开讲解。</p>
+<p>另外，在实际应用中，一般都需要并行执行任务，非按键分区很少用到，所以我们之后都以按键分区窗口为例；如果想要实现非按键分区窗口，只要前面不做 <code>keyBy</code>，后面调用 <code>.window()</code> 时直接换成 <code>.windowAll()</code> 就可以了。</p>
+<h1 id="窗口分配器"><a href="#窗口分配器" class="headerlink" title="窗口分配器"></a>窗口分配器</h1><p>窗口分配器就是上面所说的 Window Assigners，它是构建窗口算子的第一步，它的作用就是定义数据应该被“分配”到哪个窗口。所以可以说，窗口分配器其实就是在指定窗口的类型。</p>
+<p>窗口分配器最通用的定义方式，就是调用 <code>.window()</code> 方法。这个方法需要传入一个 <code>WindowAssigner</code> 作为参数，返回 <code>WindowedStream</code> 。如果是非按键分区窗口，那么直接调用 <code>.windowAll()</code> 方法，同样传入一个 <code>WindowAssigner</code>，返回的是 <code>AllWindowedStream</code>。</p>
+<p>Flink 内置窗口分配器所创建的窗口类型为 <code>TimeWindow</code>。该窗口类型实际上表示两个时间戳之间的时间区间（左闭右开）。它对外提供了获取窗口边界、检查窗口是否想交以及合并重叠窗口等方法。</p>
+<h2 id="滚动窗口"><a href="#滚动窗口" class="headerlink" title="滚动窗口"></a>滚动窗口</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210226015355.png" srcset="/img/loading.gif" lazyload style="zoom: 50%;" />
+
+<p>如图所示，滚动窗口分配器将元素放入大小固定且互不重叠的窗口中。</p>
+<p>无论是 Java 还是 Scala 开启窗口的方法都是相同的。</p>
+<h3 id="开启窗口方法-window"><a href="#开启窗口方法-window" class="headerlink" title="开启窗口方法 window"></a>开启窗口方法 window</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala">.window(<span class="hljs-type">TumblingEventTimeWindows</span>.of(<span class="hljs-type">Time</span>.seconds(<span class="hljs-number">1</span>)))<br></code></pre></td></tr></table></figure>
+
+<p><code>TumblingEventTimeWindows</code> 代表滚动窗口。</p>
+<h3 id="指定偏移量"><a href="#指定偏移量" class="headerlink" title="指定偏移量"></a>指定偏移量</h3><p>通过第二个参数指定一个偏移量</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala">.window(<span class="hljs-type">TumblingEventTimeWindows</span>.of(<span class="hljs-type">Time</span>.seconds(<span class="hljs-number">1</span>), <span class="hljs-type">Time</span>.minutes(<span class="hljs-number">15</span>)))<br></code></pre></td></tr></table></figure>
+
+<p>上述代码展示了偏移量</p>
+<h2 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210226015520.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>如图所示，滑动窗口分配器将元素置于大小固定且可能重叠的窗口中。</p>
+<p>与滚动窗口类似，用的是 SlidingEventTimeWindows</p>
+<h3 id="开启滑动窗口"><a href="#开启滑动窗口" class="headerlink" title="开启滑动窗口"></a>开启滑动窗口</h3><p>无论 Java 还是 Scala 开启滑动窗口的方法都是相同的</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala">.window(<span class="hljs-type">SlidingEventTimeWindows</span>.of(<span class="hljs-type">Time</span>.hours(<span class="hljs-number">1</span>), <span class="hljs-type">Time</span>.minutes(<span class="hljs-number">15</span>)))<br></code></pre></td></tr></table></figure>
+
+<p>类似的，可以用第三个参数可以设置偏移时间</p>
+<h3 id="设置偏移时间"><a href="#设置偏移时间" class="headerlink" title="设置偏移时间"></a>设置偏移时间</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala">.window(<span class="hljs-type">SlidingEventTimeWindows</span>.of(<span class="hljs-type">Time</span>.hours(<span class="hljs-number">1</span>), <span class="hljs-type">Time</span>.minutes(<span class="hljs-number">15</span>), <span class="hljs-type">Time</span>.seconds(<span class="hljs-number">5</span>)))<br></code></pre></td></tr></table></figure>
+
+<h2 id="会话窗口"><a href="#会话窗口" class="headerlink" title="会话窗口"></a>会话窗口</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210226020035.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>由一系列事件组合一个指定时间长度的 timeout 间隙组成， 类似于 web 应用的 session， 也就是一段时间没有接收到新数据就会生成新的窗口。</p>
+<p>特点：时间无对齐。</p>
+<p>session 窗口分配器通过 session 活动来对元素进行分组， session 窗口跟滚动窗口和滑动窗口相比，不会有重叠和固定的开始时间和结束时间的情况，相反，当它在一个固定的时间周期内不再收到元素， 即非活动间隔产生， 那个这个窗口就会关闭。一个 session 窗口通过一个 session 间隔来配置，这个 session 间隔定义了非活跃周期的长度，当这个非活跃周期产生，那么当前的 session 将关闭并且后续的元素将被分配到新的 session 窗口中去。</p>
+<h3 id="开启会话窗口"><a href="#开启会话窗口" class="headerlink" title="开启会话窗口"></a>开启会话窗口</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala">.window(<span class="hljs-type">ProcessingTimeSessionWindows</span>.withGap(<span class="hljs-type">Time</span>.minutes(<span class="hljs-number">15</span>)))<br></code></pre></td></tr></table></figure>
+
+<h2 id="计数窗口"><a href="#计数窗口" class="headerlink" title="计数窗口"></a>计数窗口</h2><p>计数窗口概念非常简单，本身底层是基于全局窗口（Global Window）实现的。Flink 为我们提供了非常方便的接口：直接调用 <code>.countWindow()</code> 方法。</p>
+<h3 id="开启计数窗口"><a href="#开启计数窗口" class="headerlink" title="开启计数窗口"></a>开启计数窗口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">.countWindow(<span class="hljs-number">10</span>) <span class="hljs-comment">// 计数窗口</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="开启滑动计数窗口"><a href="#开启滑动计数窗口" class="headerlink" title="开启滑动计数窗口"></a>开启滑动计数窗口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">.countWindow(<span class="hljs-number">10</span>, <span class="hljs-number">2</span>) <span class="hljs-comment">// 滑动计数窗口</span><br></code></pre></td></tr></table></figure>
+
+
+<h1 id="窗口函数"><a href="#窗口函数" class="headerlink" title="窗口函数"></a>窗口函数</h1><h2 id="DataStream-转换图"><a href="#DataStream-转换图" class="headerlink" title="DataStream 转换图"></a>DataStream 转换图</h2><img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221213013817.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+<p>通过 <code>WindowedStream</code> 源码我们可以看到：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Public</span>  <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">WindowedStream</span>&lt;T, K, W <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Window</span>&gt; &#123;<br> ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>WindowStream</code> 连 <code>DataStream</code> 都不是，但是我们一切的操作就是基于 <code>DataStream</code> 来进行的，因此需要将 <code>WindowStream</code> 转换为 <code>DataStream</code>，从 <code>WindowStream</code> 到 <code>DataStream</code> 的步骤为 window function（窗口函数）。</p>
+<p>也就是图中的红圈部分：</p>
+<img src=" https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20221213014110.png" srcset="/img/loading.gif" lazyload width = "50%" />
+
+
+
+
+<h2 id="窗口函数的类型"><a href="#窗口函数的类型" class="headerlink" title="窗口函数的类型"></a>窗口函数的类型</h2><h3 id="1-增量聚合函数"><a href="#1-增量聚合函数" class="headerlink" title="1. 增量聚合函数"></a>1. 增量聚合函数</h3><p>它的应用场景是窗口内以状态形式存储某个值且需要根语个加入窗口的元素对该值进行更新。此类函数通常会十分节省空间且最终会将聚合值作为单个结果发送出去。</p>
+<p><code>ReduceFunction</code> 和 <code>AggregateFunction</code> 就属于增量聚合函数。</p>
+<p>也就是说，<strong>每条数据</strong>到来就进行计算，保持一个简单的状态。</p>
+<h4 id="ReduceFunction"><a href="#ReduceFunction" class="headerlink" title="ReduceFunction"></a>ReduceFunction</h4><p><code>ReduceFunction</code> 接收两个同类型的值并将它们组合生成一个类型不变的值。当被用在窗口化数据流上时，<code>ReduceFunction</code> 会对分配给窗口的元素进行增量聚合。</p>
+<p>窗口只需要存储当前聚合结果，一个和 <code>ReduceFunction</code> 的输入及输出类型都相同的值。每当收到一个新元素，算子都会以该元素和从窗口状态取出的当前聚合值为参数调用 <code>ReduceFunction</code>，随后会用 <code>ReduceFunction</code> 的结果替换窗口状态。</p>
+<p>优点:  </p>
+<ul>
+<li>只需为每个窗口维护一个常数级别的小状态。此外函数的接口也很简单。</li>
+</ul>
+<p>缺点: </p>
+<ul>
+<li><code>ReduceFunction</code> 的应用场景存在一定局限，由于输入输出类型必须一致，所以通常仅限于一些简单的聚合。</li>
+</ul>
+<p>每一步对应关系</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/20210609004754.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210227035639.png" srcset="/img/loading.gif" lazyload style="zoom: 50%;" />
+
+<p>可以看到，先通过 map()将每个 SensorReading 类型的 DataStream 对应变换为二元祖类型的 DataStream。</p>
+<p>然后根据 keyBy()将二元祖根据第一个元素（String）进行分区，得到 KeyedStream，其第一个元素是二元祖，第二个元素是 String。请注意，这里的 String 就是分区的键值，如果是按照第二个元素（Double）进行分区，那么得到的 KeyedStream 的第二个元素就是 Double。</p>
+<p>然后根据 <code>timeWindow()</code> 将 <code>KeyedStream</code> 变为由三个元祖组成的 <code>WindowedStream</code>。</p>
+<p>最后根据 <code>reduce()</code> 将 <code>WindowedStream</code> 转换为 <code>DataStream</code>。</p>
+<p>在最后的</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scala">.reduce((r1, r2) =&gt; (r1._1, r1_2.min(r2._2)))<br></code></pre></td></tr></table></figure>
+
+<p>其中的 r1 和 r2 分别是新老数据，实时进行更新。</p>
+<h4 id="AggregateFunction"><a href="#AggregateFunction" class="headerlink" title="AggregateFunction"></a>AggregateFunction</h4><h5 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@PublicEvolving</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">AggregateFunction</span>&lt;IN, ACC, OUT&gt; <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Function</span>, Serializable &#123;<br>    ACC <span class="hljs-title function_">createAccumulator</span><span class="hljs-params">()</span>;<br><br>    ACC <span class="hljs-title function_">add</span><span class="hljs-params">(IN var1, ACC var2)</span>;<br><br>    OUT <span class="hljs-title function_">getResult</span><span class="hljs-params">(ACC var1)</span>;<br><br>    ACC <span class="hljs-title function_">merge</span><span class="hljs-params">(ACC var1, ACC var2)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>该接口定义了输入类型 IN，累加器类型 ACC 以及结果类型 OUT。</p>
+<p>它和 ReduceFunction 不同的是中间数据类型以及结果类型<strong>不再依赖输入类型</strong>。</p>
+<h5 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h5><p>使用 <code>AggregateFunction</code> 计算每个窗口内传感器读书的平均温度。累加器负责维护不断变化的温度总和及数量，<code>getResult()</code> 方法用来计算平均值。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.apitest<br><br><span class="hljs-keyword">import</span> org.apache.flink.api.common.functions.<span class="hljs-type">AggregateFunction</span><br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.scala._<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.windowing.time.<span class="hljs-type">Time</span><br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">AggregateFunctionTest</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-keyword">val</span> env: <span class="hljs-type">StreamExecutionEnvironment</span> = <span class="hljs-type">StreamExecutionEnvironment</span>.getExecutionEnvironment<br>    <span class="hljs-keyword">val</span> sensorData: <span class="hljs-type">DataStream</span>[<span class="hljs-type">SensorReading</span>] =<br>      env.fromElements(<span class="hljs-type">SensorReading</span>(<span class="hljs-string">&quot;sensor_1&quot;</span>, <span class="hljs-number">100</span>, <span class="hljs-number">20</span>), <span class="hljs-type">SensorReading</span>(<span class="hljs-string">&quot;sensor_2&quot;</span>, <span class="hljs-number">101</span>, <span class="hljs-number">22</span>))<br><br>    <span class="hljs-keyword">val</span> avgTempPerWindow: <span class="hljs-type">DataStream</span>[(<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>)] = sensorData<br>      .map(r =&gt; (r.id, r.temperature))<br>      .keyBy(_._1)<br>      .timeWindow(<span class="hljs-type">Time</span>.seconds(<span class="hljs-number">15</span>))<br>      .aggregate(<span class="hljs-keyword">new</span> <span class="hljs-type">AvgTempFunction</span>)<br><br>    avgTempPerWindow.print()<br>    env.execute(<span class="hljs-string">&quot;Aggregation Test&quot;</span>)<br><br>  &#125;<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AvgTempFunction</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AggregateFunction</span>[(<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>), (<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>, <span class="hljs-type">Int</span>), (<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>)] </span>&#123;<br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">createAccumulator</span></span>(): (<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>, <span class="hljs-type">Int</span>) = &#123;<br>    (<span class="hljs-string">&quot;&quot;</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0</span>)<br>  &#125;<br><br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">add</span></span>(in: (<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>), acc: (<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>, <span class="hljs-type">Int</span>)): (<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>, <span class="hljs-type">Int</span>) = &#123;<br>    (in._1, in._2 + acc._2, <span class="hljs-number">1</span> + acc._3)<br>  &#125;<br><br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">getResult</span></span>(acc: (<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>, <span class="hljs-type">Int</span>)): (<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>) = &#123;<br>    (acc._1, acc._2 /  acc._3)<br>  &#125;<br><br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">merge</span></span>(acc: (<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>, <span class="hljs-type">Int</span>), acc1: (<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>, <span class="hljs-type">Int</span>)): (<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>, <span class="hljs-type">Int</span>) = &#123;<br>    (acc._1, acc._2 + acc1._2, acc._3 + acc1._3)<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="2-全量窗口函数"><a href="#2-全量窗口函数" class="headerlink" title="2. 全量窗口函数"></a>2. 全量窗口函数</h3><p>它会收集窗口内的<strong>所有元素</strong>，并在执行计算时对它们进行遍历。虽然全量窗口函数通常需要占用更多空间，但它和增量聚合函数相比，支持更复杂的逻辑。</p>
+<p><code>ProcesswindowFunction</code> 就是一个全量窗口函数。</p>
+<h4 id="ProcessWindowFunction-接口源代码"><a href="#ProcessWindowFunction-接口源代码" class="headerlink" title="ProcessWindowFunction 接口源代码"></a>ProcessWindowFunction 接口源代码</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-comment">//</span><br><span class="hljs-comment">// Source code recreated from a .class file by IntelliJ IDEA</span><br><span class="hljs-comment">// (powered by FernFlower decompiler)</span><br><span class="hljs-comment">//</span><br><span class="hljs-keyword">package</span> org.apache.flink.streaming.api.functions.windowing;<br><span class="hljs-meta">@PublicEvolving</span><br>public <span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ProcessWindowFunction&lt;IN</span>, <span class="hljs-title">OUT</span>, <span class="hljs-title">KEY</span>, <span class="hljs-title">W</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Window&gt;</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractRichFunction</span> </span>&#123;<br>    <span class="hljs-keyword">private</span> static <span class="hljs-keyword">final</span> long serialVersionUID = <span class="hljs-number">1</span>L;<br>    public <span class="hljs-type">ProcessWindowFunction</span>() &#123;<br>    &#125;<br>    public <span class="hljs-keyword">abstract</span> void process(<span class="hljs-type">KEY</span> var1, <span class="hljs-type">ProcessWindowFunction</span>&lt;<span class="hljs-type">IN</span>, <span class="hljs-type">OUT</span>, <span class="hljs-type">KEY</span>, <span class="hljs-type">W</span>&gt;.<span class="hljs-type">Context</span> var2, <span class="hljs-type">Iterable</span>&lt;<span class="hljs-type">IN</span>&gt; var3, <span class="hljs-type">Collector</span>&lt;<span class="hljs-type">OUT</span>&gt; var4) <span class="hljs-keyword">throws</span> <span class="hljs-type">Exception</span>;<br>  	<span class="hljs-comment">// 在窗口清除时删除自定义的单个窗口状态</span><br>    public void clear(<span class="hljs-type">ProcessWindowFunction</span>&lt;<span class="hljs-type">IN</span>, <span class="hljs-type">OUT</span>, <span class="hljs-type">KEY</span>, <span class="hljs-type">W</span>&gt;.<span class="hljs-type">Context</span> context) <span class="hljs-keyword">throws</span> <span class="hljs-type">Exception</span> &#123;<br>    &#125;<br>  	<span class="hljs-comment">// 保存窗口元数据的上下文</span><br>    public <span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Context</span> <span class="hljs-title">implements</span> <span class="hljs-title">Serializable</span> </span>&#123;<br>        public <span class="hljs-type">Context</span>() &#123;<br>        &#125;<br>				<span class="hljs-comment">// 返回窗口的元数据</span><br>        public <span class="hljs-keyword">abstract</span> <span class="hljs-type">W</span> window();<br>				<span class="hljs-comment">// 返回当前处理时间</span><br>        public <span class="hljs-keyword">abstract</span> long currentProcessingTime();<br>				<span class="hljs-comment">// 返回当前事件时间水位线</span><br>        public <span class="hljs-keyword">abstract</span> long currentWatermark();<br>				<span class="hljs-comment">// 返回单个窗口状态的访问器</span><br>        public <span class="hljs-keyword">abstract</span> <span class="hljs-type">KeyedStateStore</span> windowState();<br>				<span class="hljs-comment">// 用于每个键值全局状态的访问器</span><br>        public <span class="hljs-keyword">abstract</span> <span class="hljs-type">KeyedStateStore</span> globalState();<br>				<span class="hljs-comment">// 向OutputTag标识的副输出发送记录</span><br>        public <span class="hljs-keyword">abstract</span> &lt;<span class="hljs-type">X</span>&gt; void output(<span class="hljs-type">OutputTag</span>&lt;<span class="hljs-type">X</span>&gt; var1, <span class="hljs-type">X</span> var2);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>process()</code> 方法在被调用时的传入数据：</p>
+<ol>
+<li>窗口的键值</li>
+<li>一个用于访问窗口内元素的 Iterator<br>相当于窗口内的所有元素放在一个 Iterator 里面</li>
+<li>一个用于发出结果的 Collector</li>
+<li>一个 Context 参数</li>
+</ol>
+<p><code>Context</code> 对象作用（就是上面的 Context 类）</p>
+<ol>
+<li>返回窗口的元数据</li>
+<li>返回当前处理时间</li>
+<li>返回当前事件时间水位线</li>
+<li>返回单个窗口状态的访问器</li>
+<li>用于每个键值全局状态的访问器</li>
+<li>向 OutputTag 标识的副输出发送记录</li>
+</ol>
+<p>实例</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.apitest<br><br><br><span class="hljs-keyword">import</span> org.apache.flink.api.scala._<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.scala.function.<span class="hljs-type">ProcessWindowFunction</span><br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.scala.&#123;<span class="hljs-type">DataStream</span>, <span class="hljs-type">StreamExecutionEnvironment</span>&#125;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.windowing.time.<span class="hljs-type">Time</span><br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.windowing.windows.<span class="hljs-type">TimeWindow</span><br><span class="hljs-keyword">import</span> org.apache.flink.util.<span class="hljs-type">Collector</span><br><br><span class="hljs-keyword">case</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MinMaxTemp</span>(<span class="hljs-params">id:<span class="hljs-type">String</span>, min:<span class="hljs-type">Double</span>, max:<span class="hljs-type">Double</span>, endTs:<span class="hljs-type">Long</span></span>)</span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 该ProcessWindowFunction用于计算每个</span><br><span class="hljs-comment"> * 窗口内的最低和最高温度读数，</span><br><span class="hljs-comment"> * 它会将读数连同窗口结束时间戳一起发起。</span><br><span class="hljs-comment"> */</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HighAndLowTempProcessFunction</span></span><br>	<span class="hljs-keyword">extends</span> <span class="hljs-type">ProcessWindowFunction</span>[<span class="hljs-type">SensorReading</span>, <span class="hljs-type">MinMaxTemp</span> , <span class="hljs-type">String</span>, <span class="hljs-type">TimeWindow</span>]&#123;<br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">process</span></span>(key: <span class="hljs-type">String</span>,<br>                       ctx: <span class="hljs-type">Context</span>,<br>                       vals: <span class="hljs-type">Iterable</span>[<span class="hljs-type">SensorReading</span>],<br>                       out: <span class="hljs-type">Collector</span>[<span class="hljs-type">MinMaxTemp</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-comment">// 通过map将Iterator里面的所有数据转换成Double</span><br>    <span class="hljs-keyword">val</span> temps: <span class="hljs-type">Iterable</span>[<span class="hljs-type">Double</span>] = vals.map(_.temperature)<br>    <span class="hljs-comment">// 通过上下文的window得到window的结束位置</span><br>    <span class="hljs-keyword">val</span> windowEnd: <span class="hljs-type">Long</span> = ctx.window.getEnd<br>    out.collect(<span class="hljs-type">MinMaxTemp</span>(key, temps.min, temps.max, windowEnd))<br>  &#125;<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">WindowFunctions</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br><br>    <span class="hljs-comment">// set up the streaming execution environment</span><br>    <span class="hljs-keyword">val</span> env = <span class="hljs-type">StreamExecutionEnvironment</span>.getExecutionEnvironment<br>    <span class="hljs-comment">// checkpoint every 10 seconds</span><br>    env.getCheckpointConfig.setCheckpointInterval(<span class="hljs-number">10</span> * <span class="hljs-number">1000</span>)<br><br>    <span class="hljs-keyword">val</span> sensorData: <span class="hljs-type">DataStream</span>[<span class="hljs-type">SensorReading</span>] = &#123;<br>      env.fromElements(<span class="hljs-type">SensorReading</span>(<span class="hljs-string">&quot;sensor1&quot;</span>, <span class="hljs-number">100</span>, <span class="hljs-number">20</span>), <span class="hljs-type">SensorReading</span>(<span class="hljs-string">&quot;sensor2&quot;</span>, <span class="hljs-number">101</span>, <span class="hljs-number">21</span>))<br>    &#125;<br>    <span class="hljs-comment">// output the lowest and highest temperature reading every 5 seconds</span><br>    <span class="hljs-keyword">val</span> minMaxTempPerWindow: <span class="hljs-type">DataStream</span>[<span class="hljs-type">MinMaxTemp</span>] = sensorData<br>      .keyBy(_.id)<br>      .timeWindow(<span class="hljs-type">Time</span>.seconds(<span class="hljs-number">5</span>))<br>      .process(<span class="hljs-keyword">new</span> <span class="hljs-type">HighAndLowTempProcessFunction</span>)<br><br>    <span class="hljs-comment">// print result stream</span><br>    minMaxTempPerWindow.print()<br><br>    env.execute()<br>  &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="窗口函数和增量聚合函数的比较"><a href="#窗口函数和增量聚合函数的比较" class="headerlink" title="窗口函数和增量聚合函数的比较"></a>窗口函数和增量聚合函数的比较</h3><h4 id="reduce-和-aggregate-的不足"><a href="#reduce-和-aggregate-的不足" class="headerlink" title="reduce()和 aggregate()的不足"></a>reduce()和 aggregate()的不足</h4><p>它们都是对分配到窗口的事件进行增量计算。然而有时候我们需要访问窗口内的所有元素来执行一些更复杂的计算，例如计算窗口内的中值或出现频率最高的值。</p>
+<h4 id="ProcessWindowFunction"><a href="#ProcessWindowFunction" class="headerlink" title="ProcessWindowFunction"></a>ProcessWindowFunction</h4><p>ProcessWindowFunction 是一个功能十分强大的窗口函数。</p>
+<p>如果在增量聚合表示逻辑之后还需要访问窗口元数据，则可以用 ReduceFunction 或 Aggregate 与功能更强的 ProcessWindowFunction 组合使用。即可以对分配给窗口的元素立即执行聚合，随后当窗口触发器触发时，再将聚合后的结果传给 ProcessWindowFunction。</p>
+<p>原始的 process()方法中的 Iterable 参数内有窗口的所有值。而增量聚合之后的 Iterable 参数内将只有一个值，也就是增量聚合的结果值。</p>
+<h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AssignWindowEndProcessFunction</span></span><br>  <span class="hljs-keyword">extends</span> <span class="hljs-type">ProcessWindowFunction</span>[(<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>, <span class="hljs-type">Double</span>), <span class="hljs-type">MinMaxTemp</span>, <span class="hljs-type">String</span>, <span class="hljs-type">TimeWindow</span>] &#123;<br><br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">process</span></span>(<br>                        key: <span class="hljs-type">String</span>,<br>                        ctx: <span class="hljs-type">Context</span>,<br>                        minMaxIt: <span class="hljs-type">Iterable</span>[(<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>, <span class="hljs-type">Double</span>)],<br>                        out: <span class="hljs-type">Collector</span>[<span class="hljs-type">MinMaxTemp</span>]): <span class="hljs-type">Unit</span> = &#123;<br><br>    <span class="hljs-keyword">val</span> minMax = minMaxIt.head<br>    <span class="hljs-keyword">val</span> windowEnd = ctx.window.getEnd<br>    out.collect(<span class="hljs-type">MinMaxTemp</span>(key, minMax._2, minMax._3, windowEnd))<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>增量聚合之后的 <code>process()</code></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">val</span> minMaxTempPerWindow2: <span class="hljs-type">DataStream</span>[<span class="hljs-type">MinMaxTemp</span>] = sensorData<br>  .map(r =&gt; (r.id, r.temperature, r.temperature))<br>  .keyBy(_._1)<br>  .timeWindow(<span class="hljs-type">Time</span>.seconds(<span class="hljs-number">5</span>))<br>  .reduce(<br>    <span class="hljs-comment">// incrementally compute min and max temperature</span><br>    (r1: (<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>, <span class="hljs-type">Double</span>), r2: (<span class="hljs-type">String</span>, <span class="hljs-type">Double</span>, <span class="hljs-type">Double</span>)) =&gt; &#123;<br>      (r1._1, r1._2.min(r2._2), r1._3.max(r2._3))<br>    &#125;,<br>    <span class="hljs-comment">// finalize result in ProcessWindowFunction</span><br>    <span class="hljs-keyword">new</span> <span class="hljs-type">AssignWindowEndProcessFunction</span>()<br>  )<br></code></pre></td></tr></table></figure>
+
+<p>可以看到，就是在 reduce 方法之后用到了 ProcessWindowFunction。</p>
+<h2 id="自定义窗口算子"><a href="#自定义窗口算子" class="headerlink" title="自定义窗口算子"></a>自定义窗口算子</h2><h3 id="元素进入窗口算子之后的执行流程"><a href="#元素进入窗口算子之后的执行流程" class="headerlink" title="元素进入窗口算子之后的执行流程"></a>元素进入窗口算子之后的执行流程</h3><ol>
+<li>当一个元素进入窗口算子时会被移交给 WindowAssigner.该分配器决定了元素应该被放入哪（几）个窗口中。如果目标窗口不存在，则会创建它。</li>
+<li>如果为窗口算子配置的是增量聚合函数（如 ReduceFunction 或 AggregateFunction),那么新加入的元素会立即执行聚合，其结果会作为窗口内容存储。如果窗口算子没有配置增量聚合函数，那么新加入的元素会附加到一个用于存储所有窗口分配元素的 ListState 上。</li>
+<li>每个元素在加入窗口后还会被传递至该窗口的触发器。触发器定义了窗口何时准备好执行计算（触发），何时需要清除自身及保存的内容。触发器可以根据已分配的元素或注册的计时器（类似处理函数）来决定在某些特定时刻执行计算或清除窗口中的内容。触发器成功触发后的行为取决于窗口算子所配置的函数。如果算子只是配置一个增量聚合函数，就会发出当前聚合结果。</li>
+</ol>
+<h3 id="窗口分配器（WindowAssigner）"><a href="#窗口分配器（WindowAssigner）" class="headerlink" title="窗口分配器（WindowAssigner）"></a>窗口分配器（WindowAssigner）</h3><p>WindowAssigner 用于决定将到来的元素分配给哪些窗口。每个元素可以被加到零个、一个或者多个窗口中。</p>
+<h4 id="WindowAssigner-接口"><a href="#WindowAssigner-接口" class="headerlink" title="WindowAssigner 接口"></a>WindowAssigner 接口</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-comment">//</span><br><span class="hljs-comment">// Source code recreated from a .class file by IntelliJ IDEA</span><br><span class="hljs-comment">// (powered by FernFlower decompiler)</span><br><span class="hljs-comment">//</span><br><br><span class="hljs-keyword">package</span> org.apache.flink.streaming.api.windowing.assigners;<br><br><span class="hljs-keyword">import</span> java.io.<span class="hljs-type">Serializable</span>;<br><span class="hljs-keyword">import</span> java.util.<span class="hljs-type">Collection</span>;<br><span class="hljs-keyword">import</span> org.apache.flink.annotation.<span class="hljs-type">PublicEvolving</span>;<br><span class="hljs-keyword">import</span> org.apache.flink.api.common.<span class="hljs-type">ExecutionConfig</span>;<br><span class="hljs-keyword">import</span> org.apache.flink.api.common.typeutils.<span class="hljs-type">TypeSerializer</span>;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.environment.<span class="hljs-type">StreamExecutionEnvironment</span>;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.windowing.triggers.<span class="hljs-type">Trigger</span>;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.windowing.windows.<span class="hljs-type">Window</span>;<br><br><span class="hljs-meta">@PublicEvolving</span><br>public <span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">WindowAssigner&lt;T</span>, <span class="hljs-title">W</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Window&gt;</span> <span class="hljs-title">implements</span> <span class="hljs-title">Serializable</span> </span>&#123;<br>    <span class="hljs-keyword">private</span> static <span class="hljs-keyword">final</span> long serialVersionUID = <span class="hljs-number">1</span>L;<br><br>    public <span class="hljs-type">WindowAssigner</span>() &#123;<br>    &#125;<br>		<span class="hljs-comment">// 返回元素分配的目标窗口集合</span><br>    public <span class="hljs-keyword">abstract</span> <span class="hljs-type">Collection</span>&lt;<span class="hljs-type">W</span>&gt; assignWindows(<span class="hljs-type">T</span> var1, long var2, <span class="hljs-type">WindowAssigner</span>.<span class="hljs-type">WindowAssignerContext</span> var4);<br>		<span class="hljs-comment">// 返回WindowAssigner的默认触发器</span><br>    public <span class="hljs-keyword">abstract</span> <span class="hljs-type">Trigger</span>&lt;<span class="hljs-type">T</span>, <span class="hljs-type">W</span>&gt; getDefaultTrigger(<span class="hljs-type">StreamExecutionEnvironment</span> var1);<br>		<span class="hljs-comment">// 返回WIndowAssigner中窗口的TypeSerializer</span><br>    public <span class="hljs-keyword">abstract</span> <span class="hljs-type">TypeSerializer</span>&lt;<span class="hljs-type">W</span>&gt; getWindowSerializer(<span class="hljs-type">ExecutionConfig</span> var1);<br>		<span class="hljs-comment">// 表明此分配器是否创建基于事件时间的窗口</span><br>    public <span class="hljs-keyword">abstract</span> boolean isEventTime();<br>		<span class="hljs-comment">// 用于访问当前处理时间的上下文</span><br>    public <span class="hljs-keyword">abstract</span> static <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">WindowAssignerContext</span> </span>&#123;<br>        public <span class="hljs-type">WindowAssignerContext</span>() &#123;<br>        &#125;<br>				<span class="hljs-comment">// 返回当前处理时间</span><br>        public <span class="hljs-keyword">abstract</span> long getCurrentProcessingTime();<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>用于滚动事件时间窗口的窗口分配器</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.apitest<br><br><span class="hljs-keyword">import</span> java.util<br><span class="hljs-keyword">import</span> java.util.<span class="hljs-type">Collections</span><br><br><span class="hljs-keyword">import</span> org.apache.flink.api.common.<span class="hljs-type">ExecutionConfig</span><br><span class="hljs-keyword">import</span> org.apache.flink.api.common.typeutils.<span class="hljs-type">TypeSerializer</span><br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.environment.<span class="hljs-type">StreamExecutionEnvironment</span><br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.windowing.assigners.<span class="hljs-type">WindowAssigner</span><br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.windowing.triggers.&#123;<span class="hljs-type">EventTimeTrigger</span>, <span class="hljs-type">Trigger</span>&#125;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.windowing.windows.<span class="hljs-type">TimeWindow</span><br><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">DIY_WindowFunction</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br><br>  &#125;<br><br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyWindowAssigner</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">WindowAssigner</span>[<span class="hljs-type">Object</span>, <span class="hljs-type">TimeWindow</span>] </span>&#123;<br><br>  <span class="hljs-keyword">val</span> windowSize: <span class="hljs-type">Long</span> = <span class="hljs-number">30</span> * <span class="hljs-number">1000</span>L<br><br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">assignWindows</span></span>(<br>                              o: <span class="hljs-type">Object</span>,<br>                              ts: <span class="hljs-type">Long</span>,<br>                              ctx: <span class="hljs-type">WindowAssigner</span>.<span class="hljs-type">WindowAssignerContext</span>): java.util.<span class="hljs-type">List</span>[<span class="hljs-type">TimeWindow</span>] =<br>    &#123;<br>      <span class="hljs-comment">// 30s取余</span><br>      <span class="hljs-keyword">val</span> startTime: <span class="hljs-type">Long</span> = ts - (ts % windowSize)<br>      <span class="hljs-keyword">val</span> endTime: <span class="hljs-type">Long</span> = startTime + windowSize<br>      <span class="hljs-comment">// 发出相应的时间窗口</span><br>      <span class="hljs-type">Collections</span>.singletonList(<span class="hljs-keyword">new</span> <span class="hljs-type">TimeWindow</span>(startTime, endTime))<br>    &#125;<br><br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">getDefaultTrigger</span></span>(<br>                                  env: <span class="hljs-type">StreamExecutionEnvironment</span>): <span class="hljs-type">Trigger</span>[<span class="hljs-type">Object</span>, <span class="hljs-type">TimeWindow</span>] = &#123;<br>    <span class="hljs-type">EventTimeTrigger</span>.create()<br>  &#125;<br><br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">getWindowSerializer</span></span>(<br>                                    executionConfig: <span class="hljs-type">ExecutionConfig</span>):<br>  <span class="hljs-type">TypeSerializer</span>[<span class="hljs-type">TimeWindow</span>] = &#123;<br>    <span class="hljs-keyword">new</span> <span class="hljs-type">TimeWindow</span>.<span class="hljs-type">Serializer</span><br>  &#125;<br><br>  <span class="hljs-keyword">override</span> <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">isEventTime</span></span>: <span class="hljs-type">Boolean</span> = <span class="hljs-literal">true</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="触发器（Trigger）"><a href="#触发器（Trigger）" class="headerlink" title="触发器（Trigger）"></a>触发器（Trigger）</h3><p>触发器用来定义何时对窗口进行计算并发出结果。它的触发条件可以是时间，也可以是某些特定的数据条件。</p>
+<p>触发器不仅能够访问时间属性和计时器，还可以使用状态，因此它在某种意义上等价于处理函数。</p>
+<p>每次调用触发器都会生成一个 TriggerResult，它用于决定窗口接下来的行为。</p>
+<p>TriggerResult 可以是以下值之一：</p>
+<ol>
+<li><p>CONTINUE</p>
+<p>什么都不做</p>
+</li>
+<li><p>FIRE</p>
+<p>如果窗口算子配备了 ProcessWindowFunction 则会调用该函数并发出结果。如果只有一个增量函数，那么直接发出聚合结果，窗口状态不会有任何变化。</p>
+</li>
+<li><p>PURGE</p>
+<p>完全清除窗口内容</p>
+</li>
+<li><p>FIRE_AND_PURGE</p>
+<p>先进行窗口的计算（FIRE），随后删除所有状态及元数据（PURGE）。</p>
+</li>
+</ol>
+<h3 id="移除器（Evictor）"><a href="#移除器（Evictor）" class="headerlink" title="移除器（Evictor）"></a>移除器（Evictor）</h3><p>Evictor 是 Flink 窗口机制中的一个可选组件，可用于在窗口执行计算前或后从窗口删除元素。</p>
+<p>移除器常用语 GlobalWindow，它支持清理部分窗口内容而不必完全清除整个窗口状态。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/" class="category-chain-item">大数据</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/" class="category-chain-item">实时计算</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/Flink/" class="category-chain-item">Flink</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/Flink/%E5%9F%BA%E4%BA%8EApache-Flink%E7%9A%84%E6%B5%81%E5%A4%84%E7%90%86/" class="category-chain-item">基于Apache Flink的流处理</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>6.1 基于窗口的算子</div>
+      <div>http://example.com/2022/12/0dbee4ce3eb3.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/64d0f3bde106.html" title="6.2 基于时间的算子">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">6.2 基于时间的算子</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/5f45f2f08dc6.html" title="5.DataStream API（1.7版本）">
+                        <span class="hidden-mobile">5.DataStream API（1.7版本）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/0dbee4ce3eb3.html';
+          this.page.identifier = '/2022/12/0dbee4ce3eb3.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

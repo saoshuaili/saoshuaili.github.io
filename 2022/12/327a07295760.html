@@ -1,0 +1,842 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="事务型处理  在事务型处理问题时，多个应用会共享同一个数据库系统，有时候还会访问相同的数据库或表。 问题一旦多个而应用基于相同的数据表示或共享架构，那么更改表模式或对数据库系统进行扩缩容必将劳心费力。 分析型处理graph LR 事务性--&gt;分析型   原因如果能将不同事务型数据库的内容进行联合查询，能为企业提供更加全面的分析见解。然而事务型数据库之间通常相互隔离，难以联合分析，因此将其全部">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1.状态流处理概述">
+<meta property="og:url" content="http://example.com/2022/12/327a07295760.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="事务型处理  在事务型处理问题时，多个应用会共享同一个数据库系统，有时候还会访问相同的数据库或表。 问题一旦多个而应用基于相同的数据表示或共享架构，那么更改表模式或对数据库系统进行扩缩容必将劳心费力。 分析型处理graph LR 事务性--&gt;分析型   原因如果能将不同事务型数据库的内容进行联合查询，能为企业提供更加全面的分析见解。然而事务型数据库之间通常相互隔离，难以联合分析，因此将其全部">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211170831.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211190414.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211190506.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211190556.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211191810.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211192437.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211192625.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211195101.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211194318.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211194426.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210129032337.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210129034938.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210129035014.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210129041256.png">
+<meta property="article:published_time" content="2022-12-03T18:11:25.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta property="article:tag" content="BigData">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211170831.png">
+  
+  
+  
+  <title>1.状态流处理概述 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="1.状态流处理概述"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:11" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          47 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">1.状态流处理概述</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="事务型处理"><a href="#事务型处理" class="headerlink" title="事务型处理"></a>事务型处理</h1><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211170831.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<p>在事务型处理问题时，多个应用会共享同一个数据库系统，有时候还会访问相同的数据库或表。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>一旦多个而应用基于相同的数据表示或共享架构，那么更改表模式或对数据库系统进行扩缩容必将劳心费力。</p>
+<h1 id="分析型处理"><a href="#分析型处理" class="headerlink" title="分析型处理"></a>分析型处理</h1><pre><code class=" mermaid">graph LR
+事务性--&gt;分析型
+</code></pre>
+
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>如果能将不同事务型数据库的内容进行联合查询，能为企业提供更加全面的分析见解。然而事务型数据库之间通常相互隔离，难以联合分析，因此将其<strong>全部导入一个数据仓库中</strong>，就可以进行联合查询，创造更高价值。</p>
+<h2 id="分析型数据库操作"><a href="#分析型数据库操作" class="headerlink" title="分析型数据库操作"></a>分析型数据库操作</h2><p>对于分析类查询，我们通常不会直接在事务型数据库上执行，而是将数据复制到一个专门用来处理分析类查询的<strong>数据仓库</strong>。</p>
+<h3 id="数据仓库怎么来"><a href="#数据仓库怎么来" class="headerlink" title="数据仓库怎么来"></a>数据仓库怎么来</h3><p>为了填充数据仓库，需要将事务性数据库系统中的数据拷贝过去。这个向数据仓库拷贝数据的过程被称为提取-转换-加载（Extract-Transform-Load，<strong>ETL</strong>）。</p>
+<h4 id="ETL基本流程"><a href="#ETL基本流程" class="headerlink" title="ETL基本流程"></a>ETL基本流程</h4><p>从事务型数据库中提取数据，将其转换为通用表示形式，最终加载到分析型数据库（数据仓库）中。<br>并且为了保证数据同步，ETL需要周期性执行。</p>
+<h3 id="用于数据分析的传统数仓架构"><a href="#用于数据分析的传统数仓架构" class="headerlink" title="用于数据分析的传统数仓架构"></a>用于数据分析的传统数仓架构</h3><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211190414.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<p>如图所示，对数据仓库的查询分析有两种  </p>
+<ol>
+<li><p><strong>定期报告查询</strong><br>  可用于计算业务相关的统计数据，如收入等。将这些指标整合成报告，能够帮助管理层评估企业整体健康状况。</p>
+</li>
+<li><p><strong>即席查询</strong></p>
+</li>
+</ol>
+<p>  主要目的是通过解答特定问题来辅助关键性的商业决策，例如通过查询来整合应收数字和电台广告中的投入，以评估市场营销的有效性。</p>
+<h1 id="状态化流处理"><a href="#状态化流处理" class="headerlink" title="状态化流处理"></a>状态化流处理</h1><h2 id="原因-1"><a href="#原因-1" class="headerlink" title="原因"></a>原因</h2><p>几乎所有数据都是以连续时间流的形式产生。</p>
+<h2 id="有状态定义"><a href="#有状态定义" class="headerlink" title="有状态定义"></a>有状态定义</h2><p>有状态的定义是能够存储和访问中间结果。任何一个处理事件流的应用，如果要支持跨多条记录的转换操作，都必须是有状态的。</p>
+<h2 id="Flink应用状态存储方式"><a href="#Flink应用状态存储方式" class="headerlink" title="Flink应用状态存储方式"></a>Flink应用状态存储方式</h2><p>Apache Flink会将应用状态存储在本地内存或嵌入式数据库中。由于采用的是分布式架构，Flink需要对本地状态予以保护。以避免因应用或机器故障导致数据丢失。</p>
+<h3 id="本地状态保护方式"><a href="#本地状态保护方式" class="headerlink" title="本地状态保护方式"></a>本地状态保护方式</h3><p>Flink会定期将应用状态的一致性检查点（checkpoint）写入远程持久化存储。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211190506.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h2 id="有状态的流处理应用读取事件记录的方式"><a href="#有状态的流处理应用读取事件记录的方式" class="headerlink" title="有状态的流处理应用读取事件记录的方式"></a>有状态的流处理应用读取事件记录的方式</h2><p>有状态的流处理应用通常会从事件日志中读取事件记录。</p>
+<p>事件日志负责<strong>存储事件流并将其分布式化</strong>。</p>
+<h2 id="三种常见有状态流处理应用"><a href="#三种常见有状态流处理应用" class="headerlink" title="三种常见有状态流处理应用"></a>三种常见有状态流处理应用</h2><h3 id="①-事件驱动型应用"><a href="#①-事件驱动型应用" class="headerlink" title="① 事件驱动型应用"></a>① 事件驱动型应用</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>事件驱动型应用是一类通过接收事件流触发特定应用业务逻辑的有状态的流式应用</p>
+<h4 id="典型应用场景"><a href="#典型应用场景" class="headerlink" title="典型应用场景"></a>典型应用场景</h4><ol>
+<li>实时推荐</li>
+<li>模式识别或复杂事件处理</li>
+<li>异常监控</li>
+</ol>
+<p>事件驱动型应用利用日志进行通信，其数据则会以<strong>本地状态形式</strong>存储。</p>
+<h4 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h4><ol>
+<li>访问本地状态的性能比读写远程数据存储系统更好<br>也就是说，其数据存储在本地（通过checkpoint和远程同步），对某些事件的反应（例如异常监控）时不需要访问远程数据库，从而速度快很多。</li>
+<li>伸缩和容错交由流引擎完成</li>
+<li>以事件日志作为应用的输入，完整可靠，还支持精准的数据重放</li>
+</ol>
+<h3 id="②-数据管道"><a href="#②-数据管道" class="headerlink" title="② 数据管道"></a>② 数据管道</h3><h4 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h4><p>公司为了提高数据访问性能把相同数据存储到多个系统。<br>例如网点内的某产品信息会同时放在事务型数据库、网站缓存以及搜索引擎中。  </p>
+<h4 id="原因-2"><a href="#原因-2" class="headerlink" title="原因"></a>原因</h4><p>数据存在多个副本，这些数据存储系统之间需要保持同步。</p>
+<h4 id="同步方式"><a href="#同步方式" class="headerlink" title="同步方式"></a>同步方式</h4><p>使用事件日志系统来分发更新。具体来说就是将更新写入时间日志系统，并由它进行分发。</p>
+<h3 id="③-流式分析"><a href="#③-流式分析" class="headerlink" title="③ 流式分析"></a>③ 流式分析</h3><h4 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h4><ol>
+<li>手机网络质量监控</li>
+<li>移动应用中的用户行为分析</li>
+<li>消费者技术中的实时数据即席分析</li>
+</ol>
+<h1 id="开源流处理的演变"><a href="#开源流处理的演变" class="headerlink" title="开源流处理的演变"></a>开源流处理的演变</h1><h2 id="第1代流引擎（Storm）"><a href="#第1代流引擎（Storm）" class="headerlink" title="第1代流引擎（Storm）"></a>第1代流引擎（Storm）</h2><p>典型代表就是Storm，并未针对流式应用的结果的准确性和一致性提供内置保障，结果完全取决于事件到达的时间和顺序。<br>此外，虽然数据在出错时不会丢失，但可能被处理多次。</p>
+<h2 id="第2代流引擎（Lambda架构）"><a href="#第2代流引擎（Lambda架构）" class="headerlink" title="第2代流引擎（Lambda架构）"></a>第2代流引擎（Lambda架构）</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211190556.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>用两套系统，同时保证低延迟和结果准确。<br>在传统周期性批处理架构的基础上添加了一个由低延迟流处理引擎所驱动的“提速层”。<br>最终将两层的结果进行合并。</p>
+<h3 id="第3带流引擎（Flink）"><a href="#第3带流引擎（Flink）" class="headerlink" title="第3带流引擎（Flink）"></a>第3带流引擎（Flink）</h3><p>解决了时间顺序问题。<br>无需让用户在延迟和吞吐量之间做出困难的抉择。</p>
+<h1 id="Flink初体验"><a href="#Flink初体验" class="headerlink" title="Flink初体验"></a>Flink初体验</h1><ol>
+<li><p>安装Flink（第3章会介绍）</p>
+</li>
+<li><p>启动本地集群</p>
+<p>在这里我们采用的是群起集群，具体配置和方式会在后面进行介绍</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211191810.png" srcset="/img/loading.gif" lazyload style="zoom:25%;" />
+</li>
+<li><p>下载示例JAR文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">wget https://streaming-with-flink.github.io/examples/download/examples-scala.jar<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>通过指定应用的入口类和JAR文件，在集群上运行示例。</p>
+</li>
+</ol>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211192437.png" srcset="/img/loading.gif" lazyload style="zoom: 50%;" />
+
+<ol start="5">
+<li><p>可以看到，在Web UI会看到“Running Jobs”列表中有一个作业。</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211192625.png" srcset="/img/loading.gif" lazyload></p>
+<p>单击那个作业，可以看到下图所示的数据流程及运行作业中算子的实时指标。</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211195101.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>作业的输出会写入Flink工作流程的标准输出，默认情况下它会重定向到.&#x2F;logs目录下的文件</p>
+<p>可以使用tail命令监控持续产生的结果。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">tail -f flink-coachhe-taskexecutor-0-hadoop100.out<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>由于应用是流式的，它会一直运行下去，直到手动取消。取消的方式是在Web UI中选中作业，然后单击页面上方的Cancel按钮。</p>
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211194318.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>最后别忘了停止本地Flink集群</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201211194426.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" /></li>
+</ol>
+<h1 id="批处理WordCount"><a href="#批处理WordCount" class="headerlink" title="批处理WordCount"></a>批处理WordCount</h1><h2 id="1-首先建立一个Maven项目"><a href="#1-首先建立一个Maven项目" class="headerlink" title="1. 首先建立一个Maven项目"></a>1. 首先建立一个Maven项目</h2><h2 id="pom-xml"><a href="#pom-xml" class="headerlink" title="pom.xml"></a>pom.xml</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;UTF-8&quot;</span>?&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">project</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span><br><span class="hljs-tag">         <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span><br><span class="hljs-tag">         <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;http://maven.apache.org/POM/4.0.0</span></span><br><span class="hljs-string"><span class="hljs-tag">http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">modelVersion</span>&gt;</span>4.0.0<span class="hljs-tag">&lt;/<span class="hljs-name">modelVersion</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.atguigu.flink<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>FlinkTutorial<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.0-SNAPSHOT<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">dependencies</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.flink<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>flink-scala_2.12<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.10.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br>        <span class="hljs-comment">&lt;!-- https://mvnrepository.com/artifact/org.apache.flink/flink-streaming-scala --&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.flink<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>flink-streaming-scala_2.12<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.10.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">dependencies</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">build</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span><br>            <span class="hljs-comment">&lt;!-- 该插件用于将 Scala 代码编译成 class 文件 --&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>net.alchim31.maven<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>scala-maven-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.4.6<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">executions</span>&gt;</span><br>                    <span class="hljs-tag">&lt;<span class="hljs-name">execution</span>&gt;</span><br>                        <span class="hljs-comment">&lt;!-- 声明绑定到 maven 的 compile 阶段 --&gt;</span><br>                        <span class="hljs-tag">&lt;<span class="hljs-name">goals</span>&gt;</span><br>                            <span class="hljs-tag">&lt;<span class="hljs-name">goal</span>&gt;</span>compile<span class="hljs-tag">&lt;/<span class="hljs-name">goal</span>&gt;</span><br>                        <span class="hljs-tag">&lt;/<span class="hljs-name">goals</span>&gt;</span><br>                    <span class="hljs-tag">&lt;/<span class="hljs-name">execution</span>&gt;</span><br>                <span class="hljs-tag">&lt;/<span class="hljs-name">executions</span>&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>maven-assembly-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>3.0.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br>                    <span class="hljs-tag">&lt;<span class="hljs-name">descriptorRefs</span>&gt;</span><br>                        <span class="hljs-tag">&lt;<span class="hljs-name">descriptorRef</span>&gt;</span>jar-with-dependencies<span class="hljs-tag">&lt;/<span class="hljs-name">descriptorRef</span>&gt;</span><br>                    <span class="hljs-tag">&lt;/<span class="hljs-name">descriptorRefs</span>&gt;</span><br>                <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">executions</span>&gt;</span><br>                    <span class="hljs-tag">&lt;<span class="hljs-name">execution</span>&gt;</span><br>                        <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>make-assembly<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span><br>                        <span class="hljs-tag">&lt;<span class="hljs-name">phase</span>&gt;</span>package<span class="hljs-tag">&lt;/<span class="hljs-name">phase</span>&gt;</span><br>                        <span class="hljs-tag">&lt;<span class="hljs-name">goals</span>&gt;</span><br>                            <span class="hljs-tag">&lt;<span class="hljs-name">goal</span>&gt;</span>single<span class="hljs-tag">&lt;/<span class="hljs-name">goal</span>&gt;</span><br>                        <span class="hljs-tag">&lt;/<span class="hljs-name">goals</span>&gt;</span><br>                    <span class="hljs-tag">&lt;/<span class="hljs-name">execution</span>&gt;</span><br>                <span class="hljs-tag">&lt;/<span class="hljs-name">executions</span>&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">build</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">project</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="2-在src下创建scala目录并标志为Sources-Root，准备文件"><a href="#2-在src下创建scala目录并标志为Sources-Root，准备文件" class="headerlink" title="2. 在src下创建scala目录并标志为Sources Root，准备文件"></a>2. 在src下创建scala目录并标志为Sources Root，准备文件</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210129032337.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210129034938.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+
+
+<h2 id="3-编写程序"><a href="#3-编写程序" class="headerlink" title="3. 编写程序"></a>3. 编写程序</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs scala"><span class="hljs-keyword">package</span> com.coachhe.wc<br><br><span class="hljs-keyword">import</span> org.apache.flink.api.scala.<span class="hljs-type">ExecutionEnvironment</span><br><span class="hljs-keyword">import</span> org.apache.flink.api.scala._<br><br><span class="hljs-comment">// 批处理wordcount</span><br><span class="hljs-class"><span class="hljs-keyword">object</span> <span class="hljs-title">WordCount</span> </span>&#123;<br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span></span>(args: <span class="hljs-type">Array</span>[<span class="hljs-type">String</span>]): <span class="hljs-type">Unit</span> = &#123;<br>    <span class="hljs-comment">// 1. 创建一个批处理执行环境</span><br>    <span class="hljs-keyword">val</span> env: <span class="hljs-type">ExecutionEnvironment</span> = <span class="hljs-type">ExecutionEnvironment</span>.getExecutionEnvironment<br><br>    <span class="hljs-comment">// 2. 从文件中读取数据</span><br>    <span class="hljs-keyword">val</span> inputPath: <span class="hljs-type">String</span> = <span class="hljs-string">&quot;/Users/heyizhi/Nutstore Files/我的坚果云/程序员/学习/大数据/10 flink/1st flink project/flinkTutorial/src/main/resources/hello.txt&quot;</span><br>    <span class="hljs-keyword">val</span> inputDataSet: <span class="hljs-type">DataSet</span>[<span class="hljs-type">String</span>] = env.readTextFile(inputPath)<br><br>    <span class="hljs-comment">// 3. 对数据进行转换处理统计，先分词，再按照word进行分组，最后进行聚合统计</span><br>    <span class="hljs-keyword">val</span> resultDataSet: <span class="hljs-type">DataSet</span>[(<span class="hljs-type">String</span>, <span class="hljs-type">Int</span>)] = inputDataSet<br>      .flatMap(_.split(<span class="hljs-string">&quot; &quot;</span>))<br>      .map((_, <span class="hljs-number">1</span>))<br>      .groupBy(<span class="hljs-number">0</span>) <span class="hljs-comment">// 以第一个元素作为key，进行分组</span><br>      .sum(<span class="hljs-number">1</span>) <span class="hljs-comment">// 对当前分组的所有数据的第2个元素求和</span><br><br><br>    <span class="hljs-comment">// 4. 打印输出</span><br>    resultDataSet.print()<br>  &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-运行"><a href="#4-运行" class="headerlink" title="4. 运行"></a>4. 运行</h2><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210129035014.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<h1 id="流处理WordCount"><a href="#流处理WordCount" class="headerlink" title="流处理WordCount"></a>流处理WordCount</h1><h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.wc<br><br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.scala._<br><br><span class="hljs-comment">// 流处理WordCount</span><br>object StreamWordCount &#123;<br>  def <span class="hljs-title function_">main</span><span class="hljs-params">(args: Array[String])</span>: Unit = &#123;<br>    <span class="hljs-comment">// 1. 创建流处理执行环境</span><br>    val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment<br><br>    <span class="hljs-comment">// 2. 接收一个socket文本流</span><br>    val inputDataStream: DataStream[String] = env.socketTextStream(<span class="hljs-string">&quot;localhost&quot;</span>, <span class="hljs-number">7777</span>)<br><br>    <span class="hljs-comment">// 3. 进行转化处理统计</span><br>    val resultDataStream: DataStream[(String, Int)] = inputDataStream<br>      .flatMap(_.split(<span class="hljs-string">&quot; &quot;</span>))<br>      .filter(_.nonEmpty)<br>      .map((_, <span class="hljs-number">1</span>))<br>      .keyBy(<span class="hljs-number">0</span>)<br>      .sum(<span class="hljs-number">1</span>)<br><br>    <span class="hljs-comment">// 4. 打印输出</span><br>    resultDataStream.print()<br><br>    <span class="hljs-comment">// 5. 启动任务执行（调用环境）</span><br>    env.execute(<span class="hljs-string">&quot;stream word count&quot;</span>) <span class="hljs-comment">//job的名字</span><br><br>  &#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p>使用nc命令往电脑的7777端口发送数据，程序会接收并处理数据。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml">nc -lk 7777<br></code></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Scala/20210129041256.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p>左边的7 4 2 4 4 表示并行的子任务个数</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/" class="category-chain-item">大数据</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/" class="category-chain-item">实时计算</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/Flink/" class="category-chain-item">Flink</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/Flink/%E5%9F%BA%E4%BA%8EApache-Flink%E7%9A%84%E6%B5%81%E5%A4%84%E7%90%86/" class="category-chain-item">基于Apache Flink的流处理</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/BigData/">#BigData</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>1.状态流处理概述</div>
+      <div>http://example.com/2022/12/327a07295760.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/c616131d75e5.html" title="2.Dataflow编程概述">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">2.Dataflow编程概述</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/327a07295760.html';
+          this.page.identifier = '/2022/12/327a07295760.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

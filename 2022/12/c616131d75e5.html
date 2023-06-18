@@ -1,0 +1,799 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="在深入探索流处理的基础知识之前，我们需要先介绍Dataflow编程的必要背景。 Dataflow图先决了解Dataflow是数据流，源自于谷歌非常著名的论文。本节就是较为基础地讲解了Dataflow的知识，并且需要知道的是，Flink就是基本按照那篇论文的架构来进行实现的。 Dataflow介绍顾名思义，Dataflow程序描述了数据如何在不同操作之间流动。Dataflow程序通常表示为有向图。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2.Dataflow编程概述">
+<meta property="og:url" content="http://example.com/2022/12/c616131d75e5.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="在深入探索流处理的基础知识之前，我们需要先介绍Dataflow编程的必要背景。 Dataflow图先决了解Dataflow是数据流，源自于谷歌非常著名的论文。本节就是较为基础地讲解了Dataflow的知识，并且需要知道的是，Flink就是基本按照那篇论文的架构来进行实现的。 Dataflow介绍顾名思义，Dataflow程序描述了数据如何在不同操作之间流动。Dataflow程序通常表示为有向图。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213220929.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213220954.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213221018.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Algorithm/20201213193956.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213195451.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213195734.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213201043.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213221100.png">
+<meta property="og:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213221119.png">
+<meta property="article:published_time" content="2022-12-03T18:12:03.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213220929.png">
+  
+  
+  
+  <title>2.Dataflow编程概述 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="2.Dataflow编程概述"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:12" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">2.Dataflow编程概述</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>在深入探索流处理的基础知识之前，我们需要先介绍Dataflow编程的必要背景。</p>
+<h1 id="Dataflow图"><a href="#Dataflow图" class="headerlink" title="Dataflow图"></a>Dataflow图</h1><h2 id="先决了解"><a href="#先决了解" class="headerlink" title="先决了解"></a>先决了解</h2><p>Dataflow是数据流，源自于谷歌非常著名的论文。本节就是较为基础地讲解了Dataflow的知识，并且需要知道的是，Flink就是基本按照那篇论文的架构来进行实现的。</p>
+<h2 id="Dataflow介绍"><a href="#Dataflow介绍" class="headerlink" title="Dataflow介绍"></a>Dataflow介绍</h2><p>顾名思义，Dataflow程序描述了数据如何在不同操作之间流动。Dataflow程序通常表示为<strong>有向图</strong>。</p>
+<p>图中<strong>顶点为算子</strong>，表示<strong>计算</strong>；而<strong>边表示数据依赖关系</strong>。</p>
+<h3 id="算子"><a href="#算子" class="headerlink" title="算子"></a>算子</h3><p>算子是Dataflow程序的基本功能单元，它们从输入获取数据，对其进行计算，然后产生数据并发往输出以供后续处理。没有输入端的算子称为<strong>数据源</strong>，没有输出端的算子称为<strong>数据汇</strong>。</p>
+<p>一个Dataflow图至少要有一个数据源和一个数据汇。下图展示了一个从推文输入流中提取并统计主题标签的Dataflow程序。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213220929.png" srcset="/img/loading.gif" lazyload style="zoom: 50%;" />
+
+<p>图中的Tweets source是数据源，也就是没有输入端的算子（自身就是输入端）。Trending topics sink为数据汇，也就是没有输出端的算子（自身就是最终节点）。中间的Extract hashtags和Count就是普通算子。</p>
+<h2 id="逻辑Dataflow图和物理Dataflow图"><a href="#逻辑Dataflow图和物理Dataflow图" class="headerlink" title="逻辑Dataflow图和物理Dataflow图"></a>逻辑Dataflow图和物理Dataflow图</h2><p>类似上图2-1称为<strong>逻辑Dataflow图</strong>，因为它们表达了高层视角下的计算逻辑。</p>
+<p>为了执行Dataflow程序，需要将逻辑Dataflow图转化为<strong>物理Dataflow图</strong>，后者会指定程序的执行细节。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213220954.png" srcset="/img/loading.gif" lazyload style="zoom: 50%;" />
+
+<h4 id="逻辑Dataflow图和物理Dataflow图的区别"><a href="#逻辑Dataflow图和物理Dataflow图的区别" class="headerlink" title="逻辑Dataflow图和物理Dataflow图的区别"></a>逻辑Dataflow图和物理Dataflow图的区别</h4><p>在逻辑Dataflow图中，顶点代表<strong>算子</strong>。</p>
+<p>在物理Dataflow图中，顶点代表<strong>任务</strong>。</p>
+<p>以图2-1为例，顶点推文数据源的下一个顶点是抽取主题标签，代表的是一个算子，也就是一类型的任务。而图2-2中顶点推文数据源中的下一个顶点为两个抽取主题标签，”抽取主题标签“算起包含两个并行算子任务，每个任务负责计算一部分输入数据。</p>
+<h1 id="数据并行和任务并行"><a href="#数据并行和任务并行" class="headerlink" title="数据并行和任务并行"></a>数据并行和任务并行</h1><p>Dataflow图的并行性可以通过多种方式加以利用。</p>
+<h6 id="数据并行"><a href="#数据并行" class="headerlink" title="数据并行"></a>数据并行</h6><p>将输入数据分组，让同一操作的多个任务并行执行在不同数据子集上，这种并行称为数据并行。</p>
+<h6 id="任务并行"><a href="#任务并行" class="headerlink" title="任务并行"></a>任务并行</h6><p>让不同算子的任务并行计算，这种并行称为任务并行</p>
+<h6 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h6><p>数据并行就是同一个任务的数据并行进行计算，任务并行就是不同任务并行进行。</p>
+<h1 id="数据交换策略"><a href="#数据交换策略" class="headerlink" title="数据交换策略"></a>数据交换策略</h1><p>数据交换策略定义了如何将数据项分配给物理Dataflow中的不同任务。</p>
+<p>分为转发策略，广播策略，基于键值策略和随机策略。分别表示如下：</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213221018.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<ol>
+<li>转发策略：发送端任务和接收端任务之间一对一进行数据传输。</li>
+<li>广播策略：会把每个任务项发往下游算子的全部并行任务。代价较为昂贵。</li>
+<li>基于键值的策略：基于某一键值属性对数据分区，并保证键值相同的项会进入同一个任务处理。</li>
+<li>随机策略：会将数据均匀分配给所有任务。</li>
+</ol>
+<h1 id="并行流处理"><a href="#并行流处理" class="headerlink" title="并行流处理"></a>并行流处理</h1><h2 id="数据流的定义"><a href="#数据流的定义" class="headerlink" title="数据流的定义"></a>数据流的定义</h2><p>数据流是一个可能无限的时间序列。</p>
+<p>由于数据流没有总执行时间的概念，因此我们用延迟和吞吐来表示系统的性能。</p>
+<h2 id="延迟"><a href="#延迟" class="headerlink" title="延迟"></a>延迟</h2><p>延迟表示处理一个事件所需要的时间。</p>
+<h4 id="延迟的分类"><a href="#延迟的分类" class="headerlink" title="延迟的分类"></a>延迟的分类</h4><p>延迟分为平均延迟，最大延迟和延迟的百分位数值。例如95百分位在10ms表示有95%的数据会在10ms内被处理。</p>
+<h2 id="吞吐"><a href="#吞吐" class="headerlink" title="吞吐"></a>吞吐</h2><p>吞吐是用来衡量系统处理能力的指标，它告诉我们系统每单位时间能处理多少事件。</p>
+<h3 id="数据流上的操作"><a href="#数据流上的操作" class="headerlink" title="数据流上的操作"></a>数据流上的操作</h3><h4 id="窗口"><a href="#窗口" class="headerlink" title="窗口"></a>窗口</h4><ol>
+<li><p>滚动窗口</p>
+<p>将事件分配到长度固定且互不重叠的桶中。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Algorithm/20201213193956.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<p>​																				基于数量的滚动窗口</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213195451.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<p>​																					基于时间的滚动窗口</p>
+</li>
+<li><p>滑动窗口</p>
+<p>将事件分配到大小固定且允许相互冲切的桶中，这意味着每个事件可能会同时属于多个桶。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213195734.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<p>​													长度为4个事件滑动间隔为3个事件的基于数量的滑动窗口</p>
+</li>
+<li><p>会话窗口</p>
+<p>能将属于同一会话的时间分配到相同桶中。会话窗口根据会话间隔将事件分为不同的会话，改间隔值定义了会话在关闭前的非活动时间长度。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213201043.png" srcset="/img/loading.gif" lazyload style="zoom:33%;" />
+
+<p>​																						会话窗口</p>
+</li>
+</ol>
+<h1 id="时间语义"><a href="#时间语义" class="headerlink" title="时间语义"></a>时间语义</h1><h2 id="处理时间"><a href="#处理时间" class="headerlink" title="处理时间"></a>处理时间</h2><p>处理时间是当前<strong>流处理算子所在机器</strong>上本地时钟时间。</p>
+<p>也就是说，若某个人离线之后再重新连接，离线的那段时间并不是处理时间，因为他并没有和算子所在机器取得联系。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213221100.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>可以看到，不会将离线时间考虑在内。</p>
+<h2 id="事件时间"><a href="#事件时间" class="headerlink" title="事件时间"></a>事件时间</h2><p>事件时间是数据流中事件实际发生的时间，它以<strong>附加在数据流中事件的时间戳</strong>为依据。如下图所示，即便有事件延迟，事件时间窗口也能准确地将事件分配到窗口中，从而反映出真实发生的情况。</p>
+<img src="https://coachhe.oss-cn-shenzhen.aliyuncs.com/Flink/20201213221119.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>事件时间将处理速度和结果内容彻底解耦。要客服的挑战之一是如何处理延迟事件。</p>
+<h2 id="水位线"><a href="#水位线" class="headerlink" title="水位线"></a>水位线</h2><p>水位线是一个全局进度指标，表示我们确信不再有延迟事件到来的某个时间点。</p>
+<p>本质上，水位线提供了一个<strong>逻辑时钟</strong>，用来通知系统<strong>当前的事件时间</strong>。</p>
+<h4 id="水位线的意义"><a href="#水位线的意义" class="headerlink" title="水位线的意义"></a>水位线的意义</h4><p>当一个算子接收到时间为T的水位线，就可以认为不会再收到任何时间戳小于或等于T的事件了。也就是说，算子一旦收到某个水位线，就相当于接到信号：某个特定时间区间的时间戳已经到齐，可以出发窗口计算或对接收的数据进行排序了。</p>
+<h2 id="事件时间和处理时间"><a href="#事件时间和处理时间" class="headerlink" title="事件时间和处理时间"></a>事件时间和处理时间</h2><p>事件时间虽然能解决所有问题，但是处理时间窗口能够将延迟降到最低。无需考虑迟到或者乱序。对于那些更重视处理速度而非准确度的应用，处理时间就会派上用场。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/" class="category-chain-item">大数据</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/" class="category-chain-item">实时计算</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/Flink/" class="category-chain-item">Flink</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/Flink/%E5%9F%BA%E4%BA%8EApache-Flink%E7%9A%84%E6%B5%81%E5%A4%84%E7%90%86/" class="category-chain-item">基于Apache Flink的流处理</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>2.Dataflow编程概述</div>
+      <div>http://example.com/2022/12/c616131d75e5.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/8191018bc38c.html" title="3.Flink安装部署">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">3.Flink安装部署</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/327a07295760.html" title="1.状态流处理概述">
+                        <span class="hidden-mobile">1.状态流处理概述</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/c616131d75e5.html';
+          this.page.identifier = '/2022/12/c616131d75e5.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

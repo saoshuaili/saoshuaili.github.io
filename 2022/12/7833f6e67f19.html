@@ -1,0 +1,823 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="接口：&#x2F;api&#x2F;v1&#x2F;work-order&#x2F;create 方法：POST 例1： 12345678curl &amp;#x27;http:&#x2F;&#x2F;9.135.11.161:60780&#x2F;api&#x2F;v1&#x2F;work-order&#x2F;create&amp;#x27; \  -H &amp;#x27;Accept: application&#x2F;json, text&#x2F;plain, *&#x2F;*&amp;#x27; \  -H &amp;#x27;Referer: ht">
+<meta property="og:type" content="article">
+<meta property="og:title" content="工单">
+<meta property="og:url" content="http://example.com/2022/12/7833f6e67f19.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="接口：&#x2F;api&#x2F;v1&#x2F;work-order&#x2F;create 方法：POST 例1： 12345678curl &amp;#x27;http:&#x2F;&#x2F;9.135.11.161:60780&#x2F;api&#x2F;v1&#x2F;work-order&#x2F;create&amp;#x27; \  -H &amp;#x27;Accept: application&#x2F;json, text&#x2F;plain, *&#x2F;*&amp;#x27; \  -H &amp;#x27;Referer: ht">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20220515152901.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20220515181630.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/image-20220606200949596.png">
+<meta property="article:published_time" content="2022-12-03T18:31:08.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20220515152901.png">
+  
+  
+  
+  <title>工单 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="工单"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:31" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          19k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          157 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">工单</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="接口："><a href="#接口：" class="headerlink" title="接口："></a>接口：</h2><p><code>/api/v1/work-order/create</code></p>
+<h2 id="方法："><a href="#方法：" class="headerlink" title="方法："></a>方法：</h2><p>POST</p>
+<p>例1：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">curl &#x27;http://9.135.11.161:60780/api/v1/work-order/create&#x27; \<br>  -H &#x27;Accept: application/json, text/plain, */*&#x27; \<br>  -H &#x27;Referer: http://9.135.11.161:60780/&#x27; \<br>  -H &#x27;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTI4Njc3MTgsImlkZW50aXR5Ijo1LCJuaWNlIjoiY29hY2hoZSIsIm9yaWdfaWF0IjoxNjUyNzgxMzE4LCJyb2xlaWQiOjEsInJvbGVrZXkiOiJhZG1pbiIsInJvbGVuYW1lIjoi57O757uf566h55CG5ZGYIn0.OXFVzdKVLCT2QTsIN6hUe-DqrKQjw6PsPD8Y30N-8SE&#x27; \<br>  -H &#x27;User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36 Edg/101.0.1210.47&#x27; \<br>  -H &#x27;Content-Type: application/json&#x27; \<br>  --data-raw &#x27;&#123;&quot;title&quot;:&quot;111&quot;,&quot;priority&quot;:1,&quot;process&quot;:1,&quot;classify&quot;:2,&quot;state&quot;:[&#123;&quot;id&quot;:&quot;receiveTask1651725819812&quot;,&quot;process_method&quot;:&quot;person&quot;,&quot;processor&quot;:[5],&quot;label&quot;:&quot;处理节点&quot;&#125;],&quot;source&quot;:&quot;start1651725870775&quot;,&quot;source_state&quot;:&quot;22&quot;,&quot;process_method&quot;:&quot;&quot;,&quot;tpls&quot;:&#123;&quot;form_structure&quot;:[&#123;&quot;list&quot;:[&#123;&quot;key&quot;:&quot;1651725342000_58443&quot;,&quot;icon&quot;:&quot;icon-input&quot;,&quot;name&quot;:&quot;单行文本&quot;,&quot;type&quot;:&quot;input&quot;,&quot;model&quot;:&quot;input_1651725342000_58443&quot;,&quot;rules&quot;:[&#123;&quot;type&quot;:&quot;string&quot;,&quot;message&quot;:&quot;单行文本格式不正确&quot;&#125;],&quot;options&quot;:&#123;&quot;width&quot;:&quot;100%&quot;,&quot;pattern&quot;:&quot;&quot;,&quot;dataType&quot;:&quot;string&quot;,&quot;disabled&quot;:false,&quot;required&quot;:false,&quot;labelWidth&quot;:100,&quot;remoteFunc&quot;:&quot;func_1651725342000_58443&quot;,&quot;placeholder&quot;:&quot;&quot;,&quot;defaultValue&quot;:&quot;&quot;,&quot;showPassword&quot;:false,&quot;displayVerifiy&quot;:&#123;&quot;list&quot;:[&#123;&quot;model&quot;:&quot;字段标识&quot;,&quot;value&quot;:&quot;字段值&quot;&#125;],&quot;type&quot;:&quot;hide&quot;&#125;,&quot;labelWidthStatus&quot;:true,&quot;labelWidthDisabled&quot;:false&#125;&#125;],&quot;config&quot;:&#123;&quot;size&quot;:&quot;small&quot;,&quot;labelWidth&quot;:100,&quot;customClass&quot;:&quot;&quot;,&quot;labelPosition&quot;:&quot;right&quot;&#125;,&quot;id&quot;:1&#125;],&quot;form_data&quot;:[&#123;&quot;input_1651725342000_58443&quot;:&quot;111&quot;&#125;]&#125;,&quot;tasks&quot;:[&quot;echo_test-4171bc7f4a05-admin.sh&quot;]&#125;&#x27; \<br>  --compressed<br></code></pre></td></tr></table></figure>
+
+<p>例2：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell">curl &#x27;http://9.135.11.161:60780/api/v1/work-order/create&#x27; \<br>  -H &#x27;Accept: application/json, text/plain, */*&#x27; \<br>  -H &#x27;Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6&#x27; \<br>  -H &#x27;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTMwNDc0OTUsImlkZW50aXR5Ijo1LCJuaWNlIjoiY29hY2hoZSIsIm9yaWdfaWF0IjoxNjUyOTYxMDk1LCJyb2xlaWQiOjEsInJvbGVrZXkiOiJhZG1pbiIsInJvbGVuYW1lIjoi57O757uf566h55CG5ZGYIn0.luHkyKXx9kZ3lrPEAtQjJxJxZPefFFKRo6dpg7kLmng&#x27; \<br>  -H &#x27;Connection: keep-alive&#x27; \<br>  -H &#x27;Content-Type: application/json&#x27; \<br>  -H &#x27;Cookie: Hm_lvt_1d2d61263f13e4b288c8da19ad3ff56d=1650806151,1652688282; Hm_lpvt_1d2d61263f13e4b288c8da19ad3ff56d=1652961091; Admin-Token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTMwNDc0OTUsImlkZW50aXR5Ijo1LCJuaWNlIjoiY29hY2hoZSIsIm9yaWdfaWF0IjoxNjUyOTYxMDk1LCJyb2xlaWQiOjEsInJvbGVrZXkiOiJhZG1pbiIsInJvbGVuYW1lIjoi57O757uf566h55CG5ZGYIn0.luHkyKXx9kZ3lrPEAtQjJxJxZPefFFKRo6dpg7kLmng; sidebarStatus=0&#x27; \<br>  -H &#x27;Origin: http://9.135.11.161:60780&#x27; \<br>  -H &#x27;Referer: http://9.135.11.161:60780/&#x27; \<br>  -H &#x27;User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36 Edg/101.0.1210.47&#x27; \<br>  --data-raw &#x27;&#123;&quot;title&quot;:&quot;测试工单111&quot;,&quot;priority&quot;:3,&quot;process&quot;:1,&quot;classify&quot;:2,&quot;state&quot;:[&#123;&quot;id&quot;:&quot;receiveTask1651725819812&quot;,&quot;process_method&quot;:&quot;person&quot;,&quot;processor&quot;:[5],&quot;label&quot;:&quot;处理节点&quot;&#125;],&quot;source&quot;:&quot;start1651725870775&quot;,&quot;source_state&quot;:&quot;22&quot;,&quot;process_method&quot;:&quot;&quot;,&quot;tpls&quot;:&#123;&quot;form_structure&quot;:[&#123;&quot;list&quot;:[&#123;&quot;key&quot;:&quot;1652843023000_87184&quot;,&quot;icon&quot;:&quot;icon-input&quot;,&quot;name&quot;:&quot;单行文本&quot;,&quot;type&quot;:&quot;input&quot;,&quot;model&quot;:&quot;input_1651725342000_58443&quot;,&quot;rules&quot;:[&#123;&quot;type&quot;:&quot;string&quot;,&quot;message&quot;:&quot;单行文本格式不正确&quot;&#125;],&quot;options&quot;:&#123;&quot;width&quot;:&quot;100%&quot;,&quot;pattern&quot;:&quot;&quot;,&quot;dataType&quot;:&quot;string&quot;,&quot;disabled&quot;:false,&quot;required&quot;:false,&quot;labelWidth&quot;:100,&quot;remoteFunc&quot;:&quot;func_1651725342000_58443&quot;,&quot;placeholder&quot;:&quot;&quot;,&quot;defaultValue&quot;:&quot;&quot;,&quot;showPassword&quot;:false,&quot;displayVerifiy&quot;:&#123;&quot;list&quot;:[&#123;&quot;model&quot;:&quot;字段标识&quot;,&quot;value&quot;:&quot;字段值&quot;&#125;],&quot;type&quot;:&quot;hide&quot;&#125;,&quot;labelWidthStatus&quot;:true,&quot;labelWidthDisabled&quot;:false&#125;&#125;,&#123;&quot;key&quot;:&quot;1651725342000_58443&quot;,&quot;icon&quot;:&quot;icon-input&quot;,&quot;name&quot;:&quot;单行文本&quot;,&quot;type&quot;:&quot;input&quot;,&quot;model&quot;:&quot;input_1651725342000_58443&quot;,&quot;rules&quot;:[&#123;&quot;type&quot;:&quot;string&quot;,&quot;message&quot;:&quot;单行文本格式不正确&quot;&#125;],&quot;options&quot;:&#123;&quot;width&quot;:&quot;100%&quot;,&quot;pattern&quot;:&quot;&quot;,&quot;dataType&quot;:&quot;string&quot;,&quot;disabled&quot;:false,&quot;required&quot;:false,&quot;labelWidth&quot;:100,&quot;remoteFunc&quot;:&quot;func_1651725342000_58443&quot;,&quot;placeholder&quot;:&quot;&quot;,&quot;defaultValue&quot;:&quot;&quot;,&quot;showPassword&quot;:false,&quot;displayVerifiy&quot;:&#123;&quot;list&quot;:[&#123;&quot;model&quot;:&quot;字段标识&quot;,&quot;value&quot;:&quot;字段值&quot;&#125;],&quot;type&quot;:&quot;hide&quot;&#125;,&quot;labelWidthStatus&quot;:true,&quot;labelWidthDisabled&quot;:false&#125;&#125;,&#123;&quot;key&quot;:&quot;1652843028000_70959&quot;,&quot;icon&quot;:&quot;icon-wenjianshangchuan&quot;,&quot;name&quot;:&quot;文件&quot;,&quot;type&quot;:&quot;file&quot;,&quot;model&quot;:&quot;file_1652843028000_70959&quot;,&quot;rules&quot;:[],&quot;options&quot;:&#123;&quot;tip&quot;:&quot;&quot;,&quot;token&quot;:&quot;&quot;,&quot;width&quot;:&quot;&quot;,&quot;action&quot;:&quot;http://ipaddress:port/api/v1/public/uploadFile&quot;,&quot;domain&quot;:&quot;http://pfp81ptt6.bkt.clouddn.com/&quot;,&quot;length&quot;:9,&quot;headers&quot;:&#123;&#125;,&quot;disabled&quot;:false,&quot;tokenFunc&quot;:&quot;funcGetToken&quot;,&quot;labelWidth&quot;:100,&quot;remoteFunc&quot;:&quot;func_1652843028000_70959&quot;,&quot;defaultValue&quot;:[],&quot;displayVerifiy&quot;:&#123;&quot;list&quot;:[&#123;&quot;model&quot;:&quot;字段标识&quot;,&quot;value&quot;:&quot;字段值&quot;&#125;],&quot;type&quot;:&quot;hide&quot;&#125;,&quot;labelWidthStatus&quot;:true,&quot;labelWidthDisabled&quot;:false&#125;&#125;,&#123;&quot;key&quot;:&quot;1652843032000_79963&quot;,&quot;icon&quot;:&quot;icon-tupian&quot;,&quot;name&quot;:&quot;图片&quot;,&quot;type&quot;:&quot;imgupload&quot;,&quot;model&quot;:&quot;imgupload_1652843032000_79963&quot;,&quot;rules&quot;:[],&quot;options&quot;:&#123;&quot;min&quot;:0,&quot;size&quot;:&#123;&quot;width&quot;:100,&quot;height&quot;:100&#125;,&quot;token&quot;:&quot;&quot;,&quot;width&quot;:&quot;&quot;,&quot;action&quot;:&quot;https://jsonplaceholder.typicode.com/photos/&quot;,&quot;domain&quot;:&quot;http://pfp81ptt6.bkt.clouddn.com/&quot;,&quot;isEdit&quot;:false,&quot;length&quot;:8,&quot;isQiniu&quot;:false,&quot;disabled&quot;:false,&quot;isDelete&quot;:false,&quot;multiple&quot;:false,&quot;tokenFunc&quot;:&quot;funcGetToken&quot;,&quot;labelWidth&quot;:100,&quot;remoteFunc&quot;:&quot;func_1652843032000_79963&quot;,&quot;defaultValue&quot;:[],&quot;displayVerifiy&quot;:&#123;&quot;list&quot;:[&#123;&quot;model&quot;:&quot;字段标识&quot;,&quot;value&quot;:&quot;字段值&quot;&#125;],&quot;type&quot;:&quot;hide&quot;&#125;,&quot;labelWidthStatus&quot;:true,&quot;labelWidthDisabled&quot;:false&#125;&#125;,&#123;&quot;key&quot;:&quot;1652843040000_1662&quot;,&quot;icon&quot;:&quot;icon-input&quot;,&quot;name&quot;:&quot;分割线&quot;,&quot;type&quot;:&quot;divider&quot;,&quot;model&quot;:&quot;divider_1652843040000_1662&quot;,&quot;rules&quot;:[],&quot;options&quot;:&#123;&quot;direction&quot;:&quot;horizontal&quot;,&quot;font_size&quot;:&quot;15px&quot;,&quot;font_color&quot;:&quot;#606266&quot;,&quot;remoteFunc&quot;:&quot;func_1652843040000_1662&quot;,&quot;font_family&quot;:&quot;&quot;,&quot;font_weight&quot;:&quot;500&quot;,&quot;defaultValue&quot;:&quot;分割线&quot;,&quot;displayVerifiy&quot;:&#123;&quot;list&quot;:[&#123;&quot;model&quot;:&quot;字段标识&quot;,&quot;value&quot;:&quot;字段值&quot;&#125;],&quot;type&quot;:&quot;hide&quot;&#125;,&quot;content_position&quot;:&quot;center&quot;&#125;&#125;,&#123;&quot;key&quot;:&quot;1652843043000_29667&quot;,&quot;icon&quot;:&quot;icon-table&quot;,&quot;name&quot;:&quot;子表单&quot;,&quot;type&quot;:&quot;subform&quot;,&quot;model&quot;:&quot;subform_1652843043000_29667&quot;,&quot;rules&quot;:[],&quot;columns&quot;:[&#123;&quot;list&quot;:[],&quot;span&quot;:12&#125;,&#123;&quot;list&quot;:[],&quot;span&quot;:12&#125;],&quot;options&quot;:&#123;&quot;align&quot;:&quot;top&quot;,&quot;gutter&quot;:0,&quot;justify&quot;:&quot;start&quot;,&quot;labelWidth&quot;:100,&quot;remoteFunc&quot;:&quot;func_1652843043000_29667&quot;,&quot;displayVerifiy&quot;:&#123;&quot;list&quot;:[&#123;&quot;model&quot;:&quot;字段标识&quot;,&quot;value&quot;:&quot;字段值&quot;&#125;],&quot;type&quot;:&quot;hide&quot;&#125;,&quot;labelWidthStatus&quot;:true,&quot;labelWidthDisabled&quot;:false&#125;&#125;],&quot;config&quot;:&#123;&quot;size&quot;:&quot;small&quot;,&quot;labelWidth&quot;:100,&quot;customClass&quot;:&quot;&quot;,&quot;labelPosition&quot;:&quot;right&quot;&#125;,&quot;id&quot;:1&#125;],&quot;form_data&quot;:[&#123;&quot;input_1651725342000_58443&quot;:&quot;文本2&quot;,&quot;file_1652843028000_70959&quot;:[],&quot;imgupload_1652843032000_79963&quot;:[],&quot;divider_1652843040000_1662&quot;:&quot;分割线&quot;,&quot;subform_1652843043000_29667&quot;:[]&#125;]&#125;,&quot;tasks&quot;:[&quot;echo_test-4171bc7f4a05-admin.sh&quot;]&#125;&#x27; \<br>  --compressed \<br>  --insecure<br></code></pre></td></tr></table></figure>
+
+
+<p>Keys:</p>
+<ol>
+<li>JWT_TOKEN</li>
+<li>JWT_PAYLOAD<ol>
+<li>rolekey –&gt; admin</li>
+<li>rolename –&gt; 系统管理员</li>
+<li>exp  –&gt; 165xxxx</li>
+<li>identity  –&gt; 5</li>
+<li>nice –&gt; coachhe</li>
+<li>orig_iat –&gt; 16522xxx</li>
+<li>roleid –&gt; 1</li>
+</ol>
+</li>
+<li>identity<ol>
+<li>identityKey –&gt; 5</li>
+<li>userName –&gt; coachhe</li>
+<li>RoleKey –&gt; admin</li>
+<li>UserId –&gt; 5</li>
+<li>RoleIds –&gt; 1</li>
+</ol>
+</li>
+<li>role<ol>
+<li>“”</li>
+</ol>
+</li>
+<li>roleIds<ol>
+<li>0</li>
+</ol>
+</li>
+<li>userId<ol>
+<li>0</li>
+</ol>
+</li>
+<li>userName<ol>
+<li>“”</li>
+</ol>
+</li>
+</ol>
+<p><img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20220515152901.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="body"><a href="#body" class="headerlink" title="body"></a>body</h2><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;title&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;工单1&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;priority&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;process&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;classify&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">2</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;state&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">[</span><br>        <span class="hljs-punctuation">&#123;</span><br>            <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;receiveTask1651725819812&quot;</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;process_method&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;person&quot;</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;processor&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">[</span><br>                <span class="hljs-number">5</span><br>            <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;label&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;处理节点&quot;</span><br>        <span class="hljs-punctuation">&#125;</span><br>    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;source&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;start1651725870775&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;source_state&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;22&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;process_method&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;tpls&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">&#123;</span><br>        <span class="hljs-attr">&quot;form_structure&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">[</span><br>            <span class="hljs-punctuation">&#123;</span><br>                <span class="hljs-attr">&quot;list&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">[</span><br>                    <span class="hljs-punctuation">&#123;</span><br>                        <span class="hljs-attr">&quot;key&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;1651725342000_58443&quot;</span><span class="hljs-punctuation">,</span><br>                        <span class="hljs-attr">&quot;icon&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;icon-input&quot;</span><span class="hljs-punctuation">,</span><br>                        <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;单行文本&quot;</span><span class="hljs-punctuation">,</span><br>                        <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;input&quot;</span><span class="hljs-punctuation">,</span><br>                        <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;input_1651725342000_58443&quot;</span><span class="hljs-punctuation">,</span><br>                        <span class="hljs-attr">&quot;rules&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">[</span><br>                            <span class="hljs-punctuation">&#123;</span><br>                                <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;string&quot;</span><span class="hljs-punctuation">,</span><br>                                <span class="hljs-attr">&quot;message&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;单行文本格式不正确&quot;</span><br>                            <span class="hljs-punctuation">&#125;</span><br>                        <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>                        <span class="hljs-attr">&quot;options&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">&#123;</span><br>                            <span class="hljs-attr">&quot;width&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;100%&quot;</span><span class="hljs-punctuation">,</span><br>                            <span class="hljs-attr">&quot;pattern&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span><br>                            <span class="hljs-attr">&quot;dataType&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;string&quot;</span><span class="hljs-punctuation">,</span><br>                            <span class="hljs-attr">&quot;disabled&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br>                            <span class="hljs-attr">&quot;required&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br>                            <span class="hljs-attr">&quot;labelWidth&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">100</span><span class="hljs-punctuation">,</span><br>                            <span class="hljs-attr">&quot;remoteFunc&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;func_1651725342000_58443&quot;</span><span class="hljs-punctuation">,</span><br>                            <span class="hljs-attr">&quot;placeholder&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span><br>                            <span class="hljs-attr">&quot;defaultValue&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span><br>                            <span class="hljs-attr">&quot;showPassword&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br>                            <span class="hljs-attr">&quot;displayVerifiy&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">&#123;</span><br>                                <span class="hljs-attr">&quot;list&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">[</span><br>                                    <span class="hljs-punctuation">&#123;</span><br>                                        <span class="hljs-attr">&quot;model&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;字段标识&quot;</span><span class="hljs-punctuation">,</span><br>                                        <span class="hljs-attr">&quot;value&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;字段值&quot;</span><br>                                    <span class="hljs-punctuation">&#125;</span><br>                                <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>                                <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;hide&quot;</span><br>                            <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>                            <span class="hljs-attr">&quot;labelWidthStatus&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span><br>                            <span class="hljs-attr">&quot;labelWidthDisabled&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-literal"><span class="hljs-keyword">false</span></span><br>                        <span class="hljs-punctuation">&#125;</span><br>                    <span class="hljs-punctuation">&#125;</span><br>                <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>                <span class="hljs-attr">&quot;config&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">&#123;</span><br>                    <span class="hljs-attr">&quot;size&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;small&quot;</span><span class="hljs-punctuation">,</span><br>                    <span class="hljs-attr">&quot;labelWidth&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">100</span><span class="hljs-punctuation">,</span><br>                    <span class="hljs-attr">&quot;customClass&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;&quot;</span><span class="hljs-punctuation">,</span><br>                    <span class="hljs-attr">&quot;labelPosition&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;right&quot;</span><br>                <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>                <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-number">1</span><br>            <span class="hljs-punctuation">&#125;</span><br>        <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-attr">&quot;form_data&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">[</span><br>            <span class="hljs-punctuation">&#123;</span><br>                <span class="hljs-attr">&quot;input_1651725342000_58443&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;测试工单1&quot;</span><br>            <span class="hljs-punctuation">&#125;</span><br>        <span class="hljs-punctuation">]</span><br>    <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;tasks&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-punctuation">[</span><br>        <span class="hljs-string">&quot;echo_test-4171bc7f4a05-admin.sh&quot;</span><br>    <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>workOrderValue: </p>
+<p>http请求映射得到的工单信息</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs go">workOrderValue <span class="hljs-keyword">struct</span> &#123;<br>    process.WorkOrderInfo <span class="hljs-comment">// 工单基本信息</span><br>    Tpls        <span class="hljs-keyword">map</span>[<span class="hljs-type">string</span>][]<span class="hljs-keyword">interface</span>&#123;&#125; <span class="hljs-string">`json:&quot;tpls&quot;`</span><br>    SourceState <span class="hljs-type">string</span>                   <span class="hljs-string">`json:&quot;source_state&quot;`</span><br>    Tasks       json.RawMessage          <span class="hljs-string">`json:&quot;tasks&quot;`</span><br>    Source      <span class="hljs-type">string</span>                   <span class="hljs-string">`json:&quot;source&quot;`</span><br>    IsExecTask  <span class="hljs-type">bool</span>                     <span class="hljs-string">`json:&quot;is_exec_task&quot;`</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>variableValue: </p>
+<p>是workOrderValue的State字段所得，类型是一个json.RawMessage</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go">State         json.RawMessage <span class="hljs-string">`gorm:&quot;column:state; type:json&quot; json:&quot;state&quot; form:&quot;state&quot;`</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-string">&quot;state&quot;</span>:[<br>    &#123;<br>        <span class="hljs-string">&quot;id&quot;</span>:<span class="hljs-string">&quot;receiveTask1651725819812&quot;</span>,<br>        <span class="hljs-string">&quot;process_method&quot;</span>:<span class="hljs-string">&quot;person&quot;</span>,<br>        <span class="hljs-string">&quot;processor&quot;</span>:[<br>            <span class="hljs-number">5</span><br>        ],<br>        <span class="hljs-string">&quot;label&quot;</span>:<span class="hljs-string">&quot;处理节点&quot;</span><br>    &#125;<br>],<br></code></pre></td></tr></table></figure>
+
+<p>processValue:是workOrderValue的Process字段从<strong>mysql表</strong>中查找所得，是一个流程Info：<br>原始：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go">Process  <span class="hljs-type">int</span>    <span class="hljs-string">`gorm:&quot;column:process; type:int(11)&quot; json:&quot;process&quot; form:&quot;process&quot;`</span>                  <span class="hljs-comment">// 流程ID</span><br></code></pre></td></tr></table></figure>
+<p>转换：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs go">err = tx.Model(&amp;processValue).Where(<span class="hljs-string">&quot;id = ?&quot;</span>, workOrderValue.Process).Find(&amp;processValue).Error<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// Info 流程</span><br><span class="hljs-keyword">type</span> Info <span class="hljs-keyword">struct</span> &#123;<br>        base.Model<br>        Name <span class="hljs-type">string</span> <span class="hljs-string">`gorm:&quot;column:name; type:varchar(128)&quot; json:&quot;name&quot; form:&quot;name&quot;`</span> <span class="hljs-comment">// 流程名称</span><br>        <span class="hljs-comment">// 图标名称</span><br>        Icon <span class="hljs-type">string</span> <span class="hljs-string">`gorm:&quot;column:icon; type:varchar(128)&quot; json:&quot;icon&quot; form:&quot;icon&quot;`</span> <span class="hljs-comment">// 流程标签</span><br>        <span class="hljs-comment">// 结构内容，包括edges和nodes还有groups</span><br>        Structure   json.RawMessage <span class="hljs-string">`gorm:&quot;column:structure; type:json&quot; json:&quot;structure&quot; form:&quot;structure&quot;`</span>                        <span class="hljs-comment">// 流程结构</span><br>        Classify    <span class="hljs-type">int</span>             <span class="hljs-string">`gorm:&quot;column:classify; type:int(11)&quot; json:&quot;classify&quot; form:&quot;classify&quot;`</span>                        <span class="hljs-comment">// 分类ID</span><br>        Tpls        json.RawMessage <span class="hljs-string">`gorm:&quot;column:tpls; type:json&quot; json:&quot;tpls&quot; form:&quot;tpls&quot;`</span>                                       <span class="hljs-comment">// 模版</span><br>        Task        json.RawMessage <span class="hljs-string">`gorm:&quot;column:task; type:json&quot; json:&quot;task&quot; form:&quot;task&quot;`</span>                                       <span class="hljs-comment">// 任务ID, array, 可执行多个任务，可以当成通知任务，每个节点都会去执行</span><br>        SubmitCount <span class="hljs-type">int</span>             <span class="hljs-string">`gorm:&quot;column:submit_count; type:int(11); default:0&quot; json:&quot;submit_count&quot; form:&quot;submit_count&quot;`</span> <span class="hljs-comment">// 提交统计</span><br>        Creator     <span class="hljs-type">int</span>             <span class="hljs-string">`gorm:&quot;column:creator; type:int(11)&quot; json:&quot;creator&quot; form:&quot;creator&quot;`</span>                           <span class="hljs-comment">// 创建者</span><br>        Notice      json.RawMessage <span class="hljs-string">`gorm:&quot;column:notice; type:json&quot; json:&quot;notice&quot; form:&quot;notice&quot;`</span>                                 <span class="hljs-comment">// 绑定通知</span><br>        Remarks     <span class="hljs-type">string</span>          <span class="hljs-string">`gorm:&quot;column:remarks; type:varchar(1024)&quot; json:&quot;remarks&quot; form:&quot;remarks&quot;`</span>                     <span class="hljs-comment">// 流程备</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<p>processState是通过processValue的Structure所得：<br>定义：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// 作用：获取节点数据</span><br><span class="hljs-keyword">type</span> ProcessState <span class="hljs-keyword">struct</span> &#123;<br>    Structure <span class="hljs-keyword">map</span>[<span class="hljs-type">string</span>][]<span class="hljs-keyword">map</span>[<span class="hljs-type">string</span>]<span class="hljs-keyword">interface</span>&#123;&#125; <span class="hljs-comment">// 是一个map，key是string，value是一个map</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>共有这么几个方法：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// GetNode 获取节点信息,包括开始节点、审批节点、处理节点和结束节点</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(p *ProcessState)</span></span> GetNode(stateId <span class="hljs-type">string</span>) (nodeValue <span class="hljs-keyword">map</span>[<span class="hljs-type">string</span>]<span class="hljs-keyword">interface</span>&#123;&#125;, err <span class="hljs-type">error</span>) &#123;&#125;<br><br><span class="hljs-comment">// GetEdge 获取流转信息,也就是节点之间的流转关系（简单来说就是线）</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(p *ProcessState)</span></span> GetEdge(stateId <span class="hljs-type">string</span>, classify <span class="hljs-type">string</span>) (edgeValue []<span class="hljs-keyword">map</span>[<span class="hljs-type">string</span>]<span class="hljs-keyword">interface</span>&#123;&#125;, err <span class="hljs-type">error</span>) &#123;&#125;<br></code></pre></td></tr></table></figure>
+
+
+<p>nodeValue：是一个流程信息</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// variableValue是一个list，找到index为0的数据的id对应的节点</span><br>nodeValue, err := processState.GetNode(variableValue[<span class="hljs-number">0</span>].(<span class="hljs-keyword">map</span>[<span class="hljs-type">string</span>]<span class="hljs-keyword">interface</span>&#123;&#125;)[<span class="hljs-string">&quot;id&quot;</span>].(<span class="hljs-type">string</span>))<br></code></pre></td></tr></table></figure>
+
+<p>相当于从mysql表中得到对应的流程信息processValue，然后从http请求参数中得到第一个参数的id，得到匹配的流程信息nodeValue</p>
+<p>demo:<br><img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%B7%A5%E5%85%B7/git/20220515181630.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="流转"><a href="#流转" class="headerlink" title="流转"></a>流转</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">curl &#x27;http://9.135.11.161:60780/api/v1/work-order/handle&#x27; \<br>  -H &#x27;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTQ1OTI3NjMsImlkZW50aXR5IjoxLCJuaWNlIjoiYWRtaW4iLCJvcmlnX2lhdCI6MTY1NDUwNjM2Mywicm9sZWlkIjoxLCJyb2xla2V5IjoiYWRtaW4iLCJyb2xlbmFtZSI6Iuezu-e7n-euoeeQhuWRmCJ9.qYVyiBf_0-c2rD28Zp5iU984JHKF4z81PqXu-C_-DqM&#x27; \<br>  -H &#x27;Content-Type: application/json&#x27; \<br>  --data-raw &#x27;&#123;&quot;tasks&quot;:[&quot;echo_test-4171bc7f4a05-admin.sh&quot;],&quot;source_state&quot;:&quot;start1651725870775&quot;,&quot;target_state&quot;:&quot;receiveTask1651725819812&quot;,&quot;circulation&quot;:&quot;44&quot;,&quot;flow_properties&quot;:1,&quot;work_order_id&quot;:10,&quot;remarks&quot;:&quot;13241234&quot;,&quot;tpls&quot;:[&#123;&quot;tplDataId&quot;:10,&quot;tplId&quot;:1,&quot;tplValue&quot;:&#123;&quot;input_1651725342000_58443&quot;:&quot;测试工单单行文本1&quot;,&quot;file_1652843028000_70959&quot;:[],&quot;imgupload_1652843032000_79963&quot;:[&#123;&quot;key&quot;:&quot;1653151766934_82696&quot;,&quot;url&quot;:&quot;data:image/jpeg;base64,/9j/4AAQS&quot;,&quot;percent&quot;:100,&quot;status&quot;:&quot;uploading&quot;&#125;],&quot;divider_1652843040000_1662&quot;:&quot;分割线&quot;,&quot;subform_1652843043000_29667&quot;:[]&#125;&#125;]&#125;&#x27; \<br>  --compressed \<br>  --insecure<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs shell">curl &#x27;http://9.135.11.161:60780/api/v1/work-order/process-structure?processId=1&amp;workOrderId=10&#x27; \<br>  -H &#x27;Accept: application/json, text/plain, */*&#x27; \<br>  -H &#x27;Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6&#x27; \<br>  -H &#x27;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTQ1OTI3NjMsImlkZW50aXR5IjoxLCJuaWNlIjoiYWRtaW4iLCJvcmlnX2lhdCI6MTY1NDUwNjM2Mywicm9sZWlkIjoxLCJyb2xla2V5IjoiYWRtaW4iLCJyb2xlbmFtZSI6Iuezu-e7n-euoeeQhuWRmCJ9.qYVyiBf_0-c2rD28Zp5iU984JHKF4z81PqXu-C_-DqM&#x27; \<br>  -H &#x27;Connection: keep-alive&#x27; \<br>  -H &#x27;Cookie: Hm_lvt_1d2d61263f13e4b288c8da19ad3ff56d=1653038287,1653203054,1654327189,1654506358; Hm_lpvt_1d2d61263f13e4b288c8da19ad3ff56d=1654506358; Admin-Token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTQ1OTI3NjMsImlkZW50aXR5IjoxLCJuaWNlIjoiYWRtaW4iLCJvcmlnX2lhdCI6MTY1NDUwNjM2Mywicm9sZWlkIjoxLCJyb2xla2V5IjoiYWRtaW4iLCJyb2xlbmFtZSI6Iuezu-e7n-euoeeQhuWRmCJ9.qYVyiBf_0-c2rD28Zp5iU984JHKF4z81PqXu-C_-DqM&#x27; \<br>  -H &#x27;Referer: http://9.135.11.161:60780/&#x27; \<br>  -H &#x27;User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36 Edg/102.0.1245.33&#x27; \<br>  --compressed \<br>  --insecure<br></code></pre></td></tr></table></figure>
+
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><p><img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/image-20220606200949596.png" srcset="/img/loading.gif" lazyload alt="image-20220606200949596"></p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs autohotkey">INSERT INTO `sys_user`(`user_id`, `phone`, `role_id`, `salt`, `avatar`, `sex`, `email`, `dept_id`, `post_id`, `create_by`, `update_by`, `remark`, `status`, `username`, `password`) VALUES (<span class="hljs-number">1</span>, &#x27;<span class="hljs-number">13818888888</span>&#x27;, <span class="hljs-number">1</span>, NULL, &#x27;&#x27;, &#x27;<span class="hljs-number">0</span>&#x27;, &#x27;<span class="hljs-number">1</span>@qq.com&#x27;, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, &#x27;<span class="hljs-number">1</span>&#x27;, &#x27;<span class="hljs-number">1</span>&#x27;, NULL, <span class="hljs-number">0</span>, &#x27;admin&#x27;, &#x27;$<span class="hljs-number">2</span>a$<span class="hljs-number">10</span>$cKFFTCzGOvaIHHJY2K45Zuwt8TD6oPzYi4s5MzYIBAWCLL6ZhouP2&#x27;)<span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" class="category-chain-item">编程语言</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Go/" class="category-chain-item">Go</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Go/Go%E9%A1%B9%E7%9B%AE/" class="category-chain-item">Go项目</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Go/Go%E9%A1%B9%E7%9B%AE/%E5%B7%A5%E5%8D%95%E7%B3%BB%E7%BB%9F/" class="category-chain-item">工单系统</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Go/Go%E9%A1%B9%E7%9B%AE/%E5%B7%A5%E5%8D%95%E7%B3%BB%E7%BB%9F/ferry%E5%B7%A5%E5%8D%95%E7%B3%BB%E7%BB%9F/" class="category-chain-item">ferry工单系统</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>工单</div>
+      <div>http://example.com/2022/12/7833f6e67f19.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/b8764a9b6a25.html" title="工单系统简介">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">工单系统简介</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/7791fafe5883.html" title="协议">
+                        <span class="hidden-mobile">协议</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/7833f6e67f19.html';
+          this.page.identifier = '/2022/12/7833f6e67f19.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,877 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="CoachHe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="7 Flink的状态管理主要内容 Flink中的状态 算子状态（Operator State） 键控状态（Keyed State） 状态后端（State Backends）  状态的概念   由一个任务维护，并且用来计算某个结果的所有数据，都属于这个任务的状态  可以认为状态就是一个本地变量，可以被任务的业务逻辑访问 注意：事实上，状态的确保存在本地，只是需要保证状态一致性等操作，由Flink实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="7 Flink的状态管理">
+<meta property="og:url" content="http://example.com/2022/12/6ba230b21ffa.html">
+<meta property="og:site_name" content="Pb&#39;s Blog">
+<meta property="og:description" content="7 Flink的状态管理主要内容 Flink中的状态 算子状态（Operator State） 键控状态（Keyed State） 状态后端（State Backends）  状态的概念   由一个任务维护，并且用来计算某个结果的所有数据，都属于这个任务的状态  可以认为状态就是一个本地变量，可以被任务的业务逻辑访问 注意：事实上，状态的确保存在本地，只是需要保证状态一致性等操作，由Flink实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/20210521002340.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/20210521002947.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/20210609012434.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/20210522191509.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/20210609010347.png">
+<meta property="og:image" content="http://example.com/Users/heyizhi/Library/Application%20Support/typora-user-images/image-20210609011913221.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210526162745.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210526105034.png">
+<meta property="og:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210526201935.png">
+<meta property="article:published_time" content="2022-12-03T18:13:48.000Z">
+<meta property="article:modified_time" content="2023-06-15T15:04:07.000Z">
+<meta property="article:author" content="CoachHe">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/20210521002340.png">
+  
+  
+  
+  <title>7 Flink的状态管理 - Pb&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/remark/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>留言</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="7 Flink的状态管理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-12-04 02:13" pubdate>
+          2022年12月4日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          90 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">7 Flink的状态管理</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="7-Flink的状态管理"><a href="#7-Flink的状态管理" class="headerlink" title="7 Flink的状态管理"></a>7 Flink的状态管理</h1><h1 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h1><ol>
+<li>Flink中的状态</li>
+<li>算子状态（Operator State）</li>
+<li>键控状态（Keyed State）</li>
+<li>状态后端（State Backends）</li>
+</ol>
+<h2 id="状态的概念"><a href="#状态的概念" class="headerlink" title="状态的概念"></a>状态的概念</h2><img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/20210521002340.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<ul>
+<li><p>由一个任务维护，并且用来计算某个结果的所有数据，都属于这个任务的状态</p>
+</li>
+<li><p>可以认为状态就是一个本地变量，可以被任务的业务逻辑访问</p>
+<p>注意：事实上，状态的确保存在本地，只是需要保证状态一致性等操作，由Flink实现</p>
+</li>
+<li><p>Flink会进行状态管理，包括状态一致性、故障处理以及高效存储和访问，以便开发人员可以专注于应用程序的逻辑</p>
+</li>
+</ul>
+<h2 id="Flink中的状态"><a href="#Flink中的状态" class="headerlink" title="Flink中的状态"></a>Flink中的状态</h2><ul>
+<li><p>在Flink中，状态始终与特定算子关联（和任务绑定）</p>
+<p>注意：不能跨任务使用状态</p>
+</li>
+<li><p>为了使运行时的Flink了解算子的状态，算子需要预先注册其状态</p>
+</li>
+</ul>
+<h3 id="状态的分类"><a href="#状态的分类" class="headerlink" title="状态的分类"></a>状态的分类</h3><p>根据<strong>作用域</strong>的不同，状态可以分为两类：</p>
+<ol>
+<li><p>算子状态</p>
+<p>算子状态的作用范围限定为算子</p>
+</li>
+<li><p>键值分区状态</p>
+<p>根据输入数据流中定义的键（key）来维护和访问</p>
+</li>
+</ol>
+<h3 id="①-算子状态"><a href="#①-算子状态" class="headerlink" title="① 算子状态"></a>① 算子状态</h3><img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/20210521002947.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<ul>
+<li>算子状态的作用范围限定为<strong>算子任务</strong>，由同一并行任务所处理的所有数据都可以访问到相同的状态</li>
+<li>状态对于同一子任务而言是共享的</li>
+<li>算子状态不能由相同或不同算子的另一个子任务访问</li>
+</ul>
+<p>也就是说，哪怕都是map算子，但若不是同一个算子任务，则不能相互访问（例如一个map的结果要给另一个map，这两个map之间不能相互访问）。但是对于一个并行度为2的算子任务，这两个算子任务是可以相互访问的。</p>
+<h4 id="算子状态的数据结构"><a href="#算子状态的数据结构" class="headerlink" title="算子状态的数据结构"></a>算子状态的数据结构</h4><ol>
+<li><p>列表状态（list state）</p>
+<p>将状态表示为一个条目列表</p>
+</li>
+<li><p>联合状态列表（union list state）</p>
+<p>同样是将状态表示为一个条目列表，但在进行故障恢复或从某个保存点启动应用时，状态的恢复方式和普通列表有所不同。</p>
+</li>
+<li><p>广播状态（broadcast state）</p>
+<p>如果一个算子有多项任务，而他们的任务状态又都相同，那么这种特殊情况最适合应用广播状态。</p>
+</li>
+</ol>
+<h4 id="算子状态实例"><a href="#算子状态实例" class="headerlink" title="算子状态实例"></a>算子状态实例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.apitest.state;<br><br><span class="hljs-keyword">import</span> org.apache.flink.api.common.functions.MapFunction;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.checkpoint.ListCheckpointed;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.datastream.DataStream;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;<br><span class="hljs-keyword">import</span> util.SensorReading;<br><br><span class="hljs-keyword">import</span> java.util.Collections;<br><span class="hljs-keyword">import</span> java.util.List;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OperatorState</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;<br>        <span class="hljs-type">StreamExecutionEnvironment</span> <span class="hljs-variable">env</span> <span class="hljs-operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();<br>        env.setParallelism(<span class="hljs-number">1</span>);<br><br>        <span class="hljs-comment">// socket文本流</span><br>        DataStream&lt;String&gt; inputStream = env.socketTextStream(<span class="hljs-string">&quot;localhost&quot;</span>, <span class="hljs-number">7777</span>);<br><br>        <span class="hljs-comment">// 转换成SensorReading类型</span><br>        DataStream&lt;SensorReading&gt; dataStream = inputStream.map(line -&gt; &#123;<br>            String[] fields = line.split(<span class="hljs-string">&quot;,&quot;</span>);<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SensorReading</span>(fields[<span class="hljs-number">0</span>], <span class="hljs-keyword">new</span> <span class="hljs-title class_">Long</span>(fields[<span class="hljs-number">1</span>]), <span class="hljs-keyword">new</span> <span class="hljs-title class_">Double</span>(fields[<span class="hljs-number">2</span>]));<br>        &#125;);<br><br>        <span class="hljs-comment">// 定义一个有状态的map操作，统计当前分区数据个数</span><br>        DataStream&lt;Integer&gt; resultStream = dataStream.map(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyCountMapper</span>());<br><br>        resultStream.print();<br><br><br>        env.execute();<br><br>    &#125;<br><br>    <span class="hljs-comment">// 自定义MapFunction</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyCountMapper</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">MapFunction</span>&lt;SensorReading, Integer&gt;, ListCheckpointed&lt;Integer&gt; &#123;<br><br>        <span class="hljs-comment">// 定义一个本地变量，作为算子状态</span><br>        <span class="hljs-keyword">private</span> <span class="hljs-type">Integer</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">map</span><span class="hljs-params">(SensorReading sensorReading)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>            count++;<br>            <span class="hljs-keyword">return</span> count;<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> List&lt;Integer&gt; <span class="hljs-title function_">snapshotState</span><span class="hljs-params">(<span class="hljs-type">long</span> l, <span class="hljs-type">long</span> l1)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>            <span class="hljs-comment">// 对状态做快照，返回Integer类型的list</span><br>            <span class="hljs-keyword">return</span> Collections.singletonList(count);<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">restoreState</span><span class="hljs-params">(List&lt;Integer&gt; state)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>            <span class="hljs-comment">// 从错误状态恢复</span><br>            <span class="hljs-keyword">for</span> (Integer number : state) &#123;<br>                <br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/20210609012434.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<h3 id="②-键值分区状态"><a href="#②-键值分区状态" class="headerlink" title="② 键值分区状态"></a>② 键值分区状态</h3><p>键值分区状态会按照<strong>算子输入记录</strong>所定义的<strong>键值</strong>来进行维护或访问。</p>
+<p>Flink为每个键值都维护了一个状态实例，该实例总是位于那个<strong>处理对应键值记录的算子任务</strong>上。</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/20210522191509.png" srcset="/img/loading.gif" lazyload style="zoom: 80%;" />
+
+<p>图中两个Task是两个<strong>并行子任务</strong>（也就是同一个任务，每个任务可能有多个key），图中每种颜色的数据代表一个key。每个key有一个状态，黄色的key只能访问黄色的状态，粉色的key只能访问粉色的状态。</p>
+<p>当任务处理一条数据时，它会自动访问当前键值对应的状态。</p>
+<h4 id="键值分区状态的数据结构"><a href="#键值分区状态的数据结构" class="headerlink" title="键值分区状态的数据结构"></a>键值分区状态的数据结构</h4><ol>
+<li><p>值状态（Value state）</p>
+<p>将状态表示为单个的值</p>
+</li>
+<li><p>列表状态（List State）</p>
+<p>将状态表示为一组数据的列表</p>
+</li>
+<li><p>映射状态（Map state）</p>
+<p>将状态表示为一组key-value对</p>
+</li>
+<li><p>聚合状态（Reducing state &amp; Aggregating State）</p>
+<p>将状态表示为一个用于聚合操作的列表</p>
+</li>
+</ol>
+<h4 id="键值分区状态实例"><a href="#键值分区状态实例" class="headerlink" title="键值分区状态实例"></a>键值分区状态实例</h4><p>使用：</p>
+<ul>
+<li><p>声明一个键控状态</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java">myValueState = getRuntimeContext().getState(<br>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">ValueStateDescriptor</span>&lt;Integer&gt;(<br>  	<span class="hljs-string">&quot;my-value&quot;</span>,<br>  	Integer.class));<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>读取状态</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Integer</span> <span class="hljs-variable">myValue</span> <span class="hljs-operator">=</span> myValueState.value()<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>对状态赋值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">myValue.update(<span class="hljs-number">10</span>)<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="值状态实例"><a href="#值状态实例" class="headerlink" title="值状态实例"></a>值状态实例</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.apitest.state;<br><br><span class="hljs-keyword">import</span> org.apache.flink.api.common.functions.RichMapFunction;<br><span class="hljs-keyword">import</span> org.apache.flink.api.common.state.ValueState;<br><span class="hljs-keyword">import</span> org.apache.flink.api.common.state.ValueStateDescriptor;<br><span class="hljs-keyword">import</span> org.apache.flink.configuration.Configuration;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.datastream.DataStream;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;<br><span class="hljs-keyword">import</span> util.SensorReading;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">KeyedState</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;<br>        <span class="hljs-type">StreamExecutionEnvironment</span> <span class="hljs-variable">env</span> <span class="hljs-operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();<br>        env.setParallelism(<span class="hljs-number">1</span>);<br><br>        <span class="hljs-comment">// socket文本流</span><br>        DataStream&lt;String&gt; inputStream = env.socketTextStream(<span class="hljs-string">&quot;localhost&quot;</span>, <span class="hljs-number">7777</span>);<br><br>        <span class="hljs-comment">// 转换成SensorReading类型</span><br>        DataStream&lt;SensorReading&gt; dataStream = inputStream.map(line -&gt; &#123;<br>            String[] fields = line.split(<span class="hljs-string">&quot;,&quot;</span>);<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SensorReading</span>(fields[<span class="hljs-number">0</span>], <span class="hljs-keyword">new</span> <span class="hljs-title class_">Long</span>(fields[<span class="hljs-number">1</span>]), <span class="hljs-keyword">new</span> <span class="hljs-title class_">Double</span>(fields[<span class="hljs-number">2</span>]));<br>        &#125;);<br><br>        <span class="hljs-comment">// 定义一个有状态的map操作，统计当前sensor数据个数</span><br>        DataStream&lt;Integer&gt; resultStream = dataStream<br>                .keyBy(<span class="hljs-string">&quot;id&quot;</span>)<br>                .map(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyKeyCountMapper</span>());<br><br>        resultStream.print();<br><br><br>        env.execute();<br>    &#125;<br><br>    <span class="hljs-comment">//自定义MapFunction，普通MapFunction不能完成，必须使用RichMapFunction</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyKeyCountMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">RichMapFunction</span>&lt;SensorReading, Integer&gt;&#123;<br><br>        <span class="hljs-keyword">private</span> ValueState&lt;Integer&gt; keyCountState;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">open</span><span class="hljs-params">(Configuration parameters)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>            keyCountState = getRuntimeContext().getState(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ValueStateDescriptor</span>&lt;Integer&gt;(<span class="hljs-string">&quot;key-count&quot;</span>, Integer.class));<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">map</span><span class="hljs-params">(SensorReading sensorReading)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>            <span class="hljs-type">Integer</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> keyCountState.value();<br>            <span class="hljs-keyword">if</span> (count == <span class="hljs-literal">null</span>) &#123;<br>                count = <span class="hljs-number">0</span>;<br>            &#125;<br>            count++;<br>            keyCountState.update(count);<br>            <span class="hljs-keyword">return</span> count;<br>        &#125;<br>    &#125;<br><br><br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/%E7%A8%8B%E5%BA%8F%E5%91%98/20210609010347.png" srcset="/img/loading.gif" lazyload style="zoom:30%;" />
+
+<h5 id="列表状态实例"><a href="#列表状态实例" class="headerlink" title="列表状态实例"></a>列表状态实例</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.apitest.state;<br><br><span class="hljs-keyword">import</span> org.apache.flink.api.common.functions.RichMapFunction;<br><span class="hljs-keyword">import</span> org.apache.flink.api.common.state.ListState;<br><span class="hljs-keyword">import</span> org.apache.flink.api.common.state.ListStateDescriptor;<br><span class="hljs-keyword">import</span> org.apache.flink.api.common.state.ValueState;<br><span class="hljs-keyword">import</span> org.apache.flink.api.common.state.ValueStateDescriptor;<br><span class="hljs-keyword">import</span> org.apache.flink.configuration.Configuration;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.checkpoint.ListCheckpointed;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.datastream.DataStream;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;<br><span class="hljs-keyword">import</span> util.SensorReading;<br><br><span class="hljs-keyword">import</span> java.util.Collections;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">KeyedState</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;<br>        <span class="hljs-type">StreamExecutionEnvironment</span> <span class="hljs-variable">env</span> <span class="hljs-operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();<br>        env.setParallelism(<span class="hljs-number">1</span>);<br><br>        <span class="hljs-comment">// socket文本流</span><br>        DataStream&lt;String&gt; inputStream = env.socketTextStream(<span class="hljs-string">&quot;localhost&quot;</span>, <span class="hljs-number">7777</span>);<br><br>        <span class="hljs-comment">// 转换成SensorReading类型</span><br>        DataStream&lt;SensorReading&gt; dataStream = inputStream.map(line -&gt; &#123;<br>            String[] fields = line.split(<span class="hljs-string">&quot;,&quot;</span>);<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SensorReading</span>(fields[<span class="hljs-number">0</span>], <span class="hljs-keyword">new</span> <span class="hljs-title class_">Long</span>(fields[<span class="hljs-number">1</span>]), <span class="hljs-keyword">new</span> <span class="hljs-title class_">Double</span>(fields[<span class="hljs-number">2</span>]));<br>        &#125;);<br><br>        <span class="hljs-comment">// 定义一个有状态的map操作，统计当前sensor数据个数</span><br>        DataStream&lt;Integer&gt; resultStream = dataStream<br>                .keyBy(<span class="hljs-string">&quot;id&quot;</span>)<br>                .map(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyKeyCountMapper</span>());<br><br>        resultStream.print();<br><br><br>        env.execute();<br>    &#125;<br><br>    <span class="hljs-comment">//自定义MapFunction，普通MapFunction不能完成，必须使用RichMapFunction</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyKeyCountMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">RichMapFunction</span>&lt;SensorReading, Integer&gt;&#123;<br><br>        <span class="hljs-keyword">private</span> ValueState&lt;Integer&gt; keyCountState;<br>        <span class="hljs-keyword">private</span> ListState&lt;String&gt; listState;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">open</span><span class="hljs-params">(Configuration parameters)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>            keyCountState = getRuntimeContext().getState(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ValueStateDescriptor</span>&lt;Integer&gt;(<span class="hljs-string">&quot;key-count&quot;</span>, Integer.class));<br>            listState = getRuntimeContext().getListState(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ListStateDescriptor</span>&lt;String&gt;(<span class="hljs-string">&quot;my-list&quot;</span>, String.class));<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">map</span><span class="hljs-params">(SensorReading sensorReading)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>            <span class="hljs-comment">// 值状态API调用</span><br>            <span class="hljs-type">Integer</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> keyCountState.value();<br>            <span class="hljs-keyword">if</span> (count == <span class="hljs-literal">null</span>) &#123;<br>                count = <span class="hljs-number">0</span>;<br>            &#125;<br>            count++;<br>            keyCountState.update(count);<br><br>            <span class="hljs-comment">// 列表状态API调用</span><br>            Iterable&lt;String&gt; strings = listState.get();<br>            <span class="hljs-comment">// 每次增加一行，值为count</span><br>            listState.add(String.valueOf(count));<br>            <span class="hljs-comment">// 然后遍历</span><br>            <span class="hljs-keyword">for</span> (String each : strings) &#123;<br>                System.out.println(<span class="hljs-string">&quot;the element of strings is &quot;</span> + each);<br>            &#125;<br>            <br>            <span class="hljs-keyword">return</span> count;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<img src="/Users/heyizhi/Library/Application Support/typora-user-images/image-20210609011913221.png" srcset="/img/loading.gif" lazyload alt="image-20210609011913221" style="zoom:50%;" />
+
+<h5 id="映射状态实例"><a href="#映射状态实例" class="headerlink" title="映射状态实例"></a>映射状态实例</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.coachhe.apitest.state;<br><br><span class="hljs-keyword">import</span> org.apache.flink.api.common.functions.RichMapFunction;<br><span class="hljs-keyword">import</span> org.apache.flink.api.common.state.*;<br><span class="hljs-keyword">import</span> org.apache.flink.configuration.Configuration;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.checkpoint.ListCheckpointed;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.datastream.DataStream;<br><span class="hljs-keyword">import</span> org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;<br><span class="hljs-keyword">import</span> util.SensorReading;<br><br><span class="hljs-keyword">import</span> java.util.Collections;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">KeyedState</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception&#123;<br>        <span class="hljs-type">StreamExecutionEnvironment</span> <span class="hljs-variable">env</span> <span class="hljs-operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();<br>        env.setParallelism(<span class="hljs-number">1</span>);<br><br>        <span class="hljs-comment">// socket文本流</span><br>        DataStream&lt;String&gt; inputStream = env.socketTextStream(<span class="hljs-string">&quot;localhost&quot;</span>, <span class="hljs-number">7777</span>);<br><br>        <span class="hljs-comment">// 转换成SensorReading类型</span><br>        DataStream&lt;SensorReading&gt; dataStream = inputStream.map(line -&gt; &#123;<br>            String[] fields = line.split(<span class="hljs-string">&quot;,&quot;</span>);<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">SensorReading</span>(fields[<span class="hljs-number">0</span>], <span class="hljs-keyword">new</span> <span class="hljs-title class_">Long</span>(fields[<span class="hljs-number">1</span>]), <span class="hljs-keyword">new</span> <span class="hljs-title class_">Double</span>(fields[<span class="hljs-number">2</span>]));<br>        &#125;);<br><br>        <span class="hljs-comment">// 定义一个有状态的map操作，统计当前sensor数据个数</span><br>        DataStream&lt;Integer&gt; resultStream = dataStream<br>                .keyBy(<span class="hljs-string">&quot;id&quot;</span>)<br>                .map(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyKeyCountMapper</span>());<br><br>        resultStream.print();<br><br><br>        env.execute();<br>    &#125;<br><br>    <span class="hljs-comment">//自定义MapFunction，普通MapFunction不能完成，必须使用RichMapFunction</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyKeyCountMapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">RichMapFunction</span>&lt;SensorReading, Integer&gt;&#123;<br><br>        <span class="hljs-keyword">private</span> ValueState&lt;Integer&gt; keyCountState;<br>        <span class="hljs-keyword">private</span> ListState&lt;String&gt; listState;<br>        <span class="hljs-keyword">private</span> MapState&lt;String, Integer&gt; mapState;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">open</span><span class="hljs-params">(Configuration parameters)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>            keyCountState = getRuntimeContext().getState(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ValueStateDescriptor</span>&lt;Integer&gt;(<span class="hljs-string">&quot;key-count&quot;</span>, Integer.class));<br>            listState = getRuntimeContext().getListState(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ListStateDescriptor</span>&lt;String&gt;(<span class="hljs-string">&quot;my-list&quot;</span>, String.class));<br>            mapState = getRuntimeContext().getMapState(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MapStateDescriptor</span>&lt;String, Integer&gt;(<span class="hljs-string">&quot;my-map&quot;</span>, String.class, Integer.class));<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">map</span><span class="hljs-params">(SensorReading sensorReading)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>            <span class="hljs-comment">// 值状态API调用</span><br>            <span class="hljs-type">Integer</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> keyCountState.value();<br>            <span class="hljs-keyword">if</span> (count == <span class="hljs-literal">null</span>) &#123;<br>                count = <span class="hljs-number">0</span>;<br>            &#125;<br>            count++;<br>            keyCountState.update(count);<br><br>            <span class="hljs-comment">// 列表状态API调用</span><br>            Iterable&lt;String&gt; strings = listState.get();<br>            <span class="hljs-comment">// 每次增加一行，值为count</span><br>            listState.add(String.valueOf(count));<br>            <span class="hljs-comment">// 然后遍历</span><br>            <span class="hljs-keyword">for</span> (String each : strings) &#123;<br>                System.out.println(<span class="hljs-string">&quot;the element of strings is &quot;</span> + each);<br>            &#125;<br>            <br>            <span class="hljs-comment">// map state</span><br>            mapState.get(<span class="hljs-string">&quot;1&quot;</span>);<br>            mapState.put(<span class="hljs-string">&quot;2&quot;</span>, <span class="hljs-number">1</span>);<br>            mapState.remove(<span class="hljs-string">&quot;2&quot;</span>);<br>            <br>            <span class="hljs-keyword">return</span> count;<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="状态后端"><a href="#状态后端" class="headerlink" title="状态后端"></a>状态后端</h2><p>为了保证快速访问状态，每个并行任务都会把状态维护在本地。至于状态具体的存储、访问和维护，则是由一个名为<strong>状态后端</strong>的可插拔组件来决定。</p>
+<h3 id="状态后端的任务"><a href="#状态后端的任务" class="headerlink" title="状态后端的任务"></a>状态后端的任务</h3><p>状态后端主要负责两件事：</p>
+<ol>
+<li>本地状态的管理</li>
+<li>将状态以检查点的形式写入远程存储</li>
+</ol>
+<h3 id="状态后端的存储方式"><a href="#状态后端的存储方式" class="headerlink" title="状态后端的存储方式"></a>状态后端的存储方式</h3><ol>
+<li>一类状态后端会把<strong>键值分区状态作为对象</strong>，以内存数据结构的形式<strong>存在JVM堆</strong>中</li>
+<li>另一类状态后端会把<strong>状态对象序列化</strong>后<strong>存到RocksDB</strong>中</li>
+</ol>
+<h3 id="状态后端类型"><a href="#状态后端类型" class="headerlink" title="状态后端类型"></a>状态后端类型</h3><ol>
+<li><p>MemoryStateBackend</p>
+<p>内存级的状态后端，会将键控状态作为内存中的对象进行管理，将它们存储在TaskManager的JVM堆上，而将checkpoint存储在JobManager的内存中</p>
+<p><strong>特点</strong>：</p>
+<p>快速、低延迟，但不稳定（使用较少）</p>
+</li>
+<li><p>FsStateBackend</p>
+<p>将checkpoint存到远程的持久化文件系统上，而对本地状态，和MemoryStateBackend一样，也会存在TaskManager的JVM堆上</p>
+<p><strong>特点</strong>：</p>
+<p>同时拥有内存级的本地访问速度，和更好的容错保证</p>
+<p><strong>缺点</strong>：</p>
+<p>所有状态放在内存中，内存可能不够，只能不断扩容然后重新启动。</p>
+</li>
+<li><p>RocksDBStateBackend</p>
+<p>将所有状态序列化后，存入本地的RocksDB中存储。</p>
+<p><strong>特点</strong>：</p>
+<p>不会出现内存不够的情况，状态存在本地RocksDB（硬盘管够）</p>
+<p><strong>缺点</strong>：</p>
+<p>所有状态都需要序列化，速度可能更慢</p>
+</li>
+</ol>
+<h2 id="有状态算子的扩缩容"><a href="#有状态算子的扩缩容" class="headerlink" title="有状态算子的扩缩容"></a>有状态算子的扩缩容</h2><h3 id="扩缩容介绍"><a href="#扩缩容介绍" class="headerlink" title="扩缩容介绍"></a>扩缩容介绍</h3><img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210526162745.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<p>Flink对不同类型的状态提供了四种扩缩容模式。</p>
+<h3 id="带有键值分区状态的算子"><a href="#带有键值分区状态的算子" class="headerlink" title="带有键值分区状态的算子"></a>带有键值分区状态的算子</h3><p>带有键值分区状态的算子在扩缩容时会根据新的任务数量对键值重新分区。</p>
+<p><strong>注意</strong>：</p>
+<p>为了降低状态在不同任务之间的迁移成本，Flink不会对单独的键值实施再分配，而是会把所有键值分为不同的键值组（key group）。每个键值组都包含了部分键值，Flink以此为单位把键值分配给不同任务。</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210526105034.png" srcset="/img/loading.gif" lazyload style="zoom: 30%;" />
+
+<p>如图所示，两个键值分区状态组成一个键值组，在扩缩容时，Flink不对一个键值组里的具体键值分区状态进行重分配，而是直接将整个键值组进行重分配给不同任务。</p>
+<img src="https://coachhe-1305181419.cos.ap-guangzhou.myqcloud.com/Redis/20210526201935.png" srcset="/img/loading.gif" lazyload style="zoom: 33%;" />
+
+<p>更进一步的，如上图所示，一个DataStream经过keyBy之后会被切分为不同的KeyStream，每个KeyStream会有不同的key，</p>
+<h3 id="带有算子状态的算子"><a href="#带有算子状态的算子" class="headerlink" title="带有算子状态的算子"></a>带有算子状态的算子</h3><p>带有算子状态的算子在扩缩容时会对列表中的条目进行重分配。</p>
+<p>理论上，所有并行算子任务的列表条目会被统一收集起来，随后均匀分配到更少或更多的任务之上。</p>
+<p><strong>注意</strong>：</p>
+<p>如果列表条目的数量小于算子新设置的并行度，部分任务在启动时的状态就可能为空。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/" class="category-chain-item">程序员</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/" class="category-chain-item">大数据</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/" class="category-chain-item">实时计算</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/Flink/" class="category-chain-item">Flink</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%A8%8B%E5%BA%8F%E5%91%98/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E5%AE%9E%E6%97%B6%E8%AE%A1%E7%AE%97/Flink/%E5%9F%BA%E4%BA%8EApache-Flink%E7%9A%84%E6%B5%81%E5%A4%84%E7%90%86/" class="category-chain-item">基于Apache Flink的流处理</a>
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>7 Flink的状态管理</div>
+      <div>http://example.com/2022/12/6ba230b21ffa.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>CoachHe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年12月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/12/021c8d309bcb.html" title="7.2 Flink的状态管理-实例">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">7.2 Flink的状态管理-实例</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/12/64d0f3bde106.html" title="6.2 基于时间的算子">
+                        <span class="hidden-mobile">6.2 基于时间的算子</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    
+      <script type="text/javascript">
+        var disqus_config = function() {
+          this.page.url = 'http://example.com/2022/12/6ba230b21ffa.html';
+          this.page.identifier = '/2022/12/6ba230b21ffa.html';
+        };
+        Fluid.utils.loadComments('#disqus_thread', function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//' + 'fluid' + '.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', new Date());
+          (d.head || d.body).appendChild(s);
+        });
+      </script>
+    
+    <noscript>Please enable JavaScript to view the comments</noscript>
+  </div>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
